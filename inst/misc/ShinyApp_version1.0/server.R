@@ -17,6 +17,8 @@ randomValues3 = rbeta(50,2,2)
 groupValues = c(rep("Group1",25),rep("Group2",25))
 myDataFrame = data.frame(Normal=randomValues1,Gamma=randomValues2,Beta=randomValues3,group=groupValues)
 
+
+
 # Define the shiny server functionality
 shinyServer(function(input, output) {
 

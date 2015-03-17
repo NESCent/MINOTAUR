@@ -55,13 +55,13 @@ shinyUI(pageWithSidebar(
   mainPanel(
   
 	# bubble plot
-  showOutput("bubbleChart1", "Highcharts"),
+  #showOutput("bubbleChart1", "Highcharts"),
     
 	# histogram
-	plotOutput("plot1",height="300px",width="300px"),
+	#plotOutput("plot1",height="300px",width="300px"),
 	
 	# summary table
-	tableOutput("table1")
+	#tableOutput("table1")
 	
   )
   
