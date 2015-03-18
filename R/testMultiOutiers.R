@@ -14,16 +14,21 @@ source("R/DistanceFunctions.R")
   dim(dfv2)
   table(dfv2$s_high)
 
+  dfv2 <- read.table("inst/misc/NonParamEx.txt", header=TRUE)
+  colnums <- c(1,2)
+
   ### Mahalanobis distance ######
   Md <- Mahalanobis(dfv2, colnums)
   str(Md)
-
-  plot(Md[[3]][loci.ind], col=factor(dfv$s_high[loci.ind]))
+  #plot(Md[[3]][loci.ind], col=factor(dfv$s_high[loci.ind]))
+  plot(Md[[3]], col=c(rep(1,10000),3), pch=19)
 
   ### KernelDensSD ######
-  Kd <- KernelDensSD(dfv2, colnums, 3)
+  Kd <- KernelDensSD(dfv2, colnums, 1.5)
   str(Kd)
   plot(Kd[[3]][loci.ind], col=factor(dfv$s_high[loci.ind]))
+  plot(Kd[[3]], col=c(rep(1,10000),3), pch=19)
+  
 
   ### Hclust ######
   Hcd <- hclust.ranking(dfv2, colnums)
