@@ -1,13 +1,13 @@
+
+
 #'  R Verity
 #'  March 18, 2015
-#'  Kernel density with maximum likelihood bandwidth selection
-#'  @name KernelDensityML
-#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
-#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate kernel density distance
+#'  calculate density of point i from all other points
+#'  @param df is ...
+#'  @param i is ...
+#'  @param lambda is ...
 #'  @author R Verity
-#'  @export KernelDensityML
-#'  @examples
-#'  ##TO DO
+#'  @keywords internal
 
 
 ## .logLike_i ##
@@ -17,6 +17,16 @@
   totalProb = log(mean(exp(rawProbs)))
   return(totalProb)
 } # end .logLike_i
+
+
+
+#'  R Verity
+#'  March 18, 2015
+#'  calculate deviance (-2*logLikelihood) of all points in data frame
+#'  @param df is ...
+#'  @param lambda is ...
+#'  @author R Verity
+#'  @keywords internal
 
 ## .deviance_all ##
 # calculate deviance (-2*logLikelihood) of all points in data frame
@@ -28,6 +38,19 @@ X = data.frame(t1=rnorm(100),t2=rnorm(100))
 
 .deviance_all(X,0.1)
 
+
+
+#'  R Verity
+#'  March 18, 2015
+#'  Kernel density with maximum likelihood bandwidth selection
+#'  @rdname KernelDensityML
+#'  @name KernelDensityML
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate kernel density distance
+#'  @author R Verity
+#'  @export KernelDensityML
+#'  @examples
+#'  ##TO DO
 
 ## KernelDensityML ##
 KernelDensityML <- function(dfv, column.nums){
