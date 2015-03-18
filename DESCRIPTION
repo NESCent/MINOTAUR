@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("Caitlin", "Collins", , "caitlin.collins12@imperial.ac.uk", role = "cre")
 Description: MANIPULATE provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data. 
 Depends: R (>= 3.1.2)
-Imports: shiny, rCharts, rHighcharts
+Imports: shiny, rCharts, rHighcharts, stats4
 License: GPL (>=2)
 LazyData: true
 
