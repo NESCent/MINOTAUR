@@ -1,4 +1,14 @@
 
+##########
+## ui.R ##
+##########
+
+# Load packages
+require("shiny")
+require("rCharts")
+require("rHighcharts")
+
+
 # ui.R (one of three scripts required to run any Rshiny app)
 
 # Author: Bob Verity
@@ -8,6 +18,7 @@
 # Defines the user interface, including any controls that the user interacts with. Interactive objects from within this script pass values to the system script that can be used as ordinary variables.
 
 #### ------------------------------------------------------------------
+
 
 # The pageWithSidebar option is a convenient design template. You can also create more customised layouts by digging a little deeper.
 shinyUI(pageWithSidebar(
@@ -55,13 +66,13 @@ shinyUI(pageWithSidebar(
   mainPanel(
   
 	# bubble plot
-  #showOutput("bubbleChart1", "Highcharts"),
+  showOutput("bubbleChart1", "Highcharts"),
     
 	# histogram
-	#plotOutput("plot1",height="300px",width="300px"),
+	plotOutput("plot1",height="300px",width="300px"),
 	
 	# summary table
-	#tableOutput("table1")
+	tableOutput("table1")
 	
   )
   

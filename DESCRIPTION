@@ -1,8 +1,11 @@
 Package: MANIPULATE
-Title: What the Package Does (one line, title case)
+Title: Tools for the visualization and analysis of multivariate genetic data. 
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph)
+Authors@R: person("Caitlin", "Collins", , "caitlin.collins12@imperial.ac.uk", role = "cre")
+Description: MANIPULATE provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data. 
 Depends: R (>= 3.1.2)
-License: What license is it under?
+Imports: shiny, rCharts, rHighcharts
+License: GPL (>=2)
 LazyData: true
+
+

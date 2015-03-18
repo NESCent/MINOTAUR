@@ -9,15 +9,22 @@
 
 #### ------------------------------------------------------------------
 
+
+
 # Choose Shiny path based on user name
 userName = 'Bob'
 userName = 'Daren'
+userName = 'caitiecollins'
 
 if (userName=='Bob') {
   shinyPath = '/Users/Bob/Dropbox/Bob/Work/Side Projects/MANIPULATE/inst/misc/ShinyApp_version1.0'
 }
-if (userName=='Daren') {
-  shinyPath = ''
+if (userName=='caitiecollins') {
+  shinyPath = '/Users/caitiecollins/MANIPULATE/inst/'
+}
+
+if (userName=='Bob') {
+  shinyPath = '/Users/Bob/Dropbox/Bob/Work/Side Projects/MANIPULATE/inst/misc/ShinyApp_version1.0'
 }
 
 # Load packages

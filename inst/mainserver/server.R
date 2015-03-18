@@ -1,11 +1,13 @@
 
-# server.R (one of three scripts required to run any Rshiny app)
 
-# Author: Bob Verity
-# Date: 02/04/2014
+##############
+## Server.R ##
+##############
 
-# Purpose:
-# The main workings of the app. This is where we use variables - often passed from the ui.R script - to create a series of different plots and outputs. We don't actually realise these plots here. Rather, we pass them back over the ui.R script, which dictates our layout etc.
+# Load packages
+require("shiny")
+require("rCharts")
+require("rHighcharts")
 
 #### ------------------------------------------------------------------
 
@@ -18,9 +20,8 @@ groupValues = c(rep("Group1",25),rep("Group2",25))
 myDataFrame = data.frame(Normal=randomValues1,Gamma=randomValues2,Beta=randomValues3,group=groupValues)
 
 
-
 # Define the shiny server functionality
-shinyServer(function(input, output) {
+shinyServer(function(input, output) {      
 
 # Our first output will be an ordinary R plot
 output$plot1 <- renderPlot({
