@@ -83,7 +83,8 @@ output$bubbleChart1 <- renderChart2({
  # Our third output will be a bubble plot, produced using rCharts (rendered with 'Highcharts')
  output$bubbleChart1 <- renderChart2({
  
- 	# Obtain data selected by user
+
+  # Obtain data selected by user
 	xData = myDataFrame[,names(myDataFrame)==input$xSelection]
 	yData = myDataFrame[,names(myDataFrame)==input$ySelection]
 	remainingVariable = which(names(myDataFrame)!=input$xSelection & names(myDataFrame)!=input$ySelection)[1]
@@ -101,21 +102,26 @@ output$bubbleChart1 <- renderChart2({
 	bubbles$chart(zoomType = "xy")
 	
  	# Remember to return the plot object (this will be passed to the gui)
+
+  # Create a bubble plot
+	bubbles <- hPlot(Selection2 ~ Selection1, data=outputData, type = "bubble", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "Size", group = "group")
+	bubbles$chart(zoomType = "xy")
+	
+  # Remember to return the plot object (this will be passed to the gui)
  	return(bubbles)
    
  })
 
-
 output$test1 <- renderChart2({
   
-  testPlot <- hPlot(normStat ~ Fst, data=mainData, type = "line", inverted=TRUE, title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "diversity", group = "group")
+  testPlot <- hPlot(normStat ~ Fst, data=mainData, type = "line", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "diversity", group = "group")
   return(testPlot)
   
 })
-
 
 output$table2 <- renderDataTable({
   mainData
 })
 
 })
+

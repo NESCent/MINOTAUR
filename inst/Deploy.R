@@ -21,6 +21,10 @@
 # userName = 'saraschaal'
 
 
+userName = 'Bob'
+#userName = 'Daren'
+#userName = 'saraschaal'
+
 if (userName=='Bob') {
   shinyPath = '/Users/Bob/Dropbox/Bob/Work/Side Projects/MANIPULATE/inst/'
 }
