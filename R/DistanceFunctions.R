@@ -54,7 +54,7 @@ hclust.ranking <- function(dfv, column.nums){
                              meth = "ward"),
                  power = 1, verb = F)
   return(list(h.rank = hout$rank.outliers, 
-              h.pval = -log(1-Hcd$prob.outliers)))
+              h.pval = -log(1-hout$prob.outliers)))
 }
 
 ############# Kernel Density based on SD #################

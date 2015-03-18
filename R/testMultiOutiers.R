@@ -32,3 +32,4 @@ source("R/DistanceFunctions.R")
   plot(Hcd$rank.outliers)
   plot(Hcd[[1]][loci.ind])
   plot(Hcd[[2]][loci.ind], col=factor(dfv$s_high[loci.ind]))
+
