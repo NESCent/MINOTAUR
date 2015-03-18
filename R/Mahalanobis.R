@@ -29,6 +29,6 @@ Mahalanobis <- function(dfv, column.nums){
 		  D[i]=NA
 	  }
   }
-  return(data.frame(dfv, D, emp.p=(nlocs-rank(D)+1)/nlocs))
+  return(D)
 }
 
