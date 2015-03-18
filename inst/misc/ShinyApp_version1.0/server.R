@@ -58,52 +58,41 @@ output$table1 <- renderTable({
 	
 })
 
-<<<<<<< Updated upstream
+
 # Our third output will be a bubble plot, produced using rCharts (rendered with 'Highcharts')
 output$bubbleChart1 <- renderChart2({
 
-	# Obtain data selected by user
-	xData = mainData[,names(mainData)==input$xSelection]
-	yData = mainData[,names(mainData)==input$ySelection]
-	remainingVariable = which(names(mainData)!=input$xSelection & names(mainData)!=input$ySelection)[1]
-	sizeData = mainData[,remainingVariable]
-=======
-# # Our third output will be a bubble plot, produced using rCharts (rendered with 'Highcharts')
- output$bubbleChart1 <- renderChart2({
-# 
-# 	# Obtain data selected by user
+  # Obtain data selected by user
 	xData = myDataFrame[,names(myDataFrame)==input$xSelection]
 	yData = myDataFrame[,names(myDataFrame)==input$ySelection]
 	remainingVariable = which(names(myDataFrame)!=input$xSelection & names(myDataFrame)!=input$ySelection)[1]
 	sizeData = myDataFrame[,remainingVariable]
->>>>>>> Stashed changes
 	
-# 	# Process data to create interaction
+  # Process data to create interaction
 	xDataProcessed = round(xData + input$interactionStrength*xData*yData*sizeData, digits=2)
 	yDataProcessed = round(yData + input$interactionStrength*xData*yData*sizeData, digits=2)
 	sizeDataProcessed = round(sizeData + input$interactionStrength*xData*yData*sizeData, digits=2)
 	outputData = data.frame(Selection1=xDataProcessed,Selection2=yDataProcessed,Size=sizeDataProcessed,group=mainData$group)
 
-# 	# Create a bubble plot
+  # Create a bubble plot
 	bubbles <- hPlot(Selection2 ~ Selection1, data=outputData, type = "bubble", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "Size", group = "group")
 	bubbles$chart(zoomType = "xy")
 	
-# 	# Remember to return the plot object (this will be passed to the gui)
+  # Remember to return the plot object (this will be passed to the gui)
  	return(bubbles)
    
  })
 
-
 output$test1 <- renderChart2({
   
-  testPlot <- hPlot(normStat ~ Fst, data=mainData, type = "line", inverted=TRUE, title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "diversity", group = "group")
+  testPlot <- hPlot(normStat ~ Fst, data=mainData, type = "line", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "diversity", group = "group")
   return(testPlot)
   
 })
-
 
 output$table2 <- renderDataTable({
   mainData
 })
 
 })
+
