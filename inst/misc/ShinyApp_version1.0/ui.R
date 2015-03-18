@@ -14,6 +14,7 @@ shinyUI(navbarPage("MANIPULATE",
   tabPanel("Welcome",
     h2("hello world")
   ),
+<<<<<<< Updated upstream
   tabPanel("Cleanup data",
     dataTableOutput("table2")
   ),
@@ -32,4 +33,21 @@ shinyUI(navbarPage("MANIPULATE",
       tabPanel("(sub-menu A)"),
       tabPanel("(sub-menu B)")
     )
+=======
+  
+  # The main panel is where we will output our plots (from server.R)
+  mainPanel(
+  
+	# bubble plot
+  showOutput("bubbleChart1", "Highcharts"),
+    
+	# histogram
+	plotOutput("plot1",height="300px",width="300px"),
+	
+	# summary table
+	tableOutput("table1")
+	
+  )
+  
+>>>>>>> Stashed changes
 ))
