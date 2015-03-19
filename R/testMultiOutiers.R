@@ -6,7 +6,7 @@ source("R/ComparePlot.R")
   dfv <- read.table("inst/misc/OneRefSim.txt", header=TRUE)
   dfv2 <- dfv[dfv$SNPIncluded,]
   colnums <- c(11, 12, 16)
-  loci.ind <- 9500:9996
+  loci.ind <- c(1:500, 9500:9996)
   head(dfv)
   str(dfv)
   cbind(colnames(dfv))
@@ -16,10 +16,14 @@ source("R/ComparePlot.R")
 
   dfv2.out <- Getdf(dfv2, colnums)
   head(dfv2.out)
-  ComparePlot(dfv2.out, colorVect=factor(dfv2$s_high), ind=loci.ind)
+  plot(dfv2.out[,11], dfv2.out[,12], col=factor(dfv2$s_high))
+  ComparePlot(dfv2.out, colorVect=factor(dfv2$s_high), 9500:9996)
 
-  dfv2 <- read.table("inst/misc/NonParamEx.txt", header=TRUE)
-  dfv2.out <- Getdf(dfv2, c(1,2))
-  ComparePlot(dfv2.out, colorVect=c(rep(1,10000),3), ind=NULL)
+  dfv3 <- read.table("inst/misc/NonParamEx.txt", header=TRUE)
+  dfv3.out <- Getdf(dfv2, c(1,2))
+  head(dfv3)
+  plot(dfv3$x2, dfv3$y2)
+  ComparePlot(dfv3.out, colorVect=c(rep(1,10000),3), ind=NULL)
+
 
   
