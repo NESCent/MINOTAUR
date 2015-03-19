@@ -11,7 +11,7 @@ source("R/KernelDensityML.R")
 
 ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   
-  par(mfrow=c(5,1), mar=c(3,4,0,1), bty="l")
+  par(mfrow=c(4,1), mar=c(3,4,0,1), bty="l")
   
   if(length(colorVect)==0){colorVect = rep(1, nrow(dfv2))}
   
@@ -21,6 +21,9 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
  # Md <- Mahalanobis(dfv2, colnums)
   #str(Md)
   plot(ind, dfv2$Md.mlp[ind], col=colorVect[ind], pch=19, ylab="Mahalanobis")
+ 
+  ### PCS ######
+  plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS")
 
   ### KernelDensSD ######
   #Kd <- KernelDensSD(dfv2, colnums, 1.5)
@@ -28,13 +31,10 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   
   ### Hclust ######
   #Hcd <- hclust.ranking(dfv2, colnums)
-  plot(ind, dfv2$Hcd.mlp[ind], col=colorVect[ind], pch=19, ylab = "hclust")
+  #plot(ind, dfv2$Hcd.mlp[ind], col=colorVect[ind], pch=19, ylab = "hclust")
 
   ### KernelDens ML ######
  plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML")
-
- ### PCS ######
- plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS")
  
  }
 
@@ -80,14 +80,14 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
       })
     print(x)
   
-  writeLines("Calculating outlierliness based on clustering (outlier.ranking in DmWR)...")
-    x<- system.time({
-      tx <- try(Hcd <- hclust.ranking(dfv2, colnums))
-      if("try-error" %in% class(tx)){
-        Hcd <- list(empDens = NA, Dk.rank = NA, minus.log.emp.p = NA)
-      }
-    })
-    print(x)
+#   writeLines("Calculating outlierliness based on clustering (outlier.ranking in DmWR)...")
+#     x<- system.time({
+#       tx <- try(Hcd <- hclust.ranking(dfv2, colnums))
+#       if("try-error" %in% class(tx)){
+#         Hcd <- list(empDens = NA, Dk.rank = NA, minus.log.emp.p = NA)
+#       }
+#     })
+#     print(x)
 
   writeLines("Calculating outlierliness based on kernel density and maximum likelihood...")  
     x<- system.time({
@@ -99,7 +99,7 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
 
   return(data.frame(dfv2, Md=Md$Dm, Md.rank=Md$Dm.rank, Md.mlp=Md$minus.log.emp.p,
                     Kd=Kd$empDens, Kd.rank=Kd$Dk.rank, Kd.mlp=Kd$minus.log.emp.p,
-                    Hcd.rank=Hcd$h.rank, Hcd.mlp=Hcd$minus.log.p,
+                    #Hcd.rank=Hcd$h.rank, Hcd.mlp=Hcd$minus.log.p,
                     Kd.ML.mll=Kd.ML,
                     pcs.d = pcs$D.pcs, pcs.rank=pcs$D.pcs.rank, pcs.mlp=pcs$minus.log.emp.p)
          )

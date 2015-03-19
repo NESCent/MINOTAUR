@@ -154,3 +154,6 @@ FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
 
   return(list(D.pcs=D.pcs, D.pcs.rank=D.pcs.rank, minus.log.emp.p=minus.log.emp.p))
 }
+
+############### ks package ###############
+## TO DO
