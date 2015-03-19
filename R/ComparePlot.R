@@ -54,7 +54,12 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
     writeLines("Rows with NAs were removed")
   }
   
-  ### Need to check for duplicated rows
+  ### Check for duplicated rows and abort
+  if (any(duplicated(dfv2))) {
+    writeLines("You data frame has duplicated rows:")
+    dfv2[duplicated(dfv2),]
+    break()
+  }
   
   writeLines("Calculating outlierliness based on FastPCS...")    
     x<- system.time({
