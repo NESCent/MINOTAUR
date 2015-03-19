@@ -13,23 +13,25 @@ Mahalanobis <- function(dfv, column.nums){
 # dfv is a dataframe with each row a locus or population, and columns statistics and other information
 # column.nums is the columns in the dataframe to be used for analysis
 # haven't tested with missing data
+  
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
   df.vars <- as.matrix(dfv[,column.nums])
   class(df.vars) <- "numeric"
-  df.vars <- na.omit(df.vars)
   nlocs <- nrow(df.vars)
   
-  mu <- t(t(colMeans(df.vars, na.rm=TRUE))) # calculate mean and make it a column vector
-  S <- cov(df.vars, use="pairwise.complete.obs") # calculate variance-covariance matrix
+  mu <- t(t(colMeans(df.vars, na.rm=TRUE))) 
+    # calculate means of each variable and make it a column vector
+  S <- cov(df.vars, use="pairwise.complete.obs") 
+    # calculate variance-covariance matrix
   
   D <- rep(NA, nlocs) # Mahalanobis distance
   for (i in 1:nrow(df.vars)){
-    if(sum(is.na(df.vars[i,]))==0){  # The locus has to have an observation for each test statistic
-    x <- t(df.vars[i,])
+    x <- t(t(df.vars[i,]))
     diff <- x-mu
     D[i] <- sqrt( t(diff) %*% solve(S) %*% (diff) )
-	  }else{ # or else NA
-		  D[i]=NA
-	  }
   }
   Dm.rank <- nlocs-rank(D, na.last="keep")+1
   minus.log.emp.p <- -log(Dm.rank/(nlocs-sum(is.na(D))))
@@ -56,9 +58,13 @@ hclust.ranking <- function(dfv, column.nums){
   # dfv is a dataframe with each row a locus or population, and columns statistics and other information
   # column.nums is the columns in the dataframe to be used for analysis
   # haven't tested with missing data
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
   data1 <- as.matrix(dfv[,column.nums])
   class(data1) <- "numeric"
-  df.vars <- na.omit(data1)
+
   #nlocs <- nrow(dfv)
   hout <- outliers.ranking(data1, method = "sizeDiff",
                  method.pars = NULL,
@@ -87,9 +93,12 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   ### (n.sd) is the proportion of the standard deviation
   ### Next the density of points inside each chunk is calculated, and 
   ### chunks are ranked according to their density.  Ranks are used to create an empirical p-value
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
   df.vars <- as.matrix(dfv[,column.nums])
   class(df.vars) <- "numeric"
-  df.vars <- na.omit(df.vars)
   colnames(df.vars)<-NULL
   rownames(df.vars)<-NULL
   
@@ -130,9 +139,12 @@ if (("FastPCS" %in% installed.packages())==FALSE) install.packages("FastPCS")
 library(FastPCS)
 
 FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+    
   temp <- as.matrix(dfv[,column.nums])
   class(temp) <- "numeric"
-  temp <- na.omit(temp)
   nlocs <- nrow(temp)
   out <- FastPCS(temp, nsamp=NULL, alpha=alpha, seed=NULL)
 
