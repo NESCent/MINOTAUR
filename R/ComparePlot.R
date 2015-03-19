@@ -51,7 +51,7 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5){
   ## Remove rows with NAs and report removal
   if (any(is.na(dfv2[,colnums]))) {
     dfv2 <- na.omit(dfv2)
-    print("Rows with NAs were removed")
+    writeLines("Rows with NAs were removed")
   }
 
   ### Need to check for duplicated rows
