@@ -54,7 +54,7 @@ hclust.ranking <- function(dfv, column.nums){
                              meth = "ward"),
                  power = 1, verb = F)
   return(list(h.rank = hout$rank.outliers, 
-              h.pval = -log(1-hout$prob.outliers)))
+              minus.log.p = -log(1-hout$prob.outliers)))
 }
 
 ############# Kernel Density based on SD #################
@@ -81,11 +81,11 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
     vals <- df.vars[i,]
     vals_upper <- vals + width
     vals_lower <- vals - width
-    temp <- rowSums(t((tdf < vals_upper) & (tdf > vals_lower)))==n.stat
+    temp <- colSums((tdf < vals_upper) & (tdf > vals_lower))==n.stat
     empDens[i] <- sum(temp, na.rm=TRUE)
   }
   Dk.rank <- rank(empDens,na.last="keep")
   minus.log.emp.p <- -log(Dk.rank/(nlocs-sum(is.na(empDens))))
-  plot(minus.log.emp.p)
+  #plot(minus.log.emp.p)
   return(list(empDens=empDens, Dk.rank=Dk.rank, minus.log.emp.p=minus.log.emp.p))
 }
