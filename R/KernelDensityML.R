@@ -98,17 +98,15 @@ KernelDensityML <- function(dfv, column.nums){
 } # end KernelDensityML
 
 
-n = 1000
-d = 10
-X1 = rmvnorm(n/2,mean=rnorm(d),sigma=diag(d)+(1-diag(d))*0.1)
-X2 = rmvnorm(n/2,mean=rnorm(d),sigma=diag(d)+(1-diag(d))*-0.1)
-X = rbind(X1,X2)
-X[,1] = X[,1]/10
-plot(X[,1],X[,2])
-
-kernelDist <- KernelDensityML(dfv=X,column.nums=1:ncol(X))
-
-rankOrder = order(kernelDist,decreasing=TRUE)
-colVec = rep('grey',length(kernelDist))
-colVec[rankOrder][1:10] = 'red'
-plot(X[,1],X[,2],col=colVec)
+# n = 1000
+# d = 10
+# X1 = rmvnorm(n/2,mean=rnorm(d),sigma=diag(d)+(1-diag(d))*0.1)
+# X2 = rmvnorm(n/2,mean=rnorm(d),sigma=diag(d)+(1-diag(d))*-0.1)
+# X = rbind(X1,X2)
+# X[,1] = X[,1]/10
+# plot(X[,1],X[,2])
+# kernelDist <- KernelDensityML(dfv=X,column.nums=1:ncol(X))
+# rankOrder = order(kernelDist,decreasing=TRUE)
+# colVec = rep('grey',length(kernelDist))
+# colVec[rankOrder][1:10] = 'red'
+# plot(X[,1],X[,2],col=colVec)
