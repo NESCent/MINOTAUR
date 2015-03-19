@@ -16,8 +16,8 @@ mhtplot<-function(mydata=mytoy, statistic.plot="Trait1_Beta", pval="Trait1_P",Ch
   ### The Yaxis = Beta value (slope) from GWAS, the color = significant degree (p value)
   ### Input is data.frame of R
   ### chr = "Chr", indicate the column name for Chromosome in mytoy (dataset).
-	#mydata= mytoy;  pval = "Trait1_P"; BP= "BP" ;colfig=NULL
-	#staistic.plot="Trait1_Beta"; Chr="Chr"; ylim.max=10; ylim.min=-10;titlemain=NULL; pcut.outlier=1e-2
+  #mydata= mytoy;  pval = "Trait1_P"; BP= "BP" ;colfig=NULL
+  #staistic.plot="Trait1_Beta"; Chr="Chr"; ylim.max=10; ylim.min=-10;titlemain=NULL; pcut.outlier=1e-2
 	  
   if("scales" %in% rownames(installed.packages()) == FALSE) {
     install.packages("scales")
@@ -62,7 +62,7 @@ mhtplot<-function(mydata=mytoy, statistic.plot="Trait1_Beta", pval="Trait1_P",Ch
     points(x=x.axis,y=mynewtoy[[i]][,betaidx],pch=18,cex=0.6,col=colfig[i])	
 
     data.outlier <- which(mynewtoy[[i]][,pval] < pcut.outlier)  
-    points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx], pch=18,cex=0.6,col="red")
+    points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx], pch=18,cex=0.6*1.5,col="red")
     #rug(x.axis,ticksize = 0.01, side = 1, lwd = 0.5,col=gray(0.6))  
   }
   

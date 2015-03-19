@@ -16,9 +16,9 @@
 #require(rCharts)
 
 #needed? install_github('rHighcharts','metagraf')
-
+#require(rHighcharts)
 
 # run Shiny app
-runApp('~/Dropbox/Bob/Work/Side Projects/Rshiny/ShinyChartsExample')
+runApp('G:/MANIPULAT/inst/misc/ShinyChartsExample')
 
 # Note that running a shiny app will keep the console busy. It is possible to edit the source code in this state - then save changes to your code and refresh your browser to see the changes immediately. However, if this slows your computer down too much simply press esc in console to close app.
