@@ -48,8 +48,14 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 #'  @author KE Lotterhos
 
 Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
-  ### Need function for NAs
+  ### Remove NAs
+    if (any(is.na(dfv2[,colnums]))) {
+    dfv2 <- na.omit(dfv2)
+    writeLines("Rows with NAs were removed")
+  }
+  
   ### Need to check for duplicated rows
+  
   writeLines("Calculating outlierliness based on FastPCS...")    
     x<- system.time({
       tx <- try(pcs<-FastPCS.out(dfv2, colnums, alpha))
