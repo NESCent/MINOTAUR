@@ -13,7 +13,7 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   
   par(mfrow=c(4,1), mar=c(3,4,1,1), bty="l")
   
-  if(length(ColorVect)==0){colorVect = rep(1, nrow(dfv2))}
+  if(length(colorVect)==0){colorVect = rep(1, nrow(dfv2))}
   
   if(length(ind)==0){ind = 1:nrow(dfv2)}
   
