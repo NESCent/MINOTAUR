@@ -33,7 +33,7 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   ### KernelDens ML ######
  plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML")
 
- ### KernelDens ML ######
+ ### PCS ######
  plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS")
  
  }
@@ -48,8 +48,12 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 #'  @author KE Lotterhos
 
 Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5){
+  ### Need function for NAs
+  ### Need to check for duplicated rows
+  
   writeLines("Calculating outlierliness based on Mahalanobis distance...")
-  Md <- Mahalanobis(dfv2, colnums)
+  x<- system.time(Md <- Mahalanobis(dfv2, colnums))
+  print(x)
   writeLines("Calculating outlierliness based on kernel density and standard deviation...")
   Kd <- KernelDensSD(dfv2, colnums, n.sd)
   writeLines("Calculating outlierliness based on clustering (outlier.ranking in DmWR)...")

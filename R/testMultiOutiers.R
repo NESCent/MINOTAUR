@@ -25,5 +25,9 @@ source("R/ComparePlot.R")
   plot(dfv3$x2, dfv3$y2, col=c(rep(1,10000),3))
   ComparePlot(dfv3.out, colorVect=c(rep(1,10000),3), ind=NULL)
 
-
+  setwd("~/Desktop/MANIPULATE")
+  dfv3 <- read.table("~/Google Drive/MultiOutlierVisualization/practiceData/toyExample_Liuyang.txt", sep= "\t", header=TRUE)
+  dfv3.out <- Getdf(na.omit(dfv3), c(4,6,8))
+  head(dfv3.out)
+  ComparePlot(dfv3.out)
   
