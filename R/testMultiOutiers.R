@@ -13,6 +13,7 @@ source("R/ComparePlot.R")
   dim(dfv)
   dim(dfv2)
   table(dfv2$s_high)  
+
   dfv2.out <- Getdf(dfv2, colnums)
   head(dfv2.out)
   ComparePlot(dfv2.out, colorVect=factor(dfv2$s_high), ind=loci.ind)
@@ -21,3 +22,4 @@ source("R/ComparePlot.R")
   dfv2.out <- Getdf(dfv2, c(1,2))
   ComparePlot(dfv2.out, colorVect=c(rep(1,10000),3), ind=NULL)
 
+  
