@@ -60,4 +60,4 @@ shinyUI(navbarPage("MANIPULATE",
   
     )
   
-))
+)

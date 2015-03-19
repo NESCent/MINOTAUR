@@ -21,7 +21,7 @@
 # userName = 'saraschaal'
 
 
-userName = 'Bob'
+userName = 'Liuyang'
 #userName = 'Daren'
 #userName = 'saraschaal'
 
@@ -38,6 +38,10 @@ if (userName=='Bob') {
 
 if (userName=='saraschaal'){
   shinyPath = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MANIPULATE/inst/'
+}
+
+if (userName=='Liuyang'){
+  shinyPath = 'G:/MANIPULATE/inst/mainserver'
 }
 
 # Load packages
