@@ -47,24 +47,54 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 #'  @param n.sd is the number of standard deviations for the kernel size in the KernelDensSD
 #'  @author KE Lotterhos
 
-Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5){
+Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
   ### Need function for NAs
   ### Need to check for duplicated rows
+  writeLines("Calculating outlierliness based on FastPCS...")    
+    x<- system.time({
+      tx <- try(pcs<-FastPCS.out(dfv2, colnums, alpha))
+      print("hi")
+      if("try-error" %in% class(tx)){
+        pcs <- list(D.pcs = NA, D.pcs.rank = NA, minus.log.emp.p = NA)
+      }
+    })
+    print(x)
   
   writeLines("Calculating outlierliness based on Mahalanobis distance...")
-  x<- system.time(Md <- Mahalanobis(dfv2, colnums))
-  print(x)
+    x<- system.time({
+      tx <- try(Md <- Mahalanobis(dfv2, colnums))
+      if("try-error" %in% class(tx)){Md <- list(Dm = NA, Dm.rank = NA, minus.log.emp.p = NA)}
+      })
+    print(x)
+  
   writeLines("Calculating outlierliness based on kernel density and standard deviation...")
-  Kd <- KernelDensSD(dfv2, colnums, n.sd)
+    x<- system.time({
+      tx <- try(Kd <- KernelDensSD(dfv2, colnums, n.sd))
+      if("try-error" %in% class(tx)){Kd <- list(empDens = NA, Dk.rank = NA, minus.log.emp.p = NA)}
+      })
+    print(x)
+  
   writeLines("Calculating outlierliness based on clustering (outlier.ranking in DmWR)...")
-  Hcd <- hclust.ranking(dfv2, colnums)
+    x<- system.time({
+      tx <- try(Hcd <- hclust.ranking(dfv2, colnums))
+      if("try-error" %in% class(tx)){
+        Hcd <- list(empDens = NA, Dk.rank = NA, minus.log.emp.p = NA)
+      }
+    })
+    print(x)
+
   writeLines("Calculating outlierliness based on kernel density and maximum likelihood...")  
-  Kd.ML <- KernelDensityML(dfv2,colnums)
-  writeLines("Calculating outlierliness based on FastPCS...")    
-  pcs <- FastPCS.out(dfv2, colnums, alpha)
+    x<- system.time({
+      tx <- try(Kd.ML <- KernelDensityML(dfv2, colnums))
+      if("try-error" %in% class(tx)){Kd.ML <- NA}
+    })
+    print(x)
+
+
   return(data.frame(dfv2, Md=Md$Dm, Md.rank=Md$Dm.rank, Md.mlp=Md$minus.log.emp.p,
                     Kd=Kd$empDens, Kd.rank=Kd$Dk.rank, Kd.mlp=Kd$minus.log.emp.p,
                     Hcd.rank=Hcd$h.rank, Hcd.mlp=Hcd$minus.log.p,
                     Kd.ML.mll=Kd.ML,
-                    pcs.d = pcs$D.pcs, pcs.rank=pcs$D.pcs.rank, pcs.mlp=pcs$minus.log.emp.p))
+                    pcs.d = pcs$D.pcs, pcs.rank=pcs$D.pcs.rank, pcs.mlp=pcs$minus.log.emp.p)
+         )
 }
