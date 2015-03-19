@@ -1,17 +1,16 @@
-#'  KE Lotterhos
-#'  Aug 11, 2014
-#'  Updated March 8, 2015
-#'  Empirical p-value Malanahobis distance
-#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
-#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
-#'  @param n.sd is a multiplier of 
-#'  @author KE Lotterhos
 
-### The outliers.ranking function in package DMwR
-if (("DMwR" %in% installed.packages())==FALSE) install.packages("DMwR")
-library(DMwR)
+
+
 
 ############# Mahalanobis distance #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate Malanahobis distance
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @author KE Lotterhos
+#'  @export Mahalanobis
+
 Mahalanobis <- function(dfv, column.nums){
 # This function calculates the Mahalanobis distance for each row (locus, SNP) in the dataframe
 # dfv is a dataframe with each row a locus or population, and columns statistics and other information
@@ -41,6 +40,18 @@ Mahalanobis <- function(dfv, column.nums){
 
 
 ############# Hclust ranking #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate multivariate distance based on outliers.ranking function in package DMwR
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @author KE Lotterhos
+#'  @export hclust.ranking
+
+### The outliers.ranking function in package DMwR
+if (("DMwR" %in% installed.packages())==FALSE) install.packages("DMwR")
+library(DMwR)
+
 hclust.ranking <- function(dfv, column.nums){
   # This function calculates the outlier distance for each row (locus, SNP) in the dataframe based on the hclust function
   # dfv is a dataframe with each row a locus or population, and columns statistics and other information
@@ -55,9 +66,18 @@ hclust.ranking <- function(dfv, column.nums){
                  power = 1, verb = F)
   return(list(h.rank = hout$rank.outliers, 
               minus.log.p = -log(1-hout$prob.outliers)))
-}
+} #end hclust.ranking
 
 ############# Kernel Density based on SD #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate multivariate distance based on outliers.ranking function in package DMwR
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @param n.sd is the number of standard deviations for the kernel size
+#'  @author KE Lotterhos
+#'  @export KernelDensSD
+
 KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   ### This function takes a dataframe of statistics where each row is a locus/observation 
   ### and each column is an observation statistic
@@ -88,4 +108,4 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   minus.log.emp.p <- -log(Dk.rank/(nlocs-sum(is.na(empDens))))
   #plot(minus.log.emp.p)
   return(list(empDens=empDens, Dk.rank=Dk.rank, minus.log.emp.p=minus.log.emp.p))
-}
+} #end KernelDensSD
