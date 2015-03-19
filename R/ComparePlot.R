@@ -48,9 +48,14 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 #'  @author KE Lotterhos
 
 Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5){
-  ### Need function for NAs
+  ## Remove rows with NAs and report removal
+  if (any(is.na(dfv2[,colnums]))) {
+    dfv2 <- na.omit(dfv2)
+    print("Rows with NAs were removed")
+  }
+
   ### Need to check for duplicated rows
-  
+
   writeLines("Calculating outlierliness based on Mahalanobis distance...")
   x<- system.time(Md <- Mahalanobis(dfv2, colnums))
   print(x)
