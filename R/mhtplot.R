@@ -19,10 +19,9 @@ mhtplot<-function(mydata=mytoy, statistic.plot="Trait1_Beta", pval="Trait1_P",Ch
 	#mydata= mytoy;  pval = "Trait1_P"; BP= "BP" ;colfig=NULL
 	#staistic.plot="Trait1_Beta"; Chr="Chr"; ylim.max=10; ylim.min=-10;titlemain=NULL; pcut.outlier=1e-2
 	  
- 
-  require(scales)
-  
-  
+  if("scales" %in% rownames(installed.packages()) == FALSE) {
+    install.packages("scales")
+  }
   
   pvidx = match(pval, names(mydata))
   chridx = match(Chr,names(mydata))
