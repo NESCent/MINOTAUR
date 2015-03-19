@@ -1,7 +1,11 @@
 
 
 mymhtPlot<-function(mytoy=mytoy, chr="Chr",pval="Trait1_P",Chr="Chr", BP="BP", ylim.up=10,ylim.dn=-10,colfig=NULL,titlemain=NULL){
-
+  ### Manhattan Plot. 
+  ### The Yaxis = Beta value (slope) from GWAS, the color = significant degree (p value)
+  ### Input is data.frame of R
+  ### chr = "Chr", indicate the column name for Chromosome in mytoy (dataset).
+	
   require(scales)
   pvidx = match(pval, names(mytoy))
   chridx = match("Chr",names(mytoy))
