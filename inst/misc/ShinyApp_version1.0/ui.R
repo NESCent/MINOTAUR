@@ -11,46 +11,46 @@
 
 #### ------------------------------------------------------------------
 
-shinyUI(navbarPage("MANIPULATE",
+shinyUI(navbarPage("MINOTAUR",
                    
-  tabPanel("Welcome",
-    h2("hello world")
-  ),
-  
-  tabPanel("Cleanup data",
-    fluidRow(
-      column(3,
-        uiOutput('filterVariable'),
-        uiOutput('filterActiveDefault'),
-        htmlOutput('filterActive'),
-        htmlOutput('filterOptions'),
-        helpText('here is some help text')
-      ),
-      column(8,
-        dataTableOutput("mainDataTable")
-      )
-    )
-  ),
-  
-  tabPanel("Produce plots",
-    fluidRow(
-      column(4,
-        h2('booboo'),
-        p('here is some text')
-      ),
-      column(6,
-        showOutput("test1", "Highcharts")
-      )
-    )
-  ),
-  
-  navbarMenu("More",
-    tabPanel("(sub-menu A)",
-      tableOutput("summaryTable")
-    ),
-    tabPanel("(sub-menu B)",
-      plotOutput("randomHist",height="300px",width="300px")
-    )
-  )
-  
+                   tabPanel("Welcome",
+                            h2("hello world")
+                   ),
+                   
+                   tabPanel("Cleanup data",
+                            fluidRow(
+                              column(3,
+                                     uiOutput('filterVariable'),
+                                     uiOutput('filterActiveDefault'),
+                                     htmlOutput('filterOptions'),
+                                     uiOutput('subsetPanels'),
+                                     helpText('here is some help text')
+                              ),
+                              column(8,
+                                     dataTableOutput("mainDataTable")
+                              )
+                            )
+                   ),
+                   
+                   tabPanel("Produce plots",
+                            fluidRow(
+                              column(4,
+                                     h2('booboo'),
+                                     p('here is some text')
+                              ),
+                              column(6,
+                                     showOutput("test1", "Highcharts")
+                              )
+                            )
+                   ),
+                   
+                   navbarMenu("More",
+                              tabPanel("(sub-menu A)",
+                                       tableOutput("summaryTable")
+                              ),
+                              tabPanel("(sub-menu B)",
+                                       plotOutput("randomHist",height="300px",width="300px")
+                              )
+                   )
+                   
 ))

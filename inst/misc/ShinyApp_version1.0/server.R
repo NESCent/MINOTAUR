@@ -22,52 +22,53 @@ names(filterActive)=names(mainData)
 # Define the shiny server functionality
 shinyServer(function(input, output) {
   
-  rvs <- reactiveValues(filterVariable=NULL,filterActive=filterActive)
-  
   # data for subsetting
   output$mainDataTable <- renderDataTable({
     mainData
   },options=list(scrollX='300px', scrollY='300px', searching=FALSE))
   
-  # reactive uis for filtering variables
   output$filterVariable <- renderUI({
-    checkboxInput('filterActive',label='included in data frame',value=unlist(reactiveValuesToList(rvs)$filterActive[input$filterVariable]))
-  })
-  output$filterActiveDefault <- renderUI({
-    radioButtons('filterActiveDefault',label=NULL,choices=c('select all','deselect all'),inline=TRUE)
-  })
-  output$filterVariable <- renderUI({
-    selectizeInput('filterVariable','Filter variable',choices=c('',names(mainData)), multiple=TRUE,
+    selectizeInput('filterVariable','Filter variable',choices=c('',names(mainData)), multiple=FALSE,
                    options=list(
                      placeholder='select, search or input items',
                      selectOnTab=TRUE,
                      create=FALSE,
                      onInitialize = I('function() { this.setValue(""); }')
-                     )
                    )
-  })
-  output$filterActive <- renderUI({
-    checkboxInput('filterActive',label='included in data frame',value=unlist(reactiveValuesToList(rvs)$filterActive[input$filterVariable]))
-  })
-  output$filterOptions <- renderUI({
-    wellPanel(
-      h4(rvs$filterVariable),
-      p(reactiveValuesToList(rvs)$filterActive)
     )
   })
+  output$filterActiveDefault <- renderUI({
+    radioButtons('filterActiveDefault',label=NULL,choices=c('select all','deselect all'),inline=TRUE)
+  })
+  
+  RVselectedVariables <- reactiveValues()
   observe({
-#     if (!is.null(input$filterVariable) & input$filterVariable!='') {
-#       if (is.null(rvs$filterVariable)) {
-#         rvs$filterVariable = input$filterVariable
-#       }
-#       if (rvs$filterVariable==input$filterVariable) {
-#         print('foobar')
-#       } else {
-#         print('diff')
-#         
-#       }
-#       rvs$filterActive[input$filterVariable] = input$filterActive
-#     }
+    if (!is.null(input$filterVariable)) {
+      if (!(input$filterVariable%in%RVselectedVariables) & !(input$filterVariable=='')) {
+        RVselectedVariables[[input$filterVariable]] = input$filterVariable
+      }
+    }
+  })
+  
+  output$filterOptions <- renderUI({
+    wellPanel(
+      h4('header'),
+      p(reactiveValuesToList(RVselectedVariables)),
+      p(length(reactiveValuesToList(RVselectedVariables)))
+    )
+  })
+  
+  output$subsetPanels <- renderUI({
+    RVsvar_list <- reactiveValuesToList(RVselectedVariables)
+    if (length(RVsvar_list)>0) {
+      panelList = list()
+      for (i in 1:length(RVsvar_list)) {
+        panelList[[i]] = wellPanel(
+          h4(RVsvar_list[[i]])
+        )
+      }
+      panelList
+    }
   })
   
   # TEST histogram of random noise
@@ -79,7 +80,7 @@ shinyServer(function(input, output) {
   
   # TEST summary table
   output$summaryTable <- renderTable({
-
+    
     summary(mainData)
     
   })
