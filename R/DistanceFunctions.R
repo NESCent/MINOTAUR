@@ -1,7 +1,4 @@
 
-
-
-
 ############# Mahalanobis distance #################
 #'  KE Lotterhos
 #'  March 19, 2015
@@ -16,21 +13,25 @@ Mahalanobis <- function(dfv, column.nums){
 # dfv is a dataframe with each row a locus or population, and columns statistics and other information
 # column.nums is the columns in the dataframe to be used for analysis
 # haven't tested with missing data
-  df.vars <- dfv[,column.nums]
+  
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
+  df.vars <- as.matrix(dfv[,column.nums])
+  class(df.vars) <- "numeric"
   nlocs <- nrow(df.vars)
   
-  mu <- t(t(colMeans(df.vars, na.rm=TRUE))) # calculate mean and make it a column vector
-  S <- cov(df.vars, use="pairwise.complete.obs") # calculate variance-covariance matrix
+  mu <- t(t(colMeans(df.vars, na.rm=TRUE))) 
+    # calculate means of each variable and make it a column vector
+  S <- cov(df.vars, use="pairwise.complete.obs") 
+    # calculate variance-covariance matrix
   
   D <- rep(NA, nlocs) # Mahalanobis distance
   for (i in 1:nrow(df.vars)){
-    if(sum(is.na(df.vars[i,]))==0){  # The locus has to have an observation for each test statistic
-    x <- t(df.vars[i,])
+    x <- t(t(df.vars[i,]))
     diff <- x-mu
     D[i] <- sqrt( t(diff) %*% solve(S) %*% (diff) )
-	  }else{ # or else NA
-		  D[i]=NA
-	  }
   }
   Dm.rank <- nlocs-rank(D, na.last="keep")+1
   minus.log.emp.p <- -log(Dm.rank/(nlocs-sum(is.na(D))))
@@ -57,12 +58,18 @@ hclust.ranking <- function(dfv, column.nums){
   # dfv is a dataframe with each row a locus or population, and columns statistics and other information
   # column.nums is the columns in the dataframe to be used for analysis
   # haven't tested with missing data
-  data <- dfv[,column.nums]
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
+  data1 <- as.matrix(dfv[,column.nums])
+  class(data1) <- "numeric"
+
   #nlocs <- nrow(dfv)
-  hout <- outliers.ranking(data, method = "sizeDiff",
+  hout <- outliers.ranking(data1, method = "sizeDiff",
                  method.pars = NULL,
                  clus = list(dist = "euclidean",alg = "hclust",
-                             meth = "ward"),
+                             meth = "ward.D"),
                  power = 1, verb = F)
   return(list(h.rank = hout$rank.outliers, 
               minus.log.p = -log(1-hout$prob.outliers)))
@@ -86,7 +93,12 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   ### (n.sd) is the proportion of the standard deviation
   ### Next the density of points inside each chunk is calculated, and 
   ### chunks are ranked according to their density.  Ranks are used to create an empirical p-value
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+  
   df.vars <- as.matrix(dfv[,column.nums])
+  class(df.vars) <- "numeric"
   colnames(df.vars)<-NULL
   rownames(df.vars)<-NULL
   
@@ -109,3 +121,36 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   #plot(minus.log.emp.p)
   return(list(empDens=empDens, Dk.rank=Dk.rank, minus.log.emp.p=minus.log.emp.p))
 } #end KernelDensSD
+
+
+
+############### FastPCS ###############
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calls FastPCS and formats output to be similar to other functions in this package
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @param alpha is the parameter used is the FastPCS function
+#'  @param seed is the parameter used is the FastPCS function
+#'  @author KE Lotterhos
+#'  @export FastPCS.out
+
+if (("FastPCS" %in% installed.packages())==FALSE) install.packages("FastPCS")
+library(FastPCS)
+
+FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
+  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
+                              NAs in the variables used to calculate the 
+                              multivariate summary statistic"); break()}
+    
+  temp <- as.matrix(dfv[,column.nums])
+  class(temp) <- "numeric"
+  nlocs <- nrow(temp)
+  out <- FastPCS(temp, nsamp=NULL, alpha=alpha, seed=NULL)
+
+  D.pcs <- out$raw$distance
+  D.pcs.rank <- nlocs - rank(D.pcs, na.last="keep") + 1
+  minus.log.emp.p <- -log(D.pcs.rank/(nlocs-sum(is.na(D.pcs))))
+
+  return(list(D.pcs=D.pcs, D.pcs.rank=D.pcs.rank, minus.log.emp.p=minus.log.emp.p))
+}

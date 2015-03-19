@@ -20,9 +20,9 @@ source("R/ComparePlot.R")
   ComparePlot(dfv2.out, colorVect=factor(dfv2$s_high), 9500:9996)
 
   dfv3 <- read.table("inst/misc/NonParamEx.txt", header=TRUE)
-  dfv3.out <- Getdf(dfv2, c(1,2))
+  dfv3.out <- Getdf(dfv3, c(1,2))
   head(dfv3)
-  plot(dfv3$x2, dfv3$y2)
+  plot(dfv3$x2, dfv3$y2, col=c(rep(1,10000),3))
   ComparePlot(dfv3.out, colorVect=c(rep(1,10000),3), ind=NULL)
 
 
