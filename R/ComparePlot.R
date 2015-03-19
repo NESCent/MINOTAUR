@@ -31,8 +31,7 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   plot(ind, dfv2$Hcd.mlp[ind], col=colorVect[ind], pch=19, ylab = "hclust")
 
   ### KernelDens ML ######
-  plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML")
-}
+ }
 
 #'  R Verity
 #'  March 18, 2015
