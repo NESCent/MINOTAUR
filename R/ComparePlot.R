@@ -20,21 +20,21 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   ### Mahalanobis distance ######
  # Md <- Mahalanobis(dfv2, colnums)
   #str(Md)
-  plot(ind, dfv2$Md.mlp[ind], col=colorVect[ind], pch=19, ylab="Mahalanobis")
+  try(plot(ind, dfv2$Md.mlp[ind], col=colorVect[ind], pch=19, ylab="Mahalanobis"))
  
   ### PCS ######
-  plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS")
+  try(plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS"))
 
   ### KernelDensSD ######
   #Kd <- KernelDensSD(dfv2, colnums, 1.5)
-  plot(ind, dfv2$Kd.mlp[ind], col=colorVect[ind], pch=19, ylab="Kernel SD")
+  try(plot(ind, dfv2$Kd.mlp[ind], col=colorVect[ind], pch=19, ylab="Kernel SD"))
   
   ### Hclust ######
   #Hcd <- hclust.ranking(dfv2, colnums)
   #plot(ind, dfv2$Hcd.mlp[ind], col=colorVect[ind], pch=19, ylab = "hclust")
 
   ### KernelDens ML ######
- plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML")
+  try(plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML"))
  
  }
 
@@ -59,7 +59,6 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
   writeLines("Calculating outlierliness based on FastPCS...")    
     x<- system.time({
       tx <- try(pcs<-FastPCS.out(dfv2, colnums, alpha))
-      print("hi")
       if("try-error" %in% class(tx)){
         pcs <- list(D.pcs = NA, D.pcs.rank = NA, minus.log.emp.p = NA)
       }
