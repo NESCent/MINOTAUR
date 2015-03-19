@@ -1,0 +1,111 @@
+
+
+
+
+############# Mahalanobis distance #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate Malanahobis distance
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @author KE Lotterhos
+#'  @export Mahalanobis
+
+Mahalanobis <- function(dfv, column.nums){
+# This function calculates the Mahalanobis distance for each row (locus, SNP) in the dataframe
+# dfv is a dataframe with each row a locus or population, and columns statistics and other information
+# column.nums is the columns in the dataframe to be used for analysis
+# haven't tested with missing data
+  df.vars <- dfv[,column.nums]
+  nlocs <- nrow(df.vars)
+  
+  mu <- t(t(colMeans(df.vars, na.rm=TRUE))) # calculate mean and make it a column vector
+  S <- cov(df.vars, use="pairwise.complete.obs") # calculate variance-covariance matrix
+  
+  D <- rep(NA, nlocs) # Mahalanobis distance
+  for (i in 1:nrow(df.vars)){
+    if(sum(is.na(df.vars[i,]))==0){  # The locus has to have an observation for each test statistic
+    x <- t(df.vars[i,])
+    diff <- x-mu
+    D[i] <- sqrt( t(diff) %*% solve(S) %*% (diff) )
+	  }else{ # or else NA
+		  D[i]=NA
+	  }
+  }
+  Dm.rank <- nlocs-rank(D, na.last="keep")+1
+  minus.log.emp.p <- -log(Dm.rank/(nlocs-sum(is.na(D))))
+  
+  return(list(Dm=D, Dm.rank=Dm.rank, minus.log.emp.p=minus.log.emp.p))
+} # end Mahalanobis
+
+
+############# Hclust ranking #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate multivariate distance based on outliers.ranking function in package DMwR
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @author KE Lotterhos
+#'  @export hclust.ranking
+
+### The outliers.ranking function in package DMwR
+if (("DMwR" %in% installed.packages())==FALSE) install.packages("DMwR")
+library(DMwR)
+
+hclust.ranking <- function(dfv, column.nums){
+  # This function calculates the outlier distance for each row (locus, SNP) in the dataframe based on the hclust function
+  # dfv is a dataframe with each row a locus or population, and columns statistics and other information
+  # column.nums is the columns in the dataframe to be used for analysis
+  # haven't tested with missing data
+  data <- dfv[,column.nums]
+  #nlocs <- nrow(dfv)
+  hout <- outliers.ranking(data, method = "sizeDiff",
+                 method.pars = NULL,
+                 clus = list(dist = "euclidean",alg = "hclust",
+                             meth = "ward"),
+                 power = 1, verb = F)
+  return(list(h.rank = hout$rank.outliers, 
+              minus.log.p = -log(1-hout$prob.outliers)))
+} #end hclust.ranking
+
+############# Kernel Density based on SD #################
+#'  KE Lotterhos
+#'  March 19, 2015
+#'  calculate multivariate distance based on outliers.ranking function in package DMwR
+#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
+#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
+#'  @param n.sd is the number of standard deviations for the kernel size
+#'  @author KE Lotterhos
+#'  @export KernelDensSD
+
+KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
+  ### This function takes a dataframe of statistics where each row is a locus/observation 
+  ### and each column is an observation statistic
+  ### It breaks up multivariate space into n-dimensional chunks, 
+  ### with the size of each chunk determined by the standard deviation. 
+  ### (n.sd) is the proportion of the standard deviation
+  ### Next the density of points inside each chunk is calculated, and 
+  ### chunks are ranked according to their density.  Ranks are used to create an empirical p-value
+  df.vars <- as.matrix(dfv[,column.nums])
+  colnames(df.vars)<-NULL
+  rownames(df.vars)<-NULL
+  
+  n.stat <- ncol(df.vars)
+  nlocs <- nrow(df.vars)
+  width <- apply(df.vars,2, sd, na.rm=TRUE)*n.sd
+  
+  empDens <- rep(NA, nrow(df.vars))
+  tdf <- t(df.vars)
+  
+  for (i in 1:nlocs){
+    vals <- df.vars[i,]
+    vals_upper <- vals + width
+    vals_lower <- vals - width
+    temp <- colSums((tdf < vals_upper) & (tdf > vals_lower))==n.stat
+    empDens[i] <- sum(temp, na.rm=TRUE)
+  }
+  Dk.rank <- rank(empDens,na.last="keep")
+  minus.log.emp.p <- -log(Dk.rank/(nlocs-sum(is.na(empDens))))
+  #plot(minus.log.emp.p)
+  return(list(empDens=empDens, Dk.rank=Dk.rank, minus.log.emp.p=minus.log.emp.p))
+} #end KernelDensSD
