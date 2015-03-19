@@ -4,7 +4,7 @@ source("R/KernelDensityML.R")
 #'  KE Lotterhos
 #'  March 18, 2015
 #'  Compare Manhattan plots
-#'  @param dfv2 is a dataframe containing observations in rows and statistics in columns
+#'  @param dfv2 is a dataframe output from the Getdf() function
 #'  @param colorVect is a vector of colors for the points
 #'  @param ind is a vector of indexes to be included in the plot (i.e. 9500:9700)
 #'  @author KE Lotterhos
@@ -33,13 +33,13 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   ### KernelDens ML ######
  }
 
-#'  R Verity
+#'  KE Lotterhos
 #'  March 18, 2015
-#'  calculate density of point i from all other points
-#'  @param df is a dataframe containing observations in rows and statistics in columns
-#'  @param i is the row number that will be compared against all other rows
-#'  @param sigma is the standard deviation of the normal kernel in all dimensions
-#'  @author R Verity
+#'  Compare Manhattan plots
+#'  @param dfv2 is a dataframe containing observations in rows and statistics in columns
+#'  @param colorVect is a vector of colors for the points
+#'  @param ind is a vector of indexes to be included in the plot (i.e. 9500:9700)
+#'  @author KE Lotterhos
 
 Getdf <- function(dfv2, colnums, n.sd=1.5){
   Md <- Mahalanobis(dfv2, colnums)
