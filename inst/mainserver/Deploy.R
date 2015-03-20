@@ -24,7 +24,6 @@ shinyPath = switch(userName,
                    'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MINOTAUR/inst/mainserver',
                    'liuyang' = 'G:/MINOTAUR/inst/mainserver',
                    'katie' = '~/Desktop/MINOTAUR/inst/mainserver',
-                   'liuyang' = 'G:/MINOTAUR/inst/mainserver',
                    'Nik' = '~/Documents/Niks_office/Scratch/MINOTAUR/inst/mainserver'
 )
 
@@ -33,6 +32,7 @@ require(shiny)
 require(devtools)
 require(rCharts)
 require(stats4)
+require(scales)
 #install_github('rCharts','ramnathv')
 #install_github('rHighcharts','metagraf')
 #install.packages('adegenet'); require(adegenet)
