@@ -37,13 +37,13 @@ loadpackages <- function(){
     source("http://bioconductor.org/biocLite.R");
     biocLite("OmicCircos");
   }
-  require(RColorBrewer);
-  require(scales);
-  require(OmicCircos);
+  suppressMessages(require(RColorBrewer));
+  suppressMessages(require(scales));
+  suppressMessages(require(OmicCircos));
 }
 
 circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_Beta","Trait2_Beta","Trait3_Beta"), trait.pvalnam = c("Trait1_P","Trait2_P","Trait3_P"), pcut.outlier=0.002){
-  
+
   loadpackages()
   mydata = mytoys
   seg.file <- data.frame(seg.name=mydata[,Chr], seg.Start=mydata[,BP], seg.End=mydata[,BP]+1, the.v="NA", NO="NA")
