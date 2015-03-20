@@ -7,12 +7,16 @@
 # This function is the pretty face of our shiny app.
 
 
-# Load packages
+# temporarily loading all required packages here
 require("shiny")
 require("rCharts")
 require("rHighcharts")
 require("stats4")
 require("adegenet")
+
+## temporarily sourcing .R files here
+source("mhtCirclePlot.R")
+source("mhtplot.R")
 
 
 #### ------------------------------------------------------------------

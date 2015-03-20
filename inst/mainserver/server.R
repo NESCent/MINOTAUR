@@ -11,13 +11,16 @@
 
 
 
-# Load packages
+# temporarily loading all required packages here
 require("shiny")
 require("rCharts")
 require("rHighcharts")
 require("stats4")
 require("adegenet")
 
+## temporarily sourcing .R files here
+source("mhtCirclePlot.R")
+source("mhtplot.R")
 
 
 #### ------------------------------------------------------------------
@@ -179,13 +182,11 @@ shinyServer(function(input, output) {
   })
   # TEST circle Manhattan Plot
   output$circleMHTplot <- renderPlot({
-    source("mhtCirclePlot.R")
     circosmht(mydata=mytoysdata, pcut.outlier=0.002)
   })
   
   # TEST Linenar Manhattan Plot
   output$LinearMHTplot <- renderPlot({
-    source("mhtplot.R")
     mhtplot(mydata=mytoysdata, pcut.outlier=0.002)
   })
   # TEST summary table
