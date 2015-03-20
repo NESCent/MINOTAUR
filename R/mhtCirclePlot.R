@@ -45,7 +45,7 @@ loadpackages <- function(){
 circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_Beta","Trait2_Beta","Trait3_Beta"), trait.pvalnam = c("Trait1_P","Trait2_P","Trait3_P"), pcut.outlier=0.002){
 
   loadpackages()
-  mydata = mytoys
+
   seg.file <- data.frame(seg.name=mydata[,Chr], seg.Start=mydata[,BP], seg.End=mydata[,BP]+1, the.v="NA", NO="NA")
   #seg.value <- data.frame(seg.name=mydata[,Chr], seg.po=mydata[,BP],name1=mydata[,betaidx])
   seg.value = subset(mydata, select=-SNP)
