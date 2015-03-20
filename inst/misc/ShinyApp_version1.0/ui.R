@@ -35,11 +35,14 @@ shinyUI(navbarPage("MINOTAUR",
                    tabPanel("Produce plots",
                             fluidRow(
                               column(4,
-                                     h2('booboo'),
-                                     p('here is some text')
+                                     h2('Fancy Plots'),
+                                     uiOutput('selectplot'),
+                                     p('Select a proper statistic for plotting')
                               ),
                               column(6,
-                                     showOutput("test1", "Highcharts")
+                                     showOutput("test1", "Highcharts"),
+                                     plotOutput("circleMHTplot", height="400px",width="400px"),
+                                     plotOutput("LinearMHTplot", height="400px",width="600px")
                               )
                             )
                    ),

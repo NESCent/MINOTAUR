@@ -17,6 +17,8 @@ n = 1000
 mainData = data.frame('normstat'=rnorm(n), 'Fst'=rbeta(n,5,5), 'diversity'=rgamma(n,5,5), 'bob'=sample(3,n,rep=TRUE), 'S1'=rnorm(n), 'S2'=rnorm(n), 'S3'=rnorm(n), 'S4'=rnorm(n), 'S5'=rnorm(n), check.names=FALSE)
 mainData = round(mainData,digits=3)
 
+mytoysdata <- read.table(paste(dirname(shinyPath),"/mytoys.txt",sep=""),head=T,sep="\t")
+
 filterActive = data.frame(matrix(TRUE,1,ncol(mainData)))
 names(filterActive)=names(mainData)
 
@@ -152,6 +154,29 @@ shinyServer(function(input, output) {
     
   })
   
+  
+  ## add options for plotting
+  output$selectplot <- renderUI({
+    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
+                   options=list(
+                     placeholder='bubble, manhattan or circle manhattan',
+                     selectOnTab=TRUE,
+                     create=FALSE,
+                     onInitialize = I('function() { this.setValue(""); }')
+                   )
+    )
+  })
+  # TEST circle Manhattan Plot
+  output$circleMHTplot <- renderPlot({
+    source(paste(dirname(dirname(dirname(shinyPath))),"/R/mhtCirclePlot.R",sep=""))
+    circosmht(mydata=mytoysdata, pcut.outlier=0.002)
+  })
+  
+  # TEST Linenar Manhattan Plot
+  output$LinearMHTplot <- renderPlot({
+    source(paste(dirname(dirname(dirname(shinyPath))),"/R/mhtplot.R",sep=""))
+    mhtplot(mydata=mytoysdata, pcut.outlier=0.002)
+  })
   # TEST summary table
   output$summaryTable <- renderTable({
     
