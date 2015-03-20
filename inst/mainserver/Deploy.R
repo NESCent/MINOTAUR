@@ -23,10 +23,9 @@ shinyPath = switch(userName,
                    'caitiecollins' = '/Users/caitiecollins/MINOTAUR/inst/mainserver',
                    'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MINOTAUR/inst/mainserver',
                    'liuyang' = 'G:/MINOTAUR/inst/mainserver',
-                   'katie' = '~/Desktop/MINOTAUR/inst/mainserver'
-                   'liuyang' = 'G:/MINOTAUR/inst/mainserver'
+                   'katie' = '~/Desktop/MINOTAUR/inst/mainserver',
+                   'liuyang' = 'G:/MINOTAUR/inst/mainserver',
                    'Nik' = '~/Documents/Niks_office/Scratch/MINOTAUR/inst/mainserver'
-                   
 )
 
 # Load packages
