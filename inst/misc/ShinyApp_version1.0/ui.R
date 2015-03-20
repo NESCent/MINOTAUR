@@ -21,10 +21,10 @@ shinyUI(navbarPage("MINOTAUR",
                             fluidRow(
                               column(3,
                                      uiOutput('filterVariable'),
+                                     helpText('choose a variable to subset by'),
                                      uiOutput('filterActiveDefault'),
                                      htmlOutput('filterOptions'),
-                                     uiOutput('subsetPanels'),
-                                     helpText('here is some help text')
+                                     uiOutput('subsetPanels')
                               ),
                               column(8,
                                      dataTableOutput("mainDataTable")
