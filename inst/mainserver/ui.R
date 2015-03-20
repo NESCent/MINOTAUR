@@ -12,7 +12,7 @@ require("shiny")
 require("rCharts")
 require("rHighcharts")
 require("stats4")
-
+require("adegenet")
 
 
 #### ------------------------------------------------------------------
