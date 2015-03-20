@@ -17,8 +17,8 @@ source("R/ComparePlot.R")
   head(dfv2.out)
   ComparePlot(dfv2.out, colorVect=factor(dfv2$s_high), ind=loci.ind)
 
-  setwd("~/Google Drive/MultiOutlierVisualization/practiceData")
-  dfv3 <- read.table("toyExample_Liuyang.txt", sep= "\t", header=TRUE)
+  setwd("~/Desktop/MANIPULATE")
+  dfv3 <- read.table("~/Google Drive/MultiOutlierVisualization/practiceDatatoyExample_Liuyang.txt", sep= "\t", header=TRUE)
   dfv3.out <- Getdf(na.omit(dfv3), c(4,6,8))
   ComparePlot(dfv3.out)
 
