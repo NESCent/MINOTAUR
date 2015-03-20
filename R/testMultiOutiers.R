@@ -68,3 +68,14 @@ source("R/ComparePlot.R")
   dev.off()
 
 ##################################################
+
+##################################################
+#### Sean's data ######
+  dfv5 <- read.csv("~/Google Drive/MultiOutlierVisualization/practiceData/butternut_pops_summ_stats_Hoban.csv")#, sep= "\t", header=TRUE)
+  plot(dfv5$A1, dfv5$Ar2)#, data=dfv5)
+  plot(dfv5$HE3, dfv5$HO)#, data=dfv5)
+  plot(dfv5$FST4, dfv5$RST)#, data=dfv5)
+  head(dfv5.out)
+  dfv5.out <- Getdf(dfv4, c(3:7))
+  head(dfv5.out)
+  ComparePlot(dfv5.out)

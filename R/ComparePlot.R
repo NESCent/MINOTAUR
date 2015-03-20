@@ -49,14 +49,15 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 
 Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
   ### Remove NAs
-    if (any(is.na(dfv2[,colnums]))) {
-    dfv2 <- na.omit(dfv2)
+  if (any(is.na(dfv2[,colnums]))) {
+    rows.keep <- apply(!is.na(dfv2[,colnums]), 1, any)
+    dfv2 <- dfv2[rows.keep,]
     writeLines("Rows with NAs were removed")
   }
   
   ### Check for duplicated rows and abort
   if (any(duplicated(dfv2))) {
-    writeLines("You data frame has duplicated rows:")
+    writeLines("Error: Your data frame has duplicated rows")
     dfv2[duplicated(dfv2),]
     break()
   }

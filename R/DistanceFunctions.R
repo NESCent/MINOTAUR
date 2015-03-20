@@ -14,9 +14,7 @@ Mahalanobis <- function(dfv, column.nums){
 # column.nums is the columns in the dataframe to be used for analysis
 # haven't tested with missing data
   
-  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
-                              NAs in the variables used to calculate the 
-                              multivariate summary statistic"); break()}
+  if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
   
   df.vars <- as.matrix(dfv[,column.nums])
   class(df.vars) <- "numeric"
@@ -58,9 +56,7 @@ hclust.ranking <- function(dfv, column.nums){
   # dfv is a dataframe with each row a locus or population, and columns statistics and other information
   # column.nums is the columns in the dataframe to be used for analysis
   # haven't tested with missing data
-  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
-                              NAs in the variables used to calculate the 
-                              multivariate summary statistic"); break()}
+  if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
   
   data1 <- as.matrix(dfv[,column.nums])
   class(data1) <- "numeric"
@@ -93,9 +89,7 @@ KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
   ### (n.sd) is the proportion of the standard deviation
   ### Next the density of points inside each chunk is calculated, and 
   ### chunks are ranked according to their density.  Ranks are used to create an empirical p-value
-  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
-                              NAs in the variables used to calculate the 
-                              multivariate summary statistic"); break()}
+  if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
   
   df.vars <- as.matrix(dfv[,column.nums])
   class(df.vars) <- "numeric"
@@ -139,9 +133,7 @@ if (("FastPCS" %in% installed.packages())==FALSE) install.packages("FastPCS")
 library(FastPCS)
 
 FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
-  if(sum(is.na(dfv))>0){print("Error: please input a dataframe with no 
-                              NAs in the variables used to calculate the 
-                              multivariate summary statistic"); break()}
+  if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
     
   temp <- as.matrix(dfv[,column.nums])
   class(temp) <- "numeric"
