@@ -4,7 +4,7 @@
 ## Server.R ##
 ##############
 
-# This is the MANIPULATE server.
+# This is the MINOTAUR server.
 # This function calls all of the functions running behind our app.
 # The main workings of the app. This is where we use variables - often passed from the ui.R script - to create a series of different plots and outputs. 
 # We don't actually realise these plots here. Rather, we pass them back over the ui.R script, which dictates our layout etc.
