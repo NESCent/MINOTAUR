@@ -1,13 +1,19 @@
 
-# ui.R (one of three scripts required to run any Rshiny app)
+##########
+## ui.R ##
+##########
 
-# Author: Bob Verity
-# Date: 18/03/2015
+# This is the user interface.
+# This function is the pretty face of our shiny app.
 
-# Purpose:
-# Defines the user interface, including any controls that the user interacts
-# with. Interactive objects from within this script pass values to the system
-# script that can be used as ordinary variables.
+
+# Load packages
+require("shiny")
+require("rCharts")
+require("rHighcharts")
+require("stats4")
+require("adegenet")
+
 
 #### ------------------------------------------------------------------
 

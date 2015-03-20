@@ -18,10 +18,10 @@ userName = 'Bob'
 #userName = 'liuyang'
 
 shinyPath = switch(userName,
-                   'Bob'='/Users/Bob/Dropbox/Bob/Work/Side Projects/MANIPULATE/inst/misc/ShinyApp_version1.0',
-                   'caitiecollins' = '/Users/caitiecollins/MANIPULATE/inst/misc/ShinyApp_version1.0',
-                   'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MANIPULATE/inst/misc/ShinyApp_version1.0',
-                   'liuyang' = 'G:/MANIPULATE/inst/misc/ShinyApp_version1.0'
+                   'Bob'='/Users/Bob/Dropbox/Bob/Work/Side Projects/MANIPULATE/inst/mainserver',
+                   'caitiecollins' = '/Users/caitiecollins/MANIPULATE/inst/mainserver',
+                   'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MANIPULATE/inst/mainserver',
+                   'liuyang' = 'G:/MANIPULATE/inst/mainserver'
                    
 )
 

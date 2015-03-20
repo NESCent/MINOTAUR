@@ -16,112 +16,191 @@ require("shiny")
 require("rCharts")
 require("rHighcharts")
 require("stats4")
+require("adegenet")
 
 
 
 #### ------------------------------------------------------------------
 
-
 # load in the data (generate random data for now)
-n = 100
-mainData = data.frame('normStat'=rnorm(n), 'Fst'=rbeta(n,5,5), 'diversity'=rgamma(n,5,5), 'group'=sample(3,n,rep=TRUE))
+n = 1000
+mainData = data.frame('normstat'=rnorm(n), 'Fst'=rbeta(n,5,5), 'diversity'=rgamma(n,5,5), 'bob'=sample(3,n,rep=TRUE), 'S1'=rnorm(n), 'S2'=rnorm(n), 'S3'=rnorm(n), 'S4'=rnorm(n), 'S5'=rnorm(n), check.names=FALSE)
+mainData = round(mainData,digits=3)
+
+#mytoysdata <- read.table(paste(dirname(shinyPath),"/mytoys.txt",sep=""),head=T,sep="\t")
+mytoysdata <- read.table("mytoys.txt",head=T,sep="\t")
+
+filterActive = data.frame(matrix(TRUE,1,ncol(mainData)))
+names(filterActive)=names(mainData)
 
 # Define the shiny server functionality
-shinyServer(function(input, output) {      
-
-# Our first output will be an ordinary R histogram
-output$plot1 <- renderPlot({
-# 	
-# 	# Obtain data selected by user
-# 	xData = mainData[,names(mainData)==input$xSelection]
-# 	yData = mainData[,names(mainData)==input$ySelection]
-# 	remainingVariable = which(names(mainData)!=input$xSelection & names(mainData)!=input$ySelection)[1]
-# 	sizeData = mainData[,remainingVariable]
-# 	
-# 	# Process data to create interaction
-# 	xDataProcessed = round(xData + input$interactionStrength*xData*yData*sizeData, digits=2)
-# 	yDataProcessed = round(yData + input$interactionStrength*xData*yData*sizeData, digits=2)
-# 	sizeDataProcessed = round(sizeData + input$interactionStrength*xData*yData*sizeData, digits=2)
-# 	outputData = data.frame(Selection1=xDataProcessed,Selection2=yDataProcessed,Size=sizeDataProcessed,group=mainData$group)
-# 	
-	# histogram of y-axis data
-	#hist(outputData$Selection2, breaks=20, col=8, xlab=paste(input$ySelection,"data"), main="Marginal distribution in second variable")
-  hist(rnorm(1000))
-	
-})
-	
-# Our second output will be a table of summary results
-output$table1 <- renderTable({
-	
-	# Obtain data selected by user
-	xData = mainData[,names(mainData)==input$xSelection]
-	yData = mainData[,names(mainData)==input$ySelection]
-	remainingVariable = which(names(mainData)!=input$xSelection & names(mainData)!=input$ySelection)[1]
-	sizeData = mainData[,remainingVariable]
-	
-	# Process data to create interaction
-	xDataProcessed = round(xData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	yDataProcessed = round(yData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	sizeDataProcessed = round(sizeData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	outputData = data.frame(Selection1=xDataProcessed,Selection2=yDataProcessed,Size=sizeDataProcessed,group=mainData$group)
-	
-	# Output summary table of simulated data
-	summary(outputData)
-	
-})
-
-
-# Our third output will be a bubble plot, produced using rCharts (rendered with 'Highcharts')
-output$bubbleChart1 <- renderChart2({
-
-	# Obtain data selected by user
-	xData = mainData[,names(mainData)==input$xSelection]
-	yData = mainData[,names(mainData)==input$ySelection]
-	remainingVariable = which(names(mainData)!=input$xSelection & names(mainData)!=input$ySelection)[1]
-	sizeData = mainData[,remainingVariable]
-
- # Our third output will be a bubble plot, produced using rCharts (rendered with 'Highcharts')
- output$bubbleChart1 <- renderChart2({
- 
-
-  # Obtain data selected by user
-	xData = myDataFrame[,names(myDataFrame)==input$xSelection]
-	yData = myDataFrame[,names(myDataFrame)==input$ySelection]
-	remainingVariable = which(names(myDataFrame)!=input$xSelection & names(myDataFrame)!=input$ySelection)[1]
-	sizeData = myDataFrame[,remainingVariable]
-
-	
- 	# Process data to create interaction
-	xDataProcessed = round(xData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	yDataProcessed = round(yData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	sizeDataProcessed = round(sizeData + input$interactionStrength*xData*yData*sizeData, digits=2)
-	outputData = data.frame(Selection1=xDataProcessed,Selection2=yDataProcessed,Size=sizeDataProcessed,group=mainData$group)
-
- 	# Create a bubble plot
-	bubbles <- hPlot(Selection2 ~ Selection1, data=outputData, type = "bubble", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "Size", group = "group")
-	bubbles$chart(zoomType = "xy")
-	
- 	# Remember to return the plot object (this will be passed to the gui)
-
-  # Create a bubble plot
-	bubbles <- hPlot(Selection2 ~ Selection1, data=outputData, type = "bubble", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "Size", group = "group")
-	bubbles$chart(zoomType = "xy")
-	
-  # Remember to return the plot object (this will be passed to the gui)
- 	return(bubbles)
-   
- })
-
-output$test1 <- renderChart2({
+shinyServer(function(input, output) {
   
-  testPlot <- hPlot(normStat ~ Fst, data=mainData, type = "line", title = "Bubble demo", subtitle = "drag a box to zoom in on a particular area", size = "diversity", group = "group")
-  return(testPlot)
+  # data for subsetting
+  RVsubsetBoolean <- reactiveValues(sub=rep(1,nrow(mainData)))
+  output$mainDataTable <- renderDataTable({
+    RVsvar_list <- reactiveValuesToList(RVselectedVariables)
+    RVsvalue_list <- reactiveValuesToList(RVselectedValues)
+    RVsubsetBoolean$sub = rep(1,nrow(mainData))
+    if (length(RVsvar_list)>0) {
+      for (i in 1:length(RVsvar_list)) {
+        values <- RVselectedValues[[as.character(i)]]
+        #RVsubsetBoolean$sub = RVsubsetBoolean$sub*(mainData[,names(mainData)==RVsvar_list[[i]]]>0)
+        #RVsubsetBoolean$sub = unlist(reactiveValuesToList(RVsubsetBoolean)$sub) * rep(10,nrow(mainData))
+      }
+    }
+    processedData = data.frame(select=reactiveValuesToList(RVsubsetBoolean)$sub,mainData)
+    processedData
+  },options=list(scrollX='300px', scrollY='400px', searching=FALSE))
+  
+  # select filter variable
+  output$filterVariable <- renderUI({
+    selectizeInput('filterVariable','Filter variable',choices=c('',names(mainData)), multiple=FALSE,
+                   options=list(
+                     placeholder='select, search or input items',
+                     selectOnTab=TRUE,
+                     create=FALSE,
+                     onInitialize = I('function() { this.setValue(""); }')
+                   )
+    )
+  })
+  output$filterActiveDefault <- renderUI({
+    radioButtons('filterActiveDefault',label=NULL,choices=c('select all','deselect all'),inline=TRUE)
+  })
+  
+  # (simple well panel for messing around with)
+  output$filterOptions <- renderUI({
+    wellPanel(
+      h4('header'),
+      p(reactiveValuesToList(RVselectedVariables))
+    )
+  })
+
+  # create subset panels dynamically
+  RVselectedVariables <- reactiveValues()
+  RVselectedValues <- reactiveValues()
+  observe({
+    if (!is.null(input$filterVariable)) {
+      if (!(input$filterVariable%in%reactiveValuesToList(RVselectedVariables)) & !(input$filterVariable=='')) {
+        RVselectedVariables[[as.character(length(reactiveValuesToList(RVselectedVariables))+1)]] = input$filterVariable
+      }
+    }
+  })
+  output$subsetPanels <- renderUI({
+    RVsvar_list <- reactiveValuesToList(RVselectedVariables)
+    RVsvalue_list <- reactiveValuesToList(RVselectedValues)
+    if (length(RVsvar_list)>0) {
+      panelList = list()
+      for (i in 1:length(RVsvar_list)) {
+        value <- range(mainData[,names(mainData)==RVsvar_list[[i]]])
+        if (length(RVsvar_list)==(length(RVsvalue_list)+1)) {
+          RVselectedValues[[as.character(length(RVsvar_list))]] <- value
+        } else {
+          if (RVsvalue_list[[i]][1]!=value[1] | RVsvalue_list[[i]][2]!=value[2]) {
+            value <- RVsvalue_list[[i]]
+          }
+        }
+        if (!is.null(RVsvar_list[[i]])) {
+          if (i==length(RVsvar_list)) {
+            panelList[[i]] = wellPanel(
+              fluidRow(
+                column(8,
+                       h5(RVsvar_list[[i]])
+                ),
+                column(4,
+                       actionButton(paste('varClose',i,sep=''),label='reset')
+                )
+              ),
+              sliderInput(paste('varSlider',i,sep=''),label=NULL,min=min(mainData[,names(mainData)==RVsvar_list[[i]]]),max=max(mainData[,names(mainData)==RVsvar_list[[i]]]),value=value,round=TRUE)
+            ,style='padding: 10px')
+          } else {
+            panelList[[i]] = wellPanel(
+              fluidRow(
+                column(9,
+                  h5(RVsvar_list[[i]])
+                ),
+                column(3,
+                  actionButton(paste('varClose',i,sep=''),label=NULL,icon=icon('close'))
+                )
+              ),
+              sliderInput(paste('varSlider',i,sep=''),label=NULL,min=min(mainData[,names(mainData)==RVsvar_list[[i]]]),max=max(mainData[,names(mainData)==RVsvar_list[[i]]]),value=value,round=TRUE)
+            ,style='padding: 10px')
+          }
+        }
+      }
+      rev(panelList)
+    }
+  })
+  observe({
+    RVsvar_list <- reactiveValuesToList(RVselectedVariables)
+    if (length(RVsvar_list)>0) {
+      for (i in 1:length(RVsvar_list)) {
+        evalString <- paste('input$varSlider',i,sep='')
+        evalString <- eval(parse(text=evalString))
+        if (!is.null(evalString)) {
+          RVselectedValues[[as.character(i)]] <- evalString
+        }
+      }
+    }
+  })
+  observe({
+    RVsvar_list <- reactiveValuesToList(RVselectedVariables)
+    if (length(RVsvar_list)>0) {
+      for (i in 1:length(RVsvar_list)) {
+        evalString <- paste('input$varClose',i,sep='')
+        evalString <- eval(parse(text=evalString))
+        if (!(is.null(evalString))) {
+          if (evalString==1) {
+            RVselectedVariables[[as.character(i)]] = NULL
+          }
+        }
+      }
+    }
+  })
+  
+  # TEST histogram of random noise
+  output$randomHist <- renderPlot({
+    
+    hist(rnorm(1000))
+    
+  })
+  
+  
+  ## add options for plotting
+  output$selectplot <- renderUI({
+    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
+                   options=list(
+                     placeholder='bubble, manhattan or circle manhattan',
+                     selectOnTab=TRUE,
+                     create=FALSE,
+                     onInitialize = I('function() { this.setValue(""); }')
+                   )
+    )
+  })
+  # TEST circle Manhattan Plot
+  output$circleMHTplot <- renderPlot({
+    source("mhtCirclePlot.R")
+    circosmht(mydata=mytoysdata, pcut.outlier=0.002)
+  })
+  
+  # TEST Linenar Manhattan Plot
+  output$LinearMHTplot <- renderPlot({
+    source("mhtplot.R")
+    mhtplot(mydata=mytoysdata, pcut.outlier=0.002)
+  })
+  # TEST summary table
+  output$summaryTable <- renderTable({
+    
+    summary(mainData)
+    
+  })
+  
+  # main scatterplot
+  output$test1 <- renderChart2({
+    
+    testPlot <- hPlot(diversity ~ Fst, data=mainData, type = "bubble", title = "Plot Title", subtitle = "here is some subtitle", size = "diversity", group = "group")
+    return(testPlot)
+    
+  })
   
 })
-
-output$table2 <- renderDataTable({
-  mainData
-})
-
-})
-

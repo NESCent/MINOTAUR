@@ -1,14 +1,24 @@
 
-# server.R (one of three scripts required to run any Rshiny app)
 
-# Author: Bob Verity
-# Date: 18/03/2015
+##############
+## Server.R ##
+##############
 
-# Purpose:
-# The main workings of the app. This is where we use variables - often passed
-# from the ui.R script - to create a series of different plots and outputs. We
-# don't actually realise these plots here. Rather, we pass them back over the
-# ui.R script, which dictates our layout etc.
+# This is the MANIPULATE server.
+# This function calls all of the functions running behind our app.
+# The main workings of the app. This is where we use variables - often passed from the ui.R script - to create a series of different plots and outputs. 
+# We don't actually realise these plots here. Rather, we pass them back over the ui.R script, which dictates our layout etc.
+
+
+
+# Load packages
+require("shiny")
+require("rCharts")
+require("rHighcharts")
+require("stats4")
+require("adegenet")
+
+
 
 #### ------------------------------------------------------------------
 
@@ -35,7 +45,7 @@ shinyServer(function(input, output) {
       for (i in 1:length(RVsvar_list)) {
         values <- RVselectedValues[[as.character(i)]]
         #RVsubsetBoolean$sub = RVsubsetBoolean$sub*(mainData[,names(mainData)==RVsvar_list[[i]]]>0)
-        RVsubsetBoolean$sub = unlist(reactiveValuesToList(RVsubsetBoolean)$sub) * rep(10,nrow(mainData))
+        #RVsubsetBoolean$sub = unlist(reactiveValuesToList(RVsubsetBoolean)$sub) * rep(10,nrow(mainData))
       }
     }
     processedData = data.frame(select=reactiveValuesToList(RVsubsetBoolean)$sub,mainData)
