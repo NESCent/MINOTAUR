@@ -17,6 +17,7 @@ require("adegenet")
 ## temporarily sourcing .R files here
 source("mhtCirclePlot.R")
 source("mhtplot.R")
+source("uiFunctions.R")
 
 
 #### ------------------------------------------------------------------
@@ -24,7 +25,8 @@ source("mhtplot.R")
 shinyUI(navbarPage("MINOTAUR",
                    
                    tabPanel("Welcome",
-                            h2("hello world")
+                            h2("Welcome to the labyrinth!"),
+                            p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space')
                    ),
                    
                    tabPanel("Cleanup data",
@@ -42,19 +44,63 @@ shinyUI(navbarPage("MINOTAUR",
                             )
                    ),
                    
-                   tabPanel("Produce plots",
-                            fluidRow(
-                              column(4,
-                                     h2('Fancy Plots'),
-                                     uiOutput('selectplot'),
-                                     p('Select a proper statistic for plotting')
+                   navbarMenu("Produce plots", 
+                              tabPanel("Stat Compare",
+                                       sidebarLayout( 
+                                         
+                                         # Sidebar with Dropdown Menu
+                                         sidebarPanel(
+                                           
+                                           #Header and information
+                                           h2("Comparing Statistics"),
+                                           p("Change axes to different outlier statistics to compare between them."),
+                                           
+                                           # Line Break
+                                           br(),   
+                                           
+                                           uiOutput("ySelection"),
+                                           uiOutput("xSelection"),
+                                           uiOutput("reactiveui3"),
+                                           uiOutput("col.pal"),
+                                           
+                                           br(),
+                                           br()
+                                           
+                                           # Plots are update via this button
+                                           #submitButton("Update Plots")
+                                         ),
+                                         
+                                         # Plot on Main Panel      
+                                         mainPanel(
+                                           h3('Scatterplot'),
+                                           plotOutput("bubbleChart1")
+                                         )
+                                       )
                               ),
-                              column(6,
-                                     showOutput("test1", "Highcharts"),
-                                     plotOutput("circleMHTplot", height="400px",width="400px"),
-                                     plotOutput("LinearMHTplot", height="400px",width="600px")
+                              tabPanel("Manhattan Plot",
+                                       fluidRow(
+                                         column(4,
+                                                h3('Manhattan Plot'),
+                                                uiOutput('selectplot_linearMH'),
+                                                p('Select a proper statistic for plotting')
+                                         ),
+                                         column(6,
+                                                plotOutput("LinearMHTplot", height="400px",width="600px")
+                                         )
+                                       )
+                              ),
+                              tabPanel("Circle Plot",
+                                       fluidRow(
+                                         column(4,
+                                                h3('Circle Plot'),
+                                                uiOutput('selectplot_circleMH'),
+                                                p('Select a proper statistic for plotting')
+                                         ),
+                                         column(6,
+                                          plotOutput("circleMHTplot", height="400px",width="400px")
+                                         )
+                                       )
                               )
-                            )
                    ),
                    
                    navbarMenu("More",

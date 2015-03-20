@@ -9,7 +9,7 @@
 # The main workings of the app. This is where we use variables - often passed from the ui.R script - to create a series of different plots and outputs. 
 # We don't actually realise these plots here. Rather, we pass them back over the ui.R script, which dictates our layout etc.
 
- 
+
 
 # temporarily loading all required packages here
 require("shiny")
@@ -21,6 +21,7 @@ require("adegenet")
 ## temporarily sourcing .R files here
 source("mhtCirclePlot.R")
 source("mhtplot.R")
+source("uiFunctions.R")
 
 
 #### ------------------------------------------------------------------
@@ -38,6 +39,27 @@ names(filterActive)=names(mainData)
 
 # Define the shiny server functionality
 shinyServer(function(input, output) {
+  
+  ###################
+  ## UI FUNCTIONS! ##
+  ###################
+  
+  # Data for Dropdown menu 
+  output$ySelection <- renderUI({.getySelection(mainData)})
+  
+  output$xSelection <- renderUI({.getxSelection(mainData)})
+  
+  output$reactiveui3 <- renderUI({
+    if(!is.null(mainData)){
+      selectInput(inputId = "colorSelection",
+                  label = "Choose axis to color by:",
+                  choices = names(mainData),
+                  selected = names(mainData)[5])
+    }
+  })
+  
+  output$col.pal <- renderUI({.getColPal()})
+  
   
   # data for subsetting
   RVsubsetBoolean <- reactiveValues(sub=rep(1,nrow(mainData)))
@@ -160,17 +182,61 @@ shinyServer(function(input, output) {
       }
     }
   })
+
+  
+  #################
+  ## MAKE PLOTS! ##
+  #################
+
+  output$bubbleChart1 <- renderPlot({
+
+    .makeBubbles <- function(mainData, input){
+      
+      bubbles <- NULL
+      
+      xSelection <- input$xSelection
+      ySelection <- input$ySelection
+      col <- input$colorSelection
+      colPal <- input$col.pal
+      
+      if(!is.null(mainData)){
+        if(!is.null(ySelection) && !is.null(ySelection)){
+          
+          # Obtain data selected by user
+          xData = mainData[,names(mainData)==xSelection]
+          yData = mainData[,names(mainData)==ySelection]
+          colDat = mainData[,names(mainData)==col] 
+          
+          outputData = data.frame(xData,yData)
+          
+          get.levels <- levels(as.factor(colDat))
+          n.levels <- length(get.levels)
+          myCol <- get(colPal)(n.levels)
+          scheme <- colDat
+          scheme <- as.numeric(as.factor(scheme))
+          myCol <- myCol[scheme]
+          
+          bubbles <- plot(outputData[,2] ~ outputData[,1], 
+                          data=outputData, xlab=xSelection, ylab=ySelection, 
+                          col=myCol, bty = "l", pch = 20)
+          
+        } 
+      }
+      return(bubbles)
+    }
+    .makeBubbles(mainData, input)
+  }) # end bubbleChart1
   
   # TEST histogram of random noise
   output$randomHist <- renderPlot({
     
     hist(rnorm(1000))
     
-  })
+  }) # end randomHist
   
   
   ## add options for plotting
-  output$selectplot <- renderUI({
+  output$selectplot_linearMH <- renderUI({
     selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
                    options=list(
                      placeholder='bubble, manhattan or circle manhattan',
@@ -180,7 +246,16 @@ shinyServer(function(input, output) {
                    )
     )
   })
-  # TEST circle Manhattan Plot
+  output$selectplot_circleMH <- renderUI({
+    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
+                   options=list(
+                     placeholder='bubble, manhattan or circle manhattan',
+                     selectOnTab=TRUE,
+                     create=FALSE,
+                     onInitialize = I('function() { this.setValue(""); }')
+                   )
+    )
+  })
   output$circleMHTplot <- renderPlot({
     circosmht(mydata=mytoysdata, pcut.outlier=0.002)
   })
