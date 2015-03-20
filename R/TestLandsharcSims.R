@@ -50,22 +50,28 @@ for (i in 1:length(filelist)){
   summarydf <- rbind(summarydf,out)
 }
 
-write summarydf
+write.table(summarydf,file = paste(resultsdir,"LandsharcSummary.txt", sep=""))
 
-    par(mfrow=c(4,1), mar=c(3,3,1,1),oma=c(3,1,1,0))
-    boxplot(summarydf[summarydf$demog=="IM",3:10], col=c(rep("magenta",4), rep("blue",4)),
-            ylim=c(0,1))
-    text(1,0.9, "IM", cex=2)
-    boxplot(summarydf[summarydf$demog=="IBD",3:10], col=c(rep("magenta",4), rep("blue",4)),
-            ylim=c(0,1))
-    text(1,0.9, "IBD", cex=2)
-    boxplot(summarydf[summarydf$demog=="1R",3:10], col=c(rep("magenta",4), rep("blue",4)),
-            ylim=c(0,1))
-    text(1,0.9, "1R", cex=2)
-    boxplot(summarydf[summarydf$demog=="2R",3:10], col=c(rep("magenta",4), rep("blue",4)),
-            ylim=c(0,1))
-    text(1,0.9, "2R", cex=2)
-
+pdf(paste(resultsdir,"LandsharcSummary.pdf", sep=""), width = 6, height = 8)
+    par(mfrow=c(4,1), mar=c(3,3,1,1),oma=c(1,3,1,0))
+    x <- 0.5
+    y <- 1.1
+    stats <- c(3:10)
+    colors <- c(rep("magenta",4), rep("blue",2), rep("lightblue",2))
+    boxplot(summarydf[summarydf$demog=="IM",stats], col=colors,
+            ylim=c(0,1.2))
+    text(x,y, "IM", cex=2)
+    boxplot(summarydf[summarydf$demog=="IBD",stats], col=colors,
+            ylim=c(0,1.2))
+    text(x,y, "IBD", cex=2)
+    boxplot(summarydf[summarydf$demog=="1R",stats], col=colors,
+            ylim=c(0,1.2))
+    text(x,y, "1R", cex=2)
+    boxplot(summarydf[summarydf$demog=="2R",stats], col=colors,
+            ylim=c(0,1.2))
+    text(x,y, "2R", cex=2)
+    mtext("Empirical Power", side=2, outer=TRUE)
+dev.off()
 # colMeans(summarydf[summarydf$demog=="IM",3:10])
 # colMeans(summarydf[summarydf$demog=="IBD",3:10])
 # colMeans(summarydf[summarydf$demog=="1R",3:10])
