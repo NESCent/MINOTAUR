@@ -26,7 +26,8 @@ shinyUI(navbarPage("MINOTAUR",
                    
                    tabPanel("Welcome",
                             h2("Welcome to the labyrinth!"),
-                            p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space')
+                            p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space'),
+                            div(img(src="minotaur.jpg"))
                    ),
                    
                    tabPanel("Cleanup data",
