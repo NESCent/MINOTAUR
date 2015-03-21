@@ -11,9 +11,9 @@
 #### ------------------------------------------------------------------
 
 # Choose Shiny path based on user name
-userName = 'Bob'
+#userName = 'Bob'
 #userName = 'caitiecollins'
-#userName = 'Daren'
+userName = 'Daren'
 #userName = 'saraschaal'
 #userName = 'liuyang'
 
@@ -22,6 +22,7 @@ shinyPath = switch(userName,
                    'caitiecollins' = '/Users/caitiecollins/MINOTAUR/inst/mainserver',
                    'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MINOTAUR/inst/mainserver',
                    'liuyang' = 'G:/MINOTAUR/inst/mainserver'
+                   'Daren' = '/Users/darencard/Desktop/git/MINOTAUR/inst/mainserver'
                    
 )
 

@@ -17,6 +17,11 @@ require("rCharts")
 require("rHighcharts")
 require("stats4")
 require("adegenet")
+require("MASS")
+require("RColorBrewer")
+require("ggplot2")
+require("scales")
+require("hexbin")
 
 ## temporarily sourcing .R files here
 source("mhtCirclePlot.R")
@@ -34,6 +39,7 @@ mainData = round(mainData,digits=3)
 #mytoysdata <- read.table(paste(dirname(shinyPath),"/mytoys.txt",sep=""),head=T,sep="\t")
 mytoysdata <- read.table("mytoys.txt",head=T,sep="\t")
 
+#create dataframe with from matrix with 9 columns of TRUE in a single row
 filterActive = data.frame(matrix(TRUE,1,ncol(mainData)))
 names(filterActive)=names(mainData)
 
@@ -226,6 +232,93 @@ shinyServer(function(input, output) {
     }
     .makeBubbles(mainData, input)
   }) # end bubbleChart1
+
+  output$hexChart <- renderPlot({
+    
+    .denseHexChart <- function(mainData, input){
+      
+      hexplot <- NULL
+      
+      xSelection <- input$xSelection
+      ySelection <- input$ySelection
+      
+      if(!is.null(mainData)){
+        if(!is.null(ySelection) && !is.null(ySelection)){
+          
+          # Obtain data selected by user
+          xData = mainData[,names(mainData)==xSelection]
+          yData = mainData[,names(mainData)==ySelection]
+          
+          outputData = data.frame(xData,yData)
+          
+          hexplot <- plot(hexbin(outputData[,2] ~ outputData[,1]))
+          
+        } 
+      }
+      return(hexplot)
+    }
+    .denseHexChart(mainData, input)
+  }) # end denseHexChart
+
+  output$ggHexChart <- renderPlot({
+    
+    .ggHexChart <- function(mainData, input){
+      
+      gghexplot <- NULL
+      
+      xSelection <- input$xSelection
+      ySelection <- input$ySelection
+      
+      if(!is.null(mainData)){
+        if(!is.null(ySelection) && !is.null(ySelection)){
+          
+          # Obtain data selected by user
+          xData = mainData[,names(mainData)==xSelection]
+          yData = mainData[,names(mainData)==ySelection]
+          
+          outputData = data.frame(xData,yData)
+          
+          gghexplot <- qplot(outputData[,2], outputData[,1]) + stat_binhex()
+          
+        } 
+      }
+      return(gghexplot)
+    }
+    .ggHexChart(mainData, input)
+  }) # end ggHexChart  
+  
+  output$contourChart <- renderPlot({
+    
+    .contourChart <- function(mainData, input){
+      
+      contourPlot <- NULL
+      
+      xSelection <- input$xSelection
+      ySelection <- input$ySelection
+      
+      k <- 11
+      my.cols <- rev(brewer.pal(k, "RdYlBu"))
+      
+      if(!is.null(mainData)){
+        if(!is.null(ySelection) && !is.null(ySelection)){
+          
+          # Obtain data selected by user
+          xData = mainData[,names(mainData)==xSelection]
+          yData = mainData[,names(mainData)==ySelection]
+          
+          outputData = data.frame(xData,yData)
+          z <- kde2d(outputData[,1], outputData[,2], n=100)
+          contourPlot <- plot(outputData[,2] ~ outputData[,1], 
+                              data=outputData, xlab=xSelection, ylab=ySelection, 
+                              pch=19, cex=0.4)
+          contour(z, drawlabels=FALSE, nlevels=k, col=my.cols, add=TRUE, lwd=2)
+          
+        } 
+      }
+      return(contourPlot)
+    }
+    .contourChart(mainData, input)
+  }) # end contourChart   
   
   # TEST histogram of random noise
   output$randomHist <- renderPlot({

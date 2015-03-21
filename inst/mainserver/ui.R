@@ -100,6 +100,30 @@ shinyUI(navbarPage("MINOTAUR",
                                           plotOutput("circleMHTplot", height="400px",width="400px")
                                          )
                                        )
+                              ),
+                              tabPanel("Hex Plot",
+                                       fluidRow(
+                                         mainPanel(
+                                           h3('Hex plot'),
+                                           plotOutput("hexChart")
+                                         )
+                                       )
+                              ),
+                              tabPanel("ggplot Hex Plot",
+                                       fluidRow(
+                                         mainPanel(
+                                           h3('ggplot Hex plot'),
+                                           plotOutput("ggHexChart")
+                                         )
+                                       )
+                              ),
+                              tabPanel("Contour Plot",
+                                       fluidRow(
+                                         mainPanel(
+                                           h3('Contour plot'),
+                                           plotOutput("contourChart")
+                                         )
+                                       )
                               )
                    ),
                    
