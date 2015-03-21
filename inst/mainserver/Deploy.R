@@ -11,13 +11,21 @@
 #### ------------------------------------------------------------------
 
 # Choose Shiny path based on user name
+<<<<<<< Updated upstream
 #userName = 'Bob'
+=======
+# userName = 'Bob'
+>>>>>>> Stashed changes
 #userName = 'caitiecollins'
 #userName = 'Daren'
 #userName = 'saraschaal'
 #userName = 'liuyang'
+<<<<<<< Updated upstream
 #userName = 'katie'
 #userName = 'Nik'
+=======
+username = 'Nik'
+>>>>>>> Stashed changes
 
 shinyPath = switch(userName,
                    'Bob'='/Users/Bob/Dropbox/Bob/Work/Side Projects/MINOTAUR/inst/mainserver',
