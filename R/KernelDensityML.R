@@ -94,7 +94,11 @@ KernelDensityML <- function(dfv, column.nums){
   # calculate deviance under optimal bandwidth
   kernelDist <- -2*apply(df.vars,1,function(x){.logLike_external(x,df.subSample,ml_bandwidth)})
   
-  return(kernelDist)
+  Dm.rank <- nlocs-rank(kernelDist, na.last="keep")+1
+  minus.log.emp.p <- -log(Dm.rank/(nlocs-sum(is.na(kernelDist))))
+  
+  return(list(Kd.ML.mll = kernelDist, Kd.ML.rank=Dm.rank, minus.log.emp.p=minus.log.emp.p))
+  
 } # end KernelDensityML
 
 

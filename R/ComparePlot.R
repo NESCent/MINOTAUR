@@ -23,8 +23,9 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   try(plot(ind, dfv2$Md.mlp[ind], col=colorVect[ind], pch=19, ylab="Mahalanobis"))
  
   ### PCS ######
+  if(any(is.numeric(dfv2$pcs.mlp))){
   try(plot(ind, dfv2$pcs.mlp[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS"))
-
+  }
   ### KernelDensSD ######
   #Kd <- KernelDensSD(dfv2, colnums, 1.5)
   try(plot(ind, dfv2$Kd.mlp[ind], col=colorVect[ind], pch=19, ylab="Kernel SD"))
@@ -35,7 +36,8 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 
   ### KernelDens ML ######
   try(plot(ind, dfv2$Kd.ML.mll[ind], col=colorVect[ind], pch=19, ylab = "Kernel ML"))
- 
+  
+
  }
 
 #'  KE Lotterhos
@@ -105,7 +107,7 @@ Getdf <- function(dfv2, colnums, n.sd=1.5, alpha=0.5, whichfun = "all"){
   return(data.frame(dfv2, Md=Md$Dm, Md.rank=Md$Dm.rank, Md.mlp=Md$minus.log.emp.p,
                     Kd=Kd$empDens, Kd.rank=Kd$Dk.rank, Kd.mlp=Kd$minus.log.emp.p,
                     #Hcd.rank=Hcd$h.rank, Hcd.mlp=Hcd$minus.log.p,
-                    Kd.ML.mll=Kd.ML,
+                    Kd.ML.mll=Kd.ML$Kd.ML.mll, Kd.ML.rank= Kd.ML$Kd.ML.rank, Kd.ML.mlp=Kd.ML$minus.log.emp.p,
                     pcs.d = pcs$D.pcs, pcs.rank=pcs$D.pcs.rank, pcs.mlp=pcs$minus.log.emp.p)
          )
 }
