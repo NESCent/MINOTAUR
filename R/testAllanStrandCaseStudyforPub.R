@@ -24,7 +24,9 @@ plot(dfv6$mid, dfv6$log.slope)
   top.pcs <- dfv6.out[dfv6.out$pcs.rank <= 10,]
   top.kd <- dfv6.out[dfv6.out$Kd.ML.rank <= 10,]
   
-  #write.table(top,"~/Google Drive/MultiOutlierVisualization/practiceData/AllanTopHits.csv" ,sep = ", ")
+  top <- rbind(top.md, top.kd)
+  top <- top[-which(duplicated(top$locus)),]
+  write.table(top,"~/Google Drive/MultiOutlierVisualization/practiceData/AllanTopHits.csv" ,sep = ", ")
 
 pdf("~/Google Drive/MultiOutlierVisualization/practiceData/AllanStrandOutliers.pdf",
     width=4, height=6)
