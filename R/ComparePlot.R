@@ -11,7 +11,7 @@ source("R/KernelDensityML.R")
 
 ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   
-  par(mfrow=c(4,1), mar=c(3,4,0,1), bty="l")
+  par(mfrow=c(3,1), mar=c(3,4,0,1), bty="l")
   
   if(length(colorVect)==0){colorVect = rep(1, nrow(dfv2))}
   
@@ -28,7 +28,7 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
   }
   ### KernelDensSD ######
   #Kd <- KernelDensSD(dfv2, colnums, 1.5)
-  try(plot(ind, dfv2$Kd.mlp[ind], col=colorVect[ind], pch=19, ylab="Kernel SD"))
+  #try(plot(ind, dfv2$Kd.mlp[ind], col=colorVect[ind], pch=19, ylab="Kernel SD"))
   
   ### Hclust ######
   #Hcd <- hclust.ranking(dfv2, colnums)

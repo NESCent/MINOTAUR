@@ -83,25 +83,3 @@ source("R/ComparePlot.R")
 
 
 ##################################################
-#### Allan Strand's data ######
- dfv6 <- read.csv("~/Google Drive/MultiOutlierVisualization/practiceData/allanstrand_cline-parameters34.csv")#, sep= "\t", header=TRUE)
- head(dfv6)
- plot(dfv6$slope, dfv6$mid)
-  hist(dfv6$slope, breaks=30000, xlim=c(-10,10))
- dfv6.2<- dfv6[-which(dfv6$slope < -10),] #removes 3 loci
- plot(dfv6$mid, log(abs(dfv6$slope))) 
-  dfv6$log.slope <- log(abs(dfv6$slope))
-  head(dfv6)
-  dfv6.out <- Getdf(dfv6, c(3,13))
-    head(dfv6.out)
-  ComparePlot(dfv6.out)
-
-   dfv6.out2 <- Getdf(dfv6, c(3,13, 6))
-  plot(dfv6$X1, dfv6$X2)
-    head(dfv6.out2)
-  ComparePlot(dfv6.out2)
-  head(dfv6.out2)
-  which(dfv6.out2$Md==max(dfv6.out2$Md))
-  which(dfv6.out2$Kd.ML.mll>20)
-  dfv6.out2[grep(pattern = "mt", dfv6.out$locus),]
-  dfv6.out2[grep(pattern = "mdh", dfv6.out$locus),]
