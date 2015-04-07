@@ -1,9 +1,9 @@
 
 
 # scatterplot
-output$scatter_xSelection <- renderUI({.getxSelection(mainData)})
-output$scatter_ySelection <- renderUI({.getySelection(mainData)})
-output$scatter_colVarSelection <- renderUI({.getColVarSelection(mainData)})
+output$scatter_xSelection <- renderUI({.getxSelection(rv$subData)})
+output$scatter_ySelection <- renderUI({.getySelection(rv$subData)})
+output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
 output$scatter_colPal <- renderUI({.getColPal()})
 
 output$scatterplot1 <- renderPlot({
@@ -14,13 +14,13 @@ output$scatterplot1 <- renderPlot({
     colVar <- input$colVarSelection
     colPal <- input$colPal
     
-    if(!is.null(mainData)){
+    if(!is.null(rv$subData)){
         if(!is.null(ySelection) && !is.null(ySelection)){
             
             # Obtain data selected by user
-            xData = mainData[,names(mainData)==xSelection]
-            yData = mainData[,names(mainData)==ySelection]
-            colData = mainData[,names(mainData)==colVar]
+            xData = rv$subData[,names(rv$subData)==xSelection]
+            yData = rv$subData[,names(rv$subData)==ySelection]
+            colData = rv$subData[,names(rv$subData)==colVar]
             
             # get colors
             get.levels <- levels(as.factor(colData))
