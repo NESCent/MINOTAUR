@@ -1,4 +1,5 @@
 
+
 ##########
 ## ui.R ##
 ##########
@@ -20,7 +21,8 @@ source("uiFunctions.R")
 
 #### ------------------------------------------------------------------
 
-shinyUI(navbarPage("MINOTAUR",
+shinyUI(bootstrapPage(navbarPage("MINOTAUR",
+   
                    
    ##################
    ## WELCOME PAGE ##
@@ -39,15 +41,30 @@ shinyUI(navbarPage("MINOTAUR",
   
   tabPanel("Cleanup data",
     fluidRow(
+      column(5,
+          wellPanel(
+            p('Use this page to reduce a large data set down to a smaller subset ready for plotting.',strong('Do not attempt to remove outliers at this stage!'),'These will be identified and plotted in remaining screens'),
+            style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px")
+      )
+    ),
+    fluidRow(
       column(3,
+        h5('update or save changes to data'),
+        uiOutput('updateButton'),
+        hr(),
+        h5('select columns to remove'),
+        uiOutput('selectColumns'),
+        helpText('use shift or ctrl to select multiple values (ctrl can also be used to deselect all values)'),
+        hr(),
+        h5('select variable to filter'),
         uiOutput('filterVariable'),
-        helpText('choose a variable to subset by'),
-        uiOutput('filterActiveDefault'),
-        htmlOutput('filterOptions'),
-        uiOutput('subsetPanels')
+        uiOutput('subsetPanels_current'),
+        hr(),
+        uiOutput('subsetPanels_locked')
       ),
       column(8,
         dataTableOutput("mainDataTable")
+        #,htmlOutput('scratchPad')
       )
     )
   ),
@@ -157,4 +174,4 @@ shinyUI(navbarPage("MINOTAUR",
     )
   )
   
-))
+)))
