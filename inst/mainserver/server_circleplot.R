@@ -1,7 +1,7 @@
 
 # circular Manhattan plot
 output$selectplot_circleMH <- renderUI({
-    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
+    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mainData)), multiple=FALSE,
     options=list(
     placeholder='bubble, manhattan or circle manhattan',
     selectOnTab=TRUE,
@@ -13,5 +13,5 @@ output$selectplot_circleMH <- renderUI({
 
 # circular Manhattan plot
 output$circleMHTplot <- renderPlot({
-    circosmht(mydata=mytoysdata, pcut.outlier=0.002)
+    circosmht(mydata=mainData, pcut.outlier=0.002)
 })
