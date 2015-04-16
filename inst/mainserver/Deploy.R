@@ -11,11 +11,11 @@
 #### ------------------------------------------------------------------
 
 # Choose Shiny path based on user name
-userName = 'Bob'
+#userName = 'Bob'
 #userName = 'caitiecollins'
 #userName = 'Daren'
 #userName = 'saraschaal'
-#userName = 'liuyang'
+userName = 'liuyang'
 #userName = 'katie'
 #userName = 'Nik'
 
