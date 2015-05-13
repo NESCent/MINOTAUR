@@ -1,28 +1,43 @@
 
 # hex chart
+output$hex_xSelection <- renderUI({.getxSelection(rv$subData)})
+output$hex_ySelection <- renderUI({.getySelection(rv$subData)})
+output$hex_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
+output$hex_colPal <- renderUI({.getColPal()})
+
 output$hexChart <- renderPlot({
     
-    .denseHexChart <- function(mainData, input){
+#    .denseHexChart <- function(mainData, input){
         
         hexplot <- NULL
-        
         xSelection <- input$xSelection
         ySelection <- input$ySelection
+        colVar <- input$colVarSelection
+        colPal <- input$colPal
         
         if(!is.null(mainData)){
             if(!is.null(ySelection) && !is.null(ySelection)){
                 
                 # Obtain data selected by user
-                xData = mainData[,names(mainData)==xSelection]
-                yData = mainData[,names(mainData)==ySelection]
+                xData = rv$subData[,names(rv$subData)==xSelection]
+                yData = rv$subData[,names(rv$subData)==ySelection]
+                colData = rv$subData[,names(rv$subData)==colVar]
+                
+                # get colors
+                get.levels <- levels(as.factor(colData))
+                n.levels <- length(get.levels)
+                colIndex <- as.numeric(as.factor(colData))
+                myCol <- get(colPal)(n.levels)[colIndex]
                 
                 outputData = data.frame(xData,yData)
-                
-                hexplot <- plot(hexbin(outputData[,2] ~ outputData[,1]))
+                cr <- colorRampPalette(c('gray','blue')) # just for now, for testing... until we integrate it fully
+                hexplot <- hexbinplot(outputData[,2] ~ outputData[,1], xbins=20, xlab=xSelection, ylab=ySelection, colramp=cr, colorcut = seq(0, 1, length = 7))
+
+
                 
             }
         }
-        return(hexplot)
-    }
-    .denseHexChart(mainData, input)
+        hexplot
+#    }
+#    .denseHexChart(mainData, input)
 }) # end hexChart

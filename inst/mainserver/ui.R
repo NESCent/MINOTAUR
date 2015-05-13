@@ -142,26 +142,56 @@ shinyUI(bootstrapPage(navbarPage("MINOTAUR",
     
     ## HEX PLOT 1
     tabPanel("Hex Plot (plain R)",
-      fluidRow(
+      sidebarLayout(
+          
+        # sidebar panel
+        sidebarPanel(
+            
+          # header and information
+          h2("Comparing Statistics"),
+          p("Change axes to different outlier statistics to compare between them."),
+          br(),
+            
+          uiOutput("hex_xSelection"),
+          uiOutput("hex_ySelection"),
+          uiOutput("hex_colVarSelection"),
+          uiOutput("hex_colPal")
+        ),
+      
+        # main panel
         mainPanel(
           h3('Hex plot (plain R)'),
           plotOutput("hexChart")
-        )
-      )
-    ),
-    
-    ## HEX PLOT 2
-    tabPanel("Hex Plot (ggplot)",
-      fluidRow(
-        mainPanel(
-          h3('Hex plot (ggplot)'),
-          plotOutput("ggHexChart")
-        )
       )
     )
   ),
   
-  
+    # SMOOTHSCATTER PLOT
+    tabPanel("Smoothed Scatter Plot",
+      sidebarLayout(
+             
+        # sidebar panel
+        sidebarPanel(
+               
+          # header and information
+          h2("Comparing Statistics"),
+          p("Change axes to different outlier statistics to compare between them."),
+          br(),
+       
+          uiOutput("smooth_xSelection"),
+          uiOutput("smooth_ySelection"),
+          uiOutput("smooth_colVarSelection"),
+          uiOutput("smooth_colPal")
+          ),
+             
+      # main panel
+      mainPanel(
+        h3('Smoothed Scatter Plot'),
+        plotOutput("smoothscatter")
+      )
+    )
+  )
+),
   #################
   ## 'MORE' PAGE ##
   #################
