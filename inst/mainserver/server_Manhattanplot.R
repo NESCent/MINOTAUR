@@ -1,7 +1,7 @@
 
 ## linear Manhattan plot
 output$selectplot_linearMH <- renderUI({
-    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mytoysdata)), multiple=FALSE,
+    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mainData)), multiple=FALSE,
     options=list(
     placeholder='bubble, manhattan or circle manhattan',
     selectOnTab=TRUE,
@@ -13,5 +13,5 @@ output$selectplot_linearMH <- renderUI({
 
 # linenar Manhattan Plot
 output$LinearMHTplot <- renderPlot({
-    mhtplot(mydata=mytoysdata, pcut.outlier=0.002)
+    mhtplot(mydata=mainData, pcut.outlier=0.002)
 })
