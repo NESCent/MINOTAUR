@@ -13,7 +13,7 @@
 # Choose Shiny path based on user name
 #userName = 'Bob'
 #userName = 'caitiecollins'
-#userName = 'Daren'
+userName = 'Daren'
 #userName = 'saraschaal'
 userName = 'liuyang'
 #userName = 'katie'
