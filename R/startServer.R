@@ -22,7 +22,7 @@
 ## MANIPULATE ##
 ################
 ## hidden function - DAPC server
-MANIPULATE <- function(){
-  runApp(system.file("./mainserver",package="MANIPULATE"))
+labyrinth <- function(){
+  runApp(system.file("./mainserver",package="MINOTAUR"))
 }
 

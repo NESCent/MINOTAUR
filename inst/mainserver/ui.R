@@ -21,12 +21,22 @@ source("uiFunctions.R")
 
 #### ------------------------------------------------------------------
 
-shinyUI(bootstrapPage(navbarPage("MINOTAUR",
-   
-                   
+shinyUI(
+  bootstrapPage(
+    navbarPage(      
+    
+   ###########
+   ## TITLE ##
+   ###########  
+   strong("MINOTAUR"), windowTitle= "MINOTAUR",
+                         
    ##################
    ## WELCOME PAGE ##
    ##################
+   
+   ## TO DO: 
+   ## Improve layout
+   ## Add images of our prettiest plots
    
   tabPanel("Welcome",
     h2("Welcome to the labyrinth!"),
@@ -39,25 +49,41 @@ shinyUI(bootstrapPage(navbarPage("MINOTAUR",
   ## CLEANUP DATA PAGE ##
   #######################
   
-  tabPanel("Cleanup data",
+  tabPanel("Clean-up data",
     fluidRow(
       column(5,
-          wellPanel(
-            p('Use this page to reduce a large data set down to a smaller subset ready for plotting.',strong('Do not attempt to remove outliers at this stage!'),'These will be identified and plotted in remaining screens'),
+             h3("Clean-up Data"),
+             
+          wellPanel(                                    
+            p(strong("Use this page to subset large datasets before plotting."),  
+              br(),
+              "Do", strong("NOT"), "remove outliers by hand!",
+              #br(),
+              "(Outliers will be identified in the adjacent tabs.)"
+              ),
             style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px")
+          
+            # p('Use this page to reduce a large data set down to a smaller subset ready for plotting.',
+            #  strong('Do not attempt to remove outliers at this stage!'),
+            #  'These will be identified and plotted in remaining screens'),
+            #  style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px")
       )
     ),
     fluidRow(
       column(3,
-        h5('update or save changes to data'),
+        h4(strong('Update or save changes to data:')),
         uiOutput('updateButton'),
         hr(),
-        h5('select columns to remove'),
+        h4(strong("Select columns to remove"), "*", strong(":")),
         uiOutput('selectColumns'),
-        helpText('use shift or ctrl to select multiple values (ctrl can also be used to deselect all values)'),
+        helpText("*To select", em("multiple"), "values, use SHIFT or CTRL.",
+                 br(),
+                 "(Note: CTRL can also be used to deselect all values)"), 
+                  ## Need to define what behaviour --> different fns of CTRL
         hr(),
-        h5('select variable to filter'),
+        h4(strong("Select a variable to filter"), "*", strong(":")),        
         uiOutput('filterVariable'),
+        helpText("*For large datasets, this can take a moment..."),
         uiOutput('subsetPanels_current'),
         hr(),
         uiOutput('subsetPanels_locked')
