@@ -1,65 +1,53 @@
 
 #'  R Verity
-#'  March 18, 2015
-#'  calculate density of point i from all other points
-#'  @param df is a dataframe containing observations in rows and statistics in columns
-#'  @param i is the row number that will be compared against all other rows
-#'  @param sigma is the standard deviation of the normal kernel in all dimensions
+#'  May 15, 2015
+#'  Calculate likelihood of each point from all others. Use this to calculate total deviance (-2 times total loglikelihood).
+#'  @param df is a dataframe containing observations in rows and statistics in columns. Should already have been normalised to have same standard deviation in all dimensions.
+#'  @param lambda is the standard deviation of the normal kernel in all dimensions
 #'  @author R Verity
-#'  @keywords internal
+#'  @keywords deviance
 
-## .logLike_internal ##
-# calculate density of point i from all other points
-.logLike_internal = function(df,i,sigma) {
-  rawProbs = rep(0,nrow(df)-1)
-  for (j in 1:ncol(df)) {
-    rawProbs = rawProbs + dnorm(df[i,j],df[-i,j],sd=sigma[j],log=TRUE)
+## .leaveOneOutDeviance ##
+# calculate total deviance
+.leaveOneOutDeviance = function(df,lambda) {
+  logProbMat = 0
+  for (i in 1:ncol(df)) {
+    distMat = dist(df[,i],diag=T,upper=T)
+    logProbMat = logProbMat + dnorm(distMat,sd=lambda,log=T)
   }
-  totalProb = log(mean(exp(rawProbs)))
-  return(totalProb)
-} # end .logLike_internal
-
-
-#'  R Verity
-#'  March 18, 2015
-#'  calculate kernel density of target point given anchor points
-#'  @param target is a vector of points on which the density will be calculated
-#'  @param anchor is a data frame of points used to produce kernel density
-#'  @param sigma is the standard deviation of the normal kernel in all dimensions
-#'  @author R Verity
-#'  @keywords internal
-
-## .logLike_external ##
-# calculate kernel density of target point given anchor points
-.logLike_external = function(target,anchor,sigma) {
-  rawProbs = rep(0,nrow(anchor))
-  for (j in 1:length(target)) {
-    rawProbs = rawProbs + dnorm(target[j],anchor[,j],sd=sigma[j],log=TRUE)
-  }
-  totalProb = log(mean(exp(rawProbs)))
-  return(totalProb)
-} # end .logLike_external
-
-
-#'  R Verity
-#'  March 18, 2015
-#'  calculate deviance (-2*logLikelihood) of all points in data frame based on the internal kernel density
-#'  @param df is a dataframe containing observations in rows and statistics in columns
-#'  @param lambda is a scaling factor on the bandwidth (final bandwidth = lambda*sigma)
-#'  @param sigma is the standard deviation of the normal kernel in all dimensions
-#'  @author R Verity
-#'  @keywords internal
-
-## .deviance_internal ##
-# calculate deviance (-2*logLikelihood) of all points in data frame based on the internal kernel density
-.deviance_internal = function(df,lambda,sigma) {
-  dev <- -2*sum(mapply(.logLike_internal,i=1:nrow(df),MoreArgs=list(df=df,sigma=lambda*sigma)))
-  return(dev)
+  probMat = exp(logProbMat)
+  pointDensity = rowSums.dist(probMat)
+  output = -2*sum(log(pointDensity))
+  return(output)
 }
 
 
 #'  R Verity
-#'  March 18, 2015
+#'  May 15, 2015
+#'  Calculate deviance of all points under kernel density distribution.
+#'  @param df is a dataframe containing observations in rows and statistics in columns. Should already have been normalised to have same standard deviation in all dimensions.
+#'  @param lambda is the standard deviation of the normal kernel in all dimensions
+#'  @author R Verity
+#'  @keywords deviance
+
+## .pointDeviance ##
+# calculate deviance of all points under kernel density distribution
+.pointDeviance = function(df,lambda) {
+  logProbMat = 0
+  for (i in 1:ncol(df)) {
+    distMat = dist(df[,i],diag=T,upper=T)
+    logProbMat = logProbMat + dnorm(distMat,sd=lambda,log=T)
+  }
+  probMat = exp(logProbMat)
+  pointDensity = rowSums.dist(probMat) + (1/sqrt(2*pi*lambda^2))^ncol(df)
+  pointDensity = pointDensity/nrow(df)
+  output = -2*log(pointDensity)
+  return(output)
+}
+
+
+#'  R Verity
+#'  May 15, 2015
 #'  calculate kernel density distance with maximum likelihood bandwidth selection
 #'  @rdname KernelDensityML
 #'  @name KernelDensityML
@@ -78,21 +66,25 @@ KernelDensityML <- function(dfv, column.nums){
   # maximum likelihood.
   # Nb. In theory can work with missing data, but not coded up yet
   
-  # subset and subsample data
+  # extract basic properties of data
   df.vars <- dfv[,column.nums,drop=FALSE]
   nvars <- length(column.nums)
   nlocs <- nrow(df.vars)
-  df.subSample <- df.vars[sample(nlocs,min(200,nlocs)),,drop=FALSE]
   
-  # calculate standard deviation of each variable
+  # calculate standard deviation in each dimension and divide through to normalise
   sigma = apply(df.vars,2,function(x){sd(x)})
+  df.norm = df.vars
+  for (i in 1:nvars) df.norm[,i] = df.norm[,i]/sigma[i]
+  
+  # obtain random sample with which to calculate optimal bandwidth
+  set.seed(42)
+  df.subSample <- df.norm[sample(nlocs,min(1000,nlocs)),,drop=FALSE]
   
   # estimate optimal bandwidth by maximum likelihood
-  optim_results <- optim(par=1,.deviance_internal,df=df.subSample,sigma=sigma,method='Brent',lower=0,upper=10)
-  ml_bandwidth <- optim_results$par*sigma
+  optim_results <- optim(par=1,.leaveOneOutDeviance,df=df.subSample,method='Brent',lower=0,upper=10)
   
   # calculate deviance under optimal bandwidth
-  kernelDist <- -2*apply(df.vars,1,function(x){.logLike_external(x,df.subSample,ml_bandwidth)})
+  kernelDist <- .pointDeviance(lambda=optim_results$par,df=df.norm)
   
   Dm.rank <- nlocs-rank(kernelDist, na.last="keep")+1
   minus.log.emp.p <- -log(Dm.rank/(nlocs-sum(is.na(kernelDist))))
