@@ -1,0 +1,8 @@
+require(shiny)
+require(devtools)
+require(rCharts)
+require(stats4)
+require(scales)
+require(adegenet)
+setwd("inst/mainserver")
+runApp()
