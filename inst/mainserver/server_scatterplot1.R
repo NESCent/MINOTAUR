@@ -26,7 +26,9 @@ output$scatterplot1 <- renderPlot({
             get.levels <- levels(as.factor(colData))
             n.levels <- length(get.levels)
             colIndex <- as.numeric(as.factor(colData))
+            if(!(colPal=="black")){
             myCol <- get(colPal)(n.levels)[colIndex]
+            }else(myCol <- rgb(0,0,0,0.2))
             
             # produce plot
             scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)

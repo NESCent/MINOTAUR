@@ -51,7 +51,8 @@
 ## .getColPal ##
 .getColPal <- function(){
   out <- selectInput("colPal", "Choose a color pallette to use:",
-    c("SeaSun" = "seasun",
+    c("Just black" = "black",
+      "SeaSun" = "seasun",
       "Funky" = "funky",
       "Spectral" = "spectral",
       "Azur" = "azur",
