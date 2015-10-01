@@ -123,7 +123,10 @@ shinyUI(
         # main panel
         mainPanel(
           h3('Scatterplot'),
-          plotOutput("scatterplot1")
+          p("Warning: scatterplot is slow with > 50,000 (need to test) points.  Suggest smooth scatter or hexplot."),
+          plotOutput("scatterplot1"),
+          h4('Making the scatterplot'),
+          p("To do: Add 'none' to variable to color by.  Add sliding bars for x-axis and y-axis.")
         )
       )
     ),
