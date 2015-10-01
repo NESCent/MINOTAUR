@@ -30,14 +30,41 @@ shinyPath = switch(userName,
 )
 
 # Load packages
-require(shiny)
+if(!('shiny' %in% installed.packages())){
+  install.packages("shiny")
+}
+if(!('devtools' %in% installed.packages())){
+  install.packages('devtools')
+}
+if(!('stats4' %in% installed.packages())){
+  install.packages('stats4')
+}
+if(!('scales' %in% installed.packages())){
+  install.packages('scales')
+}
+
+if(!('rCharts' %in% installed.packages())){
+  install_github('rCharts')
+}
+if(!('ramnathv' %in% installed.packages())){
+  install_github('ramnathv')
+}
+if(!('rHighcharts' %in% installed.packages())){
+  install_github('rHighcharts')
+}
+if(!('metagraf' %in% installed.packages())){
+  install_github('metagraf')
+}
+if(!('adegenet' %in% installed.packages())){
+  install.packages('adegenet')
+}
+
 require(devtools)
 require(rCharts)
 require(stats4)
 require(scales)
-#install_github('rCharts','ramnathv')
-#install_github('rHighcharts','metagraf')
-#install.packages('adegenet'); require(adegenet)
+require(adegenet)
+require(shiny)
 
 # run Shiny app
 runApp(shinyPath)
