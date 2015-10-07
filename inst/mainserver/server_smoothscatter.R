@@ -29,7 +29,8 @@ output$smoothscatter <- renderPlot({
       myCol <- get(colPal)(n.levels)[colIndex]
       
       # produce plot
-      smooth <- smoothScatter(xData ~ yData, xlab=xSelection, ylab=ySelection) # should integrate color options
+      cr <- colorRampPalette(myCol)
+      smooth <- smoothScatter(xData ~ yData, xlab=xSelection, ylab=ySelection, colramp=cr)
     }
   }
   smooth

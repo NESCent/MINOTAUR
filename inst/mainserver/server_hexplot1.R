@@ -15,23 +15,22 @@ output$hexChart <- renderPlot({
         colVar <- input$colVarSelection
         colPal <- input$colPal
         
-        if(!is.null(mainData)){
-            if(!is.null(ySelection) && !is.null(ySelection)){
+        if(!is.null(rv$subData)){
+          if(!is.null(ySelection) && !is.null(ySelection)){
+            
+            # Obtain data selected by user
+            xData = rv$subData[,names(rv$subData)==xSelection]
+            yData = rv$subData[,names(rv$subData)==ySelection]
+            colData = rv$subData[,names(rv$subData)==colVar]
                 
-                # Obtain data selected by user
-                xData = rv$subData[,names(rv$subData)==xSelection]
-                yData = rv$subData[,names(rv$subData)==ySelection]
-                colData = rv$subData[,names(rv$subData)==colVar]
+            # get colors
+            get.levels <- levels(as.factor(colData))
+            n.levels <- length(get.levels)
+            colIndex <- as.numeric(as.factor(colData))
+            myCol <- get(colPal)(n.levels)[colIndex]
                 
-                # get colors
-                get.levels <- levels(as.factor(colData))
-                n.levels <- length(get.levels)
-                colIndex <- as.numeric(as.factor(colData))
-                myCol <- get(colPal)(n.levels)[colIndex]
-                
-                outputData = data.frame(xData,yData)
-                cr <- colorRampPalette(c('gray','blue')) # just for now, for testing... until we integrate it fully
-                hexplot <- hexbinplot(outputData[,2] ~ outputData[,1], xbins=20, xlab=xSelection, ylab=ySelection, colramp=cr, colorcut = seq(0, 1, length = 7))
+            cr <- colorRampPalette(myCol)
+            hexplot <- hexbinplot(as.numeric(xData) ~ as.numeric(yData), xbins=20, xlab=xSelection, ylab=ySelection, colramp=cr, colorcut = seq(0, 1, length.out = n.levels))
 
 
                 
