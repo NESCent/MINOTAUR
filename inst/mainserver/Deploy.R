@@ -31,6 +31,7 @@ shinyPath = switch(userName,
 
 # Load packages
 load_package <- function(){
+  # feel free to add more required packages
   common_packages <- c("shiny", "devtools", "stats4", "hexbin", "scales", "adegenet","RColorBrewer")
   
   for(i in 1:length(common_packages)){
@@ -52,15 +53,15 @@ load_package <- function(){
     biocLite("OmicCircos");
   }
   
-  suppressMessages(require(devtools));
   suppressMessages(require(rCharts));
+  suppressMessages(require(rHighcharts));
   suppressMessages(require(stats4));
   suppressMessages(require(scales));
   suppressMessages(require(adegenet));
   suppressMessages(require(shiny));
   suppressMessages(require(RColorBrewer));
-  suppressMessages(require(scales));
   suppressMessages(require(OmicCircos));
+  suppressMessages(require(hexbin));  
 }
 
 # check and install missing packages, and load
