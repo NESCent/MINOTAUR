@@ -1,9 +1,9 @@
 
 # circular Manhattan plot
-setwd("~/MINOTAUR//inst/mainserver")
-output$select_circleMH <- renderUI({.getySelection(rv$subData)})
-output$smooth_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
-output$smooth_colPal <- renderUI({.getColPal()})
+#setwd("~/MINOTAUR//inst/mainserver")
+#output$select_circleMH <- renderUI({.getySelection(rv$subData)})
+#output$smooth_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
+#output$smooth_colPal <- renderUI({.getColPal()})
 
 output$selectplot_circleMH <- renderUI({
     selectizeInput('Choose plot','select variables for plot',choices=c('',names(mainData)), multiple=FALSE,
