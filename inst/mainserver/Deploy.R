@@ -40,11 +40,11 @@ load_package <- function(){
   }
   
   if("rHighcharts" %in% rownames(installed.packages()) == FALSE) {
-    devtools::install_github("metagraf/rHighcharts")
+    devtools::install_github("metagraf/rHighcharts");
   }
   
   if("rCharts" %in% rownames(installed.packages()) == FALSE) {
-    devtools::install_github("ramnathv/rCharts")
+    devtools::install_github("ramnathv/rCharts");
   }
   
   if("OmicCircos" %in% rownames(installed.packages()) == FALSE) {
