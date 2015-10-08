@@ -1,6 +1,6 @@
 
 ## linear Manhattan plot
-output$selectplot_linearMH <- renderUI({
+output$select_linearMH <- renderUI({
     selectizeInput('Choose plot','select a variable',choices=c('',names(mainData)), multiple=FALSE,
     options=list(
     placeholder='choose a p value',

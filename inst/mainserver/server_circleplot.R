@@ -5,7 +5,7 @@
 #output$smooth_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
 #output$smooth_colPal <- renderUI({.getColPal()})
 
-output$selectplot_circleMH <- renderUI({
+output$select_circleMH <- renderUI({
     selectizeInput('Choose plot','select variables for plot',choices=c('',names(mainData)), multiple=FALSE,
     options=list(
     placeholder='circle manhattan',

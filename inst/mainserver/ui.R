@@ -146,7 +146,7 @@ shinyUI(
         
         # main panel
         mainPanel(
-          plotOutput("LinearMHTplot", height="400px",width="600px")
+          plotOutput("LinearMHTplot", height="450px",width="800px")
         )
       )
     ),
