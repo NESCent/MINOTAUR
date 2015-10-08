@@ -23,48 +23,48 @@ shinyPath = switch(userName,
                    'Bob'='/Users/Bob/Dropbox/Bob/Work/Side Projects/MINOTAUR/inst/mainserver',
                    'caitiecollins' = '/Users/caitiecollins/MINOTAUR/inst/mainserver',
                    'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MINOTAUR/inst/mainserver',
-                   'liuyang' = 'G:/MINOTAUR/inst/mainserver',
+                   'liuyang' = '~/MINOTAUR/inst/mainserver',
                    'Daren' = '/Users/darencard/Desktop/git/MINOTAUR/inst/mainserver',
                    'katie' = '~/Desktop/MINOTAUR/inst/mainserver',
                    'Nik' = '~/Documents/Niks_office/Scratch/MINOTAUR/inst/mainserver'
 )
 
 # Load packages
-if(!('shiny' %in% installed.packages())){
-  install.packages("shiny")
-}
-if(!('devtools' %in% installed.packages())){
-  install.packages('devtools')
-}
-if(!('stats4' %in% installed.packages())){
-  install.packages('stats4')
-}
-if(!('scales' %in% installed.packages())){
-  install.packages('scales')
+load_package <- function(){
+  common_packages <- c("shiny", "devtools", "stats4", "hexbin", "scales", "adegenet","RColorBrewer")
+  
+  for(i in 1:length(common_packages)){
+    if(common_packages[i] %in% rownames(installed.packages()) == FALSE) {
+      install.packages(common_packages[i]);
+    }
+  }
+  
+  if("rHighcharts" %in% rownames(installed.packages()) == FALSE) {
+    devtools::install_github("metagraf/rHighcharts")
+  }
+  
+  if("rCharts" %in% rownames(installed.packages()) == FALSE) {
+    devtools::install_github("ramnathv/rCharts")
+  }
+  
+  if("OmicCircos" %in% rownames(installed.packages()) == FALSE) {
+    source("http://bioconductor.org/biocLite.R");
+    biocLite("OmicCircos");
+  }
+  
+  suppressMessages(require(devtools));
+  suppressMessages(require(rCharts));
+  suppressMessages(require(stats4));
+  suppressMessages(require(scales));
+  suppressMessages(require(adegenet));
+  suppressMessages(require(shiny));
+  suppressMessages(require(RColorBrewer));
+  suppressMessages(require(scales));
+  suppressMessages(require(OmicCircos));
 }
 
-if(!('rCharts' %in% installed.packages())){
-  install_github('rCharts')
-}
-if(!('ramnathv' %in% installed.packages())){
-  install_github('ramnathv')
-}
-if(!('rHighcharts' %in% installed.packages())){
-  install_github('rHighcharts')
-}
-if(!('metagraf' %in% installed.packages())){
-  install_github('metagraf')
-}
-if(!('adegenet' %in% installed.packages())){
-  install.packages('adegenet')
-}
-
-require(devtools)
-require(rCharts)
-require(stats4)
-require(scales)
-require(adegenet)
-require(shiny)
+# check and install missing packages, and load
+load_package()
 
 # run Shiny app
 runApp(shinyPath)
