@@ -1,9 +1,9 @@
 
 ## linear Manhattan plot
 output$selectplot_linearMH <- renderUI({
-    selectizeInput('Choose plot','select statistic for plot',choices=c('',names(mainData)), multiple=FALSE,
+    selectizeInput('Choose plot','select a variable',choices=c('',names(mainData)), multiple=FALSE,
     options=list(
-    placeholder='bubble, manhattan or circle manhattan',
+    placeholder='choose a p value',
     selectOnTab=TRUE,
     create=FALSE,
     onInitialize = I('function() { this.setValue(""); }')

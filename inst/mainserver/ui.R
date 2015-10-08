@@ -138,13 +138,14 @@ shinyUI(
         # sidebar panel
         sidebarPanel(
           h3('Manhattan Plot'),
-          uiOutput('selectplot_linearMH'),
-          p('Select a statistic for plotting')
+          p('Select a variable'), 
+          br(),
+          
+          uiOutput('select_linearMH')
         ),
         
         # main panel
         mainPanel(
-          h3('Manhattan Plot'),
           plotOutput("LinearMHTplot", height="400px",width="600px")
         )
       )
@@ -157,14 +158,19 @@ shinyUI(
         # sidebar panel
         sidebarPanel(
           h3('Circle Plot'),
-          uiOutput('selectplot_circleMH'),
-          p('Select a statistic for plotting')
-        ),
+          p("Be patient, slow with > 50,000 points. Suggest smooth scatter or hexplot."),
+          br(),
+          
+          sliderInput("obs", "P values cutoff (Mahalanobis):", min = 0, max = 1, step=0.001, value = 0.01),
+          br(),
+          
+          p('Select variables (less than 3)'),
+          uiOutput('select_circleMH')
+          ),
         
         # main panel
         mainPanel(
-          h3('Circle Plot'),
-          plotOutput("circleMHTplot", height="400px",width="400px")
+          plotOutput("circleMHTplot", height="800px",width="800px")
         )
       )
     ),

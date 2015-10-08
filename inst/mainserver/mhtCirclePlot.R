@@ -26,25 +26,7 @@ linkcreat <- function(dat = seg.value, traitid = NULL, pvalid = NULL, pcut.outli
   return(link.outlier.v)
 }
 
-loadpackages <- function(){
-  if("scales" %in% rownames(installed.packages()) == FALSE) {
-    install.packages("scales");
-  }
-  if("RColorBrewer" %in% rownames(installed.packages()) == FALSE) {
-    install.packages("RcolorBrewer")
-  }
-  if("OmicCircos" %in% rownames(installed.packages()) == FALSE) {
-    source("http://bioconductor.org/biocLite.R");
-    biocLite("OmicCircos");
-  }
-  suppressMessages(require(RColorBrewer));
-  suppressMessages(require(scales));
-  suppressMessages(require(OmicCircos));
-}
-
 circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_Beta","Trait2_Beta","Trait3_Beta"), trait.pvalnam = c("Trait1_P","Trait2_P","Trait3_P"), pcut.outlier=0.002){
-
-  loadpackages()
 
   seg.file <- data.frame(seg.name=mydata[,Chr], seg.Start=mydata[,BP], seg.End=mydata[,BP]+1, the.v="NA", NO="NA")
   #seg.value <- data.frame(seg.name=mydata[,Chr], seg.po=mydata[,BP],name1=mydata[,betaidx])
@@ -53,7 +35,7 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
   traitidxlist = match(traitsname, names(seg.value))  
   trait.pidxlist = match(trait.pvalnam, names(seg.value))
   
-  circlewidth <- 60
+  circlewidth <- 120
   if(length(traitidxlist) > 6){
     circlewidth <- round(300/length(traitidxlist),0)
   }
@@ -73,6 +55,7 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
   colors <- brewer.pal(9, "Set1")
   
   linkpos <- 400 - length(traitidxlist) * circlewidth - 20
+  linkpos <- 100
   #linkpos <- ifelse(linkpos > 200, 200, 100)
   if (linkpos > 200){
     linkpos <- 200
@@ -80,14 +63,16 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
     linkpos <- 100
   }
   
+  #circlewidth <- 100
   par(mar=c(2,2,2,2));
+  par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
   circos(R=400,type="chr",cir=db, col=rep(alpha(colors,0.6),length.out=seg.number), print.chr.lab=T, W=40,scale=T);
   for (i in 1:length(traitidxlist)){
     tmpcolor = alpha(colors[i], 0.3)
     outlier.link = linkcreat(dat=seg.value, traitid=traitidxlist[i], pvalid=trait.pidxlist[i], pcut.outlier=pcut.outlier)
-    circos(R=400 - i* circlewidth,cir=db,W=circlewidth,mapping=seg.value, col.v=traitidxlist[i],type="s",B=F,col=tmpcolor,lwd=0.15, scale=T);
-    circos(R=linkpos,cir=db,W=50,mapping=outlier.link, type="link",lwd=0.2,col= tmpcolor);
+    circos(R=400 - i* 100,cir=db,W=circlewidth+30,mapping=seg.value, col.v=traitidxlist[i],type="s",B=F,col=tmpcolor,lwd=0.15, scale=T);
+    circos(R=linkpos,cir=db,W=100,mapping=outlier.link, type="link",lwd=0.2,col= tmpcolor);
   }
   
 }
