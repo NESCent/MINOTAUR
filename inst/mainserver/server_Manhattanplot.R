@@ -1,24 +1,15 @@
 
 ## linear Manhattan plot
-<<<<<<< HEAD
-
 output$linearMH_y1Selection <- renderUI({
     selectizeInput('choose_y1_plot','Select y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
   })
 
 output$linearMH_p2Selection <- renderUI({
   selectizeInput('choose_pval','Mark outliers by second variable (usually p value)',choices=c(names(rv$subData)), selected = "Trait1_P"  )
-=======
-output$select_linearMH <- renderUI({
-    selectizeInput('yaxis','select y-axis variable',choices=names(rv$subData), multiple=FALSE,
-                   selected = "Trait1_Beta")
->>>>>>> e79462fa0b2da70b7f04d0635ab819515727a59c
 })
-
 
 # linenar Manhattan Plot
 output$LinearMHTplot <- renderPlot({
-<<<<<<< HEAD
     yselect = input$choose_y1_plot
     logy = input$logy1Checkbox
     pselect = input$choose_pval
@@ -32,13 +23,8 @@ output$LinearMHTplot <- renderPlot({
       } 
     } 
     mhtplots
-=======
+
     yname = input$yaxis
-    
-    if(!is.null(rv$subData) && !is.null(yname)){
-      mhtplot(mydata=rv$subData, pcut.outlier=0.002, statistic.plot = yname)
-    }
->>>>>>> e79462fa0b2da70b7f04d0635ab819515727a59c
 })
 
 
