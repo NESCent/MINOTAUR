@@ -15,8 +15,8 @@ require("stats4")
 require("adegenet")
 
 ## temporarily sourcing .R files here
-source("mhtCirclePlot.R")
-source("mhtplot.R")
+#source("mhtCirclePlot.R")
+#source("mhtplot.R")
 source("uiFunctions.R")
 
 #### ------------------------------------------------------------------
@@ -138,10 +138,18 @@ shinyUI(
         # sidebar panel
         sidebarPanel(
           h3('Manhattan Plot'),
-          p('Select a variable'), 
+          p('The x axis needs chromosome and coordinates informaiton. Make sure "Chr", "BP" in the columns names of your data or "clean-up data" '), 
           br(),
           
-          uiOutput('select_linearMH')
+          uiOutput('linearMH_y1Selection'),
+          checkboxGroupInput("logy1Checkbox", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
+          br(),
+          
+          uiOutput('linearMH_p2Selection'),
+          br(),
+
+          textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002)
+          #uiOutput('select_linearMH')
         ),
         
         # main panel
@@ -154,18 +162,23 @@ shinyUI(
     ## CIRCLE PLOT
     tabPanel("Circle Plot",
       sidebarLayout(
-        
         # sidebar panel
         sidebarPanel(
           h3('Circle Plot'),
-          p("Be patient, slow with > 50,000 points. Suggest smooth scatter or hexplot."),
+          p("Be patient, SLOW with > 50,000 points. Suggest smooth scatter or hexplot."),
+          br(),
+          p('The circle plot needs chromosome and coordinates. Make sure "Chr", "BP" in the columns names of your data and "clean-up data"'), 
           br(),
           
-          sliderInput("obs", "P values cutoff (Mahalanobis):", min = 0, max = 1, step=0.001, value = 0.01),
+          uiOutput('circle1mh'),
+          checkboxGroupInput("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10"),inline = TRUE),
           br(),
           
-          p('Select variables (less than 3)'),
-          uiOutput('select_circleMH')
+          uiOutput('circle2mh'),
+          checkboxGroupInput("logV2Checkbox", "log (inner circle)", choices = c("log2","log10"),inline = TRUE),          
+          br(),
+
+          textInput(inputId="pcut", label="P cutoff for outliers", value = 0.001)
           ),
         
         # main panel

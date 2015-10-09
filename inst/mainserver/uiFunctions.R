@@ -32,6 +32,18 @@
   return(out)
 } # end .getySelection
 
+.getpSelection <- function(mainData){
+  out <- NULL
+  if(!is.null(mainData)){
+    out <- selectInput(
+      inputId = "pSelection",
+      label = "Choose p value cutoff:",
+      choices = names(mainData)
+    )
+  }
+  return(out)
+} # end .getxSelection
+
 
 ## .getColVarSelection ##
 .getColVarSelection <- function(mainData){
