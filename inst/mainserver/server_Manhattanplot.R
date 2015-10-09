@@ -1,17 +1,17 @@
 
 ## linear Manhattan plot
 output$select_linearMH <- renderUI({
-    selectizeInput('Choose plot','select a variable',choices=c('',names(mainData)), multiple=FALSE,
-    options=list(
-    placeholder='choose a p value',
-    selectOnTab=TRUE,
-    create=FALSE,
-    onInitialize = I('function() { this.setValue(""); }')
-    )
-    )
+    selectizeInput('yaxis','select y-axis variable',choices=names(rv$subData), multiple=FALSE,
+                   selected = "Trait1_Beta")
 })
 
 # linenar Manhattan Plot
 output$LinearMHTplot <- renderPlot({
-    mhtplot(mydata=mainData, pcut.outlier=0.002)
+    #yname = NULL
+    yname = input$yaxis
+   
+    print(yname)
+    if(!is.null(rv$subData) && !is.null(yname)){
+      mhtplot(mydata=rv$subData, pcut.outlier=0.002, statistic.plot = yname)
+    }
 })
