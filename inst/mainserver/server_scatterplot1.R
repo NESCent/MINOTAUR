@@ -6,6 +6,20 @@ output$scatter_ySelection <- renderUI({.getySelection(rv$subData)})
 output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
 output$scatter_colPal <- renderUI({.getColPal()})
 
+### Plot function, need to move to function area
+  plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL){
+  data1 <- cbind(x, y)
+  data1b <- data1[complete.cases(data1),]
+  if(length(xlim)==0){xlim=max(abs(x)*1.01, na.rm=TRUE)}
+  if(length(ylim)==0){ylim=max(abs(y)*1.01, na.rm=TRUE)}  
+        binned <- bin2(data1b, 
+                 matrix(c(-xlim,xlim,-ylim,ylim), 2,2, byrow=TRUE), 
+                 nbin=c(100,100))
+    binned$nc[binned$nc==0]=NA
+    image(seq(-xlim,xlim,length.out = 100), seq(-ylim,ylim, length.out=100),binned$nc,
+             xlab=xlab, ylab=ylab, add=FALSE, col=tim.colors(75))
+  }
+
 output$scatterplot1 <- renderPlot({
     
     scatterplot <- NULL
