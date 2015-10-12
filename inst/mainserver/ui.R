@@ -15,8 +15,8 @@ require("stats4")
 require("adegenet")
 
 ## temporarily sourcing .R files here
-source("mhtCirclePlot.R")
-source("mhtplot.R")
+#source("mhtCirclePlot.R")
+#source("mhtplot.R")
 source("uiFunctions.R")
 
 #### ------------------------------------------------------------------
@@ -142,14 +142,23 @@ shinyUI(
         # sidebar panel
         sidebarPanel(
           h3('Manhattan Plot'),
-          uiOutput('selectplot_linearMH'),
-          p('Select a statistic for plotting')
+          p('The x axis needs chromosome and coordinates informaiton. Make sure "Chr", "BP" in the columns names of your data or "clean-up data" '), 
+          br(),
+          
+          uiOutput('linearMH_y1Selection'),
+          checkboxGroupInput("logy1Checkbox", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
+          br(),
+          
+          uiOutput('linearMH_p2Selection'),
+          br(),
+
+          textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002)
+          #uiOutput('select_linearMH')
         ),
         
         # main panel
         mainPanel(
-          h3('Manhattan Plot'),
-          plotOutput("LinearMHTplot", height="400px",width="600px")
+          plotOutput("LinearMHTplot", height="450px",width="800px")
         )
       )
     ),
@@ -157,18 +166,28 @@ shinyUI(
     ## CIRCLE PLOT
     tabPanel("Circle Plot",
       sidebarLayout(
-        
         # sidebar panel
         sidebarPanel(
           h3('Circle Plot'),
-          uiOutput('selectplot_circleMH'),
-          p('Select a statistic for plotting')
-        ),
+          p("Be patient, SLOW with > 50,000 points. Suggest smooth scatter or hexplot."),
+          br(),
+          p('The circle plot needs chromosome and coordinates. Make sure "Chr", "BP" in the columns names of your data and "clean-up data"'), 
+          br(),
+          
+          uiOutput('circle1mh'),
+          checkboxGroupInput("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10"),inline = TRUE),
+          br(),
+          
+          uiOutput('circle2mh'),
+          checkboxGroupInput("logV2Checkbox", "log (inner circle)", choices = c("log2","log10"),inline = TRUE),          
+          br(),
+
+          textInput(inputId="pcut", label="P cutoff for outliers", value = 0.001)
+          ),
         
         # main panel
         mainPanel(
-          h3('Circle Plot'),
-          plotOutput("circleMHTplot", height="400px",width="400px")
+          plotOutput("circleMHTplot", height="800px",width="800px")
         )
       )
     ),
