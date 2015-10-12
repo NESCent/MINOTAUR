@@ -119,9 +119,13 @@ shinyUI(
           uiOutput("scatter_ySelection"),
           checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
 
+          textInput(inputId="scatter_nbins", label="Number of bins", value = 100),
+          
           uiOutput("scatter_colVarSelection"),
+          textInput(inputId="scatter_cutoff", label="Cutoff for outliers to overlay", value = 0.002),
+          
           uiOutput("scatter_colPal")
-        ),
+          ),
         
         # main panel
         mainPanel(

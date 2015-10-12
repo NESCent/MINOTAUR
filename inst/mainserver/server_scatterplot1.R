@@ -36,8 +36,13 @@ output$scatterplot1 <- renderPlot({
     scatterplot <- NULL
     xSelection <- input$xSelection
     ySelection <- input$ySelection
+    logx <- input$scatter_Checkbox_x
+    logy <- input$scatter_Checkbox_y
+    nbins <- input$scatter_nbins
     colVar <- input$colVarSelection
+    cutoff <- input$scatter_cutoff
     colPal <- input$colPal
+
     
     if(!is.null(rv$subData)){
         if(!is.null(ySelection) && !is.null(ySelection)){
