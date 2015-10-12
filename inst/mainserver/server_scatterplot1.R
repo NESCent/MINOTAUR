@@ -38,7 +38,7 @@ output$scatterplot1 <- renderPlot({
     ySelection <- input$ySelection
     logx <- input$scatter_Checkbox_x
     logy <- input$scatter_Checkbox_y
-    nbins <- input$scatter_nbins
+    nbins <- as.numeric(as.character(input$scatter_nbins))
     colVar <- input$colVarSelection
     cutoff <- input$scatter_cutoff
     colPal <- input$colPal
@@ -62,7 +62,7 @@ output$scatterplot1 <- renderPlot({
             
             # produce plot
             #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
-            scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, nbin=50)
+            scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, nbin=nbins)
         }
     }
     scatterplot
