@@ -117,12 +117,12 @@ shinyUI(
           uiOutput("scatter_xSelection"),
           checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) base (check one)", choices = c("2","10"),inline = TRUE),
           uiOutput("scatter_ySelection"),
-          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) base (check one)", choices = c("2","10"),inline = TRUE),
+          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) base (check one)", choices = c("2","10"),inline = TRUE, select="2"),
 
           textInput(inputId="scatter_nbins", label="Number of bins", value = 100),
           
           uiOutput("scatter_colVarSelection"),
-          textInput(inputId="scatter_cutoff", label="Cutoff for outliers to overlay", value = 0.002),
+          textInput(inputId="scatter_cutoff", label="Cutoff for outliers to overlay (if blank: default lower 1% tail.  Would be cool to make this violin plot...)", value = NULL),
           
           uiOutput("scatter_colPal")
           ),
@@ -133,7 +133,7 @@ shinyUI(
           p("Warning: this plot is for continuous variables. Do not plot factors."),
           plotOutput("scatterplot1"),
           h4('Making the scatterplot'),
-          p("To do: (1) Overlay points based on some cutoff.  
+          p("To do: (1) Overlay points based on some cutoff (DONE).  
             (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
             (3) Can we get the mouse to tell us the name of a point (!).")
         )
