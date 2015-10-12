@@ -115,7 +115,10 @@ shinyUI(
           br(),
           
           uiOutput("scatter_xSelection"),
+          checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) ", choices = c("log2","log10"),inline = TRUE),
           uiOutput("scatter_ySelection"),
+          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
+
           uiOutput("scatter_colVarSelection"),
           uiOutput("scatter_colPal")
         ),
