@@ -7,18 +7,29 @@ output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
 output$scatter_colPal <- renderUI({.getColPal()})
 
 ### Plot function, need to move to function area
-  plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL){
+  if(!("ash" %in% installed.packages())){install.packages("ash")}
+  library(ash)
+  library(fields)
+  plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL, nbin){
   data1 <- cbind(x, y)
   data1b <- data1[complete.cases(data1),]
-  if(length(xlim)==0){xlim=max(abs(x)*1.01, na.rm=TRUE)}
-  if(length(ylim)==0){ylim=max(abs(y)*1.01, na.rm=TRUE)}  
+  if(length(xlim)==0){
+    xlim_up <- max(x, na.rm=TRUE)
+    xlim_lower <- min(x, na.rm=TRUE)
+  }
+  if(length(ylim)==0){
+    ylim_up <- max(y, na.rm=TRUE)
+    ylim_lower <- min(y, na.rm=TRUE)
+  }  
         binned <- bin2(data1b, 
-                 matrix(c(-xlim,xlim,-ylim,ylim), 2,2, byrow=TRUE), 
-                 nbin=c(100,100))
+                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE), 
+                 nbin=c(nbin,nbin))
     binned$nc[binned$nc==0]=NA
-    image(seq(-xlim,xlim,length.out = 100), seq(-ylim,ylim, length.out=100),binned$nc,
+    image.plot(seq(xlim_lower,xlim_up,length.out = nbin), seq(ylim_lower,ylim_up, length.out=nbin),binned$nc,
              xlab=xlab, ylab=ylab, add=FALSE, col=tim.colors(75))
   }
+
+### Render plot area
 
 output$scatterplot1 <- renderPlot({
     
@@ -45,7 +56,8 @@ output$scatterplot1 <- renderPlot({
             }else(myCol <- rgb(0,0,0,0.2))
             
             # produce plot
-            scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
+            #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
+            scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, nbin=50)
         }
     }
     scatterplot

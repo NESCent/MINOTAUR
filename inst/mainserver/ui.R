@@ -123,14 +123,12 @@ shinyUI(
         # main panel
         mainPanel(
           h3('Scatterplot'),
-          p("Warning: scatterplot is slow with > 50,000 (need to test) points.  Suggest smooth scatter or hexplot."),
+          p("Warning: this plot is for continuous variables. Do not plot factors."),
           plotOutput("scatterplot1"),
           h4('Making the scatterplot'),
-          p("To do: Add 'none' to variable to color by.  
-            Add zoom sliding bars for x-axis and y-axis.
-            Add a linear model button and results!
-            Add sliding bar under variable to color by (in addition to color palette, just use 2 colors to highlight points)
-            Can we get the mouse to tell us the name of a point (!).")
+          p("To do: (1) Overlay points based on some cutoff.  
+            (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
+            (3) Can we get the mouse to tell us the name of a point (!).")
         )
       )
     ),
