@@ -115,18 +115,32 @@ shinyUI(
           br(),
           
           uiOutput("scatter_xSelection"),
+          checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) base (check one)", choices = c("2","10"),inline = TRUE),
           uiOutput("scatter_ySelection"),
+          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) base (check one)", choices = c("2","10"),inline = TRUE, select="2"),
+
+          textInput(inputId="scatter_nbins", label="Number of bins", value = 100),
+          
           uiOutput("scatter_colVarSelection"),
+          textInput(inputId="scatter_cutoff", label="Cutoff for outliers to overlay (if blank: default lower 1% tail.  Would be cool to make this violin plot...)", value = NULL),
+          
           uiOutput("scatter_colPal")
-        ),
+          ),
         
         # main panel
         mainPanel(
           h3('Scatterplot'),
-          p("Warning: scatterplot is slow with > 50,000 (need to test) points.  Suggest smooth scatter or hexplot."),
+          p("Warning: this plot is for continuous variables. Do not plot factors."),
           plotOutput("scatterplot1"),
           h4('Making the scatterplot'),
-          p("To do: Add 'none' to variable to color by.  Add sliding bars for x-axis and y-axis.")
+          p("First, choose x and y variables to plot.  
+            Next, you can overlay points in the plot according to a third variable of your choice.
+            By default, the lower 1% of the third variable will be plotted.
+            For example, choose 'Trait3_p' to see which outliers in Trait3 are also outliers in Trait1."
+            ),
+          p("To do: (1) Overlay points based on some cutoff (DONE).  
+            (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
+            (3) Can we get the mouse to tell us the name of a point (!).")
         )
       )
     ),
