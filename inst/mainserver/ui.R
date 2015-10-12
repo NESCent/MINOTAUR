@@ -133,6 +133,11 @@ shinyUI(
           p("Warning: this plot is for continuous variables. Do not plot factors."),
           plotOutput("scatterplot1"),
           h4('Making the scatterplot'),
+          p("First, choose x and y variables to plot.  
+            Next, you can overlay points in the plot according to a third variable of your choice.
+            By default, the lower 1% of the third variable will be plotted.
+            For example, choose 'Trait3_p' to see which outliers in Trait3 are also outliers in Trait1."
+            ),
           p("To do: (1) Overlay points based on some cutoff (DONE).  
             (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
             (3) Can we get the mouse to tell us the name of a point (!).")

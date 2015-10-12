@@ -52,7 +52,7 @@
   if(!is.null(mainData)){
     out <- selectInput(
       inputId = "colVarSelection",
-      label = "Choose variable to overlay points by (not working):",
+      label = "Choose variable to overlay points by:",
       choices = names(mainData),
       selected = names(mainData)[5] #will have to update with publishable dataset
     )
@@ -64,8 +64,7 @@
 ## .getColPal ##
 .getColPal <- function(){
   out <- selectInput("colPal", "Choose a color pallette to use:",
-    c("Just black" = "black",
-      "SeaSun" = "seasun",
+    c("SeaSun" = "seasun",
       "Funky" = "funky",
       "Spectral" = "spectral",
       "Azur" = "azur",
