@@ -115,9 +115,9 @@ shinyUI(
           br(),
           
           uiOutput("scatter_xSelection"),
-          checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) ", choices = c("log2","log10"),inline = TRUE),
+          checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) base (check one)", choices = c("2","10"),inline = TRUE),
           uiOutput("scatter_ySelection"),
-          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
+          checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) base (check one)", choices = c("2","10"),inline = TRUE),
 
           textInput(inputId="scatter_nbins", label="Number of bins", value = 100),
           

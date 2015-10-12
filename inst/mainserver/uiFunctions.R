@@ -52,7 +52,7 @@
   if(!is.null(mainData)){
     out <- selectInput(
       inputId = "colVarSelection",
-      label = "Choose variable to overlay points by:",
+      label = "Choose variable to overlay points by (not working):",
       choices = names(mainData),
       selected = names(mainData)[5] #will have to update with publishable dataset
     )

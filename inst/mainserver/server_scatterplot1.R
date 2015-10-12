@@ -36,8 +36,8 @@ output$scatterplot1 <- renderPlot({
     scatterplot <- NULL
     xSelection <- input$xSelection
     ySelection <- input$ySelection
-    logx <- input$scatter_Checkbox_x
-    logy <- input$scatter_Checkbox_y
+    logx <- as.numeric(as.character(input$scatter_Checkbox_x))
+    logy <- as.numeric(as.character(input$scatter_Checkbox_y))
     nbins <- as.numeric(as.character(input$scatter_nbins))
     colVar <- input$colVarSelection
     cutoff <- input$scatter_cutoff
@@ -52,6 +52,11 @@ output$scatterplot1 <- renderPlot({
             yData = rv$subData[,names(rv$subData)==ySelection]
             colData = rv$subData[,names(rv$subData)==colVar]
             
+            if(length(logx==1)){xData=log(xData+1e-40, logx)}
+            if(length(logy==1)){yData=log(yData+1e-40, logy)}
+            print(logy)
+            print(c(min(yData,na.rm=TRUE), max(yData, na.rm=TRUE)))
+            
             # get colors
             get.levels <- levels(as.factor(colData))
             n.levels <- length(get.levels)
@@ -62,7 +67,8 @@ output$scatterplot1 <- renderPlot({
             
             # produce plot
             #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
-            scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, nbin=nbins)
+              scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, nbin=nbins)
+
         }
     }
     scatterplot
