@@ -32,7 +32,7 @@ shinyPath = switch(userName,
 # Load packages
 load_package <- function(){
   # feel free to add more required packages
-  common_packages <- c("shiny", "devtools", "stats4", "hexbin", "scales", "adegenet","RColorBrewer")
+  common_packages <- c("shiny", "devtools", "fields", "stats4", "hexbin", "scales", "adegenet","RColorBrewer")
   
   for(i in 1:length(common_packages)){
     if(common_packages[i] %in% rownames(installed.packages()) == FALSE) {

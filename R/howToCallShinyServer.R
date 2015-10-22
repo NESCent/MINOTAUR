@@ -7,7 +7,7 @@ require(adegenet)
 require(hexbin)
 require(RColorBrewer)
 require(OmicCircos)
-
+require(fields)
 require(shiny)
 setwd("inst/mainserver")
 runApp()
