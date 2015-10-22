@@ -61,13 +61,17 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
       logV1 = FALSE
     } else{
       if(logY == "log2"){
-        mydata[,betaidx] = -log2(mydata[,betaidx])
+        mydata[,betaidx] = -log2(abs(mydata[,betaidx]))
         ycolnam = paste(ycolnam, " log2(X)")
-        pcut.outlier = - log2(pcut.outlier)
+        pcut.outlier = -log2(pcut.outlier)
       } else if (logY == "log10"){
-        mydata[,betaidx] = -log10(mydata[,betaidx])
+        mydata[,betaidx] = -log10(abs(mydata[,betaidx]))
         ycolnam = paste(ycolnam, " log10(X)")
-        pcut.outlier = - log10(pcut.outlier)
+        pcut.outlier = -log10(pcut.outlier)
+      } else{
+        mydata[,betaidx] = mydata[,betaidx]
+        ycolnam = ycolnam
+        pcut.outlier = pcut.outlier
       }
     }
   }
@@ -105,7 +109,7 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
     points(x=x.axis,y=mynewtoy[[i]][,betaidx],pch=18,cex=0.6,col=colfig[i])	
     
     data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)      
-    if(!is.null(logY)){
+    if(logY %in% c("log2","log10")){
 #       if(logY == "log2"){
 #         mynewtoy[[i]][,pvidx] = -log2(mynewtoy[[i]][,pvidx])
 #         pcut.outlier = -log2(pcut.outlier)

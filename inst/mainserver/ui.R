@@ -156,7 +156,7 @@ shinyUI(
           br(),
           
           uiOutput('linearMH_y1Selection'),
-          checkboxGroupInput("logy1Checkbox", "log(y-axis) ", choices = c("log2","log10"),inline = TRUE),
+          radioButtons("logy1Checkbox", "log(y-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
           br(),
           
           uiOutput('linearMH_p2Selection'),
@@ -185,11 +185,11 @@ shinyUI(
           br(),
           
           uiOutput('circle1mh'),
-          checkboxGroupInput("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10"),inline = TRUE),
+          radioButtons("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10","none"),inline = TRUE,selected = "none"),
           br(),
           
           uiOutput('circle2mh'),
-          checkboxGroupInput("logV2Checkbox", "log (inner circle)", choices = c("log2","log10"),inline = TRUE),          
+          radioButtons("logV2Checkbox", "log (inner circle)", choices = c("log2","log10","none"),inline = TRUE,selected = "none"),          
           br(),
 
           textInput(inputId="pcut", label="P cutoff for outliers", value = 0.001)

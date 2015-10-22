@@ -52,9 +52,11 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
       logV1 = FALSE
     } else{
       if(logV1 == "log2"){
-        seg.value[,traitidxlist[1]] = -log2(seg.value[,traitidxlist[1]])
+        seg.value[,traitidxlist[1]] = -log2(abs(seg.value[,traitidxlist[1]]))
       } else if (logV1 == "log10"){
-        seg.value[,traitidxlist[1]] = -log10(seg.value[,traitidxlist[1]])
+        seg.value[,traitidxlist[1]] = -log10(abs(seg.value[,traitidxlist[1]]))
+      } else{
+        seg.value[,traitidxlist[1]] = seg.value[,traitidxlist[1]]
       }
     }
   }  
@@ -63,9 +65,11 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
       logV2 = FALSE
     } else{
       if(logV2 == "log2"){
-        seg.value[,traitidxlist[2]] = -log2(seg.value[,traitidxlist[2]])
+        seg.value[,traitidxlist[2]] = -log2(abs(seg.value[,traitidxlist[2]]))
       } else if (logV2 == "log10"){
-        seg.value[,traitidxlist[2]] = -log10(seg.value[,traitidxlist[2]])
+        seg.value[,traitidxlist[2]] = -log10(abs(seg.value[,traitidxlist[2]]))
+      } else{
+        seg.value[,traitidxlist[2]] = seg.value[,traitidxlist[2]]
       }
     }
   }
