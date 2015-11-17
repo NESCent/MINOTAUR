@@ -1,7 +1,7 @@
 ---
 title: "MINOTAUR Workflow Vignette"
 author: "Daren C. Card"
-date: "October XX, 2015"
+date: "November 16, 2015"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MINOTAUR Workflow Vignette}
@@ -10,10 +10,40 @@ vignette: >
 ---
 
 ## Introduction
+MINOTAUR is a R package for identifying and visualizing multivariate outliers in general, but is tailored towards researchers seeking to identify genetic loci that are under natural selection or that are putative underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including population genetic statistics, genotype by environment statistics, and genome-wide association statistics. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background. 
+
+Studies are increasingly generating several statistics across one or more broad inferential classes, and a common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values for several statistics. The largely arbitrary nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to aid in outlier visualization using the R Shiny interface, and secondarily it also introduce new multivariate outlier detection procedures to supplement those already in existence. 
+
+## Getting Started
+MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=XXX), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
+
+```{r eval=FALSE}
+install.packages('MINOTAUR')
+#' to install the development version, run:
+#' require(devtools)
+#' install_github('NESCent/MINOTAUR')
+```
 
 ## Workflow Overview
+The MINOTAUR package is broken into two fairly autonomous parts:
+
+1. X functions that perform multivariate outlier detection given data for several statistics. The multivariate outlier functions are meant to supplement existing R functions that infer outliers in multidimensional space, which all work using data stored as a dataframe object.
+
+2. An R Shiny application that can be used to visualize the distributions of individual statictistics separately and together, and to help produce publiation-quality figures. The Shiny app can be used on unfiltered data to gain baseline understanding of a dataset before multivariate outliers are inferred, and can also be used on a reduce dataset of genomic loci or regions that are inferred to be multivariate outliers.
+
+An expanded example with code is included below, but a basic workflow leveraging MINOTAUR is as follows:
+
+1. Data is loaded into R from an external data format (i.e., tab-delimited or comma-delimited files).
+
+2. The MINOTAUR Shiny app can be used to perform a preliminary investigation of the data, such that informed decisions can be made as to which statistics to include in multivariate outlier analyses.
+
+3. Outside of the Shiny app, a user can infer multivariate outliers using the statistics of interest and functions provided as part of MINOTAUR and several other packages in the R environment.
+
+4. The filtered dataset with only multivariate outliers can be visualized using the MINOTAUR Shiny app, which enables further investigation and the production of publication-quality figures.
 
 ## Specific Example
+
+
 
 ## Template Vignette (for reference only)
 
