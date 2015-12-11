@@ -1,7 +1,7 @@
 ---
 title: "MINOTAUR Workflow Vignette"
 author: "Daren C. Card"
-date: "November 16, 2015"
+date: "December 11, 2015"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MINOTAUR Workflow Vignette}
@@ -44,6 +44,9 @@ An expanded example with code is included below, but a basic workflow leveraging
 ## Specific Example
 
 
+
+## Acknowledgements
+This work was conceived during a hackathon on Population Genetics in R, sponsored and hosted by the National Evolutionary Synthesis Center (NESCent) in March of 2015. The MINOTAUR team is grateful to fellow hackathon participants who gave valuable feedback during initial development of this project at NESCent and afterwards. We are also indebted to those at NESCent who made the event possible and especially to Hilmar Lapp, who organized and led the collective effort.
 
 ## Template Vignette (for reference only)
 
