@@ -217,10 +217,10 @@ shinyServer(function(input, output, session) {
   source("server_scatterplot1.R", local=T)
   
   # Hex plot 1 (plain R)
-  source("server_hexplot1.R", local=T)
+  #source("server_hexplot1.R", local=T)
   
   # SmoothScatter plot
-  source("server_smoothscatter.R", local=T)
+  #source("server_smoothscatter.R", local=T)
   
   # Linear Manhattan plot
   source("server_Manhattanplot.R", local=T)
