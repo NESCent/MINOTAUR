@@ -1,4 +1,3 @@
-
 ## linear Manhattan plot
 output$linearMH_y1Selection <- renderUI({
     selectizeInput('choose_y1_plot','Select y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
@@ -13,13 +12,13 @@ output$LinearMHTplot <- renderPlot({
     yselect = input$choose_y1_plot
     logy = input$logy1Checkbox
     pselect = input$choose_pval
-    #logp = input$logCheckbox
     poutlier = as.numeric(input$linearmhtpcut)
-
+    n_bins <- as.numeric(as.character(input$linearmht_nbins))
+    
     mhtplots <- NULL
     if(!is.null(rv$subData)){
       if(!is.null(yselect) && !is.null(pselect)){
-        mhtplots <- mhtplot(mydata=rv$subData, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy)
+        mhtplots <- mhtplot(mydata=rv$subData, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
       } 
     } 
     mhtplots
@@ -28,26 +27,18 @@ output$LinearMHTplot <- renderPlot({
 })
 
 
-mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="Chr", BP="BP", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, pcut.outlier=1e-4){
+mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="Chr", BP="BP", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, nbins=100, pcut.outlier=1e-4){
   ### Manhattan Plot. 
-  ### The Yaxis = Beta value (slope) from GWAS, the color = significant degree (p value)
-  ### Input is data.frame of R
   ### chr = "Chr", indicate the column name for Chromosome in mytoy (dataset).
   #mydata= mytoy;  pval = "Trait1_P"; BP= "BP" ;colfig=NULL
   #staistic.plot="Trait1_Beta"; Chr="Chr"; ylim.max=10; ylim.min=-10;titlemain=NULL; pcut.outlier=1e-2
-
   #pvidx = 5;  betaidx = 4;
 
-  if(!is.null(ycolnam)){
-    betaidx = match(ycolnam, names(mydata))
-  } 
+  if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata))  } 
   
-  if(!is.null(pcolnam)){
-    pvidx = match(pcolnam, names(mydata))
-  } 
+  if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata))  } 
   
-  chridx = match(Chr,names(mydata))
-  BPidx = match(BP, names(mydata))
+  chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
   
   if(is.na(chridx)){
     print(" 'Chr' is not in the column names of input data ")
@@ -98,32 +89,64 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
   
   plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max),xlab="Chromosomes",ylab=ycolnam ,main=titlemain,axes=F)
   abline(h=0,col=gray(0.5),lty="dashed")
+  #fdata = data.frame(x=1:300, y = seq(ylim.min,ylim.max,length.out=300))
+  #pall <- ggplot(fdata, aes(x, y)) + labs(x="Chromsome", y = ycolnam)
+  xaxis_all <- c(); yaxis_all <- c(); xaxis_outlier <- c(); yaxis_outlier<-c(); collib <- c()
   for (i in 1:length(x.total)){
     if(i==1){
       x.axis=mynewtoy[[i]][,BPidx] * x.axis.scale
     } else{
       x.axis=(x.total[i-1] + mynewtoy[[i]][,BPidx])*x.axis.scale
     }
+    xaxis_all <- c(xaxis_all,x.axis); yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
     #mycols = alpha(colfig[i],(-log10(mynewtoy[[i]][,pvidx]))/p.max)
-    mycols = c(alpha("black",0.4), alpha("black",0.2))
+    #mycols = c(alpha("black",0.4), alpha("black",0.2))
+    
+    #pall <- pall+ qplot(x.axis, mynewtoy[[i]][,betaidx]) + stat_bin2d(bins=nbins) + labs(x=paste(i))
+
+    x.axis.min <- min(x.axis, na.rm=T); x.axis.max <- max(x.axis, na.rm=T)
+    y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T); y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
+    
+    #datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
+    #               nbin=c(nbins,nbins))
+    #datbin$nc[datbin$nc==0] = NA
+    #tmpd <- datbin
+    #image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
+    #           datbin$nc, xlab="", ylab="", add=T, col=colfig[i])
     points(x=x.axis,y=mynewtoy[[i]][,betaidx],pch=18,cex=0.6,col=colfig[i])	
     
     data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)      
     if(logY %in% c("log2","log10")){
-#       if(logY == "log2"){
-#         mynewtoy[[i]][,pvidx] = -log2(mynewtoy[[i]][,pvidx])
-#         pcut.outlier = -log2(pcut.outlier)
-#       } else if (logY == "log10"){
-#         mynewtoy[[i]][,pvidx] = -log10(mynewtoy[[i]][,pvidx])
-#         pcut.outlier = -log10(pcut.outlier)       
-#       }
       data.outlier <- which(mynewtoy[[i]][,pvidx] > pcut.outlier)  
     }
-    
+    xaxis_outlier <- c(xaxis_outlier,x.axis[data.outlier]); yaxis_outlier <- c(yaxis_outlier, mynewtoy[[i]][data.outlier,betaidx])
     points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx], pch=18,cex=0.6*1.5,col="red")
     #rug(x.axis,ticksize = 0.01, side = 1, lwd = 0.5,col=gray(0.6))  
   }
+  #print(pall)
+  dat4plot <- data.frame(xv = xaxis_all, yv=yaxis_all)
+  #require(ggplot2)
+  #print(head(dat4plot))
+  #pp <- ggplot(dat4plot, aes(as.numeric(xv),as.numeric(yv))) 
+  #ppp <- pp + stat_bin2d(bins=nbins)
+  #print(ppp)
+  #dat4plot <- dat4plots[complete.cases(dat4plots),]
+  #dat4plot <- cbind( xaxis_all, yaxis_all)
+  x.axis.min <- min(dat4plot[,1], na.rm=T); x.axis.max <- max(dat4plot[,1], na.rm=T)
+  y.axis.min <- min(dat4plot[,2], na.rm=T); y.axis.max <- max(dat4plot[,2], na.rm=T)
   
+  #datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
+  #               nbin=c(nbins,nbins))
+  #datbin$nc[datbin$nc==0] = NA
+  #print(datbin)
+  #image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
+  #           datbin$nc, xlab="", ylab="", add=add, col=colfig)
+
+
+  #qplot(dat4plot[,1],dat4plot[,2], geom="bin2d", binwidth = c(0.1, 0.1))
+  #points(x=xaxis_outlier, y=yaxis_outlier, pch=18,cex=0.6*1.5,col="red")
+  
+  #points(x=xaxis_all,y=yaxis_all,pch=18,cex=0.6,col=colfig)	
   x.total2<-c(0,x.total)
   axis(1,at=x.axis.scale*x.total2,labels=F)
   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)

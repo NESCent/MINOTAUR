@@ -61,7 +61,7 @@ output$scatterplot1 <- renderPlot({
             if(is.na(cutoff)){cutoff=colData[rank(colData)==round(length(colData)*0.01,0)]
               }
             #cutoff=0.01
-            print(cutoff)
+            #print(cutoff)
             xData_sub <- xData[colData<cutoff]
             yData_sub <- yData[colData<cutoff]
             #print(cbind(xData_sub,yData_sub))

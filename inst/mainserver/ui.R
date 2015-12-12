@@ -161,6 +161,8 @@ shinyUI(
           
           uiOutput('linearMH_p2Selection'),
           br(),
+          textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
+          br(),
 
           textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002)
           #uiOutput('select_linearMH')
