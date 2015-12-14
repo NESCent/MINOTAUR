@@ -48,7 +48,7 @@ output$scatterplot1 <- renderPlot({
 
     
     if(!is.null(rv$subData)){
-        if(!is.null(ySelection) && !is.null(ySelection)){
+        if(!is.null(xSelection) && !is.null(ySelection)){
             
             # Obtain data selected by user
             xData = rv$subData[,names(rv$subData)==xSelection]
@@ -84,5 +84,48 @@ output$scatterplot1 <- renderPlot({
         }
     }
     scatterplot
+
 }) # end scatterplot1
+
+#    ####################
+#       ## .fetchMyViolin ##
+#       ####################
+#       .fetchMyViolin <- function(x, input){
+#         out <- NULL
+#         evalString <- paste("input$continuousValue", col.num, sep="")
+#         slider <- eval(parse(text=evalString))  
+#         minSelected <- slider[1]
+#         maxSelected <- slider[2]
+#         #if(minSelected != -Inf || maxSelected != Inf){
+#           out <- bobViolinPlot(x, minSelected, maxSelected)
+#         #}
+#         return(out)
+#       } # end .fetchMyViolin
+#         #}
+# 
+# output$violin <- renderPlot({
+#   
+# })
+  
+
+#######################
+## render data table ##
+#######################
+    
+    output$scatterDataTable <- renderDataTable({
+          colVar <- input$colVarSelection
+          print("colVar")
+          print(colVar)
+          colData = rv$subData[,names(rv$subData)==colVar]
+          print(head(colData))
+          cutoff <- as.numeric(input$scatter_cutoff)
+          if(is.na(cutoff)){cutoff=colData[rank(colData)==round(length(colData)*0.01,0)]
+              }
+          print(cutoff)
+          a<-rv$subData[colData < cutoff,]
+          a
+                },
+              options=list(scrollX='300px', scrollY='400px', searching=FALSE)
+              )
+    
 

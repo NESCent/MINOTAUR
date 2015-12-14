@@ -140,7 +140,9 @@ shinyUI(
             ),
           p("To do: (1) Overlay points based on some cutoff (DONE).  
             (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
-            (3) Can we get the mouse to tell us the name of a point (!).")
+            (3) Can we get the mouse to tell us the name of a point (!)."),
+          h4('Outliers'),
+          dataTableOutput("scatterDataTable")
         )
       )
     ),
