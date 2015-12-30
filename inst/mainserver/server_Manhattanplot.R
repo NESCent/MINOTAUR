@@ -107,13 +107,13 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
     x.axis.min <- min(x.axis, na.rm=T); x.axis.max <- max(x.axis, na.rm=T)
     y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T); y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
     
-    #datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
-    #               nbin=c(nbins,nbins))
-    #datbin$nc[datbin$nc==0] = NA
-    #tmpd <- datbin
-    #image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
-    #           datbin$nc, xlab="", ylab="", add=T, col=colfig[i])
-    points(x=x.axis,y=mynewtoy[[i]][,betaidx],pch=18,cex=0.6,col=colfig[i])	
+    ##datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
+    ##               nbin=c(nbins,nbins))
+    ##datbin$nc[datbin$nc==0] = NA
+    ##tmpd <- datbin
+    ##image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
+    ##           datbin$nc, xlab="", ylab="", add=T, col=colfig[i])
+    #points(x=x.axis,y=mynewtoy[[i]][,betaidx],pch=18,cex=0.6,col=colfig[i])	
     
     data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)      
     if(logY %in% c("log2","log10")){
@@ -121,30 +121,29 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
     }
     xaxis_outlier <- c(xaxis_outlier,x.axis[data.outlier]); yaxis_outlier <- c(yaxis_outlier, mynewtoy[[i]][data.outlier,betaidx])
     points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx], pch=18,cex=0.6*1.5,col="red")
-    #rug(x.axis,ticksize = 0.01, side = 1, lwd = 0.5,col=gray(0.6))  
   }
-  #print(pall)
-  dat4plot <- data.frame(xv = xaxis_all, yv=yaxis_all)
+ 
+  dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
   #require(ggplot2)
   #print(head(dat4plot))
   #pp <- ggplot(dat4plot, aes(as.numeric(xv),as.numeric(yv))) 
   #ppp <- pp + stat_bin2d(bins=nbins)
   #print(ppp)
-  #dat4plot <- dat4plots[complete.cases(dat4plots),]
+  dat4plot <- data.matrix(dat4plots[complete.cases(dat4plots),])
   #dat4plot <- cbind( xaxis_all, yaxis_all)
   x.axis.min <- min(dat4plot[,1], na.rm=T); x.axis.max <- max(dat4plot[,1], na.rm=T)
   y.axis.min <- min(dat4plot[,2], na.rm=T); y.axis.max <- max(dat4plot[,2], na.rm=T)
   
-  #datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
-  #               nbin=c(nbins,nbins))
-  #datbin$nc[datbin$nc==0] = NA
+  datbin <- bin2(dat4plot, matrix(c(x.axis.min,x.axis.max,y.axis.min, y.axis.max), 2,2, byrow=TRUE), 
+                 nbin=c(nbins,nbins))
+  datbin$nc[datbin$nc==0] = NA
   #print(datbin)
-  #image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
-  #           datbin$nc, xlab="", ylab="", add=add, col=colfig)
+  image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), seq(y.axis.min, y.axis.max, length.out=nbins),
+             datbin$nc, xlab="", ylab="", add=FALSE, col=grey.colors(60, 0.6,0), axes=FALSE)
 
 
   #qplot(dat4plot[,1],dat4plot[,2], geom="bin2d", binwidth = c(0.1, 0.1))
-  #points(x=xaxis_outlier, y=yaxis_outlier, pch=18,cex=0.6*1.5,col="red")
+  points(x=xaxis_outlier, y=yaxis_outlier, pch=18,cex=0.6*1.5,col="red")
   
   #points(x=xaxis_all,y=yaxis_all,pch=18,cex=0.6,col=colfig)	
   x.total2<-c(0,x.total)
