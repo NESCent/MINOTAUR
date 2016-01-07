@@ -1,10 +1,18 @@
 
 # circular Manhattan plot
 output$circle1mh <- renderUI({
-    selectizeInput('Circle_y1','Select a variable for outer circle', choices=c(names(mainData)), multiple=FALSE, selected = "Trait1_Beta"   )
+  ## read data
+  mainData <- NULL
+  mainData <- rv$subData
+  
+  selectizeInput('Circle_y1','Select a variable for outer circle', choices=c(names(mainData)), multiple=FALSE, selected = "Trait1_Beta"   )
 })
 
 output$circle2mh <- renderUI({
+  ## read data
+  mainData <- NULL
+  mainData <- rv$subData
+  
   selectizeInput('Circle_y2','Select a variable for inner circle', choices=c(names(mainData)), multiple=FALSE, selected = "Trait2_Beta"  )
 })
 

@@ -118,4 +118,31 @@
 
 
 ###########################################################################################################################################################
+###############
+## .noNAcols ## 
+###############
+
+.noNAcols <- function(x) {  
+  NAsByColumn <- sapply(c(1:ncol(x)), function(e) 
+    if(class(x[,e])=="Date"){ # if the column is a date column containing something other than blanks
+      which(is.na(x[,e]))
+    }else{
+      c(which(x[,e]==""), which(x[,e]=="NR"), which(is.na(x[,e])))
+    }
+  )
+  colsToRemove <- which(sapply(c(1:length(NAsByColumn)), function(e) length(NAsByColumn[[e]]))==dim(x)[[1]])
+  if(!.is.integer0(colsToRemove)){
+    x <- x[,-colsToRemove] ## remove columns that are all NA
+    NAsByColumn <- NAsByColumn[-colsToRemove]
+  }
+  for(j in 1:length(NAsByColumn)){ ## replace "" and NR with NA
+    if(!.is.integer0(NAsByColumn[[j]])){
+      x[,j] <- replace(x[,j], NAsByColumn[[j]], NA)
+    }
+  }
+  return(x)
+} # end .noNAcols
+
+
+###########################################################################################################################################################
 

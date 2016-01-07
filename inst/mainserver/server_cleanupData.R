@@ -1,28 +1,56 @@
 
-
-
 ################################################################
 ## create single list of reactive values to handle subsetting ##
 ################################################################
-rv <- reactiveValues(
+# rv <- reactiveValues(
+#   
+#   selectColumnOn = rep(TRUE,ncol(mainData)),
+#   panelOrder = NULL,
+#   
+#   class = mapply(class,mainData),
+#   closeButtonPressed = rep(0,ncol(mainData)),
+#   resetButtonPressed = rep(0, ncol(mainData)), 
+#   continuousMin = rep(-Inf,ncol(mainData)),
+#   continuousMax = rep(Inf,ncol(mainData)),
+#   missingValues = replicate(ncol(mainData),NULL),
+#   integerSelected = replicate(ncol(mainData),NULL),
+#   integerMin = rep(-Inf,ncol(mainData)),
+#   integerMax = rep(Inf,ncol(mainData)),
+#   factorSelected = replicate(ncol(mainData),NULL),
+#   modified = rep(FALSE,ncol(mainData)),
+#   
+#   subData = mainData
+# )  # end of reactiveValues
+
+
+## create empty rv list
+rv <- reactiveValues()
+
+## define values in observer
+## to allow for data input changes
+observe({
+  ## read data
+  mainData <- NULL
+  mainData <- .get.data()
   
-  selectColumnOn = rep(TRUE,ncol(mainData)),
-  panelOrder = NULL,
-  
-  class = mapply(class,mainData),
-  closeButtonPressed = rep(0,ncol(mainData)),
-  resetButtonPressed = rep(0, ncol(mainData)), 
-  continuousMin = rep(-Inf,ncol(mainData)),
-  continuousMax = rep(Inf,ncol(mainData)),
-  missingValues = replicate(ncol(mainData),NULL),
-  integerSelected = replicate(ncol(mainData),NULL),
-  integerMin = rep(-Inf,ncol(mainData)),
-  integerMax = rep(Inf,ncol(mainData)),
-  factorSelected = replicate(ncol(mainData),NULL),
-  modified = rep(FALSE,ncol(mainData)),
-  
-  subData = mainData
-)  # end of reactiveValues
+  if(!is.null(mainData)){
+    rv$selectColumnOn <- rep(TRUE,ncol(mainData))
+    rv$panelOrder <- NULL
+    rv$class <- mapply(class,mainData)
+    rv$closeButtonPressed <- rep(0,ncol(mainData))
+    rv$resetButtonPressed <- rep(0, ncol(mainData))
+    rv$continuousMin <- rep(-Inf,ncol(mainData))
+    rv$continuousMax <- rep(Inf,ncol(mainData))
+    rv$missingValues <- replicate(ncol(mainData),NULL)
+    rv$integerSelected <- replicate(ncol(mainData),NULL)
+    rv$integerMin <- rep(-Inf,ncol(mainData))
+    rv$integerMax <- rep(Inf,ncol(mainData))
+    rv$factorSelected <- replicate(ncol(mainData),NULL)
+    rv$modified <- rep(FALSE,ncol(mainData))
+      
+    rv$subData <- mainData      
+  }
+}) # end of reactiveValues
 
 
 ##################################################
@@ -41,6 +69,10 @@ output$scratchPad <- renderUI({
 ## set reactive values based on values in widgets ##
 ####################################################
 getWidgetValues <- function() {
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
   
   prev.factorSelected <- NULL
   
@@ -210,6 +242,10 @@ getWidgetValues <- function() {
 ########################
 updateData <- function() {    
   
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   # remove columns
   sub = subset(mainData, 
                select=setdiff(names(mainData), 
@@ -307,7 +343,12 @@ updatePressed <- eventReactive(input$updateDataButton, {
 #####################################################
 ## selectize for choosing which columns are active ##
 #####################################################
-output$selectColumns <- renderUI({
+output$selectColumns <- renderUI({  
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   selectInput('selectColumns', label=NULL, 
               choices=names(mainData), multiple=TRUE, 
               selectize=FALSE, width='100%')
@@ -318,6 +359,11 @@ output$selectColumns <- renderUI({
 ## dropdown menu for choosing filter variable ##
 ################################################
 output$filterVariable <- renderUI({
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   myChoices = setdiff(names(mainData),input$selectColumns)
   if (length(rv$panelOrder)>1) {
     myChoices = setdiff(myChoices,names(mainData)[rv$panelOrder[-1]])
@@ -337,6 +383,11 @@ observe({
 })
 
 filterVariableSelected <- eventReactive(input$filterVariable, {
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   if (input$filterVariable!="") {
     
     # deal with old selection
@@ -482,6 +533,11 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
 ## .getSubsetWidget ##
 ######################
 .getSubsetWidget <- function(rv, i, input){
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   out <- NULL                
   
   ## define column selected
@@ -919,6 +975,10 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
 ########################################
 output$subsetPanels_current <- renderUI({
   
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()  
+  
   if (length(rv$panelOrder)>0) {
     if (rv$selectColumnOn[rv$panelOrder[1]]) {    
       
@@ -1032,6 +1092,11 @@ output$subsetPanels_current <- renderUI({
 ## create 'locked in' subset panels ##
 ######################################
 output$subsetPanels_locked <- renderUI({
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   if (length(rv$panelOrder)>1) {
     
     panelList = list()
@@ -1141,6 +1206,11 @@ output$subsetPanels_locked <- renderUI({
 ## on reset button pressed ##
 #############################
 observe({
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
+  
   if(length(rv$panelOrder) > 0){
     for(i in 1:length(rv$panelOrder)){
       col.num <- rv$panelOrder[i]
@@ -1277,6 +1347,10 @@ resetData <- function(i=1, input, mainData) {
 
 
 observe({
+  
+  ## read in data
+  mainData <- NULL
+  mainData <- .get.data()
   
   # search over all panels
   if (length(rv$panelOrder)>0) {
