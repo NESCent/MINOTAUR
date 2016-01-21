@@ -192,10 +192,10 @@ shinyUI(
                               
                               uiOutput("scatter_colVarSelection"),
                               textInput(inputId="scatter_cutoff", 
-                                        label="Cutoff for outliers to overlay (if blank: default lower 1% tail.  
-                                        Would be cool to make this violin plot...)", value = NULL),
+                                        label="Cutoff for outliers to overlay.  NEED TO MAKE A CHECK BOX FOR UPPER OR LOWER TAIL. (if blank: default lower 1% tail of 2nd variable chosen).  
+                                        Would be cool to make this violin plot...)", value = NULL)#,
                               
-                              uiOutput("scatter_colPal")
+                              #uiOutput("scatter_colPal")
                             ),
                             
                             # main panel
@@ -206,12 +206,18 @@ shinyUI(
                               h4('Making the scatterplot'),
                               p("First, choose x and y variables to plot.  
                                 Next, you can overlay points in the plot according to a third variable of your choice.
-                                By default, the lower 1% of the third variable will be plotted.
+                                By default, the lower 1% of the y-axis variable will be plotted.
                                 For example, choose 'Trait3_p' to see which outliers in Trait3 are also outliers in Trait1."
                               ),
-                              p("To do: (1) Overlay points based on some cutoff (DONE).  
-                                (2) Add zoom sliding bars for x-axis and y-axis, and log-axis option like on Manhattan plot.
-                                (3) Can we get the mouse to tell us the name of a point (!).")
+                              p("To do: (1) Add zoom sliding bars for x-axis and y-axis 
+                                (2) Add flip options for x and y axis log-axis option
+                                (2.5)  Make friendly to new datasets (choose numeric)
+                                (3) Can we get the mouse to tell us the name of a point (!)."),
+                              h4("Outliers"),
+                              p("The table below lists the outliers: the data points below (or above, depending on your selection) 
+                                the threshold chosen above for 'Cutoff for outliers to overlay'."
+                              ),
+                              dataTableOutput("scatterDataTable")
                               )
                               )
                               ),
