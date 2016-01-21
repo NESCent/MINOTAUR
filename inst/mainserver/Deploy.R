@@ -21,7 +21,7 @@ userName = 'liuyang'
 
 shinyPath = switch(userName,
                    'Bob'='/Users/Bob/Dropbox/Bob/Work/Side Projects/MINOTAUR/inst/mainserver',
-                   'caitiecollins' = '/Users/caitiecollins/MINOTAUR/inst/mainserver',
+                   'caitiecollins' = './MINOTAUR/inst/mainserver',
                    'saraschaal' = '/Users/saraschaal/Documents/Wake Forest/Lotterhos Lab/Hackathon/MINOTAUR/inst/mainserver',
                    'liuyang' = '~/MINOTAUR/inst/mainserver',
                    'Daren' = '/Users/darencard/Desktop/git/MINOTAUR/inst/mainserver',
