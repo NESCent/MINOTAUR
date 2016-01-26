@@ -1,14 +1,21 @@
 ## linear Manhattan plot
 output$linearMH_y1Selection <- renderUI({
-    selectizeInput('choose_y1_plot','Select y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
+    selectizeInput('choose_y1_plot','Choose y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
   })
-
+output$linearMH_xchr <- renderUI({
+  selectizeInput('choose_xaxis_chr','choose Chromosome',choices=c(names(rv$subData)), selected = "Chr" )
+})
+output$linearMH_xcood <- renderUI({
+  selectizeInput('choose_xaxis_cood','choose coordinates',choices=c(names(rv$subData)), selected = "BP" )
+})
 output$linearMH_p2Selection <- renderUI({
   selectizeInput('choose_pval','Mark outliers by second variable (usually p value)',choices=c(names(rv$subData)), selected = "Trait1_P"  )
 })
 
 # linenar Manhattan Plot
 output$LinearMHTplot <- renderPlot({
+    xchr = input$choose_xaxis_chr
+    xcood = input$choose_xaxis_cood
     yselect = input$choose_y1_plot
     logy = input$logy1Checkbox
     pselect = input$choose_pval
@@ -18,7 +25,7 @@ output$LinearMHTplot <- renderPlot({
     mhtplots <- NULL
     if(!is.null(rv$subData)){
       if(!is.null(yselect) && !is.null(pselect)){
-        mhtplots <- mhtplot(mydata=rv$subData, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
+        mhtplots <- mhtplot(mydata=rv$subData, Chr=xchr, BP = xcood, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
       } 
     } 
     mhtplots
@@ -27,15 +34,10 @@ output$LinearMHTplot <- renderPlot({
 })
 
 
-mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="Chr", BP="BP", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, nbins=100, pcut.outlier=1e-4){
+mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", ycolnam="Trait1_Beta", pcolnam="Trait1_P", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, nbins=100, pcut.outlier=1e-4){
   ### Manhattan Plot. 
-  ### chr = "Chr", indicate the column name for Chromosome in mytoy (dataset).
-  #mydata= mytoy;  pval = "Trait1_P"; BP= "BP" ;colfig=NULL
-  #staistic.plot="Trait1_Beta"; Chr="Chr"; ylim.max=10; ylim.min=-10;titlemain=NULL; pcut.outlier=1e-2
-  #pvidx = 5;  betaidx = 4;
 
   if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata))  } 
-  
   if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata))  } 
   
   chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
@@ -46,7 +48,7 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
   if(is.na(BPidx)){
     print(" 'BP' is not in the column names of input data ")
   }
-  
+
   if(!is.null(logY)){
     if(length(logY) > 1){
       logV1 = FALSE
@@ -74,7 +76,7 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
   ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
   ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
   
-  chrs.max <- lapply(sapply(mynewtoy,'[','BP'),max)
+  chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
   
   x.axis.scale<-300/max(x.total)
@@ -124,11 +126,6 @@ mhtplot<-function(mydata=mytoy, ycolnam="Trait1_Beta", pcolnam="Trait1_P",Chr="C
   }
  
   dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
-  #require(ggplot2)
-  #print(head(dat4plot))
-  #pp <- ggplot(dat4plot, aes(as.numeric(xv),as.numeric(yv))) 
-  #ppp <- pp + stat_bin2d(bins=nbins)
-  #print(ppp)
   dat4plot <- data.matrix(dat4plots[complete.cases(dat4plots),])
   #dat4plot <- cbind( xaxis_all, yaxis_all)
   x.axis.min <- min(dat4plot[,1], na.rm=T); x.axis.max <- max(dat4plot[,1], na.rm=T)

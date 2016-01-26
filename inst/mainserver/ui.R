@@ -230,19 +230,28 @@ shinyUI(
                             sidebarPanel(
                               h3('Manhattan Plot'),
                               wellPanel(
-                              p('The x axis needs chromosome and coordinates informaiton. 
-                                Make sure "Chr", "BP" in the columns names of your data or "clean-up data" '),
+                              #p('Please choose chromosome and coordinates informaiton for x axis'),
+                              #style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
+                              #br(),
+                              p('Choose chromosome and coordinates informaiton for x axis'),
+                              uiOutput('linearMH_xchr'),
+                              uiOutput('linearMH_xcood'),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
                               
+                              wellPanel(
+                              p('choose y-axis'),
                               uiOutput('linearMH_y1Selection'),
                               radioButtons("logy1Checkbox", "log(y-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
+                              textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
+                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
-                              
+                            
+                              wellPanel(
                               uiOutput('linearMH_p2Selection'),
-                              br(),
-                              
-                              textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002)
+                              textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002),
+                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px",
+                              br())
                               #uiOutput('select_linearMH')
                             ),
                             
