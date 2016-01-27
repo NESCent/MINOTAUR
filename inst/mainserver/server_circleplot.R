@@ -1,23 +1,24 @@
 
 # circular Manhattan plot
 output$circle1mh <- renderUI({
-  ## read data
-  mainData <- NULL
-  mainData <- rv$subData
-  
-  selectizeInput('Circle_y1','Select a variable for outer circle', choices=c(names(mainData)), multiple=FALSE, selected = "Trait1_Beta"   )
+  selectizeInput('Circle_y1','Choose a variable for outer circle', choices=c(names(rv$subData)), multiple=FALSE, selected = "Trait1_Beta"   )
 })
 
 output$circle2mh <- renderUI({
-  ## read data
-  mainData <- NULL
-  mainData <- rv$subData
-  
-  selectizeInput('Circle_y2','Select a variable for inner circle', choices=c(names(mainData)), multiple=FALSE, selected = "Trait2_Beta"  )
+  selectizeInput('Circle_y2','Choose a variable for inner circle', choices=c(names(rv$subData)), multiple=FALSE, selected = "Trait2_Beta"  )
+})
+
+output$circle_xchr <- renderUI({
+  selectizeInput('choose_xaxis_chrs','Choose Chromosomes',choices=c(names(rv$subData)), selected = "Chr" )
+})
+output$circle_xcood <- renderUI({
+  selectizeInput('choose_xaxis_coods','Choose coordinates',choices=c(names(rv$subData)), selected = "BP" )
 })
 
 # circular Manhattan plot
 output$circleMHTplot <- renderPlot({
+    xchr = input$choose_xaxis_chrs
+    xcood = input$choose_xaxis_coods
     colnam1 = input$Circle_y1
     colnam2 = input$Circle_y2
     logV1 = input$logV1Checkbox
@@ -27,7 +28,7 @@ output$circleMHTplot <- renderPlot({
     circleplots <- NULL
     if(!is.null(rv$subData)){
       if(!is.null(colnam1) && !is.null(colnam2)){
-        circleplots <- circosmht(mydata=rv$subData,traitsname = c(colnam1, colnam2), pcut.outlier= poutlier, logV1 = logV1, logV2 = logV2)
+        circleplots <- circosmht(mydata=rv$subData,Chr = xchr, BP=xcood, traitsname = c(colnam1, colnam2), pcut.outlier= poutlier, logV1 = logV1, logV2 = logV2)
       } 
     } 
     circleplots

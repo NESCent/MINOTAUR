@@ -233,14 +233,14 @@ shinyUI(
                               #p('Please choose chromosome and coordinates informaiton for x axis'),
                               #style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               #br(),
-                              p('Choose chromosome and coordinates informaiton for x axis'),
+                              p('Choose x-axis'),
                               uiOutput('linearMH_xchr'),
                               uiOutput('linearMH_xcood'),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
                               
                               wellPanel(
-                              p('choose y-axis'),
+                              p('Choose y-axis'),
                               uiOutput('linearMH_y1Selection'),
                               radioButtons("logy1Checkbox", "log(y-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
                               textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
@@ -269,25 +269,32 @@ shinyUI(
                             sidebarPanel(
                               h3('Circle Plot'),
                               wellPanel(
-                              HTML("Please be patient, this plot may be <strong>SLOW</strong> with > 50,000 points."),
+                              HTML("Please be patient, this plot may be <strong>SLOW</strong> with > 50,000 points. For datasets too large for the circle plot, try using the scatterplot or Manhattanplot instead."),
+                              style = "background-color: #fff; color: darkblue; border-color: white; padding:10px"),
                               br(),
-                              p("For datasets too large for the circle plot, try using the smooth scatter or hexplot instead."),                              
+      
+                              wellPanel(
+                                p('Choose x-axis'),
+                                uiOutput('circle_xchr'),
+                                uiOutput('circle_xcood'),
+                                style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
-                              p('The circle plot needs chromosome and coordinates. 
-                                Make sure "Chr", "BP" in the columns names of your data and "clean-up data"'), 
-                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
-                              br(),
-                              hr(),
+                              
+                              wellPanel(
                               uiOutput('circle1mh'),
                               radioButtons("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10","none"),
                                            inline = TRUE,selected = "none"),
+                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
-                              hr(),
+                              
+                              wellPanel(
                               uiOutput('circle2mh'),
                               radioButtons("logV2Checkbox", "log (inner circle)", choices = c("log2","log10","none"),
-                                           inline = TRUE,selected = "none"),          
+                                           inline = TRUE,selected = "none"),   
+                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
+                              
                               br(),
-                              hr(),
+                              
                               textInput(inputId="pcut", label="P cutoff for outliers", value = 0.001)
                             ),
                             
