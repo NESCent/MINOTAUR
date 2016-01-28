@@ -29,7 +29,7 @@ output$LinearMHTplot <- renderPlot({
       if(!is.null(yselect) && !is.null(pselect)){
         y_negNo <- length(which(rv$subData[, yselect] <0))
         if( logy != "none"  && y_negNo > 0) { stop("The y-axis variable contains negative values, can't be log-tranformed")}
-        print(yneg)
+        
         mhtplots <- mhtplot(mydata=rv$subData, Chr=xchr,Ymul_1=yneg, BP = xcood, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
       } 
     } 
