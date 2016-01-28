@@ -17,7 +17,7 @@ require("adegenet")
 ## temporarily sourcing .R files here
 #source("mhtCirclePlot.R")
 #source("mhtplot.R")
-source("uiFunctions.R")
+# source("uiFunctions.R")
 
 #### ------------------------------------------------------------------
 

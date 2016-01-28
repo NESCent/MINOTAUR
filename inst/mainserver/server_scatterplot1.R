@@ -10,8 +10,8 @@ output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
 
 ### Plot function, need to move to function area
   if(!("ash" %in% installed.packages())){install.packages("ash")}
-  library(ash)
-  library(fields)
+  require(ash)
+  require(fields)
 
   plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL, nbin,
                      x_sub, y_sub){

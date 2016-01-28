@@ -143,6 +143,15 @@ require("OmicCircos")
 # Define the shiny server functionality
 shinyServer(function(input, output, session) {
   
+  #   ## temporarily (?!) sourcing .R files here ##
+  #   syst.file <- base::system.file
+  #   source(syst.file("mainserver/data.R",package="MINOTAUR"))
+  #   source(syst.file("mainserver/server_cleanupData.R",package="MINOTAUR"))
+  #   source(syst.file("mainserver/server_Manhattanplot.R",package="MINOTAUR"))
+  #   source(syst.file("mainserver/server_circleplot.R",package="MINOTAUR"))
+  #   source(syst.file("mainserver/uiFunctions.R",package="MINOTAUR"))
+  #   source(syst.file("mainserver/utils.R",package="MINOTAUR"))
+  
   ## temporarily sourcing .R files here ##
   
   # data
@@ -195,8 +204,9 @@ shinyServer(function(input, output, session) {
   ## (example summary table) ##
   #############################
   output$summaryTable <- renderTable({
-    #summary(mainData)
     summary(.get.data())
   })
   
-})
+  
+  
+}) # end server

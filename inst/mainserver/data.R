@@ -5,25 +5,29 @@
 # ##############################
 # ## expl #1 (smallData (??)) ##
 # ##############################
-# smallData <- read.csv("./data/Wallace_etal_2014_PLoSGenet_GWAS_hits-150112.csv")
+# smallData <- read.csv("./misc/Wallace_etal_2014_PLoSGenet_GWAS_hits-150112.csv")
 # 
 # # str(smallData)
 # 
-# save(smallData, file="./data/smallData.Rdata")
-# write.csv(smallData, file="./data/smallData.csv")
+# save(smallData, file="./pkg/data/smallData.Rdata")
+# write.csv(smallData, file="./pkg/data/smallData.csv")
 # # require("XLConnect")
-# writeWorksheetToFile(file="./data/smallData.xlsx", data = smallData, sheet="Sheet1")
+# writeWorksheetToFile(file="./pkg/data/smallData.xlsx", data = smallData, sheet="Sheet1")
 # 
 # 
 # ##############################
 # ## expl #2 (largeData (??)) ##
 # ##############################
-# largeData <- read.table("./inst/mainserver/mytoys.txt", header=TRUE)
+# largeData <- read.table("./misc/mytoys.txt", header=TRUE)
 # 
-# save(largeData, file="./data/largeData.Rdata")
-# write.csv(largeData, file="./data/largeData.csv")
+# save(largeData, file="./pkg/data/largeData.Rdata")
+# write.csv(largeData, file="./pkg/data/largeData.csv")
 # #require("XLConnect")
-# writeWorksheetToFile(file="./data/largeData.xlsx", data = largeData, sheet="Sheet1")
+# writeWorksheetToFile(file="./pkg/data/largeData.xlsx", data = largeData, sheet="Sheet1")
+
+
+
+
 
 
 ######################
@@ -38,7 +42,7 @@
   
   out <- NULL
   
-  require("XLConnect")
+  require("data.table")
   
   #############
   ## EXAMPLE ##
@@ -48,20 +52,20 @@
     if(input$egData=="smallData"){
       ## TEMPORARY VERSION (while pkg not compiled)
       ## these files are TEMPORARILY located in /inst/mainserver
-      out <- get(load("smallData.Rdata")) 
+      #out <- get(load("smallData.Rdata")) 
       ## REAL VERSION (pkg must be compiled)
       ## these files will be PERMANENTLY located in /data/
-      #data(smallData, package="MINOTAUR", envir=environment()) 
+      data(smallData, package="MINOTAUR", envir=environment()) 
     }
     if(input$egData=="largeData"){ 
       ## TEMPORARY VERSION (while pkg not compiled)
       ## these files are TEMPORARILY located in inst/mainserver
-      out <- get(load("largeData.Rdata")) 
+      #out <- get(load("largeData.Rdata")) 
       ## REAL VERSION (pkg must be compiled)
       ## these files will be PERMANENTLY located in /data/
-      #data(largeData, package="MINOTAUR", envir=environment()) 
+      data(largeData, package="MINOTAUR", envir=environment())
     }
-    #out <- get(input$egData) ## REAL VERSION (pkg must be compiled)
+    out <- get(input$egData) ## REAL VERSION (pkg must be compiled)
   } # end eg
   
   #################
@@ -105,25 +109,10 @@
     ## need to rename input file
     newName <- paste(input$csvData$datapath, extension, sep=".")
     file.rename(oldName, newName)
-    
-    
-    if(tolower(extension) == "csv"){
-      out <- read.csv(newName)      
-    }else{      
-      
-      ## NOTE: 
-      ## Want to make sure we have the most efficient fns here for large and small data... 
-      ## (not sure we do yet)
-      
-      # require("XLConnect")
-      loadWorkbook <- XLConnect::loadWorkbook
-      readWorksheet <- XLConnect::readWorksheet
-      gc()
-      dat <- loadWorkbook(newName)
-      gc()
-      out <- readWorksheet(dat, "Sheet1", header=TRUE)
-      gc()
-    }  
+
+    # require("data.table")
+    dat <- fread(newName)
+
     
     ## remove columns containing only NAs
     out <- .noNAcols(out) 
