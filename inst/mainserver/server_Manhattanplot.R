@@ -3,10 +3,10 @@ output$linearMH_y1Selection <- renderUI({
     selectizeInput('choose_y1_plot','Choose y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
   })
 output$linearMH_xchr <- renderUI({
-  selectizeInput('choose_xaxis_chr','Choose chromosomes variable',choices=c(names(rv$subData)), selected = "Chr" )
+  selectizeInput('choose_xaxis_chr','Choose variable for chromosomes or linkage group',choices=c(names(rv$subData)), selected = "Chr" )
 })
 output$linearMH_xcood <- renderUI({
-  selectizeInput('choose_xaxis_cood','Choose position variable',choices=c(names(rv$subData)), selected = "BP" )
+  selectizeInput('choose_xaxis_cood','Choose variable for marker position',choices=c(names(rv$subData)), selected = "BP" )
 })
 output$linearMH_p2Selection <- renderUI({
   selectizeInput('choose_pval','Mark outliers by second variable (usually p value)',choices=c(names(rv$subData)), selected = "Trait1_P"  )
@@ -19,13 +19,18 @@ output$LinearMHTplot <- renderPlot({
     yselect = input$choose_y1_plot
     logy = input$logy1Checkbox
     pselect = input$choose_pval
+    yneg = ifelse(input$mht_multiply, TRUE,FALSE)
+    
     poutlier = as.numeric(input$linearmhtpcut)
     n_bins <- as.numeric(as.character(input$linearmht_nbins))
     
     mhtplots <- NULL
     if(!is.null(rv$subData)){
       if(!is.null(yselect) && !is.null(pselect)){
-        mhtplots <- mhtplot(mydata=rv$subData, Chr=xchr, BP = xcood, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
+        y_negNo <- length(which(rv$subData[, yselect] <0))
+        if( logy != "none"  && y_negNo > 0) { stop("The y-axis variable contains negative values, can't be log-tranformed")}
+        print(yneg)
+        mhtplots <- mhtplot(mydata=rv$subData, Chr=xchr,Ymul_1=yneg, BP = xcood, ycolnam=yselect, pcolnam=pselect, pcut.outlier= poutlier, logY=logy, nbins=n_bins)
       } 
     } 
     mhtplots
@@ -34,11 +39,11 @@ output$LinearMHTplot <- renderPlot({
 })
 
 
-mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", ycolnam="Trait1_Beta", pcolnam="Trait1_P", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, nbins=100, pcut.outlier=1e-4){
+mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", Ymul_1=FALSE, ycolnam="Trait1_Beta", pcolnam="Trait1_P", ylim.max=10,ylim.min=-10,colfig=NULL,titlemain=NULL,logY=FALSE, nbins=100, pcut.outlier=1e-4){
   ### Manhattan Plot. 
 
-  if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata))  } 
-  if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata))  } 
+  if(!is.null(ycolnam)){    betaidx = match(ycolnam, colnames(mydata))  } 
+  if(!is.null(pcolnam)){    pvidx = match(pcolnam, colnames(mydata))  } 
   
   chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
   
@@ -53,13 +58,19 @@ mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", ycolnam="Trait1_Beta", pcoln
     if(length(logY) > 1){
       logV1 = FALSE
     } else{
-      if(logY == "log2"){
-        mydata[,betaidx] = -log2(abs(mydata[,betaidx]))
-        ycolnam = paste(ycolnam, " log2(X)")
+      if(logY == "-log2"){
+
+        mydata[,betaidx] = -log2(mydata[,betaidx])
+        ycolnam = paste(ycolnam, "-log2(X)")
         pcut.outlier = -log2(pcut.outlier)
-      } else if (logY == "log10"){
-        mydata[,betaidx] = -log10(abs(mydata[,betaidx]))
-        ycolnam = paste(ycolnam, " log10(X)")
+        #if (Ymul_1){
+        #  mydata[,betaidx] = -log2(mydata[,betaidx])
+        #  ycolnam = paste(ycolnam, "-log2(X)")
+        #  pcut.outlier = -log2(pcut.outlier)
+        #}
+      } else if (logY == "-log10"){
+        mydata[,betaidx] = -log10(mydata[,betaidx])
+        ycolnam = paste(ycolnam, "-log10(X)")
         pcut.outlier = -log10(pcut.outlier)
       } else{
         mydata[,betaidx] = mydata[,betaidx]
@@ -73,8 +84,8 @@ mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", ycolnam="Trait1_Beta", pcoln
   number_snp <- dim(mydata)[1]
   
   #p.max <- floor(max(-log10(mydata[,pvidx]),na.rm=T)+1)
-  ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
-  ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
+  ylim.max <- floor(max(as.numeric(mydata[,betaidx]), na.rm=T) + 1)
+  ylim.min <- floor(min(as.numeric(mydata[,betaidx]), na.rm=T) - 1)
   
   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
