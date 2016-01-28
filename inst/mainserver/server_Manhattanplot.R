@@ -3,10 +3,10 @@ output$linearMH_y1Selection <- renderUI({
     selectizeInput('choose_y1_plot','Choose y-axis variable',choices=c(names(rv$subData)), selected = "Trait1_Beta" )
   })
 output$linearMH_xchr <- renderUI({
-  selectizeInput('choose_xaxis_chr','Choose Chromosomes',choices=c(names(rv$subData)), selected = "Chr" )
+  selectizeInput('choose_xaxis_chr','Choose chromosomes variable',choices=c(names(rv$subData)), selected = "Chr" )
 })
 output$linearMH_xcood <- renderUI({
-  selectizeInput('choose_xaxis_cood','Choose coordinates',choices=c(names(rv$subData)), selected = "BP" )
+  selectizeInput('choose_xaxis_cood','Choose position variable',choices=c(names(rv$subData)), selected = "BP" )
 })
 output$linearMH_p2Selection <- renderUI({
   selectizeInput('choose_pval','Mark outliers by second variable (usually p value)',choices=c(names(rv$subData)), selected = "Trait1_P"  )
