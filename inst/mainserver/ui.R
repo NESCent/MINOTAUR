@@ -39,9 +39,44 @@ shinyUI(
       ## Add images of our prettiest plots
       
       tabPanel("Welcome",
+               div(img(src="minotaur.jpg", align="right")),
                h2("Welcome to the labyrinth!"),
-               p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space'),
-               div(img(src="minotaur.jpg"))
+               p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space. Although 
+                 this App has been designed with genomic data in mind, any dataset being analyzed in multivariate space
+                 can be visualized using our App.'),
+               h2('App Navigation:'),
+               h3('1. Data'),
+               p('MINOTAUR is supplied with example datasets for users to explore the functions and plotting capabilities of the RShiny App.'),
+               h4('largeData'),
+               p('{details about this data set}'),
+               h4('smallData'),
+               p('{details about this data set}'),
+               br(),
+               p('The user can also upload their own data sets as either .Rdata or Excel files following the example format below:'),
+               div(img(src="example_dataframe.jpg", align="center")),
+               p('rows can be individuals or for genomic data an example would be SNPs'),
+               p('columns are all statstics (e.g. Fst, GWAS, etc.) measurements (e.g. environmental or phenotypic variables), or descriptors (e.g. chromosome, species, etc.)'),
+               br(),
+               br(),
+               h4('Clean up Data Page'),
+               p('This page allows you to subset your data by either removal of some variables (columns) or 
+                 by filtering your data based on a variable.'),
+               p('Once you select a column to filter by, an additional menu will pop up that gives you either a 
+                 sliding bar to subset values of numerical data (left image below) or a box to remove levels of factor data 
+                 (right image below). A violin plot will appear for continuous numerical data.'),
+               div(img(src="numerical_example.jpg", align = "center"), img(src="factor_example.jpg", align = "center")),
+               h3('2. Plots'),
+               h4('Scatterplot'),
+               br(),
+               h4('Manhattan Plot'),
+               p('Used for genomic data to visualize outliers loci relative to their chromosomal location.'),
+               br(),
+               h4('Circle Plot'),
+               br(),
+               h3('3. Help Page'),
+               p('Additional help including common mistakes or questions for using this App.')
+            
+               
       ),
       
       ##############
