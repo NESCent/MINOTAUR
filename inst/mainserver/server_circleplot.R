@@ -28,6 +28,14 @@ output$circleMHTplot <- renderPlot({
     circleplots <- NULL
     if(!is.null(rv$subData)){
       if(!is.null(colnam1) && !is.null(colnam2)){
+        y1_negNo <- length(which(rv$subData[, colnam1] <0))
+        y2_negNo <- length(which(rv$subData[, colnam2] <0))
+        if( logy != "none"){
+            if(y1_negNo > 0 || y_negNo > 0) {   
+              stop("The y-axis variable contains negative values, can't be log-tranformed")
+            }
+        }
+
         circleplots <- circosmht(mydata=rv$subData,Chr = xchr, BP=xcood, traitsname = c(colnam1, colnam2), pcut.outlier= poutlier, logV1 = logV1, logV2 = logV2)
       } 
     } 
@@ -60,9 +68,9 @@ circosmht <- function(mydata=mytoys,BP= "BP", Chr="Chr", traitsname = c("Trait1_
     if(length(logV1) > 1){
       logV1 = FALSE
     } else{
-      if(logV1 == "log2"){
+      if(logV1 == "-log2"){
         seg.value[,traitidxlist[1]] = -log2(abs(seg.value[,traitidxlist[1]]))
-      } else if (logV1 == "log10"){
+      } else if (logV1 == "-log10"){
         seg.value[,traitidxlist[1]] = -log10(abs(seg.value[,traitidxlist[1]]))
       } else{
         seg.value[,traitidxlist[1]] = seg.value[,traitidxlist[1]]

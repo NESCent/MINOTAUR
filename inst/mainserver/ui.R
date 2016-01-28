@@ -278,6 +278,7 @@ shinyUI(
                               p('Choose y-axis'),
                               uiOutput('linearMH_y1Selection'),
                               radioButtons("logy1Checkbox", "log(y-axis)", choices = c("-log2","-log10", "none"),inline = TRUE,selected = "none"),
+                              #checkboxGroupInput("mht_multiply", "Multiply y-axis by -1", TRUE),
                               textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),

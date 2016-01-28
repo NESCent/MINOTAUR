@@ -1,3 +1,4 @@
+
 ## linear Manhattan plot
 output$linearMH_y1Selection <- renderUI({
     selectizeInput('choose_y1_plot',
