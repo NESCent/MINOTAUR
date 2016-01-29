@@ -36,6 +36,13 @@ MINOTAUR <- function(){
 
 
 .run.MINOTAUR <- function(){
+  
+  ## TO DO: FIND A FUNCTIONAL SOLUTION TO THE "CONNECTION" WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+  ## Repetitive warnings being caused by conflicting 
+  ## definitions of class "connection" (pkgs BiocGeneric & RJSONIO)
+  ## Fortunately we do not need this class from either pkg.
+  connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
+  
   syst.file <- base::system.file
   
   #   ## temporarily (?!) sourcing .R files here ##

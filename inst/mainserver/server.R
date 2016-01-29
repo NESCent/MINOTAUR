@@ -1,116 +1,6 @@
 
-# right-aligned numeric text box with adjustable width
-# warning - this box can contain non-numeric strings. Check for these using suppressWarnings(!is.na(as.numeric(val)))
-bobText1 <- function(inputId, label, value="", size='10px', placeholder='', style='text-align:right',...) {
-  div(style="display:inline-block",
-      tags$label(label, `for` = inputId), 
-      tags$input(id=inputId, type="text", 
-                 pattern='[0-9]{1,99}|.[0-9]{1,99}|[0-9]{1,99}.[0-9]{1,99}|inf|Inf|INF|-inf|-Inf|-INF', 
-                 value=value, size=size, placeholder=placeholder, style=style,...)
-  )
-}
 
-# nice looking close button
-bobCloseButton <- function(inputId) {
-  div(
-    class = "close",
-    tags$button(id = inputId, type = "button", 
-                class = "btn action-button", 
-                style = "font-size:10px; width:25px; height:25px; text-align:center; line-height:10px", 
-                HTML("<i class='close'></i>&#10006"))
-  )
-} # end bobCloseButton
-
-
-
-# nice looking reset button
-bobResetButton <- function(inputId) {
-  div(
-    style="float:right",
-    tags$button(id = inputId, type = "button", 
-                class = "btn action-button btn-primary", 
-                style = "font-size:15px; width:50px; line-height:12px; text-align:center", 
-                HTML("<i class='icon-star'></i>reset"))
-  )
-} # end bobResetButton
-
-
-# violin-style plot
-bobViolinPlot <- function(x,subMin=0,subMax=0) {
-  out <- NULL
-  
-  x = x[!is.na(x)]
-  par(mar=c(0,0,0,0))
-  d = density(x, from=min(x), to=max(x))
-  d$y = d$y/max(d$y)
-  rangeMin = (min(x)+max(x))/2 - 1.5*(max(x)-min(x))/2
-  rangeMax = (min(x)+max(x))/2 + 1.5*(max(x)-min(x))/2
-  out <- 
-    plot(0,type='n',xlim=c(rangeMin,rangeMax),ylim=c(-1,1),axes=FALSE,xlab='',ylab='')
-  polygon(c(d$x,rev(d$x)),c(d$y,-rev(d$y)),col=grey(0.9),border=NA)
-  if (subMin!=subMax) {
-    s1 = min(subMin,subMax)
-    s2 = max(subMin,subMax)
-    s1 = max(s1,min(x))
-    s2 = min(s2,max(x))
-    z1 = which(abs(d$x-s1)==min(abs(d$x-s1)))[1]
-    z2 = which(abs(d$x-s2)==min(abs(d$x-s2)))[1]
-    polygon(c(d$x[z1:z2],rev(d$x[z1:z2])),c(d$y[z1:z2],-rev(d$y[z1:z2])),col='#ff9000',border=NA)
-    abline(v=c(d$x[z1],d$x[z2]),col='#ff9000',lty=2)
-  }
-  polygon(c(d$x,rev(d$x)),c(d$y,-rev(d$y)))
-  text(min(x),0,signif(min(x),digits=3),pos=2)
-  text(max(x),0,signif(max(x),digits=3),pos=4)
-  
-  return(out)
-} # end bobViolinPlot
-
-
-# bar sub plot
-bobBarSubplot <- function(tab, selected, total, varClass="factor") {
-  out <- NULL
-  
-  ## FACTORS ##
-  if(varClass == "factor"){    
-    par(mar=c(0,0,0,0))
-    out <- 
-      #plot(0,type='n',axes=FALSE,xlab='',ylab='',xlim=c(0,1),ylim=c(0,1))
-      ## make a single horizontal "barplot" reflecting proportion of data removed
-      barplot(matrix(c(length(selected)/total, (1 - (length(selected)/total))), ncol=1), 
-              col=c("#ff9000", "grey"), space=0, 
-              axes=FALSE, xlab='', ylab='', xlim=c(-0.01, 1.01),
-              horiz=TRUE, beside=FALSE)
-    myText = paste(total-length(selected),'of',total,'levels removed')
-    text(0,0.5, myText, pos=4, col="black", cex=1.3, font=2)
-  }else{
-    ## INTEGERS ##
-    # restrict to small-ish number of levels
-    if (length(tab)<50) {
-      par(mar=c(0,0,0,0))
-      z = as.numeric(names(tab))
-      colVec = rep(grey(0.9),length(tab))
-      colVec[selected] = '#ff9000'
-      out <- 
-        barplot(tab/max(tab),col=colVec,space=0,axes=FALSE,xlab='',ylab='',ylim=c(-0.5,1.2))
-      text(min(z)-0.5,0,min(z),pos=1)
-      text(max(z)-0.5,0,max(z),pos=1)
-      
-      # otherwise produce simple summary box
-    } else {      
-      par(mar=c(0,0,0,0))
-      out <- 
-        #plot(0,type='n',axes=FALSE,xlab='',ylab='',xlim=c(0,1),ylim=c(0,1))
-        ## make a single horizontal "barplot" reflecting proportion of data removed
-        barplot(matrix(c(length(selected)/total, (1 - (length(selected)/total))), ncol=1), 
-                col=c("#ff9000", "grey"), space=0, 
-                axes=FALSE, xlab='', ylab='', xlim=c(-0.01, 1.01),
-                horiz=TRUE, beside=FALSE)
-      myText = paste(total-length(selected),'of',total,'unique values removed')
-      text(0,0.5, myText, pos=4, col="black", cex=1.3, font=2)
-    } 
-  }
-  return(out)
-} # end bobBarSubplot
+## NOTE: cleanup data fns (eg. bobCloseButton have been moved to uiFunctions.R)
 
 
 ##############
@@ -140,19 +30,16 @@ require("OmicCircos")
 # mainData <- read.table("mytoys.txt",head=T)
 
 
+#################   ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###  
+## shinyServer ##   ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###  
+#################   ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###  
+
 # Define the shiny server functionality
 shinyServer(function(input, output, session) {
   
-  #   ## temporarily (?!) sourcing .R files here ##
-  #   syst.file <- base::system.file
-  #   source(syst.file("mainserver/data.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_cleanupData.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_Manhattanplot.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_circleplot.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/uiFunctions.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/utils.R",package="MINOTAUR"))
-  
-  ## temporarily sourcing .R files here ##
+  ##########################################
+  ## (temporarily) sourcing .R files here ##
+  ##########################################
   
   # data
   source("data.R", local=T)
@@ -162,12 +49,6 @@ shinyServer(function(input, output, session) {
   
   # Scatterplot
   source("server_scatterplot1.R", local=T)
-  
-  #   # Hex plot 1 (plain R)
-  #   source("server_hexplot1.R", local=T)
-  #   
-  #   # SmoothScatter plot
-  #   source("server_smoothscatter.R", local=T)
   
   # Linear Manhattan plot
   source("server_Manhattanplot.R", local=T)
@@ -180,6 +61,12 @@ shinyServer(function(input, output, session) {
   
   # Utils
   source("utils.R", local=T)
+  
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    
+  
+  #####################
+  ## INPUT DATA PAGE ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
+  #####################
   
   ##############
   ## get data ## 
@@ -194,7 +81,8 @@ shinyServer(function(input, output, session) {
   ###############################
   output$inputSummary <- renderPrint({
     if(is.null(.get.data())){
-      out <- cat("\nNo data available to summarise. Browse files to upload by clicking 'Choose file' at left.\n")
+      out <- cat("\nNo data available to summarise. 
+                 Browse files to upload by clicking 'Choose file' at left.\n")
     }else{
       summary(.get.data())
     }    
@@ -207,6 +95,174 @@ shinyServer(function(input, output, session) {
     summary(.get.data())
   })
   
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    
   
+  ########################
+  ## CLEAN-UP DATA PAGE ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
+  ########################
+  
+  ################################################################
+  ## create single list of reactive values to handle subsetting ##
+  ################################################################
+  
+  ## create empty rv list
+  rv <- reactiveValues()
+  
+  ## define values in observer to allow for data input changes
+  observe({.getReactiveValues(.get.data())}) # end of reactiveValues
+  
+  ######################################
+  ## 'update' and 'save' data buttons ##
+  ######################################
+  output$updateButton <- renderUI({.getUpdateSaveButtons()})
+  
+  ##############################
+  ## on update button pressed ##
+  ##############################
+  updatePressed <- eventReactive(input$updateDataButton, {
+    .getWidgetValues()
+    .updateData(input)
+  })
+  
+  observe({
+    updatePressed()
+  })
+  
+  #####################################################
+  ## selectize for choosing which columns are active ##
+  #####################################################
+  output$selectColumns <- renderUI({.getSelectColumns(.get.data())})
+  
+  ################################################
+  ## dropdown menu for choosing filter variable ##
+  ################################################
+  output$filterVariable <- renderUI({.getFilterVariable(.get.data())})
+  
+  ##############################
+  ## on new variable selected ##
+  ##############################
+  filterVariableSelected <- eventReactive(input$filterVariable, {
+    .getFilterVariableSelected(.get.data())
+  })
+  
+  observe({
+    filterVariableSelected()
+  })
+  
+  ########################################
+  ## create current active subset panel ##
+  ########################################
+  output$subsetPanels_current <- renderUI({.getCurrentPanels(.get.data(), 
+                                                             rv)})
+  
+  ######################################
+  ## create 'locked in' subset panels ##
+  ######################################
+  output$subsetPanels_locked <- renderUI({.getLockedPanels(rv, 
+                                                           i, 
+                                                           input, 
+                                                           .get.data())})
+  #############################
+  ## on reset button pressed ##
+  #############################
+  observe({.observeResetButton(i, input, rv, .get.data())})
+  
+  
+  ##############################
+  ## on close buttons pressed ##
+  ##############################
+  observe({.observeCloseButton(.get.data(), 
+                               rv, 
+                               input)}) 
+  
+  
+  #######################
+  ## render data table ##
+  #######################
+  
+  ## TO DO: get table to show NAs (istead of empty cells)
+  
+  output$mainDataTable <- renderDataTable({
+    rv$subData
+  },
+  options=list(scrollX='300px', scrollY='400px', searching=FALSE))
+  
+  
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    
+  
+  ######################
+  ## SCATTERPLOT PAGE ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
+  ######################
+  
+  ########################
+  ## render ui elements ##
+  ########################
+  # scatterplot
+  output$scatter_xSelection <- renderUI({.getxSelection(rv$subData)})
+  output$scatter_ySelection <- renderUI({.getySelection(rv$subData)})
+  
+  ## This is the 3rd variable that will color points by:
+  output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
+  #output$scatter_colPal <- renderUI({.getColPal()})
+  
+  ######################
+  ## render plot area ##
+  ######################
+  output$scatterplot1 <- renderPlot({ .getScatterplot1(input)}) # end scatterplot1
+  
+  #######################
+  ## render data table ##
+  #######################
+  #print("hell")
+  output$scatterDataTable <- renderDataTable({.getScatterDataTable(input, rv$subData)},
+                                             options=list(scrollX='300px', scrollY='400px', 
+                                                          searching=FALSE))# end data Table
+  
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    
+  
+  ##################################
+  ## MANHATTAN PLOT PAGE (linear) ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###   
+  ##################################
+  
+  #####################
+  ## get UI elements ##
+  #####################
+  output$linearMH_y1Selection <- renderUI({.getMHTySelection(rv$subData)})
+  
+  output$linearMH_xchr <- renderUI({.getMHTxChrSelection(rv$subData)})
+  
+  output$linearMH_xcood <- renderUI({.getMHTxPosSelection(rv$subData)})
+  
+  output$linearMH_p2Selection <- renderUI({.getMHTpSelection(rv$subData)})
+  
+  ###########################
+  ## Linear Manhattan Plot ##
+  ###########################
+  output$LinearMHTplot <- renderPlot({.getLinearMHTPlot(rv$subData, input)})
+  
+  
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
+  
+  ######################
+  ## CIRCLE PLOT PAGE ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
+  ######################
+  
+  #####################
+  ## get UI elements ##
+  #####################
+  output$circle1mh <- renderUI({.getOuterCircleVar(rv$subData)})
+  
+  output$circle2mh <- renderUI({.getInnerCircleVar(rv$subData)})
+  
+  output$circle_xchr <- renderUI({.getChromosomeVar(rv$subData)})
+  
+  output$circle_xcood <- renderUI({.getCoordVar(rv$subData)})
+  
+  ########################
+  ## get Manhattan plot ##
+  ########################
+  output$circleMHTplot <- renderPlot({.getCircleMHTPlot(rv$subData)})
+  
+  ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
   
 }) # end server

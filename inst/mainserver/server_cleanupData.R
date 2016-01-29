@@ -1,38 +1,12 @@
 
-################################################################
-## create single list of reactive values to handle subsetting ##
-################################################################
-# rv <- reactiveValues(
-#   
-#   selectColumnOn = rep(TRUE,ncol(mainData)),
-#   panelOrder = NULL,
-#   
-#   class = mapply(class,mainData),
-#   closeButtonPressed = rep(0,ncol(mainData)),
-#   resetButtonPressed = rep(0, ncol(mainData)), 
-#   continuousMin = rep(-Inf,ncol(mainData)),
-#   continuousMax = rep(Inf,ncol(mainData)),
-#   missingValues = replicate(ncol(mainData),NULL),
-#   integerSelected = replicate(ncol(mainData),NULL),
-#   integerMin = rep(-Inf,ncol(mainData)),
-#   integerMax = rep(Inf,ncol(mainData)),
-#   factorSelected = replicate(ncol(mainData),NULL),
-#   modified = rep(FALSE,ncol(mainData)),
-#   
-#   subData = mainData
-# )  # end of reactiveValues
+###################
+## CLEAN-UP DATA ##
+###################
 
-
-## create empty rv list
-rv <- reactiveValues()
-
-## define values in observer
-## to allow for data input changes
-observe({
-  ## read data
-  mainData <- NULL
-  mainData <- .get.data()
-  
+########################
+## .getReactiveValues ##
+########################
+.getReactiveValues <- function(mainData){
   if(!is.null(mainData)){
     rv$selectColumnOn <- rep(TRUE,ncol(mainData))
     rv$panelOrder <- NULL
@@ -47,28 +21,28 @@ observe({
     rv$integerMax <- rep(Inf,ncol(mainData))
     rv$factorSelected <- replicate(ncol(mainData),NULL)
     rv$modified <- rep(FALSE,ncol(mainData))
-      
+    
     rv$subData <- mainData      
   }
-}) # end of reactiveValues
+} # end .getReactiveValues
 
 
-##################################################
-## (simple scratch pad for messing around with) ##
-##################################################
-output$scratchPad <- renderUI({
-  wellPanel(
-    h4('(scratch pad)'),
-    p(rv$closeButtonPressed)
-  )
-})
+# ##################################################
+# ## (simple scratch pad for messing around with) ##
+# ##################################################
+# output$scratchPad <- renderUI({
+#   wellPanel(
+#     h4('(scratch pad)'),
+#     p(rv$closeButtonPressed)
+#   )
+# })
 
 # ----------------------------------------------------------------------------------------------------
 
 ####################################################
 ## set reactive values based on values in widgets ##
 ####################################################
-getWidgetValues <- function() {
+.getWidgetValues <- function() {
   
   ## read in data
   mainData <- NULL
@@ -92,38 +66,7 @@ getWidgetValues <- function() {
       ###############################
       ## continuous (numeric) data ##
       ###############################
-      
-      #       ## obtain value of continuousMin input
-      #       evalString <- paste('input$continuousMin',rv$panelOrder[i],sep='')
-      #       val <- eval(parse(text=evalString))
-      #       ## if val exists (not true initially)
-      #       if (!is.null(val)) {
-      #         ## if val is viable numeric string
-      #         #if (suppressWarnings(!is.na(as.numeric(val)))) {
-      #         if(is.numeric(val)){  
-      #           rv$continuousMin[[rv$panelOrder[i]]] = as.numeric(val)
-      #           ## on value changed from default
-      #           if (as.numeric(val)!=-Inf) {
-      #             rv$modified[rv$panelOrder[i]] = TRUE
-      #           }
-      #         }
-      #       }
-      #       
-      #       # obtain value of continuousMax input
-      #       evalString <- paste('input$continuousMax',rv$panelOrder[i],sep='')
-      #       val <- eval(parse(text=evalString))
-      #       # if val exists (not true initially)
-      #       if (!is.null(val)) {
-      #         # if val is viable numeric string
-      #         if (suppressWarnings(!is.na(as.numeric(val)))) {
-      #           rv$continuousMax[[rv$panelOrder[i]]] = as.numeric(val)
-      #           # on value changed
-      #           if (as.numeric(val)!=Inf) {
-      #             rv$modified[rv$panelOrder[i]] = TRUE
-      #           }
-      #         }
-      #       }
-      
+
       ## obtain continuousMin and continuousMax inputs from SLIDER:
       evalString <- paste("input$continuousValue", col.num, sep="")
       val <- eval(parse(text=evalString))
@@ -174,15 +117,6 @@ getWidgetValues <- function() {
       ##################
       ## integer data ##
       ##################
-      
-      #       # obtain value of integer selection
-      #       evalString <- paste('input$varSelectInteger',rv$panelOrder[i],sep='')
-      #       val <- eval(parse(text=evalString))
-      #       rv$integerSelected[[rv$panelOrder[i]]] = val
-      #       # on value changed
-      #       if (!is.null(val)) {
-      #         rv$modified[rv$panelOrder[i]] = TRUE
-      #       }
             
       ## obtain values of integer range selection from slider
       evalString <- paste('input$integerValue',col.num,sep='')
@@ -232,7 +166,7 @@ getWidgetValues <- function() {
     } # end for loop
 
   }
-}  # end of getWidgetValues
+}  # end of .getWidgetValues
 
 
 
@@ -240,7 +174,7 @@ getWidgetValues <- function() {
 ########################
 ## perform subsetting ##
 ########################
-updateData <- function() {    
+.updateData <- function(input) {    
   
   ## read in data
   mainData <- NULL
@@ -298,15 +232,14 @@ updateData <- function() {
   filter[NAs] = 0    
   rv$subData = sub[filter==TRUE,,drop=FALSE]  
   
-}  # end of updateData
+}  # end of .updateData
 
 # ----------------------------------------------------------------------------------------------------
 
-
-######################################
-## 'update' and 'save' data buttons ##
-######################################
-output$updateButton <- renderUI({
+###########################
+## .getUpdateSaveButtons ##
+###########################
+.getUpdateSaveButtons <- function(){
   fluidRow(
     column(12,
            div(style="display:inline-block",
@@ -322,47 +255,21 @@ output$updateButton <- renderUI({
            ),
            align='center')
   )
-})
-
-
-
-##############################
-## on update button pressed ##
-##############################
-observe({
-  updatePressed()
-})
-updatePressed <- eventReactive(input$updateDataButton, {
-  getWidgetValues()
-  updateData()
-})
-
-
-
-
-#####################################################
-## selectize for choosing which columns are active ##
-#####################################################
-output$selectColumns <- renderUI({  
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
-  
+} # end .getUpdateSaveButtons
+#######################
+## .getSelectColumns ##
+#######################
+.getSelectColumns <- function(mainData){
   selectInput('selectColumns', label=NULL, 
               choices=names(mainData), multiple=TRUE, 
               selectize=FALSE, width='100%')
-})
+} # end .getSelectColumns
 
 
-################################################
-## dropdown menu for choosing filter variable ##
-################################################
-output$filterVariable <- renderUI({
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
+########################
+## .getFilterVariable ##
+########################
+.getFilterVariable <- function(mainData){
   
   myChoices = setdiff(names(mainData),input$selectColumns)
   if (length(rv$panelOrder)>1) {
@@ -372,21 +279,13 @@ output$filterVariable <- renderUI({
                  choices=c('',myChoices), multiple=FALSE, 
                  options=list(placeholder='select, search or input variable names', 
                               selectOnTab=TRUE, create=FALSE))
-})
+} # end .getFilterVariable
 
 
-##############################
-## on new variable selected ##
-##############################
-observe({
-  filterVariableSelected()
-})
-
-filterVariableSelected <- eventReactive(input$filterVariable, {
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
+################################
+## .getFilterVariableSelected ##
+################################
+.getFilterVariableSelected <- function(mainData){
   
   if (input$filterVariable!="") {
     
@@ -404,127 +303,179 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
     }
     
   }
-})
+} # end .getFilterVariableSelected
 
 
-
-#########################################################
-## produce sequence of violin plots showing subsetting ##
-#########################################################
-# observe({
-#   if (length(rv$panelOrder)>0) {
-#     for (i in 1:length(rv$panelOrder)) {
-#       
-#       if (rv$class[rv$panelOrder[i]]=='numeric') {
-#         local({
-#           
-#           my_i = rv$panelOrder[i]
-#           continuousMin = rv$continuousMin[rv$panelOrder[i]]
-#           continuousMax = rv$continuousMax[rv$panelOrder[i]]
-#           plotName = paste('violinSubPlot',rv$panelOrder[i],sep='')
-#           
-#           # add to list of outputs
-#           output[[plotName]] <- renderPlot({
-#             bobViolinPlot(mainData[,my_i],continuousMin,continuousMax)
-#           },bg='transparent')
-#         })
-#       }
-#     }
-#   }
-# })
+####################
+## .fetchMyViolin ##
+####################
+.fetchMyViolin <- function(col.num, input){
+  out <- NULL
+  x <- mainData[,col.num]
+  evalString <- paste("input$continuousValue", col.num, sep="")
+  slider <- eval(parse(text=evalString))  
+  minSelected <- slider[1]
+  maxSelected <- slider[2]
+  #if(minSelected != -Inf || maxSelected != Inf){
+  out <- bobViolinPlot(x, minSelected, maxSelected)
+  #}
+  return(out)
+} # end .fetchMyViolin
 
 
-######################################################
-## produce sequence of bar plots showing subsetting ##
-######################################################
-# observe({
-#   if (length(rv$panelOrder)>0) {
-#     for (i in 1:length(rv$panelOrder)) {
-#       
-#       ## get column selected
-#       col.num <- rv$panelOrder[i]
-#       ## get data for column col.num
-#       x <- mainData[,col.num]
-#       
-#       ## for CURRENT panel, enable automatic plot updating:
-#       if(i == 1){
-#         
-#         ## get selectize input ##
-#         evalString <- paste("input$varSelectInteger", col.num, sep="")
-#         selector <- eval(parse(text=evalString))
-#         
-#         ## get slider input ##
-#         evalString <- paste("input$integerValue", col.num, sep="")
-#         slider <- eval(parse(text=evalString))        
-#         
-#         if(!is.null(slider)){
-#           local({
-#             
-#             #my_i = rv$panelOrder[i]
-#             tab = table(x)            
-#             
-#             ## get set of integers
-#             selected <- unique(x)
-#             
-#             ## handle SLIDER ##
-#             #selected = setdiff(selected, selected[selected < rv$integerMin[[col.num]]])
-#             #selected = setdiff(selected, selected[selected > rv$integerMax[[col.num]]])
-#             selected = setdiff(selected, selected[selected < slider[1]])
-#             selected = setdiff(selected, selected[selected > slider[2]])      
-#             
-#             ## handle SELECTIZE ##
-#             #selected = setdiff(unique(x), as.numeric(rv$integerSelected[[col.num]]))
-#             selected = setdiff(selected, as.integer(selector))
-#             
-#             ## handle MISSING ##
-#             #selected = setdiff(selected,rv$missingValues[[col.num]])
-#             #selected = setdiff(selected,rv$missingValues[[col.num]])
-#             
-#             total = length(unique(x))
-#             plotName = paste('barSubPlot', col.num, sep="")
-#             
-#             # add to list of outputs
-#             output[[plotName]] <- renderPlot({
-#               bobBarSubplot(tab, selected, total)
-#             },bg='transparent')
-#           })
-#         }
-#         
-#       }else{
-#       ## for previous panels, get settings for plot from rv:
-#       if (rv$class[col.num]=='integer') {
-#         local({
-#           
-#           #my_i = rv$panelOrder[i]
-#           tab = table(x)
-#           selected = setdiff(unique(x), as.numeric(rv$integerSelected[[col.num]]))
-#           selected = setdiff(selected, selected[selected < rv$integerMin[[col.num]]])
-#           selected = setdiff(selected, selected[selected > rv$integerMax[[col.num]]])
-#           selected = setdiff(selected,rv$missingValues[[col.num]])
-#           total = length(unique(x))
-#           plotName = paste('barSubPlot', col.num, sep="")
-#           
-#           # add to list of outputs
-#           output[[plotName]] <- renderPlot({
-#             bobBarSubplot(tab,selected,total)
-#           },bg='transparent')
-#         })
-#       }
-#       }
-#     }
-#   }
-# }) # end barplot observer
+################
+## .getButton ##
+################    
+## Generates BOTH reset AND close buttons for ALL panels (present and previous)  
+## NOTE: WAS THERE A REASON WE DIDN'T ALLOW USERS TO RESET PREVIOUS PANELS OR WAS THIS JUST NOT IMPLEMENTED ????
+.getButton <- function(i){
+  out <- NULL
+  
+  col.num <- rv$panelOrder[i]
+  
+  out <- list()
+  out[[1]] <- bobCloseButton(paste("varClose", col.num, sep=""))
+  out[[2]] <- bobResetButton(paste("varReset", col.num, sep=""))
+  
+  return(out)
+} # end .getButton
 
 
+#################
+## .getBarPlot ##
+#################
+.getBarPlot <- function(col.num, varClass="factor", input){
+  
+  out <- NULL
+  
+  ## get data for column  col.num
+  x <- mainData[,col.num]                          
+  
+  if(varClass=="factor"){                      
+    
+    ## FACTORS ##
+    
+    ## get selectize input
+    evalString <- paste("input$varSelectFactor", col.num, sep="")
+    selector <- eval(parse(text=evalString))
+    
+    ## get slider input
+    #evalString <- paste("input$integerValue", col.num, sep="")
+    #slider <- eval(parse(text=evalString))
+    slider <- NULL
+    
+  }else{
+    
+    ## INTEGERS ##
+    
+    ## get selectize input
+    evalString <- paste("input$varSelectInteger", col.num, sep="")
+    selector <- eval(parse(text=evalString))
+    ## get slider input
+    evalString <- paste("input$integerValue", col.num, sep="")
+    slider <- eval(parse(text=evalString))
+  }
+  
+  tab <- table(x)            
+  
+  ## get set of integers
+  selected <- unique(x)
+  
+  ## handle previously removed values
+  subData <- rv$subData
+  sub.col.num <- which(names(subData) == names(mainData)[col.num])
+  prev.removed <- selected[which(!selected %in% unique(subData[,sub.col.num]))]      
+  
+  ## handle SLIDER ##
+  if(!is.null(slider)){
+    selected = setdiff(selected, selected[selected < slider[1]])
+    selected = setdiff(selected, selected[selected > slider[2]])      
+  }
+  ## handle SELECTIZE ##
+  selected = setdiff(selected, selector)
+  
+  ## handle MISSING ##
+  selected = setdiff(selected, rv$missingValues[[col.num]])
+  
+  ## handle PREVIOUS
+  selected <- setdiff(selected, prev.removed)
+  
+  total <- length(unique(x))    
+  
+  out <- bobBarSubplot(tab, selected, total, varClass=varClass)
+  
+  return(out)    
+  
+} # end .getBarPlot
 
 
+########################
+## .factorSelector fn ##
+########################
+.factorSelector <- function(x){
+  out <- NULL
+  if(length(levels(x)) <= 1000){
+    
+    # factor level selectize** ##
+    # (**ONLY WORKS IF VARIABLE HAS <= 1000 LEVELS)
+    out <- selectizeInput(inputId = factorId,
+                          label = factorLabel,
+                          choices = factorChoices,
+                          selected = factorSelected,
+                          multiple=TRUE, 
+                          options=list(placeholder="select or search for levels", 
+                                       delimiter=",", 
+                                       allowEmptyOptions=TRUE, 
+                                       selectOnTab=TRUE, 
+                                       create=TRUE),
+                          width='70%')   
+  }else{
+    ## factor level selectInput ##
+    out <- selectInput(inputId = factorId,
+                       label = factorLabel,
+                       choices = factorChoices,
+                       selected = factorSelected,
+                       multiple=TRUE, 
+                       selectize = FALSE,
+                       width='70%') 
+  }     
+  return(out)
+} # end .factorSelector
 
 
-
-
-
-
-
+#########################
+## .integerSelector fn ##
+#########################            
+.integerSelector <- function(x){
+  out <- NULL
+  
+  ## use selectize
+  if(length(unique(x)) <= 1000){
+    ## individual integer selectize ##
+    out <- selectizeInput(inputId = integerId,
+                          label = integerLabel,
+                          choices = integerChoices,
+                          selected = integerSelected,
+                          multiple=TRUE, 
+                          options=list(placeholder="select or search for integers", 
+                                       delimiter=",", 
+                                       allowEmptyOptions=TRUE, 
+                                       selectOnTab=TRUE, 
+                                       create=TRUE),
+                          width='70%')
+  }else{
+    ## use selectInput
+    out <- selectInput(inputId = integerId,
+                       label = integerLabel,
+                       choices = integerChoices,
+                       selected = integerSelected,
+                       multiple=TRUE, 
+                       selectize = FALSE,
+                       width='70%')
+    
+  }
+  return(out)
+} # end .integerSelector
 
 
 
@@ -550,94 +501,6 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
   missingLabel <- "Remove the following ''missing'' values:"
   missingChoices <- unlist(rv$missingValues[col.num]) # c(NA, "N/A", "-", ".", "", 0)
   missingSelected <- unlist(rv$missingValues[col.num])     
-  
-  
-  ################
-  ## .getButton ##
-  ################    
-  ## Generates BOTH reset AND close buttons for ALL panels (present and previous)  
-  ## NOTE: WAS THERE A REASON WE DIDN'T ALLOW USERS TO RESET PREVIOUS PANELS OR WAS THIS JUST NOT IMPLEMENTED ????
-  .getButton <- function(i){
-    out <- NULL
-    
-    col.num <- rv$panelOrder[i]
-    
-    out <- list()
-    out[[1]] <- bobCloseButton(paste("varClose", col.num, sep=""))
-    out[[2]] <- bobResetButton(paste("varReset", col.num, sep=""))
-    
-    return(out)
-  } # end .getButton
-  
-  
-  #################
-  ## .getBarPlot ##
-  #################
-  .getBarPlot <- function(col.num, varClass="factor", input){
-    
-    out <- NULL
-    
-    ## get data for column  col.num
-    x <- mainData[,col.num]                          
-    
-    if(varClass=="factor"){                      
-      
-      ## FACTORS ##
-      
-      ## get selectize input
-      evalString <- paste("input$varSelectFactor", col.num, sep="")
-      selector <- eval(parse(text=evalString))
-      
-      ## get slider input
-      #evalString <- paste("input$integerValue", col.num, sep="")
-      #slider <- eval(parse(text=evalString))
-      slider <- NULL
-      
-    }else{
-      
-      ## INTEGERS ##
-      
-      ## get selectize input
-      evalString <- paste("input$varSelectInteger", col.num, sep="")
-      selector <- eval(parse(text=evalString))
-      ## get slider input
-      evalString <- paste("input$integerValue", col.num, sep="")
-      slider <- eval(parse(text=evalString))
-    }
-    
-    tab <- table(x)            
-    
-    ## get set of integers
-    selected <- unique(x)
-    
-    ## handle previously removed values
-    subData <- rv$subData
-    sub.col.num <- which(names(subData) == names(mainData)[col.num])
-    prev.removed <- selected[which(!selected %in% unique(subData[,sub.col.num]))]      
-    
-    ## handle SLIDER ##
-    if(!is.null(slider)){
-      selected = setdiff(selected, selected[selected < slider[1]])
-      selected = setdiff(selected, selected[selected > slider[2]])      
-    }
-    ## handle SELECTIZE ##
-    selected = setdiff(selected, selector)
-    
-    ## handle MISSING ##
-    selected = setdiff(selected, rv$missingValues[[col.num]])
-        
-    ## handle PREVIOUS
-    selected <- setdiff(selected, prev.removed)
-    
-    total <- length(unique(x))    
-    
-    out <- bobBarSubplot(tab, selected, total, varClass=varClass)
-    
-    return(out)    
-    
-  } # end .getBarPlot
-  
-  
 
   ############################################################################################################################  
   
@@ -665,23 +528,6 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
       }
       
       #plotName <- paste("violinSubPlot", col.num, sep="")
-      
-      ####################
-      ## .fetchMyViolin ##
-      ####################
-      .fetchMyViolin <- function(col.num, input){
-        out <- NULL
-        x <- mainData[,col.num]
-        evalString <- paste("input$continuousValue", col.num, sep="")
-        slider <- eval(parse(text=evalString))  
-        minSelected <- slider[1]
-        maxSelected <- slider[2]
-        #if(minSelected != -Inf || maxSelected != Inf){
-          out <- bobViolinPlot(x, minSelected, maxSelected)
-        #}
-        return(out)
-      } # end .fetchMyViolin
-      
       
       
       ## define output ##
@@ -750,41 +596,6 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
         ## and update choices to reflect only those REMAINING (only for selectInput)
         if(length(levels(x)) > 1000) factorChoices <- factorChoices[-which(factorChoices %in% factorSelected)]
       }
-      
-      ########################
-      ## .factorSelector fn ##
-      ########################
-      .factorSelector <- function(x){
-        out <- NULL
-        if(length(levels(x)) <= 1000){
-          
-          # factor level selectize** ##
-          # (**ONLY WORKS IF VARIABLE HAS <= 1000 LEVELS)
-          out <- selectizeInput(inputId = factorId,
-                                label = factorLabel,
-                                choices = factorChoices,
-                                selected = factorSelected,
-                                multiple=TRUE, 
-                                options=list(placeholder="select or search for levels", 
-                                             delimiter=",", 
-                                             allowEmptyOptions=TRUE, 
-                                             selectOnTab=TRUE, 
-                                             create=TRUE),
-                                width='70%')   
-        }else{
-          ## factor level selectInput ##
-          out <- selectInput(inputId = factorId,
-                             label = factorLabel,
-                             choices = factorChoices,
-                             selected = factorSelected,
-                             multiple=TRUE, 
-                             selectize = FALSE,
-                             width='70%') 
-        }     
-        return(out)
-      } # end .factorSelector
-      
-
       
       ## define panel ##
       out <- wellPanel(        
@@ -863,44 +674,6 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
       }
       
       
-      #########################
-      ## .integerSelector fn ##
-      #########################            
-      .integerSelector <- function(x){
-        out <- NULL
-        
-        ## use selectize
-        if(length(unique(x)) <= 1000){
-          ## individual integer selectize ##
-          out <- selectizeInput(inputId = integerId,
-                                label = integerLabel,
-                                choices = integerChoices,
-                                selected = integerSelected,
-                                multiple=TRUE, 
-                                options=list(placeholder="select or search for integers", 
-                                             delimiter=",", 
-                                             allowEmptyOptions=TRUE, 
-                                             selectOnTab=TRUE, 
-                                             create=TRUE),
-                                width='70%')
-        }else{
-          ## use selectInput
-          out <- selectInput(inputId = integerId,
-                             label = integerLabel,
-                             choices = integerChoices,
-                             selected = integerSelected,
-                             multiple=TRUE, 
-                             selectize = FALSE,
-                             width='70%')
-          
-        }
-        return(out)
-      } # end .integerSelector
-      
-
-            
-      
-      
       ## define output ##
       out <- list(
         
@@ -956,28 +729,10 @@ filterVariableSelected <- eventReactive(input$filterVariable, {
 } # end .getSubsetWidget
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-########################################
-## create current active subset panel ##
-########################################
-output$subsetPanels_current <- renderUI({
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()  
+#######################
+## .getCurrentPanels ##
+#######################
+.getCurrentPanels <- function(mainData, rv){
   
   if (length(rv$panelOrder)>0) {
     if (rv$selectColumnOn[rv$panelOrder[1]]) {    
@@ -985,97 +740,8 @@ output$subsetPanels_current <- renderUI({
       ###############
       ## get panel ##
       ###############
-      
       panel <- .getSubsetWidget(rv, 1, input)      
-      
       ########################################
-      
-      
-      
-      #       ## continuous (numeric) data ##
-      #       if (rv$class[rv$panelOrder[1]]=='numeric') {
-      
-      #        panel <- list(## call fn creating wellPanel w widgets
-      #                       .getSubsetWidget(rv, 1, input), 
-      #                       ## add help text
-      #                       helpText("*If", em("defining"), "values, hit ENTER between each"))
-      
-      #         panel = wellPanel(
-      #           bobResetButton("varReset"),
-      #           
-      #           #h5(names(mainData)[rv$panelOrder[1]]),          
-      #           
-      #           span(h4(strong(names(mainData)[rv$panelOrder[1]])) , 
-      #                style = "color: rgb(0,108,196)"), 
-      #           
-      #           br(),
-      #                     
-      #           bobText1(inputId=paste("continuousMin",rv$panelOrder[1],sep=''), 
-      #                    label='Subset from', 
-      #                    value=rv$continuousMin[rv$panelOrder[1]], 
-      #                    size='5px', 
-      #                    placeholder='min'),
-      #           
-      #           bobText1(inputId=paste("continuousMax",rv$panelOrder[1],sep=''), 
-      #                    label='to', 
-      #                    value=rv$continuousMax[rv$panelOrder[1]], 
-      #                    size='5px', 
-      #                    placeholder='max'),
-      #           
-      #           
-      #           selectizeInput(paste('missingValues',rv$panelOrder[1],sep=''), 
-      #                          label='Remove missing values', 
-      #                          choices=unlist(rv$missingValues[rv$panelOrder[1]]), 
-      #                          selected=unlist(rv$missingValues[rv$panelOrder[1]]), 
-      #                          multiple=TRUE, 
-      #                          width='100%', 
-      #                          options=list(create=TRUE, 
-      #                                       placeholder='type missing values and press enter')),
-      #           
-      #           plotOutput(paste('violinSubPlot',rv$panelOrder[1],sep=''), height=30),
-      #           
-      #           style='padding: 10px')
-      
-      
-      #       ## factor data ##
-      #       } else if (rv$class[rv$panelOrder[1]]=='factor') {
-      #         panel = wellPanel(
-      #           bobResetButton("varReset"),
-      #           h5(names(mainData)[rv$panelOrder[1]]),
-      #           
-      #           selectInput(paste('varSelectFactor', rv$panelOrder[1],sep=''), 
-      #                       label=NULL, 
-      #                       choices=levels(mainData[,rv$panelOrder[1]]), 
-      #                       selected=levels(mainData[,rv$panelOrder[1]])[1], 
-      #                       multiple=TRUE, selectize=FALSE, width='70%'),
-      #           
-      #           style='padding: 10px')
-      
-      
-      #       ## integer data ##
-      #       } else if (rv$class[rv$panelOrder[1]]=='integer') {
-      #         panel = wellPanel(
-      #           bobResetButton("varReset"),
-      #           h5(names(mainData)[rv$panelOrder[1]]),
-      #           
-      #           selectInput(paste('varSelectInteger', rv$panelOrder[1],sep=''), 
-      #                       label='remove levels', 
-      #                       choices=unique(mainData[,rv$panelOrder[1]]), 
-      #                       selected=rv$integerSelected[[rv$panelOrder[1]]], 
-      #                       multiple=TRUE, selectize=FALSE, width='70%'),
-      #           
-      #           selectizeInput(paste('missingValues',rv$panelOrder[1],sep=''), 
-      #                          label='remove missing values', 
-      #                          choices=unlist(rv$missingValues[rv$panelOrder[1]]), 
-      #                          selected=unlist(rv$missingValues[rv$panelOrder[1]]), 
-      #                          multiple=TRUE, width='100%', 
-      #                          options=list(create=TRUE, 
-      #                                       placeholder='type missing values and press enter')),
-      #           
-      #           plotOutput(paste('barSubPlot',rv$panelOrder[1],sep=''), height=50),
-      #           
-      #           style='padding: 10px')
-      #       }
       
       #panel
       panelListOut <- list()
@@ -1084,19 +750,15 @@ output$subsetPanels_current <- renderUI({
       panelListOut
     }
   }
-})  # end of output$subsetPanels_current
+} # end .getCurrentPanels
 
 
 
-######################################
-## create 'locked in' subset panels ##
-######################################
-output$subsetPanels_locked <- renderUI({
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
-  
+
+######################
+## .getLockedPanels ##
+######################
+.getLockedPanels <- function(rv, i=1, input, mainData){
   if (length(rv$panelOrder)>1) {
     
     panelList = list()
@@ -1106,110 +768,21 @@ output$subsetPanels_locked <- renderUI({
         #######################
         ## add panel to list ##
         #######################
-        
         panelList[[i]] <- .getSubsetWidget(rv, i, input)
-        
         #################################################
-        
-        #         ## continuous (numeric) data ##
-        #         if (rv$class[rv$panelOrder[i]]=='numeric') {
-        #           panelList[[i]] = wellPanel(
-        #             bobCloseButton(paste("varClose",rv$panelOrder[i],sep='')),
-        #             h5(names(mainData)[rv$panelOrder[i]]),
-        #             
-        #             bobText1(inputId=paste("continuousMin",rv$panelOrder[i],sep=''), 
-        #                      label='Subset from:', 
-        #                      value=rv$continuousMin[rv$panelOrder[i]], 
-        #                      size='5px', 
-        #                      placeholder='min'),
-        #             
-        #             bobText1(inputId=paste("continuousMax",rv$panelOrder[i],sep=''), 
-        #                      label='to', 
-        #                      value=rv$continuousMax[rv$panelOrder[i]], 
-        #                      size='5px', 
-        #                      placeholder='max'),
-        #             
-        #             selectizeInput(paste('missingValues',rv$panelOrder[i],sep=''), 
-        #                            label='remove missing values', 
-        #                            choices=unlist(rv$missingValues[rv$panelOrder[i]]), 
-        #                            selected=unlist(rv$missingValues[rv$panelOrder[i]]), 
-        #                            multiple=TRUE, 
-        #                            width='100%', 
-        #                            options=list(create=TRUE, 
-        #                                         placeholder='type missing values and press enter')),
-        #             
-        #             plotOutput(paste('violinSubPlot',rv$panelOrder[i],sep=''), height=30),
-        #             
-        #             style='padding: 10px')
-        #           
-        #           
-        #           ## factor data ##
-        #         } else if (rv$class[rv$panelOrder[i]]=='factor') {
-        #           panelList[[i]] = wellPanel(
-        #             bobCloseButton(paste("varClose",rv$panelOrder[i],sep='')),
-        #             h5(names(mainData)[rv$panelOrder[i]]),
-        #             
-        #             selectInput(paste(inputId='varSelectFactor', rv$panelOrder[i],sep=''), 
-        #                         label=NULL, 
-        #                         choices=levels(mainData[,rv$panelOrder[i]]), 
-        #                         multiple=TRUE, 
-        #                         selectize=FALSE, 
-        #                         width='70%'),
-        #             
-        #             style='padding: 10px')
-        #           
-        #           
-        #           ## integer data ##
-        #         } else if (rv$class[rv$panelOrder[i]]=='integer') {
-        #           panelList[[i]] = wellPanel(
-        #             bobCloseButton(paste("varClose",rv$panelOrder[i],sep='')),
-        #             h5(names(mainData)[rv$panelOrder[i]]),
-        #             
-        #             selectInput(paste('varSelectInteger', rv$panelOrder[i],sep=''), 
-        #                         label='remove levels', 
-        #                         choices=unique(mainData[,rv$panelOrder[i]]), 
-        #                         selected=rv$integerSelected[[rv$panelOrder[i]]], 
-        #                         multiple=TRUE, 
-        #                         selectize=FALSE, 
-        #                         width='70%'),
-        #             
-        #             selectizeInput(paste('missingValues',rv$panelOrder[i],sep=''), 
-        #                            label='remove missing values', 
-        #                            choices=unlist(rv$missingValues[rv$panelOrder[i]]), 
-        #                            selected=unlist(rv$missingValues[rv$panelOrder[i]]), 
-        #                            multiple=TRUE, 
-        #                            width='100%', 
-        #                            options=list(create=TRUE, 
-        #                                         placeholder='type missing values and press enter')),
-        #             
-        #             plotOutput(paste('barSubPlot',rv$panelOrder[i],sep=''), height=50),
-        #             
-        #             style='padding: 10px')
-        #         }
-        #         
-        
-       
-        
       }
     }
-    #panelListOut = c(1, panelList)
-    #panelListOut[[1]] = h4(strong("current active filters:"))
-    #panelListOut 
     panelList
   }
-})  # end of output$subsetPanels_locked
+} # end .getLockedPanels
 
 
 
 
-#############################
-## on reset button pressed ##
-#############################
-observe({
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
+#########################
+## .observeResetButton ## 
+#########################
+.observeResetButton <- function(i=1, input, rv, mainData){
   
   if(length(rv$panelOrder) > 0){
     for(i in 1:length(rv$panelOrder)){
@@ -1225,35 +798,35 @@ observe({
       
       if(!is.null(resetValue)){
         if(resetValue != 0){
-         
+          
           ## define resetPressed
-          resetPressed <- eventReactive({
+          .resetPressed <- eventReactive({
             #eval(parse(text=paste("input$varReset", col.num, sep="")))[1]
             resetValue
           },{
-            resetData(i=i, input, mainData)
+            .resetData(i=i, input, rv, mainData)
             #i = which(rv$panelOrder == col.num)
           }
-          ) # end resetPressed
+          ) # end .resetPressed
           
-          ## run resetPressed
-          resetPressed()
+          ## run .resetPressed
+          .resetPressed()
         }
       }
     }
   }  
-})
+} # end .observeResetButton
 
- 
-# resetPressed <- eventReactive(input$varReset, {  
-#   resetData(i=1, input, mainData)
+
+# .resetPressed <- eventReactive(input$varReset, {  
+#   .resetData(i=1, input, rv, mainData)
 # })
 
 
-###############
-## resetData ##
-###############
-resetData <- function(i=1, input, mainData) {
+################
+## .resetData ##
+################
+.resetData <- function(i=1, input, rv, mainData) {
   
   ## get column selected
   col.num <- rv$panelOrder[i]
@@ -1280,90 +853,30 @@ resetData <- function(i=1, input, mainData) {
   ## need to keep this as a record of button presses
   #rv$closeButtonPressed[[col.num]] <- 0
   
-  updateData()
+  .updateData(input)
   
-} # end resetData
+} # end .resetData
 
 
-##############################
-## on close buttons pressed ##
-##############################
-# observe({
-#   # search over all panels
-#   if (length(rv$panelOrder)>0) {
-#     for (i in 1:length(rv$panelOrder)) {
-#       
-#       ## define column selected
-#       col.num <- rv$panelOrder[i]
-#       
-#       # obtain value of action button
-#       evalString <- paste('input$varClose',col.num,sep='')
-#       buttonValue <- eval(parse(text=evalString))[1]
-#              
-#       
-#       # if buttonValue exists (not true initially)
-#       if (!is.null(buttonValue)) {        
-#         # rv$closeButtonPressed[rv$panelOrder[i]] cannot be larger than buttonValue
-#         if (rv$closeButtonPressed[col.num] > buttonValue) {
-#           rv$closeButtonPressed[col.num] = 0
-#         }
-#       }
-#     }
-#   }
-# })
 
-# observe({
-#   # search over all panels
-#   if (length(rv$panelOrder)>0) {
-#     
-#     for (i in 1:length(rv$panelOrder)) {
-#     #for (i in 2:length(rv$panelOrder)) {        
-#       
-#       ## define column selected
-#       col.num <- rv$panelOrder[i]
-#       
-#       # obtain value of action button
-#       evalString <- paste('input$varClose',col.num,sep='')
-#       buttonValue <- eval(parse(text=evalString))[1]
-# 
-#       # if buttonValue exists (not true initially)
-#       if (!is.null(buttonValue)) {
-#         
-#         # rv$closeButtonPressed[rv$panelOrder[i]] cannot be larger than buttonValue
-#         if (rv$closeButtonPressed[col.num] > buttonValue) {
-#           rv$closeButtonPressed[col.num] = 0
-#         }
-#         
-#         # on button pressed
-#         if (buttonValue==(rv$closeButtonPressed[col.num]+1)) {
-#           rv$closeButtonPressed[col.num] = buttonValue
-#           resetData(i, input, mainData)
-#           rv$panelOrder = rv$panelOrder[rv$panelOrder!=col.num]
-#         }
-#       }
-#     }
-#   }
-# })
-
-
-observe({
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
-  
+#########################
+## .observeCloseButton ##
+#########################
+.observeCloseButton <- function(mainData, 
+                                rv, 
+                                input){
   # search over all panels
   if (length(rv$panelOrder)>0) {
     
     buttonVals <- list()
-
+    
     for (i in 1:length(rv$panelOrder)) {       
       
       ## define column selected
       col.num <- rv$panelOrder[i]
       
       # obtain value of action button
-      evalString <- paste('input$varClose',col.num,sep='')
+      evalString <- paste('input$varClose', col.num, sep="")
       buttonValue <- eval(parse(text=evalString))[1]
       ## replace NULL buttonValues with 0s
       if(is.null(buttonValue)) buttonValue <- 0
@@ -1395,25 +908,16 @@ observe({
       #rv$closeButtonPressed[toClose] <- 1
       rv$closeButtonPressed[col.num] <- buttonVals[toClose]
       ## reset data for closing panel
-      resetData(toClose, input, mainData)      
-      ## NO LONGER SETTING BUTTONS BACK TO 0 (also changed in resetData)
+      .resetData(toClose, input, rv, mainData)      
+      ## NO LONGER SETTING BUTTONS BACK TO 0 (also changed in .resetData)
       #rv$closeButtonPressed[toClose] <- 0
       ## remove closed panel from panelOrder
       rv$panelOrder <- rv$panelOrder[-toClose]
     } # end if !is.null(toClose)
-
-  } # end if length(panelOrder)>0
     
-}) # end closeButton observer
-
-
-#######################
-## render data table ##
-#######################
-output$mainDataTable <- renderDataTable({
-  rv$subData
-},
-options=list(scrollX='300px', scrollY='400px', searching=FALSE))
+  } # end if length(panelOrder)>0
+  
+} # end .observeCloseButton
 
 
 

@@ -4,10 +4,7 @@
 \alias{MINOTAUR}
 \title{Run the MINOTAUR app!}
 \usage{
-MINOTAUR(x = NULL)
-}
-\arguments{
-\item{x}{A dummy variable.}
+MINOTAUR()
 }
 \description{
 Running this function will open the MINOTAUR app, a

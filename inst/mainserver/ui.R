@@ -339,58 +339,6 @@ shinyUI(
                               plotOutput("circleMHTplot", height="800px",width="800px")
                             )
                           )
-                 ),
-                 
-                 ## HEX PLOT 1
-                 tabPanel("Hex Plot (plain R)",
-                          sidebarLayout(
-                            
-                            # sidebar panel
-                            sidebarPanel(
-                              
-                              # header and information
-                              h2("Comparing Statistics"),
-                              p("Change axes to different outlier statistics to compare between them."),
-                              br(),
-                              
-                              uiOutput("hex_xSelection"),
-                              uiOutput("hex_ySelection"),
-                              uiOutput("hex_colVarSelection"),
-                              uiOutput("hex_colPal")
-                            ),
-                            
-                            # main panel
-                            mainPanel(
-                              h3('Hex plot (plain R)'),
-                              plotOutput("hexChart")
-                            )
-                          )
-                 ),
-                 
-                 # SMOOTHSCATTER PLOT
-                 tabPanel("Smoothed Scatter Plot",
-                          sidebarLayout(
-                            
-                            # sidebar panel
-                            sidebarPanel(
-                              
-                              # header and information
-                              h2("Comparing Statistics"),
-                              p("Change axes to different outlier statistics to compare between them."),
-                              br(),
-                              
-                              uiOutput("smooth_xSelection"),
-                              uiOutput("smooth_ySelection"),
-                              uiOutput("smooth_colVarSelection"),
-                              uiOutput("smooth_colPal")
-                            ),
-                            
-                            # main panel
-                            mainPanel(
-                              h3('Smoothed Scatter Plot'),
-                              plotOutput("smoothscatter")
-                            )
-                          )
                  )
                           ),
       #################

@@ -1,20 +1,25 @@
-#
 
-# scatterplot
-output$scatter_xSelection <- renderUI({.getxSelection(rv$subData)})
-output$scatter_ySelection <- renderUI({.getySelection(rv$subData)})
-
-## This is the 3rd variable that will color points by:
-output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
-#output$scatter_colPal <- renderUI({.getColPal()})
+  
+##############
+## .plot_2D ##
+##############
 
 ### Plot function, need to move to function area
-  if(!("ash" %in% installed.packages())){install.packages("ash")}
+
+## QUESTION: DO WE WANT TO RELEASE plot_2D FOR 
+## PUBLIC USE AS A STAND-ALONE FUNCTION????????????????????????????????????????????????????
+## (If so, we need to (1) remove the (.) from 
+## the front of the fn name and in every instance of its use in the app, 
+## and (2) document the fn using roxygen2-style comments 
+## s.t it is added to the namespace and Rd/man folder etc.)
+
+.plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL, nbin,
+                   x_sub, y_sub){
+  
+  #if(!("ash" %in% installed.packages())){install.packages("ash")}
   require(ash)
   require(fields)
-
-  plot_2D<- function(x,y, xlab, ylab, xlim=NULL, ylim=NULL, nbin,
-                     x_sub, y_sub){
+    
   data1 <- cbind(x, y)
   data1b <- data1[complete.cases(data1),]
   if(length(xlim)==0){
@@ -33,11 +38,16 @@ output$scatter_colVarSelection <- renderUI({.getColVarSelection(rv$subData)})
                binned$nc,
              xlab=xlab, ylab=ylab, add=FALSE, col=grey.colors(75, 0.25,0.9))
     points(x_sub, y_sub, pch=24, cex=1.5, col="dodgerblue", bg="darkorange")
-  }
+} # end .plot_2D
 
-### Render plot area
+  
+  
 
-output$scatterplot1 <- renderPlot({
+
+######################
+## .getScatterplot1 ##
+######################
+.getScatterplot1 <- function(input){
     
     scatterplot <- NULL
     xSelection <- input$xSelection
@@ -81,14 +91,15 @@ output$scatterplot1 <- renderPlot({
             
             # produce plot
             #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
-              scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, 
+              scatterplot <- .plot_2D(xData, yData, xlab=xSelection, ylab=ySelection, 
                                      nbin=nbins, x_sub=xData_sub, y_sub=yData_sub)
 
         }
     }
     scatterplot
+} # end .getScatterplot1
 
-}) # end scatterplot1
+
 
 #    ####################
 #       ## .fetchMyViolin ##
@@ -111,25 +122,26 @@ output$scatterplot1 <- renderPlot({
 # })
   
 
-#######################
-## render data table ##
-#######################
-    print("hell")
-    output$scatterDataTable <- renderDataTable({
-          colVar <- input$colVarSelection
-          #print("colVar")
-          #print(colVar)
-          colData = rv$subData[,names(rv$subData)==colVar]
-          print(head(colData))
-          cutoff <- as.numeric(input$scatter_cutoff)
-          if(is.na(cutoff)){cutoff=colData[rank(colData)==round(length(colData)*0.01,0)]
-              }
-          #print(cutoff)
-          indexes <- which(colData < cutoff)
-          a<-rv$subData[indexes,]
-          #a
-                },
-              options=list(scrollX='300px', scrollY='400px', searching=FALSE)
-      )# end data Table
 
-#
+##########################
+## .getScatterDataTable ##      
+##########################
+.getScatterDataTable <- function(input, mainData){
+  if(!is.null(mainData)){
+    colVar <- input$colVarSelection
+    if(!is.null(colVar)){
+      #print("colVar")
+      #print(colVar)
+      colData = mainData[,names(mainData)==colVar]
+      print(head(colData))
+      cutoff <- as.numeric(input$scatter_cutoff)
+      if(is.na(cutoff)){
+        cutoff <- colData[rank(colData)==round(length(colData)*0.01,0)]
+          }
+      #print(cutoff)
+      indexes <- which(colData < cutoff)
+      a <- mainData[indexes,]
+    }
+  }
+} # end .getScatterDataTable
+

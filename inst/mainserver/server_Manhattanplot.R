@@ -1,55 +1,39 @@
 
-## linear Manhattan plot
-output$linearMH_y1Selection <- renderUI({
-    selectizeInput('choose_y1_plot',
-                   'Choose y-axis variable',
-                   choices=c(names(rv$subData)), 
-                   selected = "Trait1_Beta" )
-  })
-output$linearMH_xchr <- renderUI({
-  selectizeInput('choose_xaxis_chr',
-                 'Choose chromosomes variable',
-                 choices=c(names(rv$subData)), 
-                 selected = "Chr" )
-})
-output$linearMH_xcood <- renderUI({
-  selectizeInput('choose_xaxis_cood',
-                 'Choose position variable',
-                 choices=c(names(rv$subData)), 
-                 selected = "BP" )
-})
-output$linearMH_p2Selection <- renderUI({
-  selectizeInput('choose_pval',
-                 'Mark outliers by second variable (usually p value)',
-                 choices=c(names(rv$subData)), 
-                 selected = "Trait1_P"  )
-})
+###########################
+## Linear Manhattan Plot ##
+###########################
 
-# linenar Manhattan Plot
-output$LinearMHTplot <- renderPlot({
-    xchr = input$choose_xaxis_chr
-    xcood = input$choose_xaxis_cood
-    yselect = input$choose_y1_plot
-    logy = input$logy1Checkbox
-    pselect = input$choose_pval
-    poutlier = as.numeric(input$linearmhtpcut)
-    n_bins <- as.numeric(as.character(input$linearmht_nbins))
-    
-    mhtplots <- NULL
-    if(!is.null(rv$subData)){
-      if(!is.null(yselect) && !is.null(pselect)){
-        mhtplots <- mhtplot(mydata=rv$subData, Chr=xchr, BP = xcood, 
-                            ycolnam=yselect, pcolnam=pselect, 
-                            pcut.outlier= poutlier, logY=logy, nbins=n_bins)
-      } 
+#######################
+## .getLinearMHTPlot ##
+#######################
+.getLinearMHTPlot <- function(mainData, input){
+  xchr = input$choose_xaxis_chr
+  xcood = input$choose_xaxis_cood
+  yselect = input$choose_y1_plot
+  logy = input$logy1Checkbox
+  pselect = input$choose_pval
+  poutlier = as.numeric(input$linearmhtpcut)
+  n_bins <- as.numeric(as.character(input$linearmht_nbins))
+  
+  mhtplots <- NULL
+  if(!is.null(mainData)){
+    if(!is.null(yselect) && !is.null(pselect)){
+      mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood, 
+                           ycolnam=yselect, pcolnam=pselect, 
+                           pcut.outlier= poutlier, logY=logy, nbins=n_bins)
     } 
-    mhtplots
+  } 
+  mhtplots
+  
+  yname = input$yaxis
+  
+} # end .getLinearMHTPlot
 
-    yname = input$yaxis
-})
 
-
-mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP", 
+##############
+## .mhtplot ##
+##############
+.mhtplot <- function(mydata=mytoy, Chr="Chr", BP="BP", 
                   ycolnam="Trait1_Beta", pcolnam="Trait1_P", 
                   ylim.max=10,ylim.min=-10,
                   colfig=NULL,titlemain=NULL,logY=FALSE, 
@@ -115,14 +99,20 @@ mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP",
   abline(h=0,col=gray(0.5),lty="dashed")
   #fdata = data.frame(x=1:300, y = seq(ylim.min,ylim.max,length.out=300))
 
-  xaxis_all <- c(); yaxis_all <- c(); xaxis_outlier <- c(); yaxis_outlier<-c(); collib <- c()
+  xaxis_all <- c()
+  yaxis_all <- c()
+  xaxis_outlier <- c()
+  yaxis_outlier<-c()
+  collib <- c()
+  
   for (i in 1:length(x.total)){
     if(i==1){
       x.axis=mynewtoy[[i]][,BPidx] * x.axis.scale
     } else{
       x.axis=(x.total[i-1] + mynewtoy[[i]][,BPidx])*x.axis.scale
     }
-    xaxis_all <- c(xaxis_all,x.axis); yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
+    xaxis_all <- c(xaxis_all,x.axis)
+    yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
     #mycols = alpha(colfig[i],(-log10(mynewtoy[[i]][,pvidx]))/p.max)
     #mycols = c(alpha("black",0.4), alpha("black",0.2))
     
@@ -170,5 +160,6 @@ mhtplot<-function(mydata=mytoy, Chr="Chr", BP="BP",
   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, 
        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
   axis(2,at=c(seq(ylim.min,0,2),seq(0,ylim.max,2)),label=T)
-}
+
+} # end .mhtplot
 
