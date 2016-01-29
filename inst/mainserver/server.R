@@ -10,20 +10,6 @@
 # This is the MINOTAUR server.
 # This function calls all of the functions running behind our app.
 
-# temporarily loading all required packages here
-require("shiny")
-require("rCharts")
-require("rHighcharts")
-require("stats4")
-require("adegenet")
-require("MASS")
-require("RColorBrewer")
-require("ggplot2")
-require("scales")
-require("hexbin")
-# require("yaml")
-require("OmicCircos")
-
 #### ------------------------------------------------------------------
 
 # load in the data (use mytoys.txt data for now)
