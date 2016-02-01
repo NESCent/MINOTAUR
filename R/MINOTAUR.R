@@ -41,7 +41,22 @@ MINOTAUR <- function(){
   ## Repetitive warnings being caused by conflicting 
   ## definitions of class "connection" (pkgs BiocGeneric & RJSONIO)
   ## Fortunately we do not need this class from either pkg.
-  connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
+  #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
+  
+  require(shiny) 
+  require(rCharts) 
+  require(rHighcharts) 
+  require(stats4) 
+  require(adegenet) 
+  require(MASS) 
+  require(RColorBrewer) 
+  require(ggplot2) 
+  require(scales) 
+  require(hexbin) 
+  require(OmicCircos) 
+  require(data.table) 
+  require(ash) 
+  require(fields) 
   
   syst.file <- base::system.file
   

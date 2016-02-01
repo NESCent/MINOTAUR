@@ -42,11 +42,7 @@
 ####################################################
 ## set reactive values based on values in widgets ##
 ####################################################
-.getWidgetValues <- function() {
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
+.getWidgetValues <- function(mainData) {
   
   prev.factorSelected <- NULL
   
@@ -309,7 +305,7 @@
 ####################
 ## .fetchMyViolin ##
 ####################
-.fetchMyViolin <- function(col.num, input){
+.fetchMyViolin <- function(col.num, mainData, input){
   out <- NULL
   x <- mainData[,col.num]
   evalString <- paste("input$continuousValue", col.num, sep="")
@@ -483,11 +479,7 @@
 ######################
 ## .getSubsetWidget ##
 ######################
-.getSubsetWidget <- function(rv, i, input){
-  
-  ## read in data
-  mainData <- NULL
-  mainData <- .get.data()
+.getSubsetWidget <- function(rv, i, mainData, input){
   
   out <- NULL                
   
@@ -565,7 +557,7 @@
           
           ## violin plot
           #plotOutput((plotName), height=30), 
-          renderPlot({.fetchMyViolin(col.num, input)}, height=30),
+          renderPlot({.fetchMyViolin(col.num, mainData, input)}, height=30),
           
           style='padding: 10px'),
         
@@ -740,7 +732,7 @@
       ###############
       ## get panel ##
       ###############
-      panel <- .getSubsetWidget(rv, 1, input)      
+      panel <- .getSubsetWidget(rv, 1, mainData, input)      
       ########################################
       
       #panel
@@ -768,7 +760,7 @@
         #######################
         ## add panel to list ##
         #######################
-        panelList[[i]] <- .getSubsetWidget(rv, i, input)
+        panelList[[i]] <- .getSubsetWidget(rv, i, mainData, input)
         #################################################
       }
     }

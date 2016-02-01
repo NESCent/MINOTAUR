@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
   ## on update button pressed ##
   ##############################
   updatePressed <- eventReactive(input$updateDataButton, {
-    .getWidgetValues()
+    .getWidgetValues(.get.data())
     .updateData(input)
   })
   
