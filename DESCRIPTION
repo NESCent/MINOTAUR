@@ -8,8 +8,6 @@ Depends:
     R (>= 3.1.2)
 Imports:
     shiny,
-    rCharts,
-    rHighcharts,
     stats4
 License: GPL (>=2)
 LazyData: true

@@ -23,10 +23,10 @@
 #' ## run function
 #' MINOTAUR()
 #'
-#' @import shiny rCharts rHighcharts stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin OmicCircos data.table ash fields 
+#' @import shiny stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin  data.table ash fields 
 #' 
 #' @export 
-
+#OmicCircos
 ########################################################################
 
 MINOTAUR <- function(){
@@ -44,8 +44,8 @@ MINOTAUR <- function(){
   #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
   
   require(shiny) 
-  require(rCharts) 
-  require(rHighcharts) 
+  #require(rCharts) 
+  #require(rHighcharts) 
   require(stats4) 
   require(adegenet) 
   require(MASS) 
@@ -53,7 +53,7 @@ MINOTAUR <- function(){
   require(ggplot2) 
   require(scales) 
   require(hexbin) 
-  require(OmicCircos) 
+  #require(OmicCircos) 
   require(data.table) 
   require(ash) 
   require(fields) 
