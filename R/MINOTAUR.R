@@ -5,6 +5,14 @@
 
 ## Warning invalid package MINOTAUR Error ERROR no package specified 
 
+#install.packages("/home/caitiecollins/MINOTAUR_0.0.0.9000_R_x86_64-pc-linux-gnu.tar.gz", repos=NULL, type="source")
+
+# install.packages("devtools", dependencies=TRUE)
+# library(devtools)
+# install_github("NESCent/MINOTAUR")
+# library(MINOTAUR)
+# MINOTAUR()
+
 ########################################################################
 
 ###################
@@ -27,7 +35,12 @@
 #' @import shiny stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin  data.table ash fields 
 #' 
 #' @export 
+
 #OmicCircos
+
+## devtools fns ##
+#document() # adds imports to NAMESPACE and doc to Rd files (for all saved .R files)
+#use_package("package") # adds imports to DESCRIPTION
 ########################################################################
 
 MINOTAUR <- function(){
