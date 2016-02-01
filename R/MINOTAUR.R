@@ -3,9 +3,10 @@
 ## MINOTAUR ##
 ##############
 
-## Warning invalid package MINOTAUR Error ERROR no package specified 
-
-#install.packages("/home/caitiecollins/MINOTAUR_0.0.0.9000_R_x86_64-pc-linux-gnu.tar.gz", repos=NULL, type="source")
+############################################################################
+## ALTERNATIVE WAY TO INSTALL THE MOST UP-TO-DATE VERSION OF THE PACKAGE: ##
+############################################################################
+## (Solution to "Warning invalid package MINOTAUR Error ERROR no package specified".)
 
 # install.packages("devtools", dependencies=TRUE)
 # library(devtools)
