@@ -3,6 +3,7 @@
 ## MINOTAUR ##
 ##############
 
+## Warning invalid package MINOTAUR Error ERROR no package specified 
 
 ########################################################################
 
