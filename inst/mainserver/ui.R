@@ -41,7 +41,7 @@ shinyUI(
       tabPanel("Welcome",
                div(img(src="minotaur.jpg", align="right")),
                h2("Welcome to the labyrinth!"),
-               p('MINOTAUR is a program for detection and visualisation of outliers in multivariate space. Although 
+               p('MINOTAUR ("MultIvariate [whatever-the-heck-the-N-stands-for (??)] OuTlier Analysis Using R") is a program for detection and visualisation of outliers in multivariate space. Although 
                  this App has been designed with genomic data in mind, any dataset being analyzed in multivariate space
                  can be visualized using our App.'),
                h2('App Navigation:'),
