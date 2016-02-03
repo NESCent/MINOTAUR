@@ -17,8 +17,7 @@ Imports:
     hexbin,
     data.table,
     ash,
-    fields,
-    OmicCircos
+    fields
 License: GPL (>=2)
 LazyData: true
 Suggests: 
