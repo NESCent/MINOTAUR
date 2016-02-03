@@ -4,9 +4,9 @@ Version: 0.0.0.9000
 Authors@R: person("Caitlin", "Collins", , "caitiecollins@gmail.com", role = "cre")
 Description: MINOTAUR provides stand-alone functions and an interactive user-
     interface for the exploration, visualisation, and analysis of multivariate genetic data.
-Depends: 
+Depends:
     R (>= 3.1.2)
-Imports: 
+Imports:
     shiny,
     stats4,
     adegenet,
@@ -17,10 +17,11 @@ Imports:
     hexbin,
     data.table,
     ash,
-    fields
+    fields,
+    Rcpp
 License: GPL (>=2)
 LazyData: true
-Suggests: 
+Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr

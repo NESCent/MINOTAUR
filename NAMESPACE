@@ -3,6 +3,7 @@
 export(MINOTAUR)
 import(MASS)
 import(RColorBrewer)
+import(Rcpp)
 import(adegenet)
 import(ash)
 import(data.table)
