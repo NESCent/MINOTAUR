@@ -2,7 +2,7 @@
 #'
 #' @name MINOTAUR
 #' @docType package
-#'
+#' @useDynLib MINOTAUR
 #'
 #'
 #'

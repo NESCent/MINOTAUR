@@ -37,9 +37,6 @@
 #'
 #' @import shiny stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin  data.table ash fields Rcpp
 #'
-#' @useDynLib MINOTAUR
-#'
-#'
 #' @export
 
 

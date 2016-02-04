@@ -17,6 +17,7 @@ Imports: shiny,
     ash,
     fields,
     Rcpp
+LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true
 Suggests: 

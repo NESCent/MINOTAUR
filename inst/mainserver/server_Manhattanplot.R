@@ -13,98 +13,103 @@
   logy = input$logy1Checkbox
   pselect = input$choose_pval
   poutlier = as.numeric(input$linearmhtpcut)
+  flipYaxis = input$flipY
   n_bins <- as.numeric(as.character(input$linearmht_nbins))
-  
+
   mhtplots <- NULL
   if(!is.null(mainData)){
     if(!is.null(yselect) && !is.null(pselect)){
-      mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood, 
-                           ycolnam=yselect, pcolnam=pselect, 
-                           pcut.outlier= poutlier, logY=logy, nbins=n_bins)
-    } 
-  } 
+      mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood,
+                           ycolnam=yselect, pcolnam=pselect,
+                           pcut.outlier= poutlier, logY=logy, nbins=n_bins, flipY=flipYaxis)
+    }
+  }
   mhtplots
-  
+
   yname = input$yaxis
-  
+
 } # end .getLinearMHTPlot
 
 
 ##############
 ## .mhtplot ##
 ##############
-.mhtplot <- function(mydata=mytoy, Chr="Chr", BP="BP", 
-                  ycolnam="Trait1_Beta", pcolnam="Trait1_P", 
+.mhtplot <- function(mydata=mytoy, Chr="Chr", BP="BP",
+                  ycolnam="Trait1_Beta", pcolnam="Trait1_P",
                   ylim.max=10,ylim.min=-10,
-                  colfig=NULL,titlemain=NULL,logY=FALSE, 
-                  nbins=100, pcut.outlier=1e-4){
-  ### Manhattan Plot. 
+                  colfig=NULL,titlemain=NULL,logY=FALSE,
+                  nbins=100, pcut.outlier=1e-4, flipY="No"){
+  ### Manhattan Plot.
 
-  if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata))  } 
-  if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata))  } 
-  
+  if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata))  }
+  if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata))  }
+
   chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
-  
-  if(is.na(chridx)){
-    print(" 'Chr' is not in the column names of input data ")
-  }
-  if(is.na(BPidx)){
-    print(" 'BP' is not in the column names of input data ")
-  }
+
+  if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
+  if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
 
   if(!is.null(logY)){
-    if(length(logY) > 1){
-      logV1 = FALSE
+    if(logY %in% "none"){
+      mydata[,betaidx] = mydata[,betaidx]
+      ycolnam = ycolnam
+      pcut.outlier = pcut.outlier
     } else{
-      if(logY == "log2"){
-        mydata[,betaidx] = -log2(abs(mydata[,betaidx]))
-        ycolnam = paste(ycolnam, " log2(X)")
-        pcut.outlier = -log2(pcut.outlier)
-      } else if (logY == "log10"){
-        mydata[,betaidx] = -log10(abs(mydata[,betaidx]))
-        ycolnam = paste(ycolnam, " log10(X)")
+      if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+
+      if(logY %in% "log2"){
+        mydata[,betaidx] = log2(abs(mydata[,betaidx]))
+        pcut.outlier = log2(pcut.outlier)
+      } else if (logY %in% "log10"){
+        mydata[,betaidx] = log10(abs(mydata[,betaidx]))
         pcut.outlier = -log10(pcut.outlier)
-      } else{
-        mydata[,betaidx] = mydata[,betaidx]
-        ycolnam = ycolnam
-        pcut.outlier = pcut.outlier
       }
+
+      ycolnam = paste(logY,"(", ycolnam,")",sep="")
     }
   }
-  
+
+  if(flipY %in% "Yes"){
+    mydata[,betaidx] = - mydata[,betaidx]
+    pcut.outlier = - pcut.outlier
+  }
+
   mynewtoy <- split(mydata, mydata[,Chr])
   number_snp <- dim(mydata)[1]
-  
+
   #p.max <- floor(max(-log10(mydata[,pvidx]),na.rm=T)+1)
-  ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
-  ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
-  
+  #ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
+  #ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
+
+  if(flipY %in% "Yes"){
+    ylim.min <- floor(max(mydata[,betaidx], na.rm=T) + 1)
+    ylim.max <- floor(min(mydata[,betaidx], na.rm=T) - 1)
+  } else{
+    ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
+    ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
+  }
+
   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
-  
+
   x.axis.scale<-300/max(x.total)
-  
+
   if(is.null(colfig)) {
-    colfig <- rep(c(alpha("grey",0.6),alpha("black",0.3)),
-                  round(length(mynewtoy)/2,0))
+    colfig <- rep(c(alpha("grey",0.6),alpha("black",0.3)),  round(length(mynewtoy)/2,0))
   } else{
-    colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),
-                  round(length(mynewtoy)/2,0))
+    colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),   round(length(mynewtoy)/2,0))
   }
-  
-  #col.outlier <- rep(c("blue","red"),round(length(mynewtoy)/2,0))
-  
+
   plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max),
        xlab="Chromosomes",ylab=ycolnam ,main=titlemain,axes=F)
   abline(h=0,col=gray(0.5),lty="dashed")
-  #fdata = data.frame(x=1:300, y = seq(ylim.min,ylim.max,length.out=300))
 
   xaxis_all <- c()
   yaxis_all <- c()
   xaxis_outlier <- c()
   yaxis_outlier<-c()
   collib <- c()
-  
+
   for (i in 1:length(x.total)){
     if(i==1){
       x.axis=mynewtoy[[i]][,BPidx] * x.axis.scale
@@ -113,53 +118,43 @@
     }
     xaxis_all <- c(xaxis_all,x.axis)
     yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
-    #mycols = alpha(colfig[i],(-log10(mynewtoy[[i]][,pvidx]))/p.max)
-    #mycols = c(alpha("black",0.4), alpha("black",0.2))
-    
+
     x.axis.min <- min(x.axis, na.rm=T)
     x.axis.max <- max(x.axis, na.rm=T)
     y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T)
     y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
-    
-    data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)      
+
+    data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
     if(logY %in% c("log2","log10")){
-      data.outlier <- which(mynewtoy[[i]][,pvidx] > pcut.outlier)  
+      data.outlier <- which(mynewtoy[[i]][,pvidx] > pcut.outlier)
     }
     xaxis_outlier <- c(xaxis_outlier,x.axis[data.outlier])
     yaxis_outlier <- c(yaxis_outlier, mynewtoy[[i]][data.outlier,betaidx])
-    points(x=x.axis[data.outlier], 
-           y=mynewtoy[[i]][data.outlier,betaidx], 
-           pch=18,cex=0.6*1.5,col="red")
+    points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx],   pch=18,cex=0.6*1.5,col="red")
   }
- 
+
   dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
   dat4plot <- data.matrix(dat4plots[complete.cases(dat4plots),])
-  
+
   x.axis.min <- min(dat4plot[,1], na.rm=T)
   x.axis.max <- max(dat4plot[,1], na.rm=T)
   y.axis.min <- min(dat4plot[,2], na.rm=T)
   y.axis.max <- max(dat4plot[,2], na.rm=T)
-  
-  datbin <- bin2(dat4plot, 
-                 matrix(c(x.axis.min, x.axis.max, 
-                          y.axis.min, y.axis.max), 
-                        2,2, byrow=TRUE), 
-                 nbin=c(nbins,nbins))
+
+  datbin <- bin2(dat4plot, matrix(c(x.axis.min, x.axis.max, y.axis.min, y.axis.max),
+                        2,2, byrow=TRUE),   nbin=c(nbins,nbins))
   datbin$nc[datbin$nc==0] = NA
-  
-  image.plot(seq(x.axis.min,x.axis.max,length.out = nbins), 
+
+  image.plot(seq(x.axis.min,x.axis.max,length.out = nbins),
              seq(y.axis.min, y.axis.max, length.out=nbins),
-             datbin$nc, xlab="", ylab="", add=FALSE, 
+             datbin$nc, xlab="", ylab="", add=FALSE,
              col=grey.colors(60, 0.6,0), axes=FALSE)
 
-  points(x=xaxis_outlier, y=yaxis_outlier, 
-         pch=18,cex=0.6*1.5,col="red")
- 
+  points(x=xaxis_outlier, y=yaxis_outlier, pch=18,cex=0.6*1.5,col="red")
+
   x.total2<-c(0,x.total)
   axis(1,at=x.axis.scale*x.total2,labels=F)
-  axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, 
-       labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
-  axis(2,at=c(seq(ylim.min,0,2),seq(0,ylim.max,2)),label=T)
-
+  axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
+  axis(2,at=seq(ylim.min,ylim.max, length.out = 5),label=T)
 } # end .mhtplot
 
