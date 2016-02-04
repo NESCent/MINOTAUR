@@ -37,9 +37,25 @@
 #'
 #' @import shiny stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin  data.table ash fields Rcpp
 #'
+#' @useDynLib MINOTAUR
+#'
+#'
 #' @export
 
-#OmicCircos
+
+# Rcpp
+# useDynLib(RgeoProfile)
+# exportPattern("^[[:alpha:]]+")
+# importFrom(Rcpp, evalCpp)
+
+# OmicCircos
+# may be able to install old version (1.8.0) which is working with my R3.2.3 (on linux...) using devtools
+# may require Rtools to be installed from Windows
+# library(devtools)
+# install_version(package = "OmicCircos", version = 1.8.0)
+
+# might also try install_github if we can clone an old version that way...
+
 
 ## devtools fns ##
 # document() # adds imports to NAMESPACE and doc to Rd files (for all saved .R files)
