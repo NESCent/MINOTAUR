@@ -45,13 +45,12 @@
 # exportPattern("^[[:alpha:]]+")
 # importFrom(Rcpp, evalCpp)
 
-# OmicCircos
-# may be able to install old version (1.8.0) which is working with my R3.2.3 (on linux...) using devtools
-# may require Rtools to be installed from Windows
+## OmicCircos ## this works...
 # library(devtools)
-# install_version(package = "OmicCircos", version = 1.8.0)
-
-# might also try install_github if we can clone an old version that way...
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("BiocInstaller")
+# install_github("Bioconductor-mirror/OmicCircos")
+# require(OmicCircos)
 
 
 ## devtools fns ##
