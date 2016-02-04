@@ -217,18 +217,20 @@ shinyUI(
                               br(),
 
                               uiOutput("scatter_xSelection"),
-                              checkboxGroupInput("scatter_Checkbox_x", "log(x-axis) base (check one)",
-                                                 choices = c("2","10"),inline = TRUE),
+                              radioButtons("scatter_Checkbox_x", "log(x-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
+                              radioButtons("scatter_Checkbox_x_flip", "Flip X", choices = c("Yes", "No"),inline = TRUE,selected = "No"),
+
                               uiOutput("scatter_ySelection"),
-                              checkboxGroupInput("scatter_Checkbox_y", "log(y-axis) base (check one)",
-                                                 choices = c("2","10"),inline = TRUE, select="2"),
+                              radioButtons("scatter_Checkbox_y", "log(y-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
+                              radioButtons("scatter_Checkbox_y_flip", "Flip y", choices = c("Yes", "No"),inline = TRUE,selected = "No"),
+
 
                               textInput(inputId="scatter_nbins", label="Number of bins", value = 100),
 
                               uiOutput("scatter_colVarSelection"),
                               textInput(inputId="scatter_cutoff",
-                                        label="Cutoff for outliers to overlay.  NEED TO MAKE A CHECK BOX FOR UPPER OR LOWER TAIL. (if blank: default lower 1% tail of 2nd variable chosen).
-                                        Would be cool to make this violin plot...)", value = NULL)#,
+                                        label="Percentile cutoff for outliers to overlay (between 0 and 1. If blank: default lower 1% tail.)", value = NULL),
+                              radioButtons("scatter_cutoff_tail", "Tail", choices = c("Lower", "Upper"),inline = TRUE,selected = "Lower")#   ,
 
                               #uiOutput("scatter_colPal")
                             ),
@@ -240,9 +242,13 @@ shinyUI(
                               plotOutput("scatterplot1"),
                               h4('Making the scatterplot'),
                               p("First, choose x and y variables to plot.
+                                You can choose whether to log-transform the variables, but note that log-transform of negative numbers is NA and will not be plotted.
+                                (Need to add message when try to log-transform negative values.)
                                 Next, you can overlay points in the plot according to a third variable of your choice.
+                                The value in this box should be between 0 and 1, according to the percentile on the distribution
                                 By default, the lower 1% of the y-axis variable will be plotted.
-                                For example, choose 'Trait3_p' to see which outliers in Trait3 are also outliers in Trait1."
+                                For example, choose 'Trait3_p' to see which outliers in Trait3 are also outliers in Trait1.
+                              "
                               ),
                               p("To do: (1) Add zoom sliding bars for x-axis and y-axis
                                 (2) Add flip options for x and y axis log-axis option
@@ -250,7 +256,7 @@ shinyUI(
                                 (3) Can we get the mouse to tell us the name of a point (!)."),
                               h4("Outliers"),
                               p("The table below lists the outliers: the data points below (or above, depending on your selection)
-                                the threshold chosen above for 'Cutoff for outliers to overlay'."
+                                the threshold chosen for 'Cutoff for outliers to overlay'."
                               ),
                               dataTableOutput("scatterDataTable")
                               )
