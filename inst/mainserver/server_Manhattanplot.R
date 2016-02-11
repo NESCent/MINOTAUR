@@ -16,19 +16,6 @@
   flipYaxis = input$flipY
   n_bins <- as.numeric(as.character(input$linearmht_nbins))
 
-  if( yselect == pselect){
-   if(logy %in% c(2,10)){
-      poutlier = log(poutlier, logy)
-   }
-    if(flipYaxis %in% "Yes"){
-      poutlier = - poutlier
-    }
-  } else{
-    if (flipYaxis %in% "Yes"){
-      poutlier = 1 - poutlier
-    }
-  }
-
   mhtplots <- NULL
   if(!is.null(mainData)){
     if(!is.null(yselect) && !is.null(pselect)){
@@ -59,6 +46,21 @@
   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
 
+  ## change outliers
+  if( ycolnam %in% pcolnam){ ## same variables
+    if(logY %in% c(2,10)){
+      pcut.outlier = log(pcut.outlier, logY)
+    }
+    if(flipY %in% "Yes"){
+      pcut.outlier = - pcut.outlier
+    }
+  } else{
+    if (flipY %in% "Yes"){
+      pcut.outlier = 1 - pcut.outlier
+    }
+  }
+
+
   if(logY %in% "none"){
     mydata[,betaidx] = mydata[,betaidx]
     ycolnam = ycolnam
@@ -66,26 +68,24 @@
     if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
 
     if(logY %in% c(2,10)){
-      mydata[,betaidx] = log(abs(mydata[,betaidx]), logY)
-      ycolnam = paste(logY,"(", ycolnam,")",sep="")
+        mydata[,betaidx] = log(abs(mydata[,betaidx]), logY)
+        ycolnam = paste(logY,"(", ycolnam,")",sep="")
     }
   }
 
 
-  if(flipY %in% "Yes"){
-    mydata[,betaidx] = - mydata[,betaidx]
-  }
+  if(flipY %in% "Yes"){    mydata[,betaidx] = - mydata[,betaidx]  }
 
   mynewtoy <- split(mydata, mydata[,Chr])
   number_snp <- dim(mydata)[1]
 
-  #p.max <- floor(max(-log10(mydata[,pvidx]),na.rm=T)+1)
   ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
   ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
+  if(ylim.min > 0) { ylim.min = 0}
+  if(ylim.max < 0) { ylim.max = 0}
 
   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
-
   x.axis.scale<-300/max(x.total)
 
   if(is.null(colfig)) {
@@ -94,15 +94,10 @@
     colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),   round(length(mynewtoy)/2,0))
   }
 
-  plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max),
-       xlab="Chromosomes",ylab=ycolnam ,main=titlemain,axes=F)
+  plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max), xlab="Chromosomes",ylab=ycolnam ,main=titlemain,axes=F)
   abline(h=0,col=gray(0.5),lty="dashed")
 
-  xaxis_all <- c()
-  yaxis_all <- c()
-  xaxis_outlier <- c()
-  yaxis_outlier<-c()
-  collib <- c()
+  xaxis_all <- c();  yaxis_all <- c();  xaxis_outlier <- c();  yaxis_outlier<-c();  collib <- c()
 
   for (i in 1:length(x.total)){
     if(i==1){
@@ -110,6 +105,7 @@
     } else{
       x.axis=(x.total[i-1] + mynewtoy[[i]][,BPidx])*x.axis.scale
     }
+
     xaxis_all <- c(xaxis_all,x.axis)
     yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
 
@@ -151,6 +147,5 @@
   x.total2<-c(0,x.total)
   axis(1,at=x.axis.scale*x.total2,labels=F)
   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
-  axis(2,at=seq(ylim.min,ylim.max, length.out = 5),label=T)
+  axis(2,at=axTicks(2),label=T)
 } # end .mhtplot
-
