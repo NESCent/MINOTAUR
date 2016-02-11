@@ -10,23 +10,33 @@
   xchr = input$choose_xaxis_chr
   xcood = input$choose_xaxis_cood
   yselect = input$choose_y1_plot
-  logy = input$logy1Checkbox
+  logy = as.numeric(input$logy1Checkbox)
   pselect = input$choose_pval
   poutlier = as.numeric(input$linearmhtpcut)
   flipYaxis = input$flipY
   n_bins <- as.numeric(as.character(input$linearmht_nbins))
 
+  if( yselect == pselect){
+   if(logy %in% c(2,10)){
+      poutlier = log(poutlier, logy)
+   }
+    if(flipYaxis %in% "Yes"){
+      poutlier = - poutlier
+    }
+  } else{
+    if (flipYaxis %in% "Yes"){
+      poutlier = 1 - poutlier
+    }
+  }
+
   mhtplots <- NULL
   if(!is.null(mainData)){
     if(!is.null(yselect) && !is.null(pselect)){
-      mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood,
-                           ycolnam=yselect, pcolnam=pselect,
+      mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood, ycolnam=yselect, pcolnam=pselect,
                            pcut.outlier= poutlier, logY=logy, nbins=n_bins, flipY=flipYaxis)
     }
   }
   mhtplots
-
-  yname = input$yaxis
 
 } # end .getLinearMHTPlot
 
@@ -49,45 +59,29 @@
   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
 
-  if(!is.null(logY)){
-    if(logY %in% "none"){
-      mydata[,betaidx] = mydata[,betaidx]
-      ycolnam = ycolnam
-      pcut.outlier = pcut.outlier
-    } else{
-      if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+  if(logY %in% "none"){
+    mydata[,betaidx] = mydata[,betaidx]
+    ycolnam = ycolnam
+  } else{
+    if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
 
-      if(logY %in% "log2"){
-        mydata[,betaidx] = log2(abs(mydata[,betaidx]))
-        pcut.outlier = log2(pcut.outlier)
-      } else if (logY %in% "log10"){
-        mydata[,betaidx] = log10(abs(mydata[,betaidx]))
-        pcut.outlier = -log10(pcut.outlier)
-      }
-
+    if(logY %in% c(2,10)){
+      mydata[,betaidx] = log(abs(mydata[,betaidx]), logY)
       ycolnam = paste(logY,"(", ycolnam,")",sep="")
     }
   }
 
+
   if(flipY %in% "Yes"){
     mydata[,betaidx] = - mydata[,betaidx]
-    pcut.outlier = - pcut.outlier
   }
 
   mynewtoy <- split(mydata, mydata[,Chr])
   number_snp <- dim(mydata)[1]
 
   #p.max <- floor(max(-log10(mydata[,pvidx]),na.rm=T)+1)
-  #ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
-  #ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
-
-  if(flipY %in% "Yes"){
-    ylim.min <- floor(max(mydata[,betaidx], na.rm=T) + 1)
-    ylim.max <- floor(min(mydata[,betaidx], na.rm=T) - 1)
-  } else{
-    ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
-    ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
-  }
+  ylim.max <- floor(max(mydata[,betaidx], na.rm=T) + 1)
+  ylim.min <- floor(min(mydata[,betaidx], na.rm=T) - 1)
 
   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
@@ -124,10 +118,12 @@
     y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T)
     y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
 
-    data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
-    if(logY %in% c("log2","log10")){
+    if(flipY %in% "Yes" ){
       data.outlier <- which(mynewtoy[[i]][,pvidx] > pcut.outlier)
+    } else{
+      data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
     }
+
     xaxis_outlier <- c(xaxis_outlier,x.axis[data.outlier])
     yaxis_outlier <- c(yaxis_outlier, mynewtoy[[i]][data.outlier,betaidx])
     points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx],   pch=18,cex=0.6*1.5,col="red")

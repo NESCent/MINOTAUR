@@ -271,29 +271,29 @@ shinyUI(
                             sidebarPanel(
                               h3('Manhattan Plot'),
                               wellPanel(
-                              #p('Please choose chromosome and coordinates informaiton for x axis'),
-                              #style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
-                              #br(),
-                              p('Choose x-axis'),
-                              uiOutput('linearMH_xchr'),
-                              uiOutput('linearMH_xcood'),
-                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
+                                #p('Please choose chromosome and coordinates informaiton for x axis'),
+                                #style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
+                                #br(),
+                                p('Choose x-axis'),
+                                uiOutput('linearMH_xchr'),
+                                uiOutput('linearMH_xcood'),
+                                style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
 
                               wellPanel(
-                              p('Choose y-axis'),
-                              uiOutput('linearMH_y1Selection'),
-                              radioButtons("logy1Checkbox", "log(y-axis)", choices = c("log2","log10", "none"),inline = TRUE,selected = "none"),
-                              radioButtons("flipY", "Flip Y", choices = c("Yes", "No"),inline = TRUE,selected = "No"),
-                              textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
-                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
+                                p('Choose y-axis'),
+                                uiOutput('linearMH_y1Selection'),
+                                radioButtons("logy1Checkbox", "log(Y-axis)", choices = c("2","10", "none"),inline = TRUE,selected = "none"),
+                                radioButtons("flipY", "Flip Y-axis", choices = c("Yes", "No"),inline = TRUE,selected = "No"),
+                                textInput(inputId="linearmht_nbins", label="Number of bins", value = 100),
+                                style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
 
                               wellPanel(
-                              uiOutput('linearMH_p2Selection'),
-                              textInput(inputId="linearmhtpcut", label="P cutoff for outliers", value = 0.002),
-                              style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px",
-                              br())
+                                uiOutput('linearMH_p2Selection'),
+                                textInput(inputId="linearmhtpcut", label="Cutoff for outliers to overlay", value = 0.01),
+                                style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px",
+                                br())
                               #uiOutput('select_linearMH')
                             ),
 
@@ -324,14 +324,14 @@ shinyUI(
 
                               wellPanel(
                               uiOutput('circle1mh'),
-                              radioButtons("logV1Checkbox", "log (outer circle) ", choices = c("-log2","-log10","none"),
+                              radioButtons("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10","none"),
                                            inline = TRUE,selected = "none"),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
 
                               wellPanel(
                               uiOutput('circle2mh'),
-                              radioButtons("logV2Checkbox", "log (inner circle)", choices = c("-log2","-log10","none"),
+                              radioButtons("logV2Checkbox", "log (inner circle)", choices = c("log2","log10","none"),
                                            inline = TRUE,selected = "none"),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
 
