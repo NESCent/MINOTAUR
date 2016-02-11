@@ -5,3 +5,11 @@ C_harmonicDist <- function(data) {
     .Call('MINOTAUR_C_harmonicDist', PACKAGE = 'MINOTAUR', data)
 }
 
+C_kernelDist <- function(data, sigma2) {
+    .Call('MINOTAUR_C_kernelDist', PACKAGE = 'MINOTAUR', data, sigma2)
+}
+
+C_kernelLogLike <- function(data, sigma2) {
+    .Call('MINOTAUR_C_kernelLogLike', PACKAGE = 'MINOTAUR', data, sigma2)
+}
+

@@ -7,8 +7,10 @@
 harmonicDist(dfv, column.nums = 1:ncol(dfv))
 }
 \arguments{
-\item{dfv}{is a matrix or data frame
-containing observations in rows and statistics in columns.}
+\item{dfv}{a data frame containing observations in rows and statistics in columns}
+
+\item{column.nums}{indexes the columns of the data frame that contain the statistics used to
+calculate Mahalanobis distance (all other columns are ignored)}
 }
 \description{
 Calculates harmonic mean
@@ -23,7 +25,7 @@ Note that dfv cannot contain any NA values.
 }
 \examples{
 
-# create a matrix of observations
+# create a data frame of observations
 df <- data.frame(x=rnorm(100),y=rnorm(100))
 
 # calculate harmonic mean distances

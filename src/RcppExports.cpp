@@ -16,3 +16,27 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// C_kernelDist
+Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2);
+RcppExport SEXP MINOTAUR_C_kernelDist(SEXP dataSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
+    __result = Rcpp::wrap(C_kernelDist(data, sigma2));
+    return __result;
+END_RCPP
+}
+// C_kernelLogLike
+Rcpp::List C_kernelLogLike(std::vector< std::vector<double> > data, double sigma2);
+RcppExport SEXP MINOTAUR_C_kernelLogLike(SEXP dataSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
+    __result = Rcpp::wrap(C_kernelLogLike(data, sigma2));
+    return __result;
+END_RCPP
+}

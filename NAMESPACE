@@ -3,6 +3,8 @@
 export(MINOTAUR)
 export(Mahalanobis)
 export(harmonicDist)
+export(kernelDist)
+export(kernelLogLike)
 exportPattern("^[[:alpha:]]+")
 import(MASS)
 import(RColorBrewer)
