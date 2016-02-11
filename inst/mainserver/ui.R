@@ -67,12 +67,22 @@ shinyUI(
                div(img(src="numerical_example.jpg", align = "center"), img(src="factor_example.jpg", align = "center")),
                h3('2. Plots'),
                h4('Scatterplot'),
+               p('This plot allows the user to compare multiple statistics run on their data by plotting two different
+                 statistics on the x and y axes and coloring outliers based on a third input.'),
                br(),
+               div(img(src="scatter.jpg", align="center")),
                h4('Manhattan Plot'),
-               p('Used for genomic data to visualize outliers loci relative to their chromosomal location.'),
+               p('This plot is used for genomic data to visualize outlier loci relative to their chromosomal location. To do this, you
+                 can plot a variable of interest against chromosome position and then color outliers based on
+                 for example, the P-value of a given trait.'),
                br(),
+               div(img(src="manhattan.jpg", align="center")),
                h4('Circle Plot'),
+               p('The circle plot is another plot used for visualization of genomic data, which allows the user
+                 to plot multiple traits via the inner and outer circles of points against the chromosomal
+                 position.'),
                br(),
+               div(img(src="circleplot.jpg", align="center")),
                h3('3. Help Page'),
                p('Additional help including common mistakes or questions for using this App.')
 
