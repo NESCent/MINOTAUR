@@ -324,14 +324,14 @@ shinyUI(
 
                               wellPanel(
                               uiOutput('circle1mh'),
-                              radioButtons("logV1Checkbox", "log (outer circle) ", choices = c("log2","log10","none"),
+                              radioButtons("logV1Checkbox", "log (inner circle) ", choices = c("2","10","none"),
                                            inline = TRUE,selected = "none"),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
                               br(),
 
                               wellPanel(
                               uiOutput('circle2mh'),
-                              radioButtons("logV2Checkbox", "log (inner circle)", choices = c("log2","log10","none"),
+                              radioButtons("logV2Checkbox", "log (outer circle)", choices = c("2","10","none"),
                                            inline = TRUE,selected = "none"),
                               style = "background-color: #eaf0f4; border-color:#5b95c2; padding:10px"),
 

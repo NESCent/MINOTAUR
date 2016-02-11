@@ -6,7 +6,7 @@
 
 
 ##################################
-## MANHATTAN PLOT PAGE (linear) ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###   
+## MANHATTAN PLOT PAGE (linear) ##    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###    ###
 ##################################
 
 #######################
@@ -17,10 +17,10 @@
   if(!is.null(mainData)){
     sel <- NULL
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
@@ -32,7 +32,7 @@
         sel <- names(mainData)[numCols[2]]
       }
     }
-    
+
     out <- selectInput(
       inputId = "choose_y1_plot",
       label = "Choose y-axis variable:",
@@ -50,10 +50,10 @@
   out <- NULL
   if(!is.null(mainData)){
     sel <- NULL
-    
+
     ## get (potentially-chromosome-type) variables ???????????????????????????????????????????????????????????
     sel <- names(mainData)[1]
-    
+
     out <- selectInput(
       inputId = "choose_xaxis_chr",
       label = "Choose chromosomes variable:",
@@ -71,10 +71,10 @@
   out <- NULL
   if(!is.null(mainData)){
     sel <- NULL
-    
+
     ## get (potentially-position-type) variables ???????????????????????????????????????????????????????????
     sel <- names(mainData)[3]
-    
+
     out <- selectInput(
       inputId = "choose_xaxis_cood",
       label = "Choose position variable:",
@@ -93,31 +93,31 @@
   out <- NULL
   if(!is.null(mainData)){
     sel <- NULL
-    
+
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
     }
     ## NOTE: for the moment, I'm just picking the 2nd numeric var (bc it happens to be )
-    ## Trait1_P for the human GWAS ("largeData") example dataset.... 
+    ## Trait1_P for the human GWAS ("largeData") example dataset....
     ## But THIS SHOULD PROBABLY BE CHANGED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
+
     ## get selected
     if(length(numCols) > 0){
       sel <- names(mainData)[numCols[1]]
       if(length(numCols) >= 2){
-        sel <- names(mainData)[numCols[2]] 
+        sel <- names(mainData)[numCols[2]]
       }
     }
-    
+
     out <- selectInput(
       inputId = "choose_pval",
-      label = "Mark outliers by second variable 
+      label = "Mark outliers by second variable
               (usually p-value):",
       choices = names(mainData),
       selected = sel #may want to update with publishable dataset
@@ -137,28 +137,28 @@
 ## .getOuterCircleVar ##
 ########################
 .getOuterCircleVar <- function(mainData){
-  
+
   if(!is.null(mainData)){
     ## get choices
     noms <- names(mainData)
-    
+
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
     }
     ## get selected
     if(length(numCols) > 0){
-      sel <- names(mainData)[numCols[1]] 
+      sel <- names(mainData)[numCols[1]]
     }
-    
+
     ## get input ui element
-    selectizeInput('Circle_y1','Choose a variable for outer circle:', 
-                   choices=noms, multiple=FALSE, 
+    selectizeInput('Circle_y1','Choose a variable for inner circle:',
+                   choices=noms, multiple=FALSE,
                    selected = sel)
   }
 } # end .getOuterCircleVar
@@ -168,16 +168,16 @@
 ## .getInnerCircleVar ##
 ########################
 .getInnerCircleVar <- function(mainData){
-  
+
   if(!is.null(mainData)){
     ## get choices
     noms <- names(mainData)
-    
+
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
@@ -189,10 +189,10 @@
         sel <- names(mainData)[numCols[2]]
       }
     }
-    
+
     ## get input ui element
-    selectizeInput('Circle_y2','Choose a variable for inner circle:', 
-                   choices=noms, multiple=FALSE, 
+    selectizeInput('Circle_y2','Choose a variable for outer circle:',
+                   choices=noms, multiple=FALSE,
                    selected = sel)
   }
 } # end .getOuterCircleVar
@@ -204,13 +204,13 @@
   if(!is.null(mainData)){
     ## get choices
     noms <- names(mainData)
-    
+
     ## get (potentially-chromosome-type) variables ???????????????????????????????????????????????????????????
     sel <- names(mainData)[1]
-    
+
     ## get input ui element
-    selectizeInput('choose_xaxis_chrs', 'Choose Chromosomes:', 
-                   choices=noms, #multiple=FALSE, 
+    selectizeInput('choose_xaxis_chrs', 'Choose Chromosomes:',
+                   choices=noms, #multiple=FALSE,
                    selected = sel)
   }
 } # .getChromosomeVar
@@ -223,13 +223,13 @@
   if(!is.null(mainData)){
     ## get choices
     noms <- names(mainData)
-    
+
     ## get (potentially-coordinate-type) variables ???????????????????????????????????????????????????????????
     sel <- names(mainData)[3]
-    
+
     ## get input ui element
-    selectizeInput('choose_xaxis_coods', 'Choose Coordinates:', 
-                   choices=noms, #multiple=FALSE, 
+    selectizeInput('choose_xaxis_coods', 'Choose Coordinates:',
+                   choices=noms, #multiple=FALSE,
                    selected = sel)
   }
 } # .getChromosomeVar
@@ -248,13 +248,13 @@
 .getxSelection <- function(mainData){
   out <- NULL
   if(!is.null(mainData)){
-    
+
     sel <- NULL
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
@@ -281,10 +281,10 @@
   if(!is.null(mainData)){
     sel <- NULL
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
@@ -296,7 +296,7 @@
         sel <- names(mainData)[numCols[2]]
       }
     }
-    
+
     out <- selectInput(
       inputId = "ySelection",
       label = "Choose y-axis data:",
@@ -329,13 +329,13 @@
 .getColVarSelection <- function(mainData){
   out <- NULL
   if(!is.null(mainData)){
-    
+
     sel <- NULL
     ## get numeric variables
-    numCols <- which(sapply(c(1:ncol(mainData)), 
+    numCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.numeric(mainData[,e])))
     ## if possible, choose a non-integer numeric column
-    intCols <- which(sapply(c(1:ncol(mainData)), 
+    intCols <- which(sapply(c(1:ncol(mainData)),
                             function(e) is.integer(mainData[,e])))
     if(length(setdiff(numCols, intCols)) > 0){
       numCols <- setdiff(numCols, intCols)
@@ -347,14 +347,14 @@
         sel <- names(mainData)[numCols[3]]
       }
     }
-    
+
     out <- selectInput(
       inputId = "colVarSelection",
       label = "Choose variable to highlight outliers for on plot:", ## THIS SHOULD PROBABLY BE RE-WORDED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       choices = names(mainData),
       selected = sel #may want to update with publishable dataset
     )
-  }  
+  }
   return(out)
 } # end .getColVarSelection
 
@@ -383,18 +383,18 @@
 ## bobText1 ##
 ##############
 # right-aligned numeric text box with adjustable width
-# warning - this box can contain non-numeric strings. 
+# warning - this box can contain non-numeric strings.
 # Check for these using suppressWarnings(!is.na(as.numeric(val)))
-bobText1 <- function(inputId, label, value="", 
-                     size='10px', placeholder='', 
+bobText1 <- function(inputId, label, value="",
+                     size='10px', placeholder='',
                      style='text-align:right',...) {
   div(style="display:inline-block",
-      tags$label(label, `for` = inputId), 
-      tags$input(id=inputId, type="text", 
+      tags$label(label, `for` = inputId),
+      tags$input(id=inputId, type="text",
                  pattern='[0-9]{1,99}|.
                  [0-9]{1,99}|[0-9]{1,99}.
-                 [0-9]{1,99}|inf|Inf|INF|-inf|-Inf|-INF', 
-                 value=value, size=size, 
+                 [0-9]{1,99}|inf|Inf|INF|-inf|-Inf|-INF',
+                 value=value, size=size,
                  placeholder=placeholder, style=style,...)
   )
 }
@@ -406,10 +406,10 @@ bobText1 <- function(inputId, label, value="",
 bobCloseButton <- function(inputId) {
   div(
     class = "close",
-    tags$button(id = inputId, type = "button", 
-                class = "btn action-button", 
-                style = "font-size:10px; width:25px; 
-                height:25px; text-align:center; line-height:10px", 
+    tags$button(id = inputId, type = "button",
+                class = "btn action-button",
+                style = "font-size:10px; width:25px;
+                height:25px; text-align:center; line-height:10px",
                 HTML("<i class='close'></i>&#10006"))
   )
 } # end bobCloseButton
@@ -421,10 +421,10 @@ bobCloseButton <- function(inputId) {
 bobResetButton <- function(inputId) {
   div(
     style="float:right",
-    tags$button(id = inputId, type = "button", 
-                class = "btn action-button btn-primary", 
-                style = "font-size:15px; width:50px; 
-                line-height:12px; text-align:center", 
+    tags$button(id = inputId, type = "button",
+                class = "btn action-button btn-primary",
+                style = "font-size:15px; width:50px;
+                line-height:12px; text-align:center",
                 HTML("<i class='icon-star'></i>reset"))
   )
 } # end bobResetButton
@@ -435,23 +435,23 @@ bobResetButton <- function(inputId) {
 # violin-style plot
 bobViolinPlot <- function(x,subMin=0,subMax=0) {
   out <- NULL
-  
+
   x = x[!is.na(x)]
   par(mar=c(0,0,0,0))
   d = density(x, from=min(x), to=max(x))
   d$y = d$y/max(d$y)
   rangeMin = (min(x)+max(x))/2 - 1.5*(max(x)-min(x))/2
   rangeMax = (min(x)+max(x))/2 + 1.5*(max(x)-min(x))/2
-  out <- 
+  out <-
     plot(0,type='n',
          xlim=c(rangeMin,rangeMax),
          ylim=c(-1,1),axes=FALSE,
          xlab='',ylab='')
-  
+
   polygon(c(d$x,rev(d$x)),
           c(d$y,-rev(d$y)),
           col=grey(0.9),border=NA)
-  
+
   if (subMin!=subMax) {
     s1 = min(subMin,subMax)
     s2 = max(subMin,subMax)
@@ -467,7 +467,7 @@ bobViolinPlot <- function(x,subMin=0,subMax=0) {
   polygon(c(d$x,rev(d$x)),c(d$y,-rev(d$y)))
   text(min(x),0,signif(min(x),digits=3),pos=2)
   text(max(x),0,signif(max(x),digits=3),pos=4)
-  
+
   return(out)
 } # end bobViolinPlot
 
@@ -477,16 +477,16 @@ bobViolinPlot <- function(x,subMin=0,subMax=0) {
 # bar sub plot
 bobBarSubplot <- function(tab, selected, total, varClass="factor") {
   out <- NULL
-  
+
   ## FACTORS ##
-  if(varClass == "factor"){    
+  if(varClass == "factor"){
     par(mar=c(0,0,0,0))
-    out <- 
+    out <-
       #plot(0,type='n',axes=FALSE,xlab='',ylab='',xlim=c(0,1),ylim=c(0,1))
       ## make a single horizontal "barplot" reflecting proportion of data removed
-      barplot(matrix(c(length(selected)/total, 
-                       (1 - (length(selected)/total))), ncol=1), 
-              col=c("#ff9000", "grey"), space=0, 
+      barplot(matrix(c(length(selected)/total,
+                       (1 - (length(selected)/total))), ncol=1),
+              col=c("#ff9000", "grey"), space=0,
               axes=FALSE, xlab='', ylab='', xlim=c(-0.01, 1.01),
               horiz=TRUE, beside=FALSE)
     myText = paste(total-length(selected),'of',total,'levels removed')
@@ -499,27 +499,27 @@ bobBarSubplot <- function(tab, selected, total, varClass="factor") {
       z = as.numeric(names(tab))
       colVec = rep(grey(0.9),length(tab))
       colVec[selected] = '#ff9000'
-      out <- 
+      out <-
         barplot(tab/max(tab),col=colVec,space=0,axes=FALSE,
                 xlab='',ylab='',ylim=c(-0.5,1.2))
       text(min(z)-0.5,0,min(z),pos=1)
       text(max(z)-0.5,0,max(z),pos=1)
-      
+
       # otherwise produce simple summary box
-    } else {      
+    } else {
       par(mar=c(0,0,0,0))
-      out <- 
+      out <-
         #plot(0,type='n',axes=FALSE,xlab='',ylab='',xlim=c(0,1),ylim=c(0,1))
         ## make a single horizontal "barplot" reflecting proportion of data removed
-        barplot(matrix(c(length(selected)/total, 
-                         (1 - (length(selected)/total))), ncol=1), 
-                col=c("#ff9000", "grey"), space=0, 
+        barplot(matrix(c(length(selected)/total,
+                         (1 - (length(selected)/total))), ncol=1),
+                col=c("#ff9000", "grey"), space=0,
                 axes=FALSE, xlab='', ylab='', xlim=c(-0.01, 1.01),
                 horiz=TRUE, beside=FALSE)
-      myText = paste(total-length(selected),'of', 
+      myText = paste(total-length(selected),'of',
                      total,'unique values removed')
       text(0,0.5, myText, pos=4, col="black", cex=1.3, font=2)
-    } 
+    }
   }
   return(out)
 } # end bobBarSubplot
