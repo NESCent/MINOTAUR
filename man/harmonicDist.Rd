@@ -2,18 +2,22 @@
 % Please edit documentation in R/harmonicDist.R
 \name{harmonicDist}
 \alias{harmonicDist}
-\title{harmonicDist}
+\title{Harmonic Mean Distance}
 \usage{
 harmonicDist(dfv)
 }
 \arguments{
-\item{dfv}{is a matrix or data frame containing observations in rows and statistics in columns.}
+\item{dfv}{is a matrix or data frame
+containing observations in rows and statistics in columns.}
 }
 \description{
-Calculates harmonic mean distance of all points from all others.
+Calculates harmonic mean
+distance of all points from all others.
 }
 \details{
-Takes a matrix or data frame as input, with observations in rows and statistics in columns. Values are first standardized in each dimension by subtracting from the mean and dividing by the standard deviation before calculating harmonic mean distances.
+Takes a matrix or data frame as input, with observations in rows and statistics in columns.
+Values are first standardized in each dimension by subtracting from the
+mean and dividing by the standard deviation before calculating harmonic mean distances.
 
 Note that dfv cannot contain any NA values.
 }
