@@ -5,12 +5,14 @@
 
 using namespace Rcpp;
 
-// C_test1
-void C_test1();
-RcppExport SEXP MINOTAUR_C_test1() {
+// C_harmonicDist
+Rcpp::List C_harmonicDist(std::vector< std::vector<double> > data);
+RcppExport SEXP MINOTAUR_C_harmonicDist(SEXP dataSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    C_test1();
-    return R_NilValue;
+    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
+    __result = Rcpp::wrap(C_harmonicDist(data));
+    return __result;
 END_RCPP
 }
