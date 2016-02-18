@@ -10,7 +10,7 @@ harmonicDist(dfv, column.nums = 1:ncol(dfv))
 \item{dfv}{a data frame containing observations in rows and statistics in columns}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
-calculate Mahalanobis distance (all other columns are ignored)}
+calculate Mahalanobis distance (all other columns are ignored, default is all columns)}
 }
 \description{
 Calculates harmonic mean

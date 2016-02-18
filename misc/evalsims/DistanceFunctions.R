@@ -1,12 +1,4 @@
 
-############# Mahalanobis distance #################
-#'  KE Lotterhos
-#'  March 19, 2015
-#'  calculate various distance functions from R packages
-#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
-#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
-#'  @author KE Lotterhos
-
 ############# Hclust ranking #################
 #'  KE Lotterhos
 #'  March 19, 2015
@@ -40,53 +32,6 @@ hclust.ranking <- function(dfv, column.nums){
               minus.log.p = -log(1-hout$prob.outliers)))
 } #end hclust.ranking
 
-############# Kernel Density based on SD #################
-#'  KE Lotterhos
-#'  March 19, 2015
-#'  calculate multivariate distance based on outliers.ranking function in package DMwR
-#'  @param dfv is a dataframe containing the observations in rows and the statistics in columns
-#'  @param column.nums is the column numbers of the dataframe containing the statistics used to calculate Mahalanobis distance
-#'  @param n.sd is the number of standard deviations for the kernel size
-#'  @author KE Lotterhos
-#'  @export KernelDensSD
-
-KernelDensSD <- function(dfv, column.nums, n.sd=1.5){
-  ### This function takes a dataframe of statistics where each row is a locus/observation
-  ### and each column is an observation statistic
-  ### It breaks up multivariate space into n-dimensional chunks,
-  ### with the size of each chunk determined by the standard deviation.
-  ### (n.sd) is the proportion of the standard deviation
-  ### Next the density of points inside each chunk is calculated, and
-  ### chunks are ranked according to their density.  Ranks are used to create an empirical p-value
-  if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
-
-  df.vars <- as.matrix(dfv[,column.nums])
-  class(df.vars) <- "numeric"
-  colnames(df.vars)<-NULL
-  rownames(df.vars)<-NULL
-
-  n.stat <- ncol(df.vars)
-  nlocs <- nrow(df.vars)
-  width <- apply(df.vars,2, sd, na.rm=TRUE)*n.sd
-
-  empDens <- rep(NA, nrow(df.vars))
-  tdf <- t(df.vars)
-
-  for (i in 1:nlocs){
-    vals <- df.vars[i,]
-    vals_upper <- vals + width
-    vals_lower <- vals - width
-    temp <- colSums((tdf < vals_upper) & (tdf > vals_lower))==n.stat
-    empDens[i] <- sum(temp, na.rm=TRUE)
-  }
-  Dk.rank <- rank(empDens,na.last="keep")
-  minus.log.emp.p <- -log(Dk.rank/(nlocs-sum(is.na(empDens))))
-  #plot(minus.log.emp.p)
-  return(list(empDens=empDens, Dk.rank=Dk.rank, minus.log.emp.p=minus.log.emp.p))
-} #end KernelDensSD
-
-
-
 ############### FastPCS ###############
 #'  KE Lotterhos
 #'  March 19, 2015
@@ -107,9 +52,9 @@ FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
   temp <- as.matrix(dfv[,column.nums])
   class(temp) <- "numeric"
   nlocs <- nrow(temp)
-  out <- FastPCS(temp, nsamp=NULL, alpha=alpha, seed=NULL)
+  out <- FastPCS(temp, nSamp=NULL, alpha=alpha, seed=NULL)
 
-  D.pcs <- out$raw$distance
+  D.pcs <- out$distance
   D.pcs.rank <- nlocs - rank(D.pcs, na.last="keep") + 1
   minus.log.emp.p <- -log(D.pcs.rank/(nlocs-sum(is.na(D.pcs))))
 
