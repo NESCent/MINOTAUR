@@ -39,56 +39,76 @@ shinyUI(
       ## Add images of our prettiest plots
 
       tabPanel("Welcome",
-               div(img(src="minotaur.jpg", align="right")),
+          sidebarLayout(
+            ## Sidebar Panel
+            sidebarPanel(
+
                h2("Welcome to the labyrinth!"),
-               p('MINOTAUR ("MultIvariate Nifty OuTlier Analysis Using R") is a program for detection and visualisation of outliers in multivariate space. Although
-                 this App has been designed with genomic data in mind, any dataset being analyzed in multivariate space
-                 can be visualized using our App.'),
+               p('MINOTAUR ("MultIvariate Nifty OuTlier Analysis Using R") is a program for detection and
+                visualisation of outliers in multivariate space. Although this App has been designed with
+                genomic data in mind, any dataset being analyzed in multivariate space can be visualized
+                using our App.'),
+               div(img(src="minotaur.jpg"), align = "center")
+            ),
+            ## Main Panel data
+            mainPanel(
                h2('App Navigation:'),
                h3('1. Data'),
-               p('MINOTAUR is supplied with example datasets for users to explore the functions and plotting capabilities of the RShiny App.'),
-               h4('largeData'),
-               p('{details about this data set}'),
-               h4('smallData'),
-               p('{details about this data set}'),
+               p('MINOTAUR is supplied with example datasets for users to explore the functions and
+                 plotting capabilities of the RShiny App.'),
                br(),
+               h4('Input Data Page'),
+               h5(strong(em('largeData Example')), align = "center"),
+               p('This example dataset provides data for random SNPs across the human genome and their
+                 associations to height and Body Mass Index (BMI). Each SNP has location descriptors including
+                 a reference chromosome (Chr) and base pair location (BP). They each also have associated
+                 p-values (Trait#_P) and effect size measured as a beta-coefficient (Trait#_Beta).'),
+               br(),
+               h5(strong(em('smallData Example')), align = "center"),
+               p(strong('{Need to add details about this data set when we know which one we are using}'), align = "center"),
+               br(),
+               h5(strong(em('Upload Own Data')), align = "center"),
                p('The user can also upload their own data sets as either .Rdata or Excel files following the example format below:'),
-               div(img(src="example_dataframe.jpg", align="center")),
-               p('rows can be individuals or for genomic data an example would be SNPs'),
-               p('columns are all statstics (e.g. Fst, GWAS, etc.) measurements (e.g. environmental or phenotypic variables), or descriptors (e.g. chromosome, species, etc.)'),
+               div(img(src="example_dataframe.jpg"), align = "center"),
+               p('- rows can be individuals or for genomic data an example would be SNPs', align = "center"),
+               p('- columns are all statstics (e.g. Fst, GWAS, etc.) measurements (e.g. environmental
+                 or phenotypic variables), or descriptors (e.g. chromosome, species, etc.)', align = "center"),
                br(),
                br(),
                h4('Clean up Data Page'),
-               p('This page allows you to subset your data by either removal of some variables (columns) or
-                 by filtering your data based on a variable.'),
-               p('Once you select a column to filter by, an additional menu will pop up that gives you either a
+               p('This page allows the user to subset their data by either removal of some data columns or
+                 by filtering data based on a column.'),
+               p('Once the user selects a column to filter by, an additional menu will pop up that gives the user either a
                  sliding bar to subset values of numerical data (left image below) or a box to remove levels of factor data
                  (right image below). A violin plot will appear for continuous numerical data.'),
-               div(img(src="numerical_example.jpg", align = "center"), img(src="factor_example.jpg", align = "center")),
+               div(img(src="numerical_example.jpg"), align = "center", img(src="factor_example.jpg"), align = "center"),
+               br(),
+               br(),
                h3('2. Plots'),
                h4('Scatterplot'),
                p('This plot allows the user to compare multiple statistics run on their data by plotting two different
                  statistics on the x and y axes and coloring outliers based on a third input.'),
                br(),
-               div(img(src="scatter.jpg", align="center")),
+               div(img(src="scatter.jpg"), align="center"),
                h4('Manhattan Plot'),
                p('This plot is used for genomic data to visualize outlier loci relative to their chromosomal location. To do this, you
                  can plot a variable of interest against chromosome position and then color outliers based on
                  for example, the P-value of a given trait.'),
                br(),
-               div(img(src="manhattan.jpg", align="center")),
+               div(img(src="manhattan.jpg"), align="center"),
                h4('Circle Plot'),
                p('The circle plot is another plot used for visualization of genomic data, which allows the user
                  to plot multiple traits via the inner and outer circles of points against the chromosomal
                  position.'),
                br(),
-               div(img(src="circleplot.jpg", align="center")),
-               h3('3. Help Page'),
-               p('Additional help including common mistakes or questions for using this App.')
+               div(img(src="circleplot.jpg"), align="center"),
+               br(),
+               h5('See Help page for additional information.'),
+               br()
 
-
-      ),
-
+    ) # Close mainPanel
+  ) # Close sidebarLayout
+),
       ##############
       ## DATA TAB ##
       ##############
@@ -358,15 +378,29 @@ shinyUI(
                  )
                           ),
       #################
-      ## 'MORE' PAGE ##
+      ## 'HELP' PAGE ##
       #################
 
       # (currently just a place-holder showing how to make a summary table)
 
-      navbarMenu("More",
-                 tabPanel("(sub-menu A)",
+      navbarMenu("Help",
+                 tabPanel('Creating Summary Table',
                           tableOutput("summaryTable")
-                 )
-      )
+                   ),
+                 tabPanel("FAQs",
 
+                  h3('Frequently Asked Questions'),
+                  h5(strong('Question 1: Why am I getting errors when I upload my data?')),
+                  p('Make sure your dataframe matches the required specifications listed on
+                     the Welcome Page. Make sure file is either an Excel or .Rdata file.'),
+                  h5(strong('Question 2: Why will my circle plot not plot?')),
+                  p('If you have a large dataset, be patient. This plot takes time to load for
+                     large data.'),
+                  h5(strong('Question 3: Why do I get an error when I try to log transform my data?')),
+                  p('If the data you are trying to plot has negative values, you will not be able to
+                     log transform the data.'),
+                  h5(strong('Question 4: Why does the my data not subset when I filter by a variable?')),
+                  p('You have to click the Update Data button after choosing any filters. ')
+        )
+      )
       )))
