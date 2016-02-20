@@ -40,3 +40,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// C_neighborDist
+Rcpp::List C_neighborDist(std::vector< std::vector<double> > data);
+RcppExport SEXP MINOTAUR_C_neighborDist(SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
+    __result = Rcpp::wrap(C_neighborDist(data));
+    return __result;
+END_RCPP
+}

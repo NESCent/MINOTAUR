@@ -4,27 +4,29 @@
 \alias{kernelLogLike}
 \title{Kernel Density Log-likelihood}
 \usage{
-kernelLogLike(dfv, column.nums = 1:ncol(dfv), bandwidth = 1:5,
+kernelLogLike(dfv, column.nums = 1:ncol(dfv), bandwidth = seq(0.1, 1, 0.1),
   reportProgress = FALSE)
 }
 \arguments{
-\item{dfv}{a data frame containing observations in rows and statistics in columns}
+\item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
-calculate Mahalanobis distance (all other columns are ignored)}
+calculate kernel log-likelihood (all other columns are ignored).}
 
-\item{bandwidth}{a vector containing the range of bandwidths to be explored}
+\item{bandwidth}{a vector containing the range of bandwidths to be explored.}
+
+\item{reportProgress}{whether to report current progress of the algorithm to the console (TRUE/FALSE).}
 }
 \description{
-Calculates log-likelihood of data under kernel density model for a range of bandwidths.
-Can be used to estimate the optimal (maximum likelihood) bandwith to use in functions
-such as kernelDist().
+Calculates the log-likelihood of the data under the same kernel density model used
+by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
+(maximum likelihood) bandwith to use in the kernelDist() function (see example).
 }
 \details{
 Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
 leave-one-out method, wherein the likelihood of each point is equal to its kernel
 density calculated from every *other* point. This avoids the issue of obtaining infinite likelihood
-at zero bandwidth, which is the case under an ordinary kernel density model.
+at zero bandwidth, which would be the case under an ordinary kernel density model.
 }
 \examples{
 
@@ -35,13 +37,13 @@ df <- data.frame(x=rnorm(100),y=rnorm(100))
 lambda <- seq(0.1,2,0.1)
 
 # obtain log-likelihood at each of these bandwidths
-logLike <- kernelLogLike(df,bandwidth=lambda)
+logLike <- kernelLogLike(df,bandwidth=lambda,reportProgress=TRUE)
 
 # find the maximum-likelihood bandwidth
 lambda_ML <- lambda[which.max(logLike)]
 
 # use this value when calculating kernel density distances
-distances <- harmonicDist(df,bandwidth=lambda_ML)
+distances <- kernelDist(df,bandwidth=lambda_ML)
 
 }
 \author{

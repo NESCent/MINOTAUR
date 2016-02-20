@@ -13,3 +13,7 @@ C_kernelLogLike <- function(data, sigma2) {
     .Call('MINOTAUR_C_kernelLogLike', PACKAGE = 'MINOTAUR', data, sigma2)
 }
 
+C_neighborDist <- function(data) {
+    .Call('MINOTAUR_C_neighborDist', PACKAGE = 'MINOTAUR', data)
+}
+

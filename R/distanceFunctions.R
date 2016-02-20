@@ -11,6 +11,8 @@
 # Mahalanobis
 # harmonicDist
 # kernelDist
+# kernelLogLike
+# neighborDist
 
 
 ############# Mahalanobis distance #############################################
@@ -21,9 +23,9 @@
 #' data frame can handle some missing data, as long as a covariance matrix can still be computed from
 #' the selected variables.
 #'
-#' @param dfv a data frame containing observations in rows and statistics in columns
+#' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate Mahalanobis distance (all other columns are ignored)
+#' calculate Mahalanobis distance (all other columns are ignored).
 #'
 #' @author KE Lotterhos \email{k.lotterhos@neu.edu}
 #' @examples
@@ -93,14 +95,14 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv)){
 #' distance of all points from all others.
 #'
 #' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-#' Values are first standardized in each dimension by subtracting from the
+#' Values are first normalized in each dimension by subtracting from the
 #' mean and dividing by the standard deviation before calculating harmonic mean distances.
 #'
-#' Note that dfv cannot contain any NA values.
+#' Note that this method cannot handle NA values.
 #'
-#' @param dfv a data frame containing observations in rows and statistics in columns
+#' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate Mahalanobis distance (all other columns are ignored)
+#' calculate harmonic distance (all other columns are ignored).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -151,7 +153,7 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv)){
   n <- nrow(df.vars)
   dim <- ncol(df.vars)
   for (i in 1:dim) {
-    df.vars[,i] <- (df.vars[,i]-mean(df.vars[,i]))/sd(df.vars[,i])
+    df.vars[,i] <- (df.vars[,i]-mean(df.vars[,i],na.rm=TRUE))/sd(df.vars[,i],na.rm=TRUE)
   }
 
   #### calculate harmonic mean distances using C++ function
@@ -169,17 +171,16 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv)){
 #' as a distance measure.
 #'
 #' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-#' Values are first standardized in each dimension by subtracting from the
+#' Values are first normalized in each dimension by subtracting from the
 #' mean and dividing by the standard deviation before calculating kernel density distance. Assumes a
-#' multivariate normal kernel with the same user-defined bandwidth in all dimensions (but note that
-#' the bandwidth is applied after normalization).
+#' multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
 #'
-#' Note that dfv cannot contain any NA values.
+#' Note that this method cannot handle NA values.
 #'
-#' @param dfv a data frame containing observations in rows and statistics in columns
+#' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate Mahalanobis distance (all other columns are ignored)
-#' @param bandwidth standard deviation of the normal kernel in each dimension
+#' calculate kernel distance (all other columns are ignored).
+#' @param bandwidth standard deviation of the normal kernel in each dimension. Can be a numerical value, or can be set to 'default', in which case Silverman's rule is used to select the bandwidth.
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -259,20 +260,21 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 
 #' Kernel Density Log-likelihood
 #'
-#' Calculates log-likelihood of data under kernel density model for a range of bandwidths.
-#' Can be used to estimate the optimal (maximum likelihood) bandwith to use in functions
-#' such as kernelDist().
+#' Calculates the log-likelihood of the data under the same kernel density model used
+#' by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
+#' (maximum likelihood) bandwith to use in the kernelDist() function (see example).
 #'
 #' Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
 #' leave-one-out method, wherein the likelihood of each point is equal to its kernel
 #' density calculated from every *other* point. This avoids the issue of obtaining infinite likelihood
-#' at zero bandwidth, which is the case under an ordinary kernel density model.
+#' at zero bandwidth, which would be the case under an ordinary kernel density model.
 #'
 #'
-#' @param dfv a data frame containing observations in rows and statistics in columns
+#' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate Mahalanobis distance (all other columns are ignored)
-#' @param bandwidth a vector containing the range of bandwidths to be explored
+#' calculate kernel log-likelihood (all other columns are ignored).
+#' @param bandwidth a vector containing the range of bandwidths to be explored.
+#' @param reportProgress whether to report current progress of the algorithm to the console (TRUE/FALSE).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -284,7 +286,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 #' lambda <- seq(0.1,2,0.1)
 #'
 #' # obtain log-likelihood at each of these bandwidths
-#' logLike <- kernelLogLike(df,bandwidth=lambda)
+#' logLike <- kernelLogLike(df,bandwidth=lambda,reportProgress=TRUE)
 #'
 #' # find the maximum-likelihood bandwidth
 #' lambda_ML <- lambda[which.max(logLike)]
@@ -297,7 +299,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 
 ########################################################################
 
-kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=1:5, reportProgress=FALSE){
+kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), reportProgress=FALSE){
 
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -340,12 +342,86 @@ kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=1:5, reportPro
   #### calculate log-likelihood for all bandwidths
   output <- rep(NA,length(bandwidth))
   for (i in 1:length(bandwidth)) {
-    if (reportProgress)
+    if (reportProgress) {
       message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
-
+      flush.console()
+    }
     output[i] <- C_kernelLogLike(split(t(df.vars), 1:dims), bandwidth[i]^2)$logLike
   }
 
   return(output)
 } # end kernelLogLike
 
+
+############# nearest neighbor distance #############################################
+
+#' Nearest Neighbor Distance
+#'
+#' Calculates euclidean distance to nearest neighbor for all points.
+#'
+#' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
+#' Values are first normalized in each dimension by subtracting from the
+#' mean and dividing by the standard deviation before calculating nearest neighbor distance.
+#'
+#' Note that this method cannot handle NA values.
+#'
+#' @param dfv a data frame containing observations in rows and statistics in columns.
+#' @param column.nums indexes the columns of the data frame that contain the statistics used to
+#' calculate nearest neighbor distance (all other columns are ignored).
+#'
+#' @author Robert Verity \email{r.verity@imperial.ac.uk}
+#' @examples
+#'
+#' # create a data frame of observations
+#' df <- data.frame(x=rnorm(100),y=rnorm(100))
+#'
+#' # calculate nearest neighbor distances
+#' distances <- neighborDist(df)
+#'
+#' # use this distance to look for outliers
+#' Q95 <- quantile(distances, 0.95)
+#' which(distances>Q95)
+#'
+#' @export
+
+
+########################################################################
+
+neighborDist <- function(dfv, column.nums=1:ncol(dfv)){
+
+  #### perform simple checks on data
+  # check that dfv is a matrix or data frame
+  if (!is.matrix(dfv) & !is.data.frame(dfv))
+    stop("dfv must be a matrix or data frame")
+
+  # check that column.nums can be used to index dfv without error
+  if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
+    stop("column.nums must contain valid indexes for choosing columns in dfv")
+
+  # extract variables from dfv
+  df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+  n <- nrow(df.vars)
+  dims <- ncol(df.vars)
+
+  # check that all selected columns are numeric
+  if (any(!apply(df.vars,2,is.numeric)))
+    stop("all selected columns of dfv must be numeric")
+
+  # check that no NA values
+  if (any(is.na(df.vars)))
+    stop("dfv cannot contain NA values")
+
+  # check that at least two rows in df.vars
+  if (n<2)
+    stop("dfv must contain at least two rows")
+
+  #### standardise in each dimension
+  for (i in 1:dims) {
+    df.vars[,i] <- (df.vars[,i]-mean(df.vars[,i]))/sd(df.vars[,i])
+  }
+
+  #### calculate nearest neighbor distances using C++ function
+  distances <- C_neighborDist(split(t(df.vars), 1:dims))$distance
+
+  return(distances)
+} # end neighborDist

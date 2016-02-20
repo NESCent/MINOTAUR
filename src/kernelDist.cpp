@@ -18,15 +18,22 @@ Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2) 
     vector<double> distance(n);
 
     for (int i=0; i<n; i++) {
-        z = 0;
+        z = log(0.0);
         for (int j=0; j<n; j++) {
+            if (i==j)
+                continue;
             x = 0;
             for (int k=0; k<dims; k++) {
                 x += (data[k][i]-data[k][j])*(data[k][i]-data[k][j]);
             }
-            z += exp(-x*C1);
+            // the next if statement does z' = log(exp(z) + exp(-x*C1)) while avoiding underflow/overflow issues.
+            if ((-x*C1)>z) {
+                z = -x*C1 + log(1 + exp(z + x*C1));
+            } else {
+                z = z + log(1 + exp(-x*C1 - z));
+            }
         }
-        distance[i] = C2 - 2*log(z);
+        distance[i] = C2 - 2*z;
     }
 
     // return values

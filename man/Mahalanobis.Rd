@@ -7,10 +7,10 @@
 Mahalanobis(dfv, column.nums = 1:ncol(dfv))
 }
 \arguments{
-\item{dfv}{a data frame containing observations in rows and statistics in columns}
+\item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
-calculate Mahalanobis distance (all other columns are ignored)}
+calculate Mahalanobis distance (all other columns are ignored).}
 }
 \description{
 Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. The input
