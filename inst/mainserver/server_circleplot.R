@@ -76,20 +76,20 @@
   if(logV1 %in% "none"){
     seg.value[,traitidxlist[1]] = seg.value[,traitidxlist[1]]
   } else{
-    if(logV1 %in% c(2, 10)){
+    if(logV1 %in% c("log2", "log10")){
+      logbase = ifelse(logV1 %in% "log2",2, 10)
       if(length(which(seg.value[,traitidxlist[1]] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
-
-      seg.value[,traitidxlist[1]] = -log(abs(seg.value[,traitidxlist[1]]), logV1)
+      seg.value[,traitidxlist[1]] = -log(abs(seg.value[,traitidxlist[1]]), logbase)
     }
   }
 
   if(logV2 %in% "none"){
     seg.value[,traitidxlist[2]] = seg.value[,traitidxlist[2]]
   } else{
-    if(logV2 %in% c(2,10)){
+    if(logV2 %in% c("log2", "log10")){
       if(length(which(seg.value[,traitidxlist[2]] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
-
-      seg.value[,traitidxlist[2]] = -log(abs(seg.value[,traitidxlist[2]]), logV2)
+      logbase = ifelse(logV2 %in% "log2",2, 10)
+      seg.value[,traitidxlist[2]] = -log(abs(seg.value[,traitidxlist[2]]), logbase)
     }
   }
 
@@ -105,10 +105,10 @@
   par(mar=c(2,2,2,2));
   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
-  circos(R=400,type="chr",cir=db,
-         col=rep(alpha(colors,0.6),
-                 length.out=seg.number),
-         print.chr.lab=T, W=40,scale=T);
+  circos(R=400,type="chr", cir=db,
+         col=rep(alpha(colors,0.6), length.out=seg.number),
+         print.chr.lab=T,
+         W=40, scale=T);
 
   for (i in 1:length(traitidxlist)){
      tmpcolor = alpha(colors[i], 0.3)

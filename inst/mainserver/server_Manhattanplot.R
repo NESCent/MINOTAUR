@@ -10,7 +10,7 @@
   xchr = input$choose_xaxis_chr
   xcood = input$choose_xaxis_cood
   yselect = input$choose_y1_plot
-  logy = as.numeric(input$logy1Checkbox)
+  logy = input$logy1Checkbox
   pselect = input$choose_pval
   poutlier = as.numeric(input$linearmhtpcut)
   flipYaxis = input$flipY
@@ -46,35 +46,19 @@
   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
 
-  ## change outliers
-  if( ycolnam %in% pcolnam){ ## same variables
-    if(logY %in% c(2,10)){
-      pcut.outlier = log(pcut.outlier, logY)
-    }
-    if(flipY %in% "Yes"){
-      pcut.outlier = - pcut.outlier
-    }
-  } else{
-    if (flipY %in% "Yes"){
-      pcut.outlier = 1 - pcut.outlier
-    }
-  }
-
-
-  if(logY %in% "none"){
+  if(logY %in% c("log2", "log10")){
+    if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+    logbase = ifelse(logY %in% "log2",2, 10)
+    mydata[,betaidx] = log(abs(mydata[,betaidx]),logbase)
+    pcut.outlier = log(pcut.outlier, logbase)
+    ycolnam = paste(logY,"(", ycolnam,")",sep="")
+  } else {
     mydata[,betaidx] = mydata[,betaidx]
     ycolnam = ycolnam
-  } else{
-    if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
-
-    if(logY %in% c(2,10)){
-        mydata[,betaidx] = log(abs(mydata[,betaidx]), logY)
-        ycolnam = paste(logY,"(", ycolnam,")",sep="")
-    }
   }
 
-
-  if(flipY %in% "Yes"){    mydata[,betaidx] = - mydata[,betaidx]  }
+  flipY_base = ifelse(flipY %in% "Yes", -1, 1)
+  mydata[, betaidx] = mydata[,betaidx] * flipY_base
 
   mynewtoy <- split(mydata, mydata[,Chr])
   number_snp <- dim(mydata)[1]
@@ -114,8 +98,12 @@
     y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T)
     y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
 
-    if(flipY %in% "Yes" ){
-      data.outlier <- which(mynewtoy[[i]][,pvidx] > pcut.outlier)
+    if(pcolnam %in% ycolnam){
+      if(flipY %in% "Yes" ){
+        data.outlier <- which(mynewtoy[[i]][,pvidx] > -pcut.outlier)
+      } else{
+        data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
+      }
     } else{
       data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
     }
@@ -142,8 +130,8 @@
              datbin$nc, xlab="", ylab="", add=FALSE,
              col=grey.colors(60, 0.6,0), axes=FALSE)
 
-  points(x=xaxis_outlier, y=yaxis_outlier, pch=18,cex=0.6*1.5,col="red")
-
+  points(x=xaxis_outlier, y=yaxis_outlier, pch=18, cex=1,col="red")
+  #print(yaxis_outlier)
   x.total2<-c(0,x.total)
   axis(1,at=x.axis.scale*x.total2,labels=F)
   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
