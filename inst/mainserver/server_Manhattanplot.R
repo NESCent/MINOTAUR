@@ -24,7 +24,6 @@
     }
   }
   mhtplots
-
 } # end .getLinearMHTPlot
 
 
@@ -46,11 +45,12 @@
   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
 
+  data.outlier <- which(mydata[,pvidx] < pcut.outlier)
+
   if(logY %in% c("log2", "log10")){
     if(length(which(mydata[,betaidx] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
     logbase = ifelse(logY %in% "log2",2, 10)
     mydata[,betaidx] = log(abs(mydata[,betaidx]),logbase)
-    pcut.outlier = log(pcut.outlier, logbase)
     ycolnam = paste(logY,"(", ycolnam,")",sep="")
   } else {
     mydata[,betaidx] = mydata[,betaidx]
@@ -78,10 +78,10 @@
     colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),   round(length(mynewtoy)/2,0))
   }
 
-  plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max), xlab="Chromosomes",ylab=ycolnam ,main=titlemain,axes=F)
+  plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max), xlab="Chromosome",ylab=ycolnam ,main=titlemain,axes=F)
   abline(h=0,col=gray(0.5),lty="dashed")
 
-  xaxis_all <- c();  yaxis_all <- c();  xaxis_outlier <- c();  yaxis_outlier<-c();  collib <- c()
+  xaxis_all <- c();  yaxis_all <- c();  collib <- c()
 
   for (i in 1:length(x.total)){
     if(i==1){
@@ -92,25 +92,6 @@
 
     xaxis_all <- c(xaxis_all,x.axis)
     yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
-
-    x.axis.min <- min(x.axis, na.rm=T)
-    x.axis.max <- max(x.axis, na.rm=T)
-    y.axis.min <- min(mynewtoy[[i]][,betaidx], na.rm=T)
-    y.axis.max <- max(mynewtoy[[i]][,betaidx], na.rm=T)
-
-    if(pcolnam %in% ycolnam){
-      if(flipY %in% "Yes" ){
-        data.outlier <- which(mynewtoy[[i]][,pvidx] > -pcut.outlier)
-      } else{
-        data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
-      }
-    } else{
-      data.outlier <- which(mynewtoy[[i]][,pvidx] < pcut.outlier)
-    }
-
-    xaxis_outlier <- c(xaxis_outlier,x.axis[data.outlier])
-    yaxis_outlier <- c(yaxis_outlier, mynewtoy[[i]][data.outlier,betaidx])
-    points(x=x.axis[data.outlier], y=mynewtoy[[i]][data.outlier,betaidx],   pch=18,cex=0.6*1.5,col="red")
   }
 
   dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
@@ -123,6 +104,7 @@
 
   datbin <- bin2(dat4plot, matrix(c(x.axis.min, x.axis.max, y.axis.min, y.axis.max),
                         2,2, byrow=TRUE),   nbin=c(nbins,nbins))
+
   datbin$nc[datbin$nc==0] = NA
 
   image.plot(seq(x.axis.min,x.axis.max,length.out = nbins),
@@ -130,10 +112,34 @@
              datbin$nc, xlab="", ylab="", add=FALSE,
              col=grey.colors(60, 0.6,0), axes=FALSE)
 
-  points(x=xaxis_outlier, y=yaxis_outlier, pch=18, cex=1,col="red")
-  #print(yaxis_outlier)
+  points(x=xaxis_all[data.outlier], y=yaxis_all[data.outlier], pch=18, cex=1,col="red")
+
   x.total2<-c(0,x.total)
   axis(1,at=x.axis.scale*x.total2,labels=F)
   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2, labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
   axis(2,at=axTicks(2),label=T)
 } # end .mhtplot
+
+
+##########################
+## .getManhattanPlotDataTable ##
+##########################
+.getManhattanDataTable <- function(input, mainData){
+  if(!is.null(mainData)){
+    colVar <- input$colVarSelection
+    if(!is.null(colVar)){
+      #print("colVar")
+      #print(colVar)
+      colData = mainData[,names(mainData)==colVar]
+      #print(head(colData))
+      cutoff <- as.numeric(input$scatter_cutoff)
+      if(is.na(cutoff)){cutoff2=colData[rank(colData)==round(length(colData)*0.01,0)]
+      }else{
+        cutoff2=colData[rank(colData)==round(length(colData)*cutoff,0)]
+      }
+
+      indexes <- which(colData < cutoff2)
+      a <- mainData[indexes,]
+    }
+  }
+} # end .getManhattanPlotDataTable

@@ -51,8 +51,7 @@
 ###############
 ## .circosmht ##
 ###############
-.circosmht <- function(mydata=mytoys,
-                      BP= "BP", Chr="Chr",
+.circosmht <- function(mydata=mytoys,  BP= "BP", Chr="Chr",
                       traitsname = c("Trait1_Beta","Trait2_Beta"),
                       logV1 = FALSE, logV2 =FALSE ,
                       trait.pvalnam = c("Trait1_P","Trait2_P"),
@@ -77,8 +76,8 @@
     seg.value[,traitidxlist[1]] = seg.value[,traitidxlist[1]]
   } else{
     if(logV1 %in% c("log2", "log10")){
-      logbase = ifelse(logV1 %in% "log2",2, 10)
       if(length(which(seg.value[,traitidxlist[1]] < 0)) > 0) {stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+      logbase = ifelse(logV1 %in% "log2",2, 10)
       seg.value[,traitidxlist[1]] = -log(abs(seg.value[,traitidxlist[1]]), logbase)
     }
   }
@@ -99,7 +98,6 @@
   seg.name <- sort(unique(mydata[,Chr]))
   db<-segAnglePo(seg.file,seg=seg.name);
 
-  #colors<-rainbow(seg.number,alpha=0.5);
   colors <- brewer.pal(9, "Set1")
 
   par(mar=c(2,2,2,2));
