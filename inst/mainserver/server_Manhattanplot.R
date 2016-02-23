@@ -126,19 +126,11 @@
 ##########################
 .getManhattanDataTable <- function(input, mainData){
   if(!is.null(mainData)){
-    colVar <- input$colVarSelection
-    if(!is.null(colVar)){
-      #print("colVar")
-      #print(colVar)
-      colData = mainData[,names(mainData)==colVar]
-      #print(head(colData))
-      cutoff <- as.numeric(input$scatter_cutoff)
-      if(is.na(cutoff)){cutoff2=colData[rank(colData)==round(length(colData)*0.01,0)]
-      }else{
-        cutoff2=colData[rank(colData)==round(length(colData)*cutoff,0)]
-      }
-
-      indexes <- which(colData < cutoff2)
+    Pselect = input$choose_pval
+    if(!is.null(Pselect)){
+      colData = mainData[,names(mainData)== Pselect]
+      cutoff <- as.numeric(input$linearmhtpcut)
+      indexes <- which(colData < cutoff)
       a <- mainData[indexes,]
     }
   }

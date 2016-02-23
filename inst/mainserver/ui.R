@@ -329,7 +329,21 @@ shinyUI(
 
                             # main panel
                             mainPanel(
-                              plotOutput("LinearMHTplot", height="450px",width="800px")
+                              h3('Manhattan plot'),
+                              plotOutput("LinearMHTplot", height="450px",width="800px"),
+                              h4('Making the Manhattan plot'),
+                              p("First, choose chromosome and coordinate variables for x axis. Next, choose variable for y axis.
+                                You can choose whether to log-transform the variables, but note that negative numbers can not be log-transformed.
+                                All selected variables should be numeric, not factors.
+                                You can overlay points in the plot according to a second variable of your choice.
+                                For example, choose 'Trait2_p' to see which outliers in Trait2 are also outliers in Trait1.
+                                "
+                              ),
+                              h4("\nOutliers"),
+                              p("The table below lists the outliers: the data points below
+                                the threshold chosen for 'Cutoff for outliers to overlay'."
+                              ),
+                              dataTableOutput("ManhattanDataTable")
                             )
                           )
                  ),
