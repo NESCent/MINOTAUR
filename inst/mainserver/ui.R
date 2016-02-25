@@ -90,48 +90,119 @@ shinyUI(
                     </h4>")
               )
               )
-            , style = list('background-color: #ffffe6')) # close wellPanel  #ffffcc
+            , style = list('background-color: #ffffcc')) # close wellPanel #ffffe6 #ffffcc
             ,
 
 
             ###################
             ## Pretty Plots: ##
             ###################
+
             wellPanel(
-              fluidRow(
-                div(img(src="scatter.jpg"), align = "center",
-                    img(src="circleplot.jpg"), align = "center",
-                    img(src="manhattan.jpg"), align = "center")
+            fluidRow(
+              column(2
+                     , fluidRow(
+                       column(12,
+                              div(img(src="scatter.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
+                     , fluidRow(
+                       column(12,
+                              div(img(src="manhattan.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
               )
+              , column(2,
+                       div(img(src="circleplot.jpg", width=250, height=250), align = "left", height="600px")
+                       #,style = "background-color:blue;")
               ),
 
-          #             fluidRow(
-          #               column(4,
-          #                      div(img(src="scatter.jpg"), align = "center", height="300px"))),
-          #             fluidRow(
-          #               column(4,
-          #                      div(img(src="manhattan.jpg"), align = "center", height="300px"))),
-          #             fluidRow(
-          #               column(6,
-          #                      div(img(src="circleplot.jpg"), align = "center", height="600px"))),
+              ## repeating for layout's sake ... until we have other pretty figures:
+              column(2
+                     , fluidRow(
+                       column(12,
+                              div(img(src="scatter.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
+                     , fluidRow(
+                       column(12,
+                              div(img(src="manhattan.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
+              )
+              , column(2,
+                       div(img(src="circleplot.jpg", width=250, height=250), align = "left", height="600px")
+                       #,style = "background-color:blue;")
+              ),
 
-          #             fluidRow(
-          #               column(6
-          #                      , fluidRow(
-          #                        column(12,
-          #                               div(img(src="scatter.jpg"), align = "center", height="300px"),
-          #                               style = "background-color:red;")
-          #                      )
-          #                      , fluidRow(
-          #                        column(12,
-          #                               div(img(src="manhattan.jpg"), align = "center", height="300px"),
-          #                               style = "background-color:red;")
-          #                      )
-          #               )
-          #               , column(6,
-          #                        div(img(src="circleplot.jpg"), align = "center", height="600px"),
-          #                        style = "background-color:blue;")
-          #             ),
+              ## repeating for layout's sake ... until we have other pretty figures:
+              column(2
+                     , fluidRow(
+                       column(12,
+                              div(img(src="scatter.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
+                     , fluidRow(
+                       column(12,
+                              div(img(src="manhattan.jpg", width=300, height=125), align = "right", height="300px")
+                              #,style = "background-color:red;")
+                       )
+                     )
+              )
+              , column(2,
+                       div(img(src="circleplot.jpg", width=250, height=250), align = "left", height="600px")
+                       #,style = "background-color:blue;")
+              )
+
+            ),
+            style = "background-color:#ccdcff;" #e6eeff#99ccff
+            ),
+
+
+            #             wellPanel(
+            #               fluidRow(
+            #                 column(6
+            #                        , fluidRow(
+            #                          column(12,
+            #                                 div(img(src="scatter.jpg", width=300, height=125), align = "right", height="300px")
+            #                                 #,style = "background-color:red;")
+            #                          )
+            #                        )
+            #                        , fluidRow(
+            #                          column(12,
+            #                                 div(img(src="manhattan.jpg", width=300, height=125), align = "right", height="300px")
+            #                                 #,style = "background-color:red;")
+            #                          )
+            #                        )
+            #                 )
+            #                 , column(6,
+            #                          div(img(src="circleplot.jpg", width=250, height=250), align = "left", height="600px")
+            #                          #,style = "background-color:blue;")
+            #                 )
+            #
+            #               )
+            #             ),
+
+            #             wellPanel(
+            #               fluidRow(
+            #                 column(4,
+            #                        div(img(src="scatter.jpg", width=100), align = "center")
+            #                        ),
+            #                 column(4,
+            #                        div(img(src="manhattan.jpg", width=100), align = "center")
+            #                 ),
+            #                 column(4,
+            #                        div(img(src="circleplot.jpg", width=100), align = "center")
+            #                 )
+            #               )
+            #             ),
+
+
 
             ##################
             ## Description: ##
@@ -155,13 +226,25 @@ shinyUI(
                 )
               ),
             #),
-
+            #################
+            ## Navigation: ##
+            #################
+            hr(), #########################################################################################
+            p(strong("Navigation:")),
+            #br(),
+            p("To find your way through the labyrinth, use the drop-down menus at the top of the page for navigation."),
+            p("Begin by clicking on the", strong("Data"), "tab to
+              select an example dataset or input your own data on the", em("Input Data"), "page.
+              You can then subset your data on the ", em("Clean-up Data"), "page, if desired,
+              but please note that you should ", em("not"), "attempt to remove outliers at this stage."),
+            p("Outlier detection will be performed alongside visualisation within the ", strong("Produce Plots"),
+              "tab which currently implements ", em("Scatter, Manhattan, "), "and ", em("Circle Plots.")),
             ###################
             ## Useful Links: ##
             ###################
             #wellPanel(
             br(),
-            hr(),
+            hr(), #########################################################################################
               p(strong("Useful Links:")),
 
             fluidRow(
@@ -200,70 +283,14 @@ shinyUI(
               )
             ) # close fluidRow
             ) # close wellPanel
-            ,
+
 
 
           ##############################################
           ### MOVE BULK OF CONTENT BELOW TO HELP TAB! ##   ###   ###   ###   ###   ###   ###   ###   ###   ###
           ##############################################
 
-            ## Main Panel data
-            wellPanel(
-               h2('App Navigation:'),
-               h3('1. Data'),
-               p('MINOTAUR is supplied with example datasets for users to explore the functions and
-                 plotting capabilities of the RShiny App.'),
-               br(),
-               h4('Input Data Page'),
-               h5(strong(em('largeData Example')), align = "center"),
-               p('This example dataset provides data for random SNPs across the human genome and their
-                 associations to height and Body Mass Index (BMI). Each SNP has location descriptors including
-                 a reference chromosome (Chr) and base pair location (BP). They each also have associated
-                 p-values (Trait#_P) and effect size measured as a beta-coefficient (Trait#_Beta).'),
-               br(),
-               h5(strong(em('smallData Example')), align = "center"),
-               p(strong('{Need to add details about this data set when we know which one we are using}'), align = "center"),
-               br(),
-               h5(strong(em('Upload Own Data')), align = "center"),
-               p('The user can also upload their own data sets as either .Rdata or Excel files following the example format below:'),
-               div(img(src="example_dataframe.jpg"), align = "center"),
-               p('- rows can be individuals or for genomic data an example would be SNPs', align = "center"),
-               p('- columns are all statstics (e.g. Fst, GWAS, etc.) measurements (e.g. environmental
-                 or phenotypic variables), or descriptors (e.g. chromosome, species, etc.)', align = "center"),
-               br(),
-               br(),
-               h4('Clean up Data Page'),
-               p('This page allows the user to subset their data by either removal of some data columns or
-                 by filtering data based on a column.'),
-               p('Once the user selects a column to filter by, an additional menu will pop up that gives the user either a
-                 sliding bar to subset values of numerical data (left image below) or a box to remove levels of factor data
-                 (right image below). A violin plot will appear for continuous numerical data.'),
-               div(img(src="numerical_example.jpg"), align = "center", img(src="factor_example.jpg"), align = "center"),
-               br(),
-               br(),
-               h3('2. Plots'),
-               h4('Scatterplot'),
-               p('This plot allows the user to compare multiple statistics run on their data by plotting two different
-                 statistics on the x and y axes and coloring outliers based on a third input.'),
-               br(),
-               div(img(src="scatter.jpg"), align="center"),
-               h4('Manhattan Plot'),
-               p('This plot is used for genomic data to visualize outlier loci relative to their chromosomal location. To do this, you
-                 can plot a variable of interest against chromosome position and then color outliers based on
-                 for example, the P-value of a given trait.'),
-               br(),
-               div(img(src="manhattan.jpg"), align="center"),
-               h4('Circle Plot'),
-               p('The circle plot is another plot used for visualization of genomic data, which allows the user
-                 to plot multiple traits via the inner and outer circles of points against the chromosomal
-                 position.'),
-               br(),
-               div(img(src="circleplot.jpg"), align="center"),
-               br(),
-               h5('See Help page for additional information.'),
-               br()
 
-    ) # Close mainPanel
   ) # Close fluidPage
 ),
       ##############
@@ -555,10 +582,97 @@ shinyUI(
       # (currently just a place-holder showing how to make a summary table)
 
       navbarMenu("Help",
-                 tabPanel('Creating Summary Table',
+
+                 ####################
+                 ## APP NAVIGATION ##
+                 ####################
+                 tabPanel("App Navigation",
+                          fluidPage(
+                            ## Main Panel data
+                            h2('App Navigation:'),
+
+                            ## DATA
+                            wellPanel(
+                              h3('1. Data'),
+                              hr(), #########################################################################################
+                              p('MINOTAUR is supplied with example datasets for users to explore the functions and
+                                plotting capabilities of the RShiny App.'),
+                              #br(),
+                              hr(), #########################################################################################
+                              h4('Input Data Page'),
+                              h5(strong(em('largeData Example')), align = "center"),
+                              p('This example dataset provides data for random SNPs across the human genome and their
+                                associations to height and Body Mass Index (BMI). Each SNP has location descriptors including
+                                a reference chromosome (Chr) and base pair location (BP). They each also have associated
+                                p-values (Trait#_P) and effect size measured as a beta-coefficient (Trait#_Beta).'),
+                              br(),
+                              h5(strong(em('smallData Example')), align = "center"),
+                              p(strong('{Need to add details about this data set when we know which one we are using}'), align = "center"),
+                              #br(),
+                              hr(), #########################################################################################
+                              h5(strong(em('Upload Own Data')), align = "center"),
+                              p('The user can also upload their own data sets as either .Rdata or Excel files following the example format below:'),
+                              div(img(src="example_dataframe.jpg"), align = "center"),
+                              p('- rows can be individuals or for genomic data an example would be SNPs', align = "center"),
+                              p('- columns are all statstics (e.g. Fst, GWAS, etc.) measurements (e.g. environmental
+                                or phenotypic variables), or descriptors (e.g. chromosome, species, etc.)', align = "center"),
+               br(),
+               #br(),
+               hr(), #########################################################################################
+               h4('Clean up Data Page'),
+               p('This page allows the user to subset their data by either removal of some data columns or
+                 by filtering data based on a column.'),
+               p('Once the user selects a column to filter by, an additional menu will pop up that gives the user either a
+                 sliding bar to subset values of numerical data (left image below) or a box to remove levels of factor data
+                 (right image below). A violin plot will appear for continuous numerical data.'),
+               div(img(src="numerical_example.jpg"), align = "center", img(src="factor_example.jpg"), align = "center")
+              ), # end DATA wellPanel
+
+               #br(),
+               #br(),
+
+              ## PLOTS
+              wellPanel(
+               h3('2. Plots'),
+               hr(), #########################################################################################
+               h4('Scatterplot'),
+               p('This plot allows the user to compare multiple statistics run on their data by plotting two different
+                 statistics on the x and y axes and coloring outliers based on a third input.'),
+               br(),
+               div(img(src="scatter.jpg"), align="center"),
+               hr(), #########################################################################################
+               h4('Manhattan Plot'),
+               p('This plot is used for genomic data to visualize outlier loci relative to their chromosomal location. To do this, you
+                 can plot a variable of interest against chromosome position and then color outliers based on
+                 for example, the P-value of a given trait.'),
+               br(),
+               div(img(src="manhattan.jpg"), align="center"),
+               hr(), #########################################################################################
+               h4('Circle Plot'),
+               p('The circle plot is another plot used for visualization of genomic data, which allows the user
+                 to plot multiple traits via the inner and outer circles of points against the chromosomal
+                 position.'),
+               br(),
+               div(img(src="circleplot.jpg"), align="center"),
+               br(),
+               #h5('See Help page for additional information.'),
+               br()
+
+                ) # Close wellPanel
+                )
+                ),
+
+               ###################
+               ## SUMMARY TABLE ##
+               ###################
+               tabPanel('Creating Summary Table',
                           tableOutput("summaryTable")
                    ),
-                 tabPanel("FAQs",
+
+               ##########
+               ## FAQs ##
+               ##########
+               tabPanel("FAQs",
 
                   h3('Frequently Asked Questions'),
                   h5(strong('Question 1: Why am I getting errors when I upload my data?')),
