@@ -121,9 +121,9 @@
 } # end .mhtplot
 
 
-##########################
+################################
 ## .getManhattanPlotDataTable ##
-##########################
+################################
 .getManhattanDataTable <- function(input, mainData){
   if(!is.null(mainData)){
     Pselect = input$choose_pval
@@ -131,7 +131,9 @@
       colData = mainData[,names(mainData)== Pselect]
       cutoff <- as.numeric(input$linearmhtpcut)
       indexes <- which(colData < cutoff)
-      a <- mainData[indexes,]
+      df <- mainData[indexes,]
+      ## run utils fn to show NAs in renderDataTable output
+      .showNAs(df)
     }
   }
 } # end .getManhattanPlotDataTable

@@ -169,7 +169,8 @@ shinyServer(function(input, output, session) {
   ## TO DO: get table to show NAs (istead of empty cells)
 
   output$mainDataTable <- renderDataTable({
-    rv$subData
+    ## run utils fn to show NAs in renderDataTable output
+    .showNAs(rv$subData)
   },
   options=list(scrollX='300px', scrollY='400px', searching=FALSE))
 

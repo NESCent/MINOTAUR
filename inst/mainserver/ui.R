@@ -19,6 +19,33 @@ require("adegenet")
 #source("mhtplot.R")
 # source("uiFunctions.R")
 
+
+## Adding useful links to our App (Welcome Page only?) ##
+URL_list <- list("MINOTAUR" = "https://github.com/NESCent/MINOTAUR",
+                 "NESCent" = "http://nescent.org/",
+                 "Report a Bug" = "https://github.com/NESCent/MINOTAUR/issues/new",
+                 "Contact the Developers" =
+                   "mailto:caitiecollins@gmail.com,
+                    r.verity@imperial.ac.uk,
+                    k.lotterhos@neu.edu,
+                    dcard@uta.edu,
+                    schaal.s@husky.neu.edu,
+                    wallacewly@gmail.com,
+                    grunwaln@science.oregonstate.edu")
+
+URL_MINOTAUR <- list('MINOTAUR' = "https://github.com/NESCent/MINOTAUR")
+URL_NESCent <- list("NESCent" = "http://nescent.org/")
+URL_Bug <- list("Report Bugs" = "https://github.com/NESCent/MINOTAUR/issues/new")
+URL_Contact <- list("Contact Us" =
+                      "mailto:caitiecollins@gmail.com,
+                      r.verity@imperial.ac.uk,
+                      k.lotterhos@neu.edu,
+                      dcard@uta.edu,
+                      schaal.s@husky.neu.edu,
+                      wallacewly@gmail.com,
+                      grunwaln@science.oregonstate.edu")
+
+
 #### ------------------------------------------------------------------
 
 shinyUI(
@@ -39,19 +66,149 @@ shinyUI(
       ## Add images of our prettiest plots
 
       tabPanel("Welcome",
-          sidebarLayout(
-            ## Sidebar Panel
-            sidebarPanel(
+          #sidebarLayout(
+          fluidPage(
 
-               h2("Welcome to the labyrinth!"),
-               p('MINOTAUR ("MultIvariate Nifty OuTlier Analysis Using R") is a program for detection and
-                visualisation of outliers in multivariate space. Although this App has been designed with
-                genomic data in mind, any dataset being analyzed in multivariate space can be visualized
-                using our App.'),
-               div(img(src="minotaur.jpg"), align = "center")
-            ),
+            ######################
+            ## MINOTAUR banner: ##
+            ######################
+            wellPanel(
+            ## Main Panel 1:
+            fluidRow(
+              column(3,
+                     div(img(src="minotaur.jpg"), align = "left")
+                ),
+              column(9,
+                HTML("<h1 style='padding: 0px 10px;'><big><big><big><strong>MINOTAUR </strong></big></big></big></h1>
+                      <h4 style='padding: 0px 10px;'>
+                      &#9899;
+                      <strong>M</strong>ult<strong>I</strong>variate
+                      v<strong>I</strong>sualisatio<strong>N</strong>
+                       and <strong>O</strong>u<strong>T</strong>lier <strong>A</strong>nalysis
+                      <strong>U</strong>sing <strong>R</strong>
+                      &#9899;
+                    </h4>")
+              )
+              )
+            , style = list('background-color: #ffffe6')) # close wellPanel  #ffffcc
+            ,
+
+
+            ###################
+            ## Pretty Plots: ##
+            ###################
+            wellPanel(
+              fluidRow(
+                div(img(src="scatter.jpg"), align = "center",
+                    img(src="circleplot.jpg"), align = "center",
+                    img(src="manhattan.jpg"), align = "center")
+              )
+              ),
+
+          #             fluidRow(
+          #               column(4,
+          #                      div(img(src="scatter.jpg"), align = "center", height="300px"))),
+          #             fluidRow(
+          #               column(4,
+          #                      div(img(src="manhattan.jpg"), align = "center", height="300px"))),
+          #             fluidRow(
+          #               column(6,
+          #                      div(img(src="circleplot.jpg"), align = "center", height="600px"))),
+
+          #             fluidRow(
+          #               column(6
+          #                      , fluidRow(
+          #                        column(12,
+          #                               div(img(src="scatter.jpg"), align = "center", height="300px"),
+          #                               style = "background-color:red;")
+          #                      )
+          #                      , fluidRow(
+          #                        column(12,
+          #                               div(img(src="manhattan.jpg"), align = "center", height="300px"),
+          #                               style = "background-color:red;")
+          #                      )
+          #               )
+          #               , column(6,
+          #                        div(img(src="circleplot.jpg"), align = "center", height="600px"),
+          #                        style = "background-color:blue;")
+          #             ),
+
+            ##################
+            ## Description: ##
+            ##################
+            wellPanel(
+              fluidRow(
+                column(12,
+                       HTML(
+                         "<h4><strong><i>Welcome to the labyrinth!</i></strong></h4>"
+                       ),
+                       #HTML("<h6 style='padding: 0px 10px;'></h6>"),
+                       p("MINOTAUR is an R package for the detection and visualisation of outliers in multivariate space."),
+
+                       p("The package contains a number of stand-alone functions for outlier detection that can be run in R.
+                  Naturally, however, the infamous MINOTAUR is most at home within the labyrinth.
+                  This labyrinthine app provides a user-friendly interface through which users can interact with MINOTAUR
+                  and explore complex multivariate data with ease."),
+
+                       p("Our package has been designed with genomic data in mind,
+                  but it can be applied to multivariate data from any domain.")
+                )
+              ),
+            #),
+
+            ###################
+            ## Useful Links: ##
+            ###################
+            #wellPanel(
+            br(),
+            hr(),
+              p(strong("Useful Links:")),
+
+            fluidRow(
+              column(2,
+                     Reduce(tagAppendChild,Map(
+                       function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
+                       names(URL_MINOTAUR),href=URL_MINOTAUR),
+                       tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
+              ),
+              column(1,
+                     HTML("<h4 style='padding: 0px 0px;'>
+                      &#9899;</h4>")),
+              column(2,
+                     Reduce(tagAppendChild,Map(
+                       function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
+                       names(URL_NESCent),href=URL_NESCent),
+                       tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
+              ),
+              column(1,
+                     HTML("<h4 style='padding: 0px 0px;'>
+                      &#9899;</h4>")),
+              column(2,
+                     Reduce(tagAppendChild,Map(
+                       function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
+                       names(URL_Bug),href=URL_Bug),
+                       tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
+              ),
+              column(1,
+                     HTML("<h4 style='padding: 0px 0px;'>
+                      &#9899;</h4>")),
+              column(2,
+                     Reduce(tagAppendChild,Map(
+                       function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
+                       names(URL_Contact),href=URL_Contact),
+                       tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
+              )
+            ) # close fluidRow
+            ) # close wellPanel
+            ,
+
+
+          ##############################################
+          ### MOVE BULK OF CONTENT BELOW TO HELP TAB! ##   ###   ###   ###   ###   ###   ###   ###   ###   ###
+          ##############################################
+
             ## Main Panel data
-            mainPanel(
+            wellPanel(
                h2('App Navigation:'),
                h3('1. Data'),
                p('MINOTAUR is supplied with example datasets for users to explore the functions and
@@ -107,7 +264,7 @@ shinyUI(
                br()
 
     ) # Close mainPanel
-  ) # Close sidebarLayout
+  ) # Close fluidPage
 ),
       ##############
       ## DATA TAB ##

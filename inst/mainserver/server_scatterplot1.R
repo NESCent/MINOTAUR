@@ -188,7 +188,9 @@
        indexes <- which(colDataNew2 >= cutoff)
       }
       print(c("indexes",length(indexes)))
-      a <- mainData[indexes,]
+      df <- mainData[indexes,]
+      ## run utils fn to show NAs in renderDataTable output
+      .showNAs(df)
     }
   }
 } # end .getScatterDataTable

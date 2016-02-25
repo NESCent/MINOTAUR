@@ -6,14 +6,14 @@
 
 
 ## NOTE: ##
-## THIS FILE IS WHERE YOU SHOULD PUT ANY 
+## THIS FILE IS WHERE YOU SHOULD PUT ANY
 ## GENERIC, USEFUL FUNCTIONS,
-## Eg. If Your function is/can be used in the code of 
+## Eg. If Your function is/can be used in the code of
 ## MORE THAN ONE of the other .R files, put it here!
 
 ## NOTE 2: ##
 ## UNLESS YOU WANT TO DOCUMENT YOUR FUNCTION
-## AND SHARE IT WITH USERS AS A STAND-ALONE FUNCTION, 
+## AND SHARE IT WITH USERS AS A STAND-ALONE FUNCTION,
 ## THEN YOU SHOULD CALL IT ".fn" (ie. put a dot at the
 ## start of its name, here and everywhere you use it)
 
@@ -119,11 +119,11 @@
 
 ###########################################################################################################################################################
 ###############
-## .noNAcols ## 
+## .noNAcols ##
 ###############
 
-.noNAcols <- function(x) {  
-  NAsByColumn <- sapply(c(1:ncol(x)), function(e) 
+.noNAcols <- function(x) {
+  NAsByColumn <- sapply(c(1:ncol(x)), function(e)
     if(class(x[,e])=="Date"){ # if the column is a date column containing something other than blanks
       which(is.na(x[,e]))
     }else{
@@ -142,6 +142,25 @@
   }
   return(x)
 } # end .noNAcols
+
+
+###########################################################################################################################################################
+
+##############
+## .showNAs ##
+##############
+
+## Mini fn that takes a data.frame as input
+## and returns a data.frame for which
+## NA values in the input df will be
+## shown in a shiny renderDataTable output.
+
+.showNAs <- function(df){
+  mat <- as.matrix(df)
+  mat[is.na(mat)] <- c("NA")
+  df <- as.data.frame(mat)
+  return(df)
+} # end .showNAs
 
 
 ###########################################################################################################################################################
