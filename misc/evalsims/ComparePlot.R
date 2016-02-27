@@ -14,11 +14,11 @@ ComparePlot <- function(dfv2, colorVect=NULL, ind=NULL){
 
   if(length(ind)==0){ind = 1:nrow(dfv2)}
 
-  ### PCS ######
-  try(plot(ind, dfv2$pcs[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS"))
-
   ### Hclust ######
   plot(ind, dfv2$Hcd[ind], col=colorVect[ind], pch=19, ylab = "hclust")
+
+  ### PCS ######
+  try(plot(ind, dfv2$pcs[ind], col=colorVect[ind], pch=19, ylab = "Fast PCS"))
 
   ### Mahalanobis distance ######
   # Md <- Mahalanobis(dfv2, colnums)
