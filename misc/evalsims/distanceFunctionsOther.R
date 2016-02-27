@@ -12,7 +12,7 @@
 if (("DMwR" %in% installed.packages())==FALSE) install.packages("DMwR")
 library(DMwR)
 
-hclust.ranking <- function(dfv, column.nums){
+hclust.ranking <- function(dfv, column.nums=1:ncol(dfv)){
   # This function calculates the outlier distance for each row (locus, SNP) in the dataframe based on the hclust function
   # dfv is a dataframe with each row a locus or population, and columns statistics and other information
   # column.nums is the columns in the dataframe to be used for analysis
@@ -28,8 +28,7 @@ hclust.ranking <- function(dfv, column.nums){
                  clus = list(dist = "euclidean",alg = "hclust",
                              meth = "ward.D"),
                  power = 1, verb = F)
-  return(list(h.rank = hout$rank.outliers,
-              minus.log.p = -log(1-hout$prob.outliers)))
+  return(-log(1-hout$prob.outliers))
 } #end hclust.ranking
 
 ############### FastPCS ###############
@@ -46,7 +45,7 @@ hclust.ranking <- function(dfv, column.nums){
 if (("FastPCS" %in% installed.packages())==FALSE) install.packages("FastPCS")
 library(FastPCS)
 
-FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
+FastPCS.out <- function(dfv, column.nums=1:ncol(dfv), alpha=0.5, seed=NULL){
   if(sum(is.na(dfv[,column.nums]))>0){print("Error: please input a dataframe with no NAs in the variables used to calculate the multivariate summary statistic"); break()}
 
   temp <- as.matrix(dfv[,column.nums])
@@ -55,10 +54,7 @@ FastPCS.out <- function(dfv, column.nums, alpha=0.5, seed=NULL){
   out <- FastPCS(temp, nSamp=NULL, alpha=alpha, seed=NULL)
 
   D.pcs <- out$distance
-  D.pcs.rank <- nlocs - rank(D.pcs, na.last="keep") + 1
-  minus.log.emp.p <- -log(D.pcs.rank/(nlocs-sum(is.na(D.pcs))))
-
-  return(list(D.pcs=D.pcs, D.pcs.rank=D.pcs.rank, minus.log.emp.p=minus.log.emp.p))
+  return(D.pcs)
 }
 
 ############### ks package ###############
