@@ -63,3 +63,15 @@ source("misc/evalsims/distanceFunctionsOther.R")
   dev.off()
 
 ##################################################
+#### Alan Strand Example ######
+  dfv5 <- read.csv("data/allanstrand-cline-parameters.csv")
+  head(dfv5)
+  tail(dfv5)
+  dfv5.out <- Getdf(dfv5,2:4)
+  head(dfv5.out)
+  col <- rep("grey",nrow(dfv5.out))
+  dfv5.out <- dfv5.out[order(dfv5.out$p.val,decreasing = TRUE),]
+   col[dfv5.out$p.val<1e-05]="blue"
+  png("misc/evalsims/Strand.png", width = 6, height = 8, res=450, units="in")
+  ComparePlot(dfv5.out, col)
+  dev.off()
