@@ -107,6 +107,6 @@ MINOTAUR <- function(){
   ## get path to App
   filename <- syst.file("mainserver",package="MINOTAUR")
   ## run app
-  runApp(filename)
+  runApp(filename, launch.browser=TRUE)
 }
 

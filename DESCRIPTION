@@ -3,7 +3,7 @@ Title: MultIvariate Nifty OuTlier Analysis Using R
 Version: 0.0.0.9000
 Authors@R: person("Caitlin", "Collins", , "caitiecollins@gmail.com", role = "cre")
 Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space. 
-Depends: 
+Depends:
     R (>= 3.2.3)
 Imports: shiny,
     stats4,
@@ -16,11 +16,13 @@ Imports: shiny,
     data.table,
     ash,
     fields,
-    Rcpp
+    Rcpp,
+    shinydashboard,
+    DT
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true
-Suggests: 
+Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
