@@ -19,27 +19,52 @@ MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=XXX), or f
 
 ```{r eval=FALSE}
 install.packages('MINOTAUR')
-#' to install the development version, run:
-#' require(devtools)
-#' install_github('NESCent/MINOTAUR')
+# to install the development version, run:
+# require(devtools)
+# install_github('NESCent/MINOTAUR')
 ```
 
 ## Workflow Overview
 The MINOTAUR package is broken into two fairly autonomous parts:
 
-1. X functions that perform multivariate outlier detection given data for several statistics. The multivariate outlier functions are meant to supplement existing R functions that infer outliers in multidimensional space, which all work using data stored as a dataframe object.
+1. Four functions that perform multivariate outlier detection given data for several statistics. The multivariate outlier functions are meant to supplement existing R functions that infer outliers in multidimensional space, which all work using data stored as a dataframe object.
 
-2. An R Shiny application that can be used to visualize the distributions of individual statictistics separately and together, and to help produce publiation-quality figures. The Shiny app can be used on unfiltered data to gain baseline understanding of a dataset before multivariate outliers are inferred, and can also be used on a reduce dataset of genomic loci or regions that are inferred to be multivariate outliers.
+2. An R Shiny application that can be used to visualize the distributions of individual statictistics separately and together, and to help produce publication-quality figures. The Shiny app can be used on unfiltered data to gain baseline understanding of a dataset before multivariate outliers are inferred, and can also be used on a reduce dataset of genomic loci or regions that are inferred to be multivariate outliers.
 
 An expanded example with code is included below, but a basic workflow leveraging MINOTAUR is as follows:
 
-1. Data is loaded into R from an external data format (i.e., tab-delimited or comma-delimited files).
+1. Data is loaded into R from an external data format (e.g., tab-delimited or comma-delimited files).
 
-2. The MINOTAUR Shiny app can be used to perform a preliminary investigation of the data, such that informed decisions can be made as to which statistics to include in multivariate outlier analyses.
+2. The MINOTAUR Shiny app can be used to perform a preliminary investigation of the data, such that informed decisions can be made as to which statistics to include in multivariate outlier analyses. Users can also use the app to exclude and filter data in preparation for the multivariate analyses, which cannot accept missing data.
 
 3. Outside of the Shiny app, a user can infer multivariate outliers using the statistics of interest and functions provided as part of MINOTAUR and several other packages in the R environment.
 
 4. The filtered dataset with only multivariate outliers can be visualized using the MINOTAUR Shiny app, which enables further investigation and the production of publication-quality figures.
+
+## Quick Start
+### Inferring Multivariate Outliers
+Get going and understand the basics of inferring multivariate outliers by running the following code using the sample data distributed with MINOTAUR.
+```{r eval=FALSE}
+data <- read.table("XXX", header=TRUE)              # read the data into R, dataframe conatins observations in rows and statistics in columns
+columns <- c(4,5,6,7)                               # columns of statistics to be used for the multivariate outlier analyses
+Md <- Mahalanobis(data, columns)
+Hd <- harmonicDist(data, columns)                   # all MINOTAUR functions take two standard arguments
+Nd <- neighborDist(data, columns)
+bandwidth <- c(seq(0.01, 0.1, by=0.01),             # the kernel density function takes a third argument: the kernel bandwidth
+  seq(0.2, 1, by=0.1))
+Kd.ML <- kernelLogLike(data, columns, bandwidth)    # a function has been provided that estimates the maximum likelihood kernel bandwidth that should be used based on the data
+bestBandwidth <- bandwidth[which(Kd.ML==max(Kd.ML))[1]]
+Kd <- kernelDist(data, columns, bestBandwidth)      # this bandwidth can then be used to run the kernel density function
+data$Md <- Md
+data$Hd <- Hd                                       # multivariate results can be appended to the input data matrix for visualization
+data$Nd <- Nd
+data$Kd <- Kd
+```
+
+### Data Visualization and Manipulation in R Shiny
+The graphical nature of the Shiny application should make this portion of the package intuitive, and we've provided some annotated snapshots of the app to aid the beginning user.
+
+
 
 ## Specific Example
 
