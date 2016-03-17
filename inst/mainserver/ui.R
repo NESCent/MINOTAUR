@@ -17,9 +17,11 @@
 # shinydashboard
 # DT - used in raw data table summary
 # shinyjs - options for deactivating shiny inputs
+# ggplot2
 
 # loading packages here. Do these need to be moved?
 require("shinydashboard")
+require("ggvis")
 
 # ---------------------------------------------------------------------------------------------------------------
 
