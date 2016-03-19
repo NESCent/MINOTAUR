@@ -6,19 +6,13 @@ Description: MINOTAUR provides stand-alone functions and an interactive user-int
 Depends:
     R (>= 3.2.3)
 Imports: shiny,
-    stats4,
-    adegenet,
-    MASS,
-    RColorBrewer,
-    ggplot2,
-    scales,
-    hexbin,
-    data.table,
-    ash,
-    fields,
-    Rcpp,
     shinydashboard,
-    DT
+    Rcpp,
+    DT,
+    shinyjs,
+    ggplot2,
+    ggvis,
+    RColorBrewer
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true

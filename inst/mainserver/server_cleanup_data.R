@@ -30,7 +30,6 @@ output$box_subsetData <- renderUI({
 finalData <- reactive({
   nullOutput <- list(data=NULL, rows=NULL, cols=NULL, numRemoved=NULL, percentRemoved=NULL)
   rawData <- rawData()
-  print(paste('SUBSETTING DATA',sample(100,1)))
 
   # if rawData$data is NULL, return nullOutput
   if (is.null(rawData$data))
@@ -109,5 +108,5 @@ output$box_cleanupData <- renderUI({
 # filtered data table
 output$cleanupData <- renderDataTable({
   finalData()$data
-},options=list(scrollX=TRUE, scrollY='500px'), rownames=FALSE,
+},options=list(scrollX=TRUE, scrollY='500px')#, rownames=FALSE,
 )

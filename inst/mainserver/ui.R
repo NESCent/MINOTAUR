@@ -15,13 +15,9 @@
 # list of packages definitely used in new version
 # shiny
 # shinydashboard
+# data.table - fast reading in of data
 # DT - used in raw data table summary
 # shinyjs - options for deactivating shiny inputs
-# ggplot2
-
-# loading packages here. Do these need to be moved?
-require("shinydashboard")
-require("ggvis")
 
 # ---------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +26,7 @@ ui <- dashboardPage(
   #########################
   ## TITLE AND SIDE MENU ##  ------------------------------------------------------------------------------------
   #########################
-  dashboardHeader(title='MINOTAUR'),
+  dashboardHeader(title='MINOTAUR', dropdownMenuOutput('messageMenu')),
 
   dashboardSidebar(
     sidebarMenu(
@@ -110,7 +106,7 @@ ui <- dashboardPage(
                   # Subset Data box
                   uiOutput('box_subsetData'),
 
-                  #
+                  # summary of missing data removed
                   uiOutput('valueBox_missingDataRemoved')
                 ),
                 column(8,

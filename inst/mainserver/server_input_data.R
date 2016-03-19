@@ -38,7 +38,6 @@ output$box_loadData <- renderUI({
 
 # reactive conductor for reading data from file, or using example data. Returns list(data,name,description,rows,cols)
 rawData <- reactive({
-  print(paste('READING DATA FROM FILE',sample(100,1)))
   nullOutput <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
 
   # if both read data and example data are NULL (ie. on startup), return nullOutput
@@ -155,6 +154,7 @@ output$rawDataSummary <- renderDataTable({
                          }
                        },rawData$data)
   )
+
   # output as table
   DT::datatable(output, class='compact', rownames=FALSE, colnames=c('Variable Name', 'Variable Class', 'Number NAs', 'Proportion NAs', 'Min', 'Median', 'Mean', 'Max'), options=list(dom='ltpr'))
 })

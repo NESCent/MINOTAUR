@@ -28,6 +28,9 @@ URL_Contact <- list("Contact Us" =
 
 server <- function(input, output) {
 
+  # message menu
+  source("server_message.R", local=T)
+
   # welcome page
   source("server_welcome.R", local=T)
 
@@ -50,10 +53,9 @@ server <- function(input, output) {
                  tags$button(id='loadDataButton', type="button",
                              class="btn action-button btn-primary",
                              style='font-size:15px; text-align:center',
-                             HTML('<i class="icon-star"></i>Load Data')
-                 ),
+                             HTML('<i class="icon-star"></i>Load Data')),
                  HTML(paste('<input type="text" value="',rv$data_name,'" readonly="readonly">',sep=''))
-             ),
+                 ),
              align='center')
     )
   })
