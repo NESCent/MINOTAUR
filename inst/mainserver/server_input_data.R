@@ -9,7 +9,7 @@
 
 # box for loading data
 output$box_loadData <- renderUI({
-  box(title='Load Data', status='primary', solidHeader=TRUE, collapsible=TRUE, width=4,
+  box(title='Load Data', status='primary', solidHeader=TRUE, collapsible=FALSE, width=12,
       h3('Load your data object from file'),
       p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt). Headers and delimiters can be specified below'),
 
@@ -23,7 +23,7 @@ output$box_loadData <- renderUI({
                  p(strong('Delimiters')),
                  radioButtons('delimiters', label=NULL, choices=list('comma-separated'=',', 'tab-separated'='\t', 'space-separated'=' '))
           )
-        )
+        ), style='padding: 10px;'
       ),
 
       fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
@@ -40,15 +40,15 @@ output$box_loadData <- renderUI({
 rawData <- reactive({
   nullOutput <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
 
-  # if both read data and example data are NULL (ie. on startup), return nullOutput
+  # if both user data and example data are NULL (ie. on startup), return nullOutput
   if (is.null(input$inputFile) & is.null(input$exampleData))
     return(nullOutput)
 
-  # if read data is NULL and example data is 'use_own', return nullOutput
+  # if user data is NULL and example data is 'use_own', return nullOutput
   if (is.null(input$inputFile) & input$exampleData=='use_own')
     return(nullOutput)
 
-  # if using example data then this takes precedence over own data
+  # if using example data then this takes precedence over user data
   if (input$exampleData=='large_data') {
     data(largeData, package="MINOTAUR", envir=environment())
     output <- list(data=largeData,
@@ -63,6 +63,7 @@ rawData <- reactive({
   if (input$inputFile$type%in%c('text/csv','text/plain')) {
     userData <- try(data.frame(fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
     if (class(userData)=='try-error') {
+      print(userData)
       output <- list(data=NULL,
                      name=input$inputFile$name,
                      description='Error: failed to import data. Check that data is formatted correctly.',
@@ -86,28 +87,39 @@ rawData <- reactive({
 
 # box for data name (title)
 output$box_dataName <- renderUI({
-  box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=TRUE, width=8,
-      h1(rawData()$name),
-      p(rawData()$description)
+  box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=TRUE, width=12,
+      h2(rawData()$name),
+      HTML(paste('<i><font size=4>',rawData()$description,'</font></i>',sep=''))
   )
 })
 
 # valueBox for data rows
 output$valueBox_rows <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>rows:  </font> <font size=6>',rawData()$rows,'</font>',sep='')), subtitle='', color='yellow', width=4)
+  valueBox(value=HTML(paste('<font size=5>rows:  </font> <font size=6>',rawData()$rows,'</font>',sep='')), subtitle='', color='yellow', width=6)
 })
 
 # valueBox for data cols
 output$valueBox_cols <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>columns:  </font> <font size=6>',rawData()$cols,'</font>',sep='')), subtitle='', color='yellow', width=4)
+  valueBox(value=HTML(paste('<font size=5>columns:  </font> <font size=6>',rawData()$cols,'</font>',sep='')), subtitle='', color='yellow', width=6)
 })
 
-# box for summarising raw data
-output$box_rawDataSummary <- renderUI({
-  box(title='Summary of variables', solidHeader=TRUE, collapsible=TRUE, width=8,
-      DT::dataTableOutput("rawDataSummary")
+# tabBox for displaying raw data and data summary
+output$tabBox_rawDataSummary <- renderUI({
+  tabBox(title=NULL, width=12,
+         tabPanel(title=HTML('<font size=4>Raw data table</font>'),
+                  dataTableOutput("rawDataTable")
+         ),
+         tabPanel(title=HTML('<font size=4>Summary table</font>'),
+                  DT::dataTableOutput("rawDataSummary")
+         )
   )
 })
+
+# raw data table
+output$rawDataTable <- renderDataTable({
+  rawData()$data
+},options=list(scrollX=TRUE, scrollY='400px'), rownames=FALSE
+)
 
 # raw data summary table
 output$rawDataSummary <- renderDataTable({

@@ -28,20 +28,23 @@ URL_Contact <- list("Contact Us" =
 
 server <- function(input, output) {
 
-  # message menu
-  source("server_message.R", local=T)
-
   # welcome page
   source("server_welcome.R", local=T)
 
   # input data page
   source("server_input_data.R", local=T)
 
-  # cleanup data page
-  source("server_cleanup_data.R", local=T)
+  # format data page
+  source("server_format_data.R", local=T)
 
   # find outliers page
   source("server_find_outliers.R", local=T)
+
+  # linear Manhattan plot page
+  source("server_Manhattan.R", local=T)
+
+  # error messages
+  source("server_message.R", local=T)
 
   #----------------------------------------------------------------
   # CRAP THAT I'M KEEPING FOR NOW JUST IN CASE IT BECOMES USEFUL

@@ -16,7 +16,6 @@
 # shiny
 # shinydashboard
 # data.table - fast reading in of data
-# DT - used in raw data table summary
 # shinyjs - options for deactivating shiny inputs
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -37,7 +36,7 @@ ui <- dashboardPage(
       # Data menu
       menuItem("Data", tabName="data", icon=icon("bars"),
                menuSubItem("Input Data", tabName="data_input"),
-               menuSubItem("Cleanup Data", tabName="data_cleanup")
+               menuSubItem("Format Data", tabName="data_format")
       ),
 
       # Outlier Detection menu
@@ -48,10 +47,10 @@ ui <- dashboardPage(
 
       # Produce Plots menu
       menuItem("Produce Plots", tabName="plots", icon=icon("area-chart"),
+               menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
                menuSubItem("1D Histogram", tabName="plots_1D_histogram"),
                menuSubItem("1D Kernel Density", tabName="plots_1D_density"),
                menuSubItem("2D Scatterplot", tabName="plots_2D_scatterplot"),
-               menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
                menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
       ),
 
@@ -81,84 +80,92 @@ ui <- dashboardPage(
         # description
         uiOutput('description')
 
-      ),
+      ),# end of Welcome page tabItem
 
       #### Input Data page
       tabItem(tabName="data_input",
         fluidRow(
-
-          # Load Data box
-          uiOutput('box_loadData'),
-
-          # Data Summary box (multiple parts)
-          uiOutput('box_dataName'),
-          uiOutput('valueBox_rows'),
-          uiOutput('valueBox_cols'),
-          uiOutput('box_rawDataSummary')
-
+          column(4,
+                 # Load Data box
+                 uiOutput('box_loadData')
+          ),
+          column(8,
+                 # Data Summary box (multiple parts)
+                 uiOutput('box_dataName'),
+                 uiOutput('valueBox_rows'),
+                 uiOutput('valueBox_cols'),
+                 uiOutput('tabBox_rawDataSummary')
+          )
         )
-      ),
+      ), # end of Input Data page tabItem
 
-      #### Cleanup Data page
-      tabItem(tabName="data_cleanup",
+      #### Format Data page
+      tabItem(tabName="data_format",
               fluidRow(
                 column(4,
-                  # Subset Data box
-                  uiOutput('box_subsetData'),
-
-                  # summary of missing data removed
-                  uiOutput('valueBox_missingDataRemoved')
+                       # Format Data box
+                       uiOutput('box_formatData')
                 ),
                 column(8,
+                       # Plot Genomic box
+                       uiOutput('tabBox_plotGenomic')
+                )
+              ),
+              fluidRow(
+                column(4,
+                       # Subset Data box
+                       uiOutput('box_subsetData')
 
-                  # Final Data box
-                  uiOutput('box_cleanupData')
+                       # summary of missing data removed
+                       #uiOutput('valueBox_missingDataRemoved')
+                ),
+                column(8,
+                       # Final Data box
+                       uiOutput('box_finalData')
                 )
               )
-      ),
+      ), # end of Format Data page tabItem
 
       #### Find Outliers page
       tabItem(tabName="outlier_find",
               fluidRow(
-
                 column(4,
-
-                       # global controls for univariate plots
-                       uiOutput('box_global_univariate'),
-
-                       # individual controls for univariate plots
-                       uiOutput('box_controls_univariate')
-
+                       # controls for distance-based plots
+                       uiOutput('box_control_distanceBased')
                 ),
                 column(8,
-
-                       # navigation panel
-                       uiOutput('box_navigation'),
-
-                       # univariate plots
-                       uiOutput('box_plot_univariate')
+                       # distance-based plots
+                       uiOutput('box_plot_distanceBased')
                 )
-
               ),
               fluidRow(
-
-                # controls for distance-based plots
-                uiOutput('box_control_distanceBased'),
-
-                # distance-based plots
-                uiOutput('box_plot_distanceBased')
-
-              ),
-              fluidRow(
-
-                # controls for density-based plots
-                uiOutput('box_control_densityBased'),
-
-                # density-based plots
-                uiOutput('box_plot_densityBased')
-
+                column(4,
+                       # controls for density-based plots
+                       uiOutput('box_control_densityBased')
+                ),
+                column(8,
+                       # density-based plots
+                       uiOutput('box_plot_densityBased')
+                )
               )
-      )
+      ), # end of Find Outliers page tabItem
+
+      #### Linear Manhattan Plot page
+      tabItem(tabName="plots_linear_Manhattan",
+              fluidRow(
+                column(4,
+                       # controls for linear Manhattan plots
+                       uiOutput('box_linearManhattan_controls')
+                ),
+                column(8,
+                       # navigation panel
+                       uiOutput('box_linearManhattan_navigation'),
+
+                       # plot linear Manhattan
+                       uiOutput('box_plot_linearManhattan')
+                )
+              )
+      ) # end of Linear Manhattan Plot page tabItem
 
     ) # end of tabItems
   ) # end of dashboardBody
