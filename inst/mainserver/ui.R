@@ -42,14 +42,13 @@ ui <- dashboardPage(
       # Outlier Detection menu
       menuItem("Outlier Detection", tabName="outlier", icon=icon("search"),
                menuSubItem("Find Outliers", tabName="outlier_find"),
-               menuSubItem("List Outliers", tabName="outlier_list")
+               menuSubItem("Compare Outliers", tabName="outlier_compare")
       ),
 
       # Produce Plots menu
       menuItem("Produce Plots", tabName="plots", icon=icon("area-chart"),
                menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
-               menuSubItem("1D Histogram", tabName="plots_1D_histogram"),
-               menuSubItem("1D Kernel Density", tabName="plots_1D_density"),
+               menuSubItem("1D Histogram/Density", tabName="plots_1D_histogram"),
                menuSubItem("2D Scatterplot", tabName="plots_2D_scatterplot"),
                menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
       ),
@@ -129,26 +128,40 @@ ui <- dashboardPage(
       #### Find Outliers page
       tabItem(tabName="outlier_find",
               fluidRow(
-                column(4,
-                       # controls for distance-based plots
-                       uiOutput('box_control_distanceBased')
+                column(7,
+                       # controls for producing compound measures
+                       uiOutput('tabBox_produce_compound')
                 ),
-                column(8,
-                       # distance-based plots
-                       uiOutput('box_plot_distanceBased')
+                column(5,
+                       # density plot of compound measure
+                       uiOutput('box_density_compound')
                 )
               ),
               fluidRow(
                 column(4,
-                       # controls for density-based plots
-                       uiOutput('box_control_densityBased')
+                       #
+                       uiOutput('box_choose_threshold')
                 ),
                 column(8,
-                       # density-based plots
-                       uiOutput('box_plot_densityBased')
+                       #
+                       uiOutput('box_list_outliers')
                 )
               )
       ), # end of Find Outliers page tabItem
+
+      #### Compare Outliers page
+      tabItem(tabName="outlier_compare",
+              fluidRow(
+                column(4,
+                       #
+                       uiOutput('box_compare1')
+                ),
+                column(8,
+                       #
+                       uiOutput('box_compare2')
+                )
+              )
+      ), # end of Compare Outliers page tabItem
 
       #### Linear Manhattan Plot page
       tabItem(tabName="plots_linear_Manhattan",
@@ -165,7 +178,21 @@ ui <- dashboardPage(
                        uiOutput('box_plot_linearManhattan')
                 )
               )
-      ) # end of Linear Manhattan Plot page tabItem
+      ), # end of Linear Manhattan Plot page tabItem
+
+      #### Plot 1D Histogram/Density page
+      tabItem(tabName="plots_1D_histogram",
+              fluidRow(
+                column(4,
+                       #
+                       uiOutput('box_1D_hist_controls')
+                ),
+                column(8,
+                       #
+                       uiOutput('box_1D_hist_plot')
+                )
+              )
+      ) # end of 1D Histogram/Density page tabItem
 
     ) # end of tabItems
   ) # end of dashboardBody

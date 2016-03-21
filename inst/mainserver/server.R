@@ -40,8 +40,14 @@ server <- function(input, output) {
   # find outliers page
   source("server_find_outliers.R", local=T)
 
+  # compare outliers page
+  source("server_compare_outliers.R", local=T)
+
   # linear Manhattan plot page
-  source("server_Manhattan.R", local=T)
+  source("server_plot_Manhattan.R", local=T)
+
+  # plot 1D histogram/kernel density page
+  source("server_plot_histogram.R", local=T)
 
   # error messages
   source("server_message.R", local=T)

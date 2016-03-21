@@ -73,23 +73,18 @@ stripPositionChromosome <- reactive({
 
 # tabBox for producing genomic summary plots
 output$tabBox_plotGenomic <- renderUI({
-  tabBox(title=NULL, width=12,
-         tabPanel(title=HTML('<font size=4>Observations</font>'),
-                  if (is.null(stripPositionChromosome()$chrom)) {
-                    p('Choose a ',strong('Chromosome variable'),'to produce a plot showing the breakdown of observations by chromosome.')
-                  } else {
-                    plotOutput('formatData_plot_genomic_observations',height=300)
-                  }
-         ),
-         tabPanel(title=HTML('<font size=4>Range</font>'),
-                  h3('NOTE - In final version this tabBox (and crappy plot) will be replaced with single plot showing coverage density in each chromosome')
-         )
+  box(title='Breakdown By Chromosome', status="warning", solidHeader=TRUE, collapsible=FALSE, width=12, height=300,
+      if (is.null(stripPositionChromosome()$chrom)) {
+        p('Choose a ',strong('Chromosome variable'),'to produce a plot showing the breakdown of observations by chromosome.')
+      } else {
+        plotOutput('formatData_plot_genomic_observations',height=220)
+      }
   )
 })
 
 # barplot showing number of observations for each chromosome
 output$formatData_plot_genomic_observations <- renderPlot({
-  barplot(table(stripPositionChromosome()$chrom), col=grey(0.2), xlab='Chromosome', ylab='#Observations')
+  barplot(table(stripPositionChromosome()$chrom), col=grey(0.2), xlab='Chromosome', ylab='#Observations', main='(this will be improved in final version)')
 })
 
 ######################
@@ -100,7 +95,7 @@ output$formatData_plot_genomic_observations <- renderPlot({
 output$box_subsetData <- renderUI({
   box(title="Subset Data", status="primary", solidHeader=TRUE, collapsible=TRUE, width=12,
       h3('Subset Rows and Columns'),
-      p('Here you can limit the variables that you take forward to the outlier detection stage, and remove rows containing missing or problematic data.'),
+      p('Here you can limit the variables that you will take forward to the outlier detection stage, and remove rows containing missing or problematic data.'),
       checkboxInput('formatData_check_takeAllForward',label='Use all remaining variables',value=TRUE),
       conditionalPanel(condition='input.formatData_check_takeAllForward == false',
                        selectizeInput('formatData_selectize_variables', label='Select specific variables', choices=stripPositionChromosome()$otherVar, multiple=TRUE),

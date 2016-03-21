@@ -53,9 +53,12 @@ output$univariate_lapply_controls <- renderUI({
 
 # box for navigation plot
 output$box_linearManhattan_navigation <- renderUI({
-  box(title="Navigation", status="primary", solidHeader=TRUE, collapsible=FALSE, width=12,
-      #p('Use this panel to focus in on the region of interest before hitting',strong('Apply Changes'),'to produce more detailed plots.'),
-      selectInput('restrict_chrom', label='Restrict chromosome', choices=as.list(c('(all)',cleanData()$chromLevels)), selected=navigationPolygons()$chromChosen, width=200),
+  box(title="Manhattan Plot", status="warning", solidHeader=TRUE, collapsible=FALSE, width=12,
+      fluidRow(
+        column(6,
+               selectInput('restrict_chrom', label='Restrict chromosome', choices=as.list(c('(all)',cleanData()$chromLevels)), selected=navigationPolygons()$chromChosen, width=200)
+        )
+      ),
       plotOutput('plot_navigation',height=100,width='100%'),
       sliderInput('slider_navigate',
                   label=NULL,
@@ -211,7 +214,7 @@ output$plot_navigation <- renderPlot({
 
 # box for plotting univariate distributions
 output$box_plot_linearManhattan <- renderUI({
-  box(title="Univariate Plots", status="warning", solidHeader=TRUE, collapsible=FALSE, width=12,
+  box(title=NULL, status="warning", solidHeader=FALSE, collapsible=FALSE, width=12,
       h2(input$univariate_main_title, align='center'),
       h3(input$univariate_sub_title, align='center'),
       plotOutput('plot1',height=200*ManhattanData()$y_col+100+20)

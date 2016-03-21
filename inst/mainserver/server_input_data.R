@@ -89,7 +89,7 @@ rawData <- reactive({
 output$box_dataName <- renderUI({
   box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=TRUE, width=12,
       h2(rawData()$name),
-      HTML(paste('<i><font size=4>',rawData()$description,'</font></i>',sep=''))
+      HTML(paste('<i><font size=3>',rawData()$description,'</font></i>',sep=''))
   )
 })
 
@@ -105,7 +105,7 @@ output$valueBox_cols <- renderUI({
 
 # tabBox for displaying raw data and data summary
 output$tabBox_rawDataSummary <- renderUI({
-  tabBox(title=NULL, width=12,
+  tabBox(title=NULL, status='warning', width=12,
          tabPanel(title=HTML('<font size=4>Raw data table</font>'),
                   dataTableOutput("rawDataTable")
          ),
