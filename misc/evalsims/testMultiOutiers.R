@@ -8,6 +8,37 @@ library(devtools)
 install_github("NESCent/MINOTAUR")
 library(MINOTAUR)
 
+#### Non Parameteric Simulation Example ######
+  np <- read.csv("misc/evalsims/nonPara_simData.csv")
+  head(np)
+  np2 <- Getdf(np)
+  col <- rep("grey", nrow(np2))
+  pch <- rep(19, nrow(np2))
+  col[nrow(np2)] <- "blue"
+  pch[nrow(np2)] <- 17
+  ind <- c(1:999/1000,1.01)
+ png("misc/evalsims/nonPara_log.png", width=3, height=8, res=450, units="in")
+  par(mfrow=c(4,1), mar=c(3,4,1,1), bty="l")
+    plot(ind,log(np2$Md), col=col, pch=pch, ylab= "Mahalanobis")
+      #abline(sort(log(dfv3.out$Md[dfv3.out$s==0]))[9900*0.999],0)
+      text(0,1.5, "A", cex=2)
+
+    plot(ind,log(np2$Hd), col=col, pch=pch, ylab= "Harmonic mean dist.")
+      #abline(sort(log(dfv3.out$Hd[dfv3.out$s==0]))[9900*0.999],0)
+      text(0,1.5, "B", cex=2)
+      #text(0,2.3,round(getEmpPower(dfv3.out$Hd,dfv3.out$s_high==0),2))
+
+    plot(ind, log(np2$Kd), col=col, pch=pch, ylab= "Kernel density")
+      #abline(sort(log(dfv3.out$Kd[dfv3.out$s==0]))[9900*0.999],0)
+      text(0,4.0, "C", cex=2)
+      #text(0,4.1,round(getEmpPower(dfv3.out$Kd,dfv3.out$s_high==0),2))
+
+    plot(ind, log(np2$Nd), col=col, pch=pch, ylab= "Nearest neighbor")
+      #abline(sort(log(dfv3.out$Nd[dfv3.out$s==0]))[9900*0.999],0)
+      text(0,0, "D", cex=2)
+      #text(0,0.1,round(getEmpPower(dfv3.out$Nd,dfv3.out$s_high==0),2))
+  dev.off()
+
 #### One Refuge Simulation Example ######
   d1 <- read.table("~/Google Drive/MultiOutlierVisualization/practiceData/KatieSims/2R_R30_1351142970_988_6_NumPops=30_NumInd=20Bayenv2LFMMpca.Cpval", header=TRUE)
   head(d1)
