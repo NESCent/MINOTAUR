@@ -34,11 +34,23 @@ server <- function(input, output) {
   # input data page
   source("server_input_data.R", local=T)
 
-  # cleanup data page
-  source("server_cleanup_data.R", local=T)
+  # format data page
+  source("server_format_data.R", local=T)
 
   # find outliers page
   source("server_find_outliers.R", local=T)
+
+  # compare outliers page
+  source("server_compare_outliers.R", local=T)
+
+  # linear Manhattan plot page
+  source("server_plot_Manhattan.R", local=T)
+
+  # plot 1D histogram/kernel density page
+  source("server_plot_histogram.R", local=T)
+
+  # error messages
+  source("server_message.R", local=T)
 
   #----------------------------------------------------------------
   # CRAP THAT I'M KEEPING FOR NOW JUST IN CASE IT BECOMES USEFUL
@@ -50,10 +62,9 @@ server <- function(input, output) {
                  tags$button(id='loadDataButton', type="button",
                              class="btn action-button btn-primary",
                              style='font-size:15px; text-align:center',
-                             HTML('<i class="icon-star"></i>Load Data')
-                 ),
+                             HTML('<i class="icon-star"></i>Load Data')),
                  HTML(paste('<input type="text" value="',rv$data_name,'" readonly="readonly">',sep=''))
-             ),
+                 ),
              align='center')
     )
   })
