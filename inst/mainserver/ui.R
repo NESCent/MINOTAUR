@@ -18,10 +18,6 @@
 # data.table - fast reading in of data
 # shinyjs - options for deactivating shiny inputs
 
-require(shiny)
-require(shinydashboard)
-require(data.table)
-require(shinyjs)
 
 
 # ---------------------------------------------------------------------------------------------------------------

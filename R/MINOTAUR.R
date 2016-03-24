@@ -35,7 +35,9 @@
 #' ## run function
 #' MINOTAUR()
 #'
-#' @import shiny stats4 adegenet  MASS RColorBrewer ggplot2 scales hexbin  data.table ash fields Rcpp
+#' @import shiny shinydashboard shinyjs DT
+#'  stats4 adegenet  MASS RColorBrewer
+#'  ggplot2 scales hexbin  data.table ash fields Rcpp
 #'
 #' @export
 
@@ -77,6 +79,10 @@ MINOTAUR <- function(){
   #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
 
   require(shiny)
+  require(shinydashboard)
+  require(data.table)
+  require(shinyjs)
+  require(DT)
   #require(rCharts)
   #require(rHighcharts)
   #require(stats4)

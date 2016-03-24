@@ -19,7 +19,7 @@ output$MinotaurBanner <- renderUI({
                   <h4 style='padding: 0px 10px;'>
                   &#9899;
                   <strong>M</strong>ult<strong>I</strong>variate
-                  v<strong>I</strong>sualisatio<strong>N</strong>
+                  visualisatio<strong>N</strong>
                   and <strong>O</strong>u<strong>T</strong>lier <strong>A</strong>nalysis
                   <strong>U</strong>sing <strong>R</strong>
                   &#9899;

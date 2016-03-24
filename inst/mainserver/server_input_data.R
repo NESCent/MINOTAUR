@@ -3,6 +3,54 @@
 ## INPUT DATA PAGE ##  ------------------------------------------------------------------------------------
 #####################
 
+##############
+## EXAMPLES ##   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+##############
+
+# ##################
+# ## 1) OneRefSim ##
+# ##################
+#
+# OneRefSim <- read.table("~/MINOTAUR (copy)/data/OneRefSim.txt", header=TRUE)
+# str(OneRefSim)
+# head(OneRefSim)
+# save(OneRefSim, file="~/MINOTAUR (copy)/data/OneRefSim.Rdata")
+# library(devtools)
+# use_data(OneRefSim) # , overwrite=TRUE
+# data("OneRefSim")
+#
+# ###################
+# ## 2) NonParamEx ##
+# ###################
+# NonParamEx <- read.table("~/MINOTAUR (copy)/data/NonParamEx.txt", header=TRUE)
+# str(NonParamEx)
+# head(NonParamEx)
+# save(NonParamEx, file="~/MINOTAUR (copy)/data/NonParamEx.Rdata")
+# use_data(NonParamEx, overwrite=TRUE)
+# data("NonParamEx")
+#
+# ###################
+# ## 2) NonParamEx ##
+# ###################
+# NonParamEx <- read.table("~/MINOTAUR (copy)/data/NonParamEx.txt", header=TRUE)
+# str(NonParamEx)
+# head(NonParamEx)
+# save(NonParamEx, file="~/MINOTAUR (copy)/data/NonParamEx.Rdata")
+# use_data(NonParamEx, overwrite=TRUE)
+# data("NonParamEx")
+#
+# ################
+# ## 3) ToyGWAS ##
+# ################
+# ToyGWAS <- get(load("~/MINOTAUR (copy)/data/largeData.rda"))
+# str(ToyGWAS)
+# head(ToyGWAS)
+# save(ToyGWAS, file="~/MINOTAUR (copy)/data/ToyGWAS.Rdata")
+# use_data(ToyGWAS, overwrite=TRUE)
+# data("ToyGWAS")
+
+###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+
 ####################
 ## Box: Load Data ##
 ####################
@@ -27,11 +75,16 @@ output$box_loadData <- renderUI({
       ),
 
       fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
+      #, "RData","Rdata","Rda","RDA", "rdata", "rda"
 
       hr(),
 
       h3('Or choose one of our built-in examples'),
-      selectInput('exampleData', label='Select example', choices=list('(use own data)'='use_own', 'Large Data'='large_data'), selected='large_data')
+      selectInput('exampleData', label='Select example',
+                  choices=list('(use own data)'='use_own',
+                               "Toy GWAS" = "ToyGWAS",
+                               "Expansion from One Refugia" = "OneRefSim",
+                               "Non-Parametric Data" = "NonParamEx"), selected="ToyGWAS")
 
   )
 })
@@ -49,13 +102,35 @@ rawData <- reactive({
     return(nullOutput)
 
   # if using example data then this takes precedence over user data
-  if (input$exampleData=='large_data') {
-    data(largeData, package="MINOTAUR", envir=environment())
-    output <- list(data=largeData,
-                   name='Example: Large Data',
-                   description='This is Liuyang\'s data set that we have been using as an example. Although this is called "Large Data", in fact this is not so large compared with many other data sets!',
-                   rows=nrow(largeData),
-                   cols=ncol(largeData))
+  ## ToyGWAS ##
+  if (input$exampleData=='ToyGWAS') {
+    data(ToyGWAS, package="MINOTAUR", envir=environment())
+    output <- list(data=ToyGWAS,
+                   name='Example: Toy GWAS',
+                   description='This is Liuyang\'s data set that contains an example of output returned from a human GWAS analysis.',
+                   rows=nrow(ToyGWAS),
+                   cols=ncol(ToyGWAS))
+    return(output)
+  }
+  ## OneRefSim ##
+  if (input$exampleData=='OneRefSim') {
+    data(OneRefSim, package="MINOTAUR", envir=environment())
+    output <- list(data=OneRefSim,
+                   name='Example: Simulated Expansion from One Refugia',
+                   description='This is Katie\'s data set that contains population genetic data simulating expansion from one refugia.',
+                   rows=nrow(OneRefSim),
+                   cols=ncol(OneRefSim))
+    return(output)
+  }
+  ## NonParamEx ##
+  if (input$exampleData=='NonParamEx') {
+    data(NonParamEx, package="MINOTAUR", envir=environment())
+    output <- list(data=NonParamEx,
+                   name='Example: Non-Parametric Example',
+                   description='This is a simple two-variable data set that contains an example of non-parametric data...
+                   (Special use for this data set? Any additional advice needed here??).',
+                   rows=nrow(NonParamEx),
+                   cols=ncol(NonParamEx))
     return(output)
   }
 
