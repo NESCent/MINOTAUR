@@ -5,6 +5,195 @@
 #######################
 
 
+## generate reactiveValues lists for all initial values
+rv_scatterPlot_button <- reactiveValues()
+rv_scatterPlot_button <- 1 # 0
+rv_scatterPlot_xaxis <- reactiveValues()
+rv_scatterPlot_yaxis <- reactiveValues()
+rv_scatterPlot_logx <- reactiveValues()
+rv_scatterPlot_logy <- reactiveValues()
+rv_scatterPlot_flipx <- reactiveValues()
+rv_scatterPlot_flipy <- reactiveValues()
+rv_scatterPlot_outlier.var <- reactiveValues()
+rv_scatterPlot_outlier.cutoff <- reactiveValues()
+rv_scatterPlot_outlier.tail <- reactiveValues()
+rv_scatterPlot_outlier.col.bg <- reactiveValues()
+rv_scatterPlot_outlier.col <- reactiveValues()
+rv_scatterPlot_outlier.pch <- reactiveValues()
+rv_scatterPlot_outlier.transp <- reactiveValues()
+rv_scatterPlot_outlier.cex <- reactiveValues()
+rv_scatterPlot_n.bins <- reactiveValues()
+rv_scatterPlot_col.pal <- reactiveValues()
+
+
+
+#########################
+## .set.reactiveValues ##
+#########################
+## fn to set reactiveValues initially for each k:
+.set.reactiveValues <- function(dat, k){
+
+  k <- as.character(k)
+
+  x.var.choices <- x.var.sel <-
+    y.var.choices <- y.var.sel <-
+    o.var.choices <- o.var.sel <- NULL
+
+  ## get variables
+  if(!is.null(dat)){
+
+    ## get numeric variables
+    numCols <- which(sapply(c(1:ncol(dat$y)),
+                            function(e) is.numeric(dat$y[,e])))
+
+    var.choices <- c("Position", "Chromosome", names(dat$y)[numCols])
+
+    x.var.choices <- y.var.choices <- o.var.choices <- var.choices
+
+    x.var.sel <- x.var.choices[3]
+    y.var.sel <- y.var.choices[4]
+
+    o.var.sel <- x.var.choices[5]
+
+    ## set intial values
+    rv_scatterPlot_xaxis[[k]] <- x.var.sel
+    rv_scatterPlot_yaxis[[k]] <- y.var.sel
+    rv_scatterPlot_logx[[k]] <- "none"
+    rv_scatterPlot_logy[[k]] <- "none"
+    rv_scatterPlot_flipx[[k]] <- "No"
+    rv_scatterPlot_flipy[[k]] <- "No"
+    rv_scatterPlot_outlier.var[[k]] <- o.var.sel
+    rv_scatterPlot_outlier.cutoff[[k]] <- 0.05
+    rv_scatterPlot_outlier.tail[[k]] <- "Lower"
+
+    rv_scatterPlot_n.bins[[k]] <- 100
+    rv_scatterPlot_col.pal[[k]] <- "heat.colors"
+
+    rv_scatterPlot_outlier.col.bg[[k]] <- "purple"
+    rv_scatterPlot_outlier.col[[k]] <- "blue"
+    rv_scatterPlot_outlier.pch[[k]] <- "24"
+    rv_scatterPlot_outlier.transp[[k]] <- 0.25
+    rv_scatterPlot_outlier.cex[[k]] <- 1.5
+
+  }
+} # end .set.reactiveValues
+
+
+
+############################
+## .update.reactiveValues ##
+############################
+## fn to set reactiveValues initially for each k:
+.update.reactiveValues <- function(dat, k){
+
+  k <- as.character(k)
+
+  x.var.choices <- x.var.sel <-
+    y.var.choices <- y.var.sel <-
+    o.var.choices <- o.var.sel <- NULL
+
+  ## get variables
+  if(!is.null(dat)){
+
+    ## Get currently-selected values:
+
+    ## Get x-axis & y-axis
+    xSelection <- eval(parse(text=paste("input$scatterPlot_xaxis", k, sep="_")))
+    ySelection <- eval(parse(text=paste("input$scatterPlot_yaxis", k, sep="_")))
+
+    logx <- eval(parse(text=paste("input$scatterPlot_logx", k, sep="_")))
+    logy <- eval(parse(text=paste("input$scatterPlot_logy", k, sep="_")))
+    flipX <- eval(parse(text=paste("input$scatterPlot_flipx", k, sep="_")))
+    flipY <- eval(parse(text=paste("input$scatterPlot_flipy", k, sep="_")))
+
+    ## Get plot aesthetics
+    col.pal <- eval(parse(text=paste("input$scatterPlot_col.pal", k, sep="_")))
+
+    outlier.col.bg <- eval(parse(text=paste("input$scatterPlot_outlier.col.bg", k, sep="_")))
+    outlier.col <- eval(parse(text=paste("input$scatterPlot_outlier.col", k, sep="_")))
+    outlier.transp <- eval(parse(text=paste("input$scatterPlot_outlier.transp", k, sep="_")))
+    outlier.pch <- eval(parse(text=paste("input$scatterPlot_outlier.pch", k, sep="_")))
+    outlier.cex <- eval(parse(text=paste("input$scatterPlot_outlier.cex", k, sep="_")))
+    n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
+
+
+    ## Get outlier var
+    outlier.var <- eval(parse(text=paste("input$scatterPlot_outlier.var", k, sep="_")))
+    cutoff <- eval(parse(text=paste("input$scatterPlot_outlier.cutoff", k, sep="_")))
+    tail <- eval(parse(text=paste("input$scatterPlot_outlier.tail", k, sep="_")))
+
+    print("input name x-axis"); print(paste("input$scatterPlot_xaxis", k, sep="_"))
+    print("X-AXIS"); print(xSelection)
+
+    ## update "intial" values to current values
+    rv_scatterPlot_xaxis[[k]] <- xSelection
+    rv_scatterPlot_yaxis[[k]] <- ySelection
+    rv_scatterPlot_logx[[k]] <- logx
+    rv_scatterPlot_logy[[k]] <- logy
+    rv_scatterPlot_flipx[[k]] <- flipX
+    rv_scatterPlot_flipy[[k]] <- flipY
+    rv_scatterPlot_outlier.var[[k]] <- outlier.var
+    rv_scatterPlot_outlier.cutoff[[k]] <- cutoff
+    rv_scatterPlot_outlier.tail[[k]] <- tail
+
+    rv_scatterPlot_n.bins[[k]] <- n.bins
+    rv_scatterPlot_col.pal[[k]] <- col.pal
+
+    rv_scatterPlot_outlier.col.bg[[k]] <- outlier.col.bg
+    rv_scatterPlot_outlier.col[[k]] <- outlier.col
+    rv_scatterPlot_outlier.pch[[k]] <- outlier.pch
+    rv_scatterPlot_outlier.transp[[k]] <- outlier.transp
+    rv_scatterPlot_outlier.cex[[k]] <- outlier.cex
+
+  }
+} # end .update.reactiveValues
+
+
+
+## update K & set reactiveValues[[k]] if button pressed
+observe({
+
+  k <- input$new_scatterPlot_button
+
+  if(length(k) == 1){
+    k <- k[1]+1
+    ## if input button updates, set new panel of initial input values
+
+    dat <- cleanData()
+
+    ## if K updates:
+    if(!is.null(dat)){
+
+    if(k == 1){
+      .set.reactiveValues(dat, k)
+      print("SET rv_scatterPlot_xaxis[[k]]"); print(rv_scatterPlot_xaxis[[as.character(k)]])
+    }else{
+    if(k > rv_scatterPlot_button){
+      ## update rv_scatterPlot_button
+      rv_scatterPlot_button <- k
+
+        print("SETTING rvs")
+        print("K observe"); print(k)
+
+        # set reactive values for Kth element of rv lists
+        .set.reactiveValues(dat, k)
+        # .update.reactiveValues(dat, k)
+
+        ## if more than one panel requested, update "initial" values for plots 1:k-1
+        if(k > 1){
+          for(i in 1:(k-1)){
+            .update.reactiveValues(dat, i)
+            print("UPDATE rv_scatterPlot_xaxis[[k]]"); print(rv_scatterPlot_xaxis[[as.character(i)]])
+          }
+        }
+    }
+    }
+    }
+  }
+})
+
+
+
 ##################
 ## BOX OF BOXES ##
 ##################
@@ -17,15 +206,18 @@ output$box_scatterPlot <- renderUI({
   k <- 1
   k <- input$new_scatterPlot_button[1] + 1
 
+  # print("k total"); print(k)
+
   if(length(k) > 0){
     if(k > 0){
       lapply(1:k,function(i){
-        # .get.scatterPlot.controls(cleanData())
+
+        print("k for loop"); print(i)
 
         dat <- title.k <- NULL
 
         ## get title
-        title.k <- paste("Scatter Plot #", k, sep = " ")
+        title.k <- paste("Scatter Plot #", i, sep = " ")
 
         ## get data
         dat <- cleanData()
@@ -40,12 +232,12 @@ output$box_scatterPlot <- renderUI({
 
               fluidRow(
                 column(4,
-                       .get.scatterPlot.controls(dat)
+                       .get.scatterPlot.controls(dat, i)
                 ),
 
                 column(8,
-                       .get.scatterPlot.plot(dat),
-                       .get.scatterPlot.controls.aes(dat)
+                       .get.scatterPlot.plot(dat, i),
+                       .get.scatterPlot.controls.aes(dat, i)
                 )
               )
           )
@@ -62,13 +254,13 @@ output$box_scatterPlot <- renderUI({
 
 ## Fn to generate boxes containing controls for univariate distribution plots
 
-.get.scatterPlot.controls <- function(dat){
+.get.scatterPlot.controls <- function(dat, k=1){
+
+  k <- as.character(k)
 
   out <- NULL
-  x.var.choices <- x.var.sel <-
-    y.var.choices <- y.var.sel <-
-    o.var.choices <- o.var.sel <- NULL
 
+  ## get variables
   if(!is.null(dat)){
 
     ## get numeric variables
@@ -79,11 +271,19 @@ output$box_scatterPlot <- renderUI({
 
     x.var.choices <- y.var.choices <- o.var.choices <- var.choices
 
-    x.var.sel <- x.var.choices[3]
-    y.var.sel <- y.var.choices[4]
-
-    o.var.sel <- x.var.choices[5]
   }
+
+  ## get id's | k
+  # k <- 1
+  id_scatterPlot_xaxis <- paste("scatterPlot_xaxis", k, sep="_")
+  id_scatterPlot_logx <- paste("scatterPlot_logx", k, sep="_")
+  id_scatterPlot_flipx <- paste("scatterPlot_flipx", k, sep="_")
+  id_scatterPlot_yaxis <- paste("scatterPlot_yaxis", k, sep="_")
+  id_scatterPlot_logy <- paste("scatterPlot_logy", k, sep="_")
+  id_scatterPlot_flipy <- paste("scatterPlot_flipy", k, sep="_")
+  id_scatterPlot_outlier.var <- paste("scatterPlot_outlier.var", k, sep="_")
+  id_scatterPlot_outlier.cutoff <- paste("scatterPlot_outlier.cutoff", k, sep="_")
+  id_scatterPlot_outlier.tail <- paste("scatterPlot_outlier.tail", k, sep="_")
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
@@ -108,24 +308,24 @@ output$box_scatterPlot <- renderUI({
             ## and autoatically selected below...
 
             ## Choose x-axis variable
-            selectizeInput('scatterPlot_xaxis',
+            selectizeInput(id_scatterPlot_xaxis,
                            label = 'X-axis:',
                            choices = x.var.choices,
-                           selected = x.var.sel,
+                           selected = rv_scatterPlot_xaxis[[k]], # x.var.sel,
                            multiple = FALSE),
 
             ## log(x-axis) ?
-            radioButtons("scatterPlot_logx",
+            radioButtons(id_scatterPlot_logx,
                          label = "Log x-axis?",
                          choices = list("log2", "log10", "none"),
-                         selected="none",
+                         selected= rv_scatterPlot_logx[[k]], # "none",
                          inline=TRUE),
 
             ## Flip x-axis ?
-            radioButtons("scatterPlot_flipx",
+            radioButtons(id_scatterPlot_flipx,
                          label = "Invert x-axis?",
                          choices = list("Yes", "No"),
-                         selected="No",
+                         selected= rv_scatterPlot_flipx[[k]], # "No",
                          inline=TRUE)
         ),
 
@@ -140,26 +340,25 @@ output$box_scatterPlot <- renderUI({
             collapsible=TRUE,
             width=12,
 
-
             ## Choose y-axis variable
-            selectizeInput('scatterPlot_yaxis',
+            selectizeInput(id_scatterPlot_yaxis,
                            label = 'Y-axis:',
                            choices = y.var.choices,
-                           selected = y.var.sel,
+                           selected =  rv_scatterPlot_yaxis[[k]], # y.var.sel,
                            multiple = FALSE),
 
             ## log(y-axis) ?
-            radioButtons("scatterPlot_logy",
+            radioButtons(id_scatterPlot_logy,
                          label = "Log y-axis?",
                          choices = list("log2", "log10", "none"),
-                         selected="none",
+                         selected= rv_scatterPlot_logy[[k]], # "none",
                          inline=TRUE),
 
             ## Flip y-axis ?
-            radioButtons("scatterPlot_flipy",
+            radioButtons(id_scatterPlot_flipy,
                          label = "Invert y-axis?",
                          choices = list("Yes", "No"),
-                         selected="No",
+                         selected= rv_scatterPlot_flipy[[k]], # "No",
                          inline=TRUE)
 
         ),
@@ -183,24 +382,24 @@ output$box_scatterPlot <- renderUI({
             h5(strong('Highlight outliers by this variable:')),
             p("For example, you may wish to identify outliers according to a p-value
               that is recorded in another column of the data table."),
-            selectizeInput('scatterPlot_outlier.var',
+            selectizeInput(id_scatterPlot_outlier.var,
                            label = NULL,
                            choices = o.var.choices,
-                           selected = o.var.sel,
+                           selected = rv_scatterPlot_outlier.var[[k]], # o.var.sel,
                            multiple = FALSE),
 
             ## Cut-off for outliers to overlay
             # eg 0.01
-            textInput("scatterPlot_outlier.cutoff",
+            textInput(id_scatterPlot_outlier.cutoff,
                       label = "Cut-off for outliers to overlay",
-                      value = 0.05),
+                      value =  rv_scatterPlot_outlier.cutoff[[k]] # 0.05
+                      ),
 
-            radioButtons("scatterPlot_outlier.tail",
+            radioButtons(id_scatterPlot_outlier.tail,
                          label = "Tail",
                          choices = c("Lower", "Upper"),
-                         selected = "Lower",
+                         selected =  rv_scatterPlot_outlier.tail[[k]], # "Lower",
                          inline=TRUE)
-
             )
 
         )
@@ -210,28 +409,25 @@ output$box_scatterPlot <- renderUI({
 
 
 
-## Generate K individual controls for each univariate plot,
-## produced using lapply method, K taken from actionButton:
-# output$box_scatterPlot_controls <- renderUI({
-#   k <- 1
-#   k <- input$new_scatterPlot_button[1] + 1
-#   if(length(k) > 0){
-#     if(k > 0) {
-#       lapply(1:k,function(i){
-#         .get.scatterPlot.controls(cleanData())
-#       })
-#     }
-#   }
-# })
-
-
 
 
 ###################################
 ## .get.scatterPlot.controls.aes ##
 ###################################
 ## fn to get widgets to control plot AESTHETICS under plot
-.get.scatterPlot.controls.aes <- function(dat){
+.get.scatterPlot.controls.aes <- function(dat, k=1){
+
+  k <- as.character(k)
+
+  ## get Id's | k
+  id_scatterPlot_col.pal <- paste("scatterPlot_col.pal", k, sep="_")
+  id_scatterPlot_n.bins <- paste("scatterPlot_n.bins", k, sep="_")
+  id_scatterPlot_outlier.col.bg <- paste("scatterPlot_outlier.col.bg", k, sep="_")
+  id_scatterPlot_outlier.col <- paste("scatterPlot_outlier.col", k, sep="_")
+  id_scatterPlot_outlier.pch <- paste("scatterPlot_outlier.pch", k, sep="_")
+  id_scatterPlot_outlier.transp <- paste("scatterPlot_outlier.transp", k, sep="_")
+  id_scatterPlot_outlier.cex <- paste("scatterPlot_outlier.cex", k, sep="_")
+
 
   out <- NULL
 
@@ -242,31 +438,40 @@ output$box_scatterPlot <- renderUI({
         collapsible=TRUE,
         width=12,
 
-    h4("Scatter aesthetics:"),
+    # h4("Scatter aesthetics:"),
+    box(title="Scatter aesthetics:",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
     ## selectInput w col.pals
-    selectizeInput("scatterPlot_col.pal",
+    selectizeInput(id_scatterPlot_col.pal,
                   label="Colour palette",
                   choices = list("Heat colours" = "heat.colors",
                                  "Terrain colours" = "terrain.colors",
                                  "Topo colours" = "topo.colors",
                                  "CM colours" = "cm.colors",
                                  "Gray colours" = "gray.colors"),
-                  selected = "heat.colors",
+                  selected =  rv_scatterPlot_col.pal[[k]], # "heat.colors",
                   multiple=FALSE),
 
 
-    sliderInput("scatterPlot_n.bins",
+    sliderInput(id_scatterPlot_n.bins,
                 label = "Number of bins:",
                 min = 2, max = 1000,
-                value = 100,
-                step = 1),
+                value =  rv_scatterPlot_n.bins[[k]], # 100,
+                step = 1)
+    ),
 
-    hr(),
 
-    h4("Outlier aesthetics:"),
+    box(title="Outlier aesthetics:",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
-    selectizeInput("scatterPlot_outlier.col.bg",
+    selectizeInput(id_scatterPlot_outlier.col.bg,
                    label = "Outlier colour (fill):",
                    choices = list("Red" = "red",
                                   "Orange" = "orange",
@@ -274,10 +479,10 @@ output$box_scatterPlot <- renderUI({
                                   "Green" = "green",
                                   "Blue" = "blue",
                                   "Purple" = "purple"),
-                   selected = "purple",
+                   selected =  rv_scatterPlot_outlier.col.bg[[k]], # "purple",
                    multiple=FALSE),
 
-    selectizeInput("scatterPlot_outlier.col",
+    selectizeInput(id_scatterPlot_outlier.col,
                   label = "Outlier colour (outline):",
                   choices = list("Red" = "red",
                                  "Orange" = "orange",
@@ -285,10 +490,10 @@ output$box_scatterPlot <- renderUI({
                                  "Green" = "green",
                                  "Blue" = "blue",
                                  "Purple" = "purple"),
-                  selected = "blue",
+                  selected =  rv_scatterPlot_outlier.col[[k]], # "blue",
                   multiple=FALSE),
 
-    selectizeInput("scatterPlot_outlier.pch",
+    selectizeInput(id_scatterPlot_outlier.pch,
                    label = "Outlier shape:",
                    choices = list("Circle" = "21",
                                   "Square" = "22",
@@ -296,20 +501,21 @@ output$box_scatterPlot <- renderUI({
                                   "Triangle, point-up" = "24",
                                   "Triangle, point-down" = "25"
                                   ),
-                   selected = "24",
+                   selected =  rv_scatterPlot_outlier.pch[[k]], # "24",
                    multiple=FALSE),
 
-    sliderInput("scatterPlot_outlier.transp",
+    sliderInput(id_scatterPlot_outlier.transp,
                 label = "Outlier transparency:",
                 min = 0, max = 1,
-                value = 0.25,
+                value =  rv_scatterPlot_outlier.transp[[k]], # 0.25,
                 step = 0.05),
 
-    sliderInput("scatterPlot_outlier.cex",
+    sliderInput(id_scatterPlot_outlier.cex,
                 label = "Outlier size:",
                 min = 0, max = 3,
-                value = 1.5,
+                value =  rv_scatterPlot_outlier.cex[[k]], # 1.5,
                 step = 0.1)
+    )
 
     ) # end box
 
@@ -317,20 +523,6 @@ output$box_scatterPlot <- renderUI({
 
 } # end .get.scatterPlot.controls.aes
 
-
-## Generate K individual controls for each univariate plot,
-## produced using lapply method, K taken from actionButton:
-# output$box_scatterPlot_controls_aes <- renderUI({
-#   k <- 1
-#   k <- input$new_scatterPlot_button[1] + 1
-#   if(length(k) > 0){
-#     if(k > 0) {
-#       lapply(1:k,function(i){
-#         .get.scatterPlot.controls.aes(cleanData())
-#       })
-#     }
-#   }
-# })
 
 
 ####################################
@@ -351,81 +543,40 @@ output$box_scatterPlot_button <- renderUI({
   )
 })
 
-# output$buttonTest_scatterPlot <- renderPrint({
-#   print(input$new_scatterPlot_button[1])
-# })
 
 
 
-###########################
-## Box: scatterPlot Plot ##
-###########################
+##########################
+## get.scatterPlot.plot ##
+##########################
+.get.scatterPlot.plot <- function(dat, k=1){
 
-# output$box_scatterPlot_plot <- renderUI({
-#   box(title="Scatter Plot",
-#       status="warning",
-#       solidHeader=TRUE,
-#       collapsible=TRUE,
-#       width=12,
-#
-#       # h3("ScatterPlot"),
-#
-#       plotOutput("plot_scatterPlot_plot")
-#   )
-# })
-
-.get.scatterPlot.plot <- function(dat){
   out <- NULL
+
+  if(!is.null(k)){
+
+    ## get unique outputId
+    id_scatterPlot <- paste("id_scatterPlot", k, sep="_")
+
   out <-
     box(title=NULL,
         status="warning",
         solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
-        plotOutput("plot_scatterPlot_plot")
+        # plotOutput("plot_scatterPlot_plot")
+        renderPlot(plotOutput(
+          outputId = id_scatterPlot,
+          .get.scatterPlot(input, k=k)))
     )
+  }
   return(out)
 }
 
 
-# output$foo <- renderText({
-#   dat <- var <- toPlot <- NULL
-#   dat <- cleanData()
-#   var <- input$scatterPlot_var
-# })
 
 
-############################
-## Plot: scatterPlot_plot ##
-############################
 
-## set n.bins reactiveValue:
-# rv <- reactiveValues()
-# rv$n.bins <- 100 # set to initial selected value of textInput n.bins
-
-
-## get hist plot output:
-output$plot_scatterPlot_plot <- renderPlot({
-
-  out <- xSelection <- ySelection <- NULL
-
-  ## Get x-axis & y-axis
-  xSelection <- input$scatterPlot_xaxis
-  ySelection <- input$scatterPlot_yaxis
-
-  ## Get scatter plot
-  out <- .get.scatterPlot(input)
-
-  ## PLOT SCATTER PLOT
-  if(!is.null(out)){
-    if(!is.null(xSelection) & !is.null(ySelection)) {
-      # if(!is.null(rv$n.bins)){
-        out
-      # }
-    }
-  }
-
-})
 
 
 
@@ -433,17 +584,31 @@ output$plot_scatterPlot_plot <- renderPlot({
 ######################
 ## .get.scatterPlot ##
 ######################
-.get.scatterPlot <- function(input){
+.get.scatterPlot <- function(input, k=1){
 
-  scatterplot <- dat <- xData <- yData <- NULL
+  scatterplot <- dat <- xData <- yData <- xSelection <- ySelection <-
+    logx <- logy <- flipX <- flipY <- col.pal <- outlier.var <- cutoff <- tail <-
+    outlier.col.bg <- outlier.col <- outlier.transp <- outlier.pch <- outlier.cex <- n.bins <- NULL
+
+  k <- as.character(k)
 
   ## Get x-axis & y-axis
-  xSelection <- input$scatterPlot_xaxis
-  ySelection <- input$scatterPlot_yaxis
+  xSelection <- eval(parse(text=paste("input$scatterPlot_xaxis", k, sep="_")))
+  ySelection <- eval(parse(text=paste("input$scatterPlot_yaxis", k, sep="_")))
 
-  ## Log x-axis?
-  logx <- input$scatterPlot_logx
-  #print(logx)
+  logx <- eval(parse(text=paste("input$scatterPlot_logx", k, sep="_")))
+  logy <- eval(parse(text=paste("input$scatterPlot_logy", k, sep="_")))
+  flipX <- eval(parse(text=paste("input$scatterPlot_flipx", k, sep="_")))
+  flipY <- eval(parse(text=paste("input$scatterPlot_flipy", k, sep="_")))
+
+
+   ## Get data and plot output
+  if(!is.null(cleanData())){
+    if(!is.null(xSelection) && !is.null(ySelection)){
+
+      ## Get data
+      dat <- cleanData()
+
   if(logx=="none"){logx=NULL}else{
     if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
                                   negative values in the X variable.
@@ -453,7 +618,6 @@ output$plot_scatterPlot_plot <- renderPlot({
   }
 
   ## Log y-axis?
-  logy <- input$scatterPlot_logy
   if(logy=="none"){logy=NULL}else{
     if(sum(ySelection<0)>0){print("Error: You are trying to log-transform
                                   negative values in the Y variable.
@@ -463,12 +627,10 @@ output$plot_scatterPlot_plot <- renderPlot({
   }
 
   ## Invert x-axis?
-  flipX <- input$scatterPlot_flipx
   if(flipX=="No"){flipX=1}else{
     if(flipX=="Yes"){flipX=-1}}
 
   ## Invert y-axis?
-  flipY <- input$scatterPlot_flipy
   if(flipY=="No"){flipY=1}else{
     if(flipY=="Yes"){flipY=-1}}
 
@@ -477,7 +639,21 @@ output$plot_scatterPlot_plot <- renderPlot({
   #########################
 
   ## Get plot aesthetics
-  col.pal <- input$scatterPlot_col.pal
+  col.pal <- eval(parse(text=paste("input$scatterPlot_col.pal", k, sep="_")))
+
+  outlier.col.bg <- eval(parse(text=paste("input$scatterPlot_outlier.col.bg", k, sep="_")))
+  outlier.col <- eval(parse(text=paste("input$scatterPlot_outlier.col", k, sep="_")))
+  outlier.transp <- eval(parse(text=paste("input$scatterPlot_outlier.transp", k, sep="_")))
+  outlier.pch <- as.numeric(eval(parse(text=paste("input$scatterPlot_outlier.pch", k, sep="_"))))
+  outlier.cex <- eval(parse(text=paste("input$scatterPlot_outlier.cex", k, sep="_")))
+  n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
+
+
+  ## Get outlier var
+  outlier.var <- eval(parse(text=paste("input$scatterPlot_outlier.var", k, sep="_")))
+  cutoff <- eval(parse(text=paste("input$scatterPlot_outlier.cutoff", k, sep="_")))
+  tail <- eval(parse(text=paste("input$scatterPlot_outlier.tail", k, sep="_")))
+
   n <- 100
   start <- 0.25
   end <- 0.9
@@ -488,27 +664,7 @@ output$plot_scatterPlot_plot <- renderPlot({
     col.pal <- eval(parse(text=paste(col.pal, "(n=n, alpha=alpha)", sep="")))
   }
 
-  outlier.col.bg <- input$scatterPlot_outlier.col.bg
-  outlier.col <- input$scatterPlot_outlier.col
-  outlier.transp <- input$scatterPlot_outlier.transp
 
-  outlier.pch <- as.numeric(input$scatterPlot_outlier.pch)
-  outlier.cex <- as.numeric(input$scatterPlot_outlier.cex)
-
-  n.bins <- as.numeric(input$scatterPlot_n.bins)
-
-
-  ## Get outlier var
-  outlier.var <- input$scatterPlot_outlier.var #this is the 3rd variable
-  cutoff <- as.numeric(input$scatterPlot_outlier.cutoff)
-  tail <- input$scatterPlot_outlier.tail
-
-  ## Get data and plot output
-  if(!is.null(cleanData())){
-    if(!is.null(xSelection) && !is.null(ySelection)){
-
-      ## Get data
-      dat <- cleanData()
 
 
       ## Get X & Y variables
@@ -618,6 +774,7 @@ output$plot_scatterPlot_plot <- renderPlot({
     }
   }
   return(scatterplot)
+  # scatterplot
 } # end .get.scatterPlot
 
 

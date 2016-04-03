@@ -47,7 +47,8 @@ server <- function(input, output) {
   source("server_plot_histogram.R", local=T)
 
   # scatter plot page
-  source("server_plot_scatterPlot.R", local=T)
+  # source("server_plot_scatterPlot.R", local=T)
+  source("server_plot_scatterPlot_new.R", local=T)
 
   # linear Manhattan plot page
   source("server_plot_Manhattan.R", local=T)

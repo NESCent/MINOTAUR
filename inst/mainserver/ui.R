@@ -199,20 +199,6 @@ ui <- dashboardPage(title= "MINOTAUR",
                        uiOutput("box_scatterPlot_button")
                        )
               )
-                  #                 column(4,
-                  #                        # controls for linear Manhattan plots
-                  #                        uiOutput("box_scatterPlot_controls"),
-                  #
-                  #                        uiOutput("box_scatterPlot_button")
-                  #                        #textOutput("buttonTest_scatterPlot")
-                  #                 ),
-                  #                 column(8,
-                  #                        # plot linear Manhattan
-                  #                        uiOutput("box_scatterPlot_plot"),
-                  #
-                  #                        # navigation panel
-                  #                        uiOutput("box_scatterPlot_controls_aes")
-                  #                 )
 
       ), # end of Scatter lot page tabItem
 
