@@ -18,11 +18,12 @@
 # data.table - fast reading in of data
 # shinyjs - options for deactivating shiny inputs
 
+#devtools::install_github('rstudio/DT')
 
 
 # ---------------------------------------------------------------------------------------------------------------
 
-ui <- dashboardPage(
+ui <- dashboardPage(title= "MINOTAUR",
 
   #########################
   ## TITLE AND SIDE MENU ##  ------------------------------------------------------------------------------------
@@ -49,9 +50,9 @@ ui <- dashboardPage(
 
       # Produce Plots menu
       menuItem("Produce Plots", tabName="plots", icon=icon("area-chart"),
-               menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
-               menuSubItem("1D Histogram/Density", tabName="plots_1D_histogram"),
+               menuSubItem("1D Histogram", tabName="plots_histogram_1D"),
                menuSubItem("2D Scatterplot", tabName="plots_2D_scatterplot"),
+               menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
                menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
       ),
 
@@ -88,7 +89,8 @@ ui <- dashboardPage(
         fluidRow(
           column(4,
                  # Load Data box
-                 uiOutput('box_loadData')
+                 uiOutput("headerBox_loadData"),
+                 uiOutput('tabBox_loadData')
           ),
           column(8,
                  # Data Summary box (multiple parts)
@@ -165,36 +167,95 @@ ui <- dashboardPage(
               )
       ), # end of Compare Outliers page tabItem
 
+      ###################
+      ## PRODUCE PLOTS ##
+      ###################
+
+      #### Plot 1D Histogram/Density page
+      tabItem(tabName="plots_histogram_1D",
+              fluidRow(
+                column(4,
+                       # controls for 1D hist
+                       uiOutput("box_hist_1D_controls"),
+                       uiOutput("box_hist_1D_button")
+                ),
+                column(8,
+                       # plot 1D hist
+                       uiOutput("box_hist_1D_plot"),
+
+                       # navigation panel
+                       uiOutput("box_hist_1D_controls_aes")
+                )
+              )
+      ), # end of 1D Histogram/Density page tabItem
+
+      #### Scatter Plot page
+      tabItem(tabName="plots_2D_scatterplot",
+              fluidRow(
+                column(12,
+                       uiOutput("box_scatterPlot")
+                       ),
+                column(4,
+                       uiOutput("box_scatterPlot_button")
+                       )
+              )
+                  #                 column(4,
+                  #                        # controls for linear Manhattan plots
+                  #                        uiOutput("box_scatterPlot_controls"),
+                  #
+                  #                        uiOutput("box_scatterPlot_button")
+                  #                        #textOutput("buttonTest_scatterPlot")
+                  #                 ),
+                  #                 column(8,
+                  #                        # plot linear Manhattan
+                  #                        uiOutput("box_scatterPlot_plot"),
+                  #
+                  #                        # navigation panel
+                  #                        uiOutput("box_scatterPlot_controls_aes")
+                  #                 )
+
+      ), # end of Scatter lot page tabItem
+
       #### Linear Manhattan Plot page
       tabItem(tabName="plots_linear_Manhattan",
               fluidRow(
                 column(4,
                        # controls for linear Manhattan plots
-                       uiOutput('box_linearManhattan_controls')
+                       uiOutput("box_linearManhattan_controls"),
+
+                       uiOutput("box_linearManhattan_button")
+                       #textOutput("buttonTest_linearManhattan")
                 ),
                 column(8,
-                       # navigation panel
-                       uiOutput('box_linearManhattan_navigation'),
-
                        # plot linear Manhattan
-                       uiOutput('box_plot_linearManhattan')
+                       uiOutput("box_plot_linearManhattan"),
+
+                       # navigation panel
+                       uiOutput("box_linearManhattan_controls_aes")
                 )
               )
       ), # end of Linear Manhattan Plot page tabItem
 
-      #### Plot 1D Histogram/Density page
-      tabItem(tabName="plots_1D_histogram",
-              fluidRow(
-                column(4,
-                       #
-                       uiOutput('box_1D_hist_controls')
-                ),
-                column(8,
-                       #
-                       uiOutput('box_1D_hist_plot')
-                )
-              )
-      ) # end of 1D Histogram/Density page tabItem
+      #### Circular Manhattan Plot page
+      tabItem(tabName="plots_circular_Manhattan",
+      fluidRow(
+        column(4,
+               # controls for circular Manhattan plots
+               uiOutput("box_circularManhattan_controls"),
+
+               uiOutput("box_circularManhattan_button")
+               #textOutput("buttonTest_circularManhattan")
+        ),
+        column(8,
+               # plot circular Manhattan
+               uiOutput("box_plot_circularManhattan"),
+
+               # navigation panel
+               uiOutput("box_circularManhattan_controls_aes")
+        )
+      )
+    ) # end of Circular Manhattan Plot page tabItem
+
 
     ) # end of tabItems
   ) # end of dashboardBody

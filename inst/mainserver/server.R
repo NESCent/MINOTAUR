@@ -43,14 +43,23 @@ server <- function(input, output) {
   # compare outliers page
   source("server_compare_outliers.R", local=T)
 
-  # linear Manhattan plot page
-  source("server_plot_Manhattan.R", local=T)
-
   # plot 1D histogram/kernel density page
   source("server_plot_histogram.R", local=T)
 
+  # scatter plot page
+  source("server_plot_scatterPlot.R", local=T)
+
+  # linear Manhattan plot page
+  source("server_plot_Manhattan.R", local=T)
+
+  # circular Manhattan plot page
+  source("server_plot_circularManhattan.R", local=T)
+
   # error messages
   source("server_message.R", local=T)
+
+  ## utils
+  source("utils.R", local=T)
 
   #----------------------------------------------------------------
   # CRAP THAT I'M KEEPING FOR NOW JUST IN CASE IT BECOMES USEFUL

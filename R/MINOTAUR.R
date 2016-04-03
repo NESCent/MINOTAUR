@@ -38,6 +38,7 @@
 #' @import shiny shinydashboard shinyjs DT
 #'  stats4 adegenet  MASS RColorBrewer
 #'  ggplot2 scales hexbin  data.table ash fields Rcpp
+#'  Hmisc
 #'
 #' @export
 
@@ -83,6 +84,8 @@ MINOTAUR <- function(){
   require(data.table)
   require(shinyjs)
   require(DT)
+  require(Hmisc)
+  require(adegenet)
   #require(rCharts)
   #require(rHighcharts)
   #require(stats4)
@@ -94,8 +97,8 @@ MINOTAUR <- function(){
   #require(hexbin)
   #require(OmicCircos)
   require(data.table)
-  #require(ash)
-  #require(fields)
+  require(ash)
+  require(fields)
 
   syst.file <- base::system.file
 
