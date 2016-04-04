@@ -174,17 +174,11 @@ ui <- dashboardPage(title= "MINOTAUR",
       #### Plot 1D Histogram/Density page
       tabItem(tabName="plots_histogram_1D",
               fluidRow(
-                column(4,
-                       # controls for 1D hist
-                       uiOutput("box_hist_1D_controls"),
-                       uiOutput("box_hist_1D_button")
+                column(12,
+                       uiOutput("box_hist_1D")
                 ),
-                column(8,
-                       # plot 1D hist
-                       uiOutput("box_hist_1D_plot"),
-
-                       # navigation panel
-                       uiOutput("box_hist_1D_controls_aes")
+                column(4,
+                       uiOutput("box_hist_1D_button")
                 )
               )
       ), # end of 1D Histogram/Density page tabItem
@@ -205,21 +199,29 @@ ui <- dashboardPage(title= "MINOTAUR",
       #### Linear Manhattan Plot page
       tabItem(tabName="plots_linear_Manhattan",
               fluidRow(
-                column(4,
-                       # controls for linear Manhattan plots
-                       uiOutput("box_linearManhattan_controls"),
-
-                       uiOutput("box_linearManhattan_button")
-                       #textOutput("buttonTest_linearManhattan")
+                column(12,
+                       uiOutput("box_linearManhattan")
                 ),
-                column(8,
-                       # plot linear Manhattan
-                       uiOutput("box_plot_linearManhattan"),
-
-                       # navigation panel
-                       uiOutput("box_linearManhattan_controls_aes")
+                column(4,
+                       uiOutput("box_linearManhattan_button")
                 )
               )
+              #               fluidRow(
+              #                 column(4,
+              #                        # controls for linear Manhattan plots
+              #                        uiOutput("box_linearManhattan_controls"),
+              #
+              #                        uiOutput("box_linearManhattan_button")
+              #                        #textOutput("buttonTest_linearManhattan")
+              #                 ),
+              #                 column(8,
+              #                        # plot linear Manhattan
+              #                        uiOutput("box_plot_linearManhattan"),
+              #
+              #                        # navigation panel
+              #                        uiOutput("box_linearManhattan_controls_aes")
+              #                 )
+              #               )
       ), # end of Linear Manhattan Plot page tabItem
 
       #### Circular Manhattan Plot page

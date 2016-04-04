@@ -6,6 +6,8 @@
 
 
 ## generate reactiveValues lists for all initial values
+
+## variables
 rv_scatterPlot_button <- reactiveValues()
 rv_scatterPlot_button <- 1 # 0
 rv_scatterPlot_xaxis <- reactiveValues()
@@ -14,24 +16,32 @@ rv_scatterPlot_logx <- reactiveValues()
 rv_scatterPlot_logy <- reactiveValues()
 rv_scatterPlot_flipx <- reactiveValues()
 rv_scatterPlot_flipy <- reactiveValues()
+
 rv_scatterPlot_outlier.var <- reactiveValues()
 rv_scatterPlot_outlier.cutoff <- reactiveValues()
 rv_scatterPlot_outlier.tail <- reactiveValues()
+
+## aesthetics
+rv_scatterPlot_col.pal <- reactiveValues()
+rv_scatterPlot_n.bins <- reactiveValues()
+rv_scatterPlot_grid <- reactiveValues()
+
 rv_scatterPlot_outlier.col.bg <- reactiveValues()
 rv_scatterPlot_outlier.col <- reactiveValues()
 rv_scatterPlot_outlier.pch <- reactiveValues()
 rv_scatterPlot_outlier.transp <- reactiveValues()
 rv_scatterPlot_outlier.cex <- reactiveValues()
-rv_scatterPlot_n.bins <- reactiveValues()
-rv_scatterPlot_col.pal <- reactiveValues()
 
 
 
-#########################
-## .set.reactiveValues ##
-#########################
+
+
+
+#####################################
+## .set.reactiveValues.scatterPlot ##
+#####################################
 ## fn to set reactiveValues initially for each k:
-.set.reactiveValues <- function(dat, k){
+.set.reactiveValues.scatterPlot <- function(dat, k){
 
   k <- as.character(k)
 
@@ -53,7 +63,7 @@ rv_scatterPlot_col.pal <- reactiveValues()
     x.var.sel <- x.var.choices[3]
     y.var.sel <- y.var.choices[4]
 
-    o.var.sel <- x.var.choices[5]
+    o.var.sel <- o.var.choices[5]
 
     ## set intial values
     rv_scatterPlot_xaxis[[k]] <- x.var.sel
@@ -66,8 +76,9 @@ rv_scatterPlot_col.pal <- reactiveValues()
     rv_scatterPlot_outlier.cutoff[[k]] <- 0.05
     rv_scatterPlot_outlier.tail[[k]] <- "Lower"
 
-    rv_scatterPlot_n.bins[[k]] <- 100
     rv_scatterPlot_col.pal[[k]] <- "heat.colors"
+    rv_scatterPlot_n.bins[[k]] <- 100
+    rv_scatterPlot_grid[[k]] <- FALSE
 
     rv_scatterPlot_outlier.col.bg[[k]] <- "purple"
     rv_scatterPlot_outlier.col[[k]] <- "blue"
@@ -76,15 +87,15 @@ rv_scatterPlot_col.pal <- reactiveValues()
     rv_scatterPlot_outlier.cex[[k]] <- 1.5
 
   }
-} # end .set.reactiveValues
+} # end .set.reactiveValues.scatterPlot
 
 
 
-############################
-## .update.reactiveValues ##
-############################
+########################################
+## .update.reactiveValues.scatterPlot ##
+########################################
 ## fn to set reactiveValues initially for each k:
-.update.reactiveValues <- function(dat, k){
+.update.reactiveValues.scatterPlot <- function(dat, k){
 
   k <- as.character(k)
 
@@ -108,22 +119,21 @@ rv_scatterPlot_col.pal <- reactiveValues()
 
     ## Get plot aesthetics
     col.pal <- eval(parse(text=paste("input$scatterPlot_col.pal", k, sep="_")))
+    n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
+    grid <- eval(parse(text=paste("input$scatterPlot_grid", k, sep="_")))
 
     outlier.col.bg <- eval(parse(text=paste("input$scatterPlot_outlier.col.bg", k, sep="_")))
     outlier.col <- eval(parse(text=paste("input$scatterPlot_outlier.col", k, sep="_")))
     outlier.transp <- eval(parse(text=paste("input$scatterPlot_outlier.transp", k, sep="_")))
     outlier.pch <- eval(parse(text=paste("input$scatterPlot_outlier.pch", k, sep="_")))
     outlier.cex <- eval(parse(text=paste("input$scatterPlot_outlier.cex", k, sep="_")))
-    n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
+
 
 
     ## Get outlier var
     outlier.var <- eval(parse(text=paste("input$scatterPlot_outlier.var", k, sep="_")))
     cutoff <- eval(parse(text=paste("input$scatterPlot_outlier.cutoff", k, sep="_")))
     tail <- eval(parse(text=paste("input$scatterPlot_outlier.tail", k, sep="_")))
-
-    print("input name x-axis"); print(paste("input$scatterPlot_xaxis", k, sep="_"))
-    print("X-AXIS"); print(xSelection)
 
     ## update "intial" values to current values
     rv_scatterPlot_xaxis[[k]] <- xSelection
@@ -138,6 +148,7 @@ rv_scatterPlot_col.pal <- reactiveValues()
 
     rv_scatterPlot_n.bins[[k]] <- n.bins
     rv_scatterPlot_col.pal[[k]] <- col.pal
+    rv_scatterPlot_grid[[k]] <- grid
 
     rv_scatterPlot_outlier.col.bg[[k]] <- outlier.col.bg
     rv_scatterPlot_outlier.col[[k]] <- outlier.col
@@ -146,7 +157,7 @@ rv_scatterPlot_col.pal <- reactiveValues()
     rv_scatterPlot_outlier.cex[[k]] <- outlier.cex
 
   }
-} # end .update.reactiveValues
+} # end .update.reactiveValues.scatterPlot
 
 
 
@@ -165,25 +176,20 @@ observe({
     if(!is.null(dat)){
 
     if(k == 1){
-      .set.reactiveValues(dat, k)
-      print("SET rv_scatterPlot_xaxis[[k]]"); print(rv_scatterPlot_xaxis[[as.character(k)]])
+      .set.reactiveValues.scatterPlot(dat, k)
     }else{
     if(k > rv_scatterPlot_button){
       ## update rv_scatterPlot_button
       rv_scatterPlot_button <- k
 
-        print("SETTING rvs")
-        print("K observe"); print(k)
-
         # set reactive values for Kth element of rv lists
-        .set.reactiveValues(dat, k)
-        # .update.reactiveValues(dat, k)
+        .set.reactiveValues.scatterPlot(dat, k)
+        # .update.reactiveValues.scatterPlot(dat, k)
 
         ## if more than one panel requested, update "initial" values for plots 1:k-1
         if(k > 1){
           for(i in 1:(k-1)){
-            .update.reactiveValues(dat, i)
-            print("UPDATE rv_scatterPlot_xaxis[[k]]"); print(rv_scatterPlot_xaxis[[as.character(i)]])
+            .update.reactiveValues.scatterPlot(dat, i)
           }
         }
     }
@@ -206,13 +212,9 @@ output$box_scatterPlot <- renderUI({
   k <- 1
   k <- input$new_scatterPlot_button[1] + 1
 
-  # print("k total"); print(k)
-
   if(length(k) > 0){
     if(k > 0){
       lapply(1:k,function(i){
-
-        print("k for loop"); print(i)
 
         dat <- title.k <- NULL
 
@@ -298,7 +300,7 @@ output$box_scatterPlot <- renderUI({
 
         box(title="Select x-axis:", # "Univariate Distributions"
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -335,7 +337,7 @@ output$box_scatterPlot <- renderUI({
 
         box(title="Select y-axis:",
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -373,7 +375,7 @@ output$box_scatterPlot <- renderUI({
 
         box(title="Select outlier variable:",
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -397,7 +399,7 @@ output$box_scatterPlot <- renderUI({
 
             radioButtons(id_scatterPlot_outlier.tail,
                          label = "Tail",
-                         choices = c("Lower", "Upper"),
+                         choices = c("Lower", "Upper", "Two-tailed"),
                          selected =  rv_scatterPlot_outlier.tail[[k]], # "Lower",
                          inline=TRUE)
             )
@@ -422,6 +424,7 @@ output$box_scatterPlot <- renderUI({
   ## get Id's | k
   id_scatterPlot_col.pal <- paste("scatterPlot_col.pal", k, sep="_")
   id_scatterPlot_n.bins <- paste("scatterPlot_n.bins", k, sep="_")
+  id_scatterPlot_grid <- paste("scatterPlot_grid", k, sep="_")
   id_scatterPlot_outlier.col.bg <- paste("scatterPlot_outlier.col.bg", k, sep="_")
   id_scatterPlot_outlier.col <- paste("scatterPlot_outlier.col", k, sep="_")
   id_scatterPlot_outlier.pch <- paste("scatterPlot_outlier.pch", k, sep="_")
@@ -461,8 +464,17 @@ output$box_scatterPlot <- renderUI({
                 label = "Number of bins:",
                 min = 2, max = 1000,
                 value =  rv_scatterPlot_n.bins[[k]], # 100,
-                step = 1)
+                step = 1),
+
+
+    radioButtons(id_scatterPlot_grid,
+                 label="Overlay grid?",
+                 choices=list("Yes" = TRUE,
+                              "No" = FALSE),
+                 selected = rv_scatterPlot_grid[[k]],
+                 inline = TRUE)
     ),
+
 
 
     box(title="Outlier aesthetics:",
@@ -640,18 +652,18 @@ output$box_scatterPlot_button <- renderUI({
 
   ## Get plot aesthetics
   col.pal <- eval(parse(text=paste("input$scatterPlot_col.pal", k, sep="_")))
+  n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
+  grid <- eval(parse(text=paste("input$scatterPlot_grid", k, sep="_")))
 
   outlier.col.bg <- eval(parse(text=paste("input$scatterPlot_outlier.col.bg", k, sep="_")))
   outlier.col <- eval(parse(text=paste("input$scatterPlot_outlier.col", k, sep="_")))
   outlier.transp <- eval(parse(text=paste("input$scatterPlot_outlier.transp", k, sep="_")))
   outlier.pch <- as.numeric(eval(parse(text=paste("input$scatterPlot_outlier.pch", k, sep="_"))))
   outlier.cex <- eval(parse(text=paste("input$scatterPlot_outlier.cex", k, sep="_")))
-  n.bins <- eval(parse(text=paste("input$scatterPlot_n.bins", k, sep="_")))
-
 
   ## Get outlier var
   outlier.var <- eval(parse(text=paste("input$scatterPlot_outlier.var", k, sep="_")))
-  cutoff <- eval(parse(text=paste("input$scatterPlot_outlier.cutoff", k, sep="_")))
+  cutoff <- as.numeric(eval(parse(text=paste("input$scatterPlot_outlier.cutoff", k, sep="_"))))
   tail <- eval(parse(text=paste("input$scatterPlot_outlier.tail", k, sep="_")))
 
   n <- 100
@@ -726,12 +738,10 @@ output$box_scatterPlot_button <- renderUI({
       if(length(logx)==1){xData=log(xData+1e-40, logx)}
       if(length(logy)==1){yData=log(yData+1e-40, logy)}
 
-      # print(c(1,cutoff))
       if(is.na(cutoff)){cutoff=0.01}
       if(tail=="Upper"){
         cutoff=(1-cutoff)
       }
-      # print(c(2,cutoff))
       outlier.DataNoNA <- outlier.Data[!is.na(outlier.Data)]
       outlier.DataNew <- rank(outlier.DataNoNA)/length(outlier.DataNoNA)
       outlier.DataNew2 <- outlier.Data
@@ -745,14 +755,23 @@ output$box_scatterPlot_button <- renderUI({
         xData_sub <- xData[outlier.DataNew2>=cutoff]
         yData_sub <- yData[outlier.DataNew2>=cutoff]
       }
+      if(tail=="Two-tailed"){
+        xData_sub_l <- xData[outlier.DataNew2<=cutoff]
+        yData_sub_l <- yData[outlier.DataNew2<=cutoff]
+
+        cutoff <- (1-cutoff)
+        xData_sub_u <- xData[outlier.DataNew2>=cutoff]
+        yData_sub_u <- yData[outlier.DataNew2>=cutoff]
+
+        xData_sub <- c(xData_sub_l, xData_sub_u)
+        yData_sub <- c(yData_sub_l, yData_sub_u)
+      }
+
 
       xData <- xData*flipX
       yData <- yData*flipY
       xData_sub <- xData_sub*flipX
       yData_sub <- yData_sub*flipY
-      #print(cbind(xData_sub,yData_sub))
-      #print(logy)
-      #print(c(min(yData,na.rm=TRUE), max(yData, na.rm=TRUE)))
 
       # get colors
       #          get.levels <- levels(as.factor(colData))
@@ -766,7 +785,7 @@ output$box_scatterPlot_button <- renderUI({
       #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
       scatterplot <- .plot_2D(xData, yData, xlab=xSelection, ylab=ySelection,
                               n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
-                              col.pal=col.pal,
+                              col.pal=col.pal, grid=grid,
                               outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
                               outlier.transp=outlier.transp,
                               outlier.pch=outlier.pch, outlier.cex=outlier.cex)
@@ -797,7 +816,7 @@ output$box_scatterPlot_button <- renderUI({
                     xlim=NULL, ylim=NULL,
                     n.bins,
                     x_sub, y_sub,
-                    col.pal,
+                    col.pal, grid,
                     outlier.col, outlier.col.bg,
                     outlier.transp,
                     outlier.pch, outlier.cex){
@@ -838,6 +857,9 @@ output$box_scatterPlot_button <- renderUI({
 
   ## ADD OUTLIER POINTS
   points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
+
+  ## ADD GRID
+  if(grid) grid()
 
   ## SET TITLE TO VALUE BEING PLOTTED
   ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!

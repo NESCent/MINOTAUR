@@ -4,34 +4,292 @@
 ################################
 
 
+## generate reactiveValues lists for all initial values
+
+## variables
+rv_linearManhattan_button <- reactiveValues()
+rv_linearManhattan_button <- 1 # 0
+# rv_linearManhattan_xaxis <- reactiveValues()
+rv_linearManhattan_yaxis <- reactiveValues()
+rv_linearManhattan_logx <- reactiveValues()
+rv_linearManhattan_logy <- reactiveValues()
+rv_linearManhattan_flipx <- reactiveValues()
+rv_linearManhattan_flipy <- reactiveValues()
+
+rv_linearManhattan_outlier.var <- reactiveValues()
+rv_linearManhattan_outlier.cutoff <- reactiveValues()
+rv_linearManhattan_outlier.tail <- reactiveValues()
+
+## aesthetics
+rv_linearManhattan_col.pal <- reactiveValues()
+rv_linearManhattan_n.bins <- reactiveValues()
+rv_linearManhattan_grid <- reactiveValues()
+
+rv_linearManhattan_outlier.col.bg <- reactiveValues()
+rv_linearManhattan_outlier.col <- reactiveValues()
+rv_linearManhattan_outlier.pch <- reactiveValues()
+rv_linearManhattan_outlier.transp <- reactiveValues()
+rv_linearManhattan_outlier.cex <- reactiveValues()
+
+
+
+
+
+
+#####################################
+## .set.reactiveValues.linearManhattan ##
+#####################################
+## fn to set reactiveValues initially for each k:
+.set.reactiveValues.linearManhattan <- function(dat, k){
+
+  k <- as.character(k)
+
+  x.var.choices <- x.var.sel <-
+    y.var.choices <- y.var.sel <-
+    o.var.choices <- o.var.sel <- NULL
+
+  ## get variables
+  if(!is.null(dat)){
+
+    ## get chromosome and position variables:
+    # x.var.choices <- c("Position", "Chromosome") # c(names(dat$pos), names(dat$chrom))
+
+    ## get numeric variables
+    numCols <- which(sapply(c(1:ncol(dat$y)),
+                            function(e) is.numeric(dat$y[,e])))
+
+    var.choices <- c(names(dat$y)[numCols])
+
+    y.var.choices <- o.var.choices <- var.choices
+
+    # x.var.sel <- x.var.choices[1]
+
+    y.var.sel <- y.var.choices[1]
+    o.var.sel <- o.var.choices[2]
+
+    ## set intial values
+    # rv_linearManhattan_xaxis[[k]] <- x.var.sel
+    rv_linearManhattan_yaxis[[k]] <- y.var.sel
+    rv_linearManhattan_logx[[k]] <- "none"
+    rv_linearManhattan_logy[[k]] <- "none"
+    rv_linearManhattan_flipx[[k]] <- "No"
+    rv_linearManhattan_flipy[[k]] <- "No"
+    rv_linearManhattan_outlier.var[[k]] <- o.var.sel
+    rv_linearManhattan_outlier.cutoff[[k]] <- 0.05
+    rv_linearManhattan_outlier.tail[[k]] <- "Lower"
+
+    rv_linearManhattan_col.pal[[k]] <- "heat.colors"
+    rv_linearManhattan_n.bins[[k]] <- 100
+    rv_linearManhattan_grid[[k]] <- FALSE
+
+    rv_linearManhattan_outlier.col.bg[[k]] <- "purple"
+    rv_linearManhattan_outlier.col[[k]] <- "blue"
+    rv_linearManhattan_outlier.pch[[k]] <- "24"
+    rv_linearManhattan_outlier.transp[[k]] <- 0.25
+    rv_linearManhattan_outlier.cex[[k]] <- 1.5
+
+  }
+} # end .set.reactiveValues.linearManhattan
+
+
+
+########################################
+## .update.reactiveValues.linearManhattan ##
+########################################
+## fn to set reactiveValues initially for each k:
+.update.reactiveValues.linearManhattan <- function(dat, k){
+
+  k <- as.character(k)
+
+  x.var.choices <- x.var.sel <-
+    y.var.choices <- y.var.sel <-
+    o.var.choices <- o.var.sel <- NULL
+
+  ## get variables
+  if(!is.null(dat)){
+
+    ## Get currently-selected values:
+
+    ## Get x-axis & y-axis
+    # xSelection <- eval(parse(text=paste("input$linearManhattan_xaxis", k, sep="_")))
+    ySelection <- eval(parse(text=paste("input$linearManhattan_yaxis", k, sep="_")))
+
+    logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
+    logy <- eval(parse(text=paste("input$linearManhattan_logy", k, sep="_")))
+    flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
+    flipY <- eval(parse(text=paste("input$linearManhattan_flipy", k, sep="_")))
+
+    ## Get plot aesthetics
+    col.pal <- eval(parse(text=paste("input$linearManhattan_col.pal", k, sep="_")))
+    n.bins <- eval(parse(text=paste("input$linearManhattan_n.bins", k, sep="_")))
+    grid <- eval(parse(text=paste("input$linearManhattan_grid", k, sep="_")))
+
+    outlier.col.bg <- eval(parse(text=paste("input$linearManhattan_outlier.col.bg", k, sep="_")))
+    outlier.col <- eval(parse(text=paste("input$linearManhattan_outlier.col", k, sep="_")))
+    outlier.transp <- eval(parse(text=paste("input$linearManhattan_outlier.transp", k, sep="_")))
+    outlier.pch <- eval(parse(text=paste("input$linearManhattan_outlier.pch", k, sep="_")))
+    outlier.cex <- eval(parse(text=paste("input$linearManhattan_outlier.cex", k, sep="_")))
+
+
+
+    ## Get outlier var
+    outlier.var <- eval(parse(text=paste("input$linearManhattan_outlier.var", k, sep="_")))
+    cutoff <- eval(parse(text=paste("input$linearManhattan_outlier.cutoff", k, sep="_")))
+    tail <- eval(parse(text=paste("input$linearManhattan_outlier.tail", k, sep="_")))
+
+    ## update "intial" values to current values
+    # rv_linearManhattan_xaxis[[k]] <- xSelection
+    rv_linearManhattan_yaxis[[k]] <- ySelection
+    rv_linearManhattan_logx[[k]] <- logx
+    rv_linearManhattan_logy[[k]] <- logy
+    rv_linearManhattan_flipx[[k]] <- flipX
+    rv_linearManhattan_flipy[[k]] <- flipY
+    rv_linearManhattan_outlier.var[[k]] <- outlier.var
+    rv_linearManhattan_outlier.cutoff[[k]] <- cutoff
+    rv_linearManhattan_outlier.tail[[k]] <- tail
+
+    rv_linearManhattan_n.bins[[k]] <- n.bins
+    rv_linearManhattan_col.pal[[k]] <- col.pal
+    rv_linearManhattan_grid[[k]] <- grid
+
+    rv_linearManhattan_outlier.col.bg[[k]] <- outlier.col.bg
+    rv_linearManhattan_outlier.col[[k]] <- outlier.col
+    rv_linearManhattan_outlier.pch[[k]] <- outlier.pch
+    rv_linearManhattan_outlier.transp[[k]] <- outlier.transp
+    rv_linearManhattan_outlier.cex[[k]] <- outlier.cex
+
+  }
+} # end .update.reactiveValues.linearManhattan
+
+
+
+## update K & set reactiveValues[[k]] if button pressed
+observe({
+
+  k <- input$new_linearManhattan_button
+
+  if(length(k) == 1){
+    k <- k[1]+1
+    ## if input button updates, set new panel of initial input values
+
+    dat <- cleanData()
+
+    ## if K updates:
+    if(!is.null(dat)){
+
+      if(k == 1){
+        .set.reactiveValues.linearManhattan(dat, k)
+      }else{
+        if(k > rv_linearManhattan_button){
+          ## update rv_linearManhattan_button
+          rv_linearManhattan_button <- k
+
+          # set reactive values for Kth element of rv lists
+          .set.reactiveValues.linearManhattan(dat, k)
+          # .update.reactiveValues.linearManhattan(dat, k)
+
+          ## if more than one panel requested, update "initial" values for plots 1:k-1
+          if(k > 1){
+            for(i in 1:(k-1)){
+              .update.reactiveValues.linearManhattan(dat, i)
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
+
+
+##################
+## BOX OF BOXES ##
+##################
+## (to keep each set of plots+controls in line with each other... )
+
+## Generate K individual BOXES for each univariate plot,
+## produced using lapply method, K taken from actionButton:
+output$box_linearManhattan <- renderUI({
+
+  k <- 1
+  k <- input$new_linearManhattan_button[1] + 1
+
+  if(length(k) > 0){
+    if(k > 0){
+      lapply(1:k,function(i){
+
+        dat <- title.k <- NULL
+
+        ## get title
+        title.k <- paste("Linear Manhattan Plot #", i, sep = " ")
+
+        ## get data
+        dat <- cleanData()
+
+        ## get box of boxes
+        if(!is.null(dat)){
+          box(title=title.k,
+              status="warning",
+              solidHeader=TRUE,
+              collapsible=TRUE,
+              width=12,
+
+              fluidRow(
+                column(4,
+                       .get.linearManhattan.controls(dat, i)
+                ),
+
+                column(8,
+                       .get.linearManhattan.plot(dat, i),
+                       .get.linearManhattan.controls.aes(dat, i)
+                )
+              )
+          )
+        }
+      })
+    }
+  }
+})
+
+
 #######################################################
 ## Box: Global Controls for Univariate Distributions ##
 #######################################################
 
 ## Fn to generate boxes containing controls for univariate distribution plots
 
-.get.linearManhattan.controls <- function(dat){
+.get.linearManhattan.controls <- function(dat, k=1){
+
+  k <- as.character(k)
 
   out <- NULL
-  x.var.choices <- x.var.sel <-
-    y.var.choices <- y.var.sel <-
-    o.var.choices <- o.var.sel <- NULL
 
+  ## get variables
   if(!is.null(dat)){
+
+    # x.var.choices <-  c("Position", "Chromosome") # c(names(dat$y$pos), names(dat$y$chrom))
 
     ## get numeric variables
     numCols <- which(sapply(c(1:ncol(dat$y)),
                             function(e) is.numeric(dat$y[,e])))
 
-    var.choices <- c("Position", "Chromosome", names(dat$y)[numCols])
+    var.choices <- c(names(dat$y)[numCols])
 
-    x.var.choices <- y.var.choices <- o.var.choices <- var.choices
+    y.var.choices <- o.var.choices <- var.choices
 
-    x.var.sel <- x.var.choices[3]
-    y.var.sel <- y.var.choices[4]
-
-    o.var.sel <- x.var.choices[5]
   }
+
+  ## get id's | k
+  # k <- 1
+  # id_linearManhattan_xaxis <- paste("linearManhattan_xaxis", k, sep="_")
+  id_linearManhattan_logx <- paste("linearManhattan_logx", k, sep="_")
+  id_linearManhattan_flipx <- paste("linearManhattan_flipx", k, sep="_")
+  id_linearManhattan_yaxis <- paste("linearManhattan_yaxis", k, sep="_")
+  id_linearManhattan_logy <- paste("linearManhattan_logy", k, sep="_")
+  id_linearManhattan_flipy <- paste("linearManhattan_flipy", k, sep="_")
+  id_linearManhattan_outlier.var <- paste("linearManhattan_outlier.var", k, sep="_")
+  id_linearManhattan_outlier.cutoff <- paste("linearManhattan_outlier.cutoff", k, sep="_")
+  id_linearManhattan_outlier.tail <- paste("linearManhattan_outlier.tail", k, sep="_")
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
@@ -44,9 +302,9 @@
         ## Choose x-axis ##
         ###################
 
-        box(title="Select x-axis:", # "Univariate Distributions"
+        box(title="Adjust x-axis:", # "Univariate Distributions"
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -56,24 +314,28 @@
             ## and autoatically selected below...
 
             ## Choose x-axis variable
-            selectizeInput('linearManhattan_xaxis',
-                           label = 'X-axis:',
-                           choices = x.var.choices,
-                           selected = x.var.sel,
-                           multiple = FALSE),
+            h5(strong("X-axis:")),
+            helpText("Note: The x-axis used in this Manhattan plot is the 'Position' variable
+              selected in the 'Format Data' tab on the 'Data' page."),
+
+            #             selectizeInput(id_linearManhattan_xaxis,
+            #                            label = 'X-axis:',
+            #                            choices = x.var.choices,
+            #                            selected = rv_linearManhattan_xaxis[[k]], # x.var.sel,
+            #                            multiple = FALSE),
 
             ## log(x-axis) ?
-            radioButtons("linearManhattan_logx",
+            radioButtons(id_linearManhattan_logx,
                          label = "Log x-axis?",
                          choices = list("log2", "log10", "none"),
-                         selected="none",
+                         selected= rv_linearManhattan_logx[[k]], # "none",
                          inline=TRUE),
 
             ## Flip x-axis ?
-            radioButtons("linearManhattan_flipx",
+            radioButtons(id_linearManhattan_flipx,
                          label = "Invert x-axis?",
                          choices = list("Yes", "No"),
-                         selected="none",
+                         selected= rv_linearManhattan_flipx[[k]], # "No",
                          inline=TRUE)
         ),
 
@@ -83,31 +345,30 @@
 
         box(title="Select y-axis:",
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
 
-
             ## Choose y-axis variable
-            selectizeInput('linearManhattan_yaxis',
+            selectizeInput(id_linearManhattan_yaxis,
                            label = 'Y-axis:',
                            choices = y.var.choices,
-                           selected = y.var.sel,
+                           selected =  rv_linearManhattan_yaxis[[k]], # y.var.sel,
                            multiple = FALSE),
 
             ## log(y-axis) ?
-            radioButtons("linearManhattan_logy",
+            radioButtons(id_linearManhattan_logy,
                          label = "Log y-axis?",
                          choices = list("log2", "log10", "none"),
-                         selected="none",
+                         selected= rv_linearManhattan_logy[[k]], # "none",
                          inline=TRUE),
 
             ## Flip y-axis ?
-            radioButtons("linearManhattan_flipy",
+            radioButtons(id_linearManhattan_flipy,
                          label = "Invert y-axis?",
                          choices = list("Yes", "No"),
-                         selected="none",
+                         selected= rv_linearManhattan_flipy[[k]], # "No",
                          inline=TRUE)
 
         ),
@@ -122,7 +383,7 @@
 
         box(title="Select outlier variable:",
             status="info",
-            #status = "primary",
+            # status = "primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -131,17 +392,24 @@
             h5(strong('Highlight outliers by this variable:')),
             p("For example, you may wish to identify outliers according to a p-value
               that is recorded in another column of the data table."),
-            selectizeInput('linearManhattan_var2',
+            selectizeInput(id_linearManhattan_outlier.var,
                            label = NULL,
                            choices = o.var.choices,
-                           selected = o.var.sel,
+                           selected = rv_linearManhattan_outlier.var[[k]], # o.var.sel,
                            multiple = FALSE),
 
             ## Cut-off for outliers to overlay
             # eg 0.01
-            textInput("linearManhattan_cutoff",
+            textInput(id_linearManhattan_outlier.cutoff,
                       label = "Cut-off for outliers to overlay",
-                      value = 0.05)
+                      value =  rv_linearManhattan_outlier.cutoff[[k]] # 0.05
+            ),
+
+            radioButtons(id_linearManhattan_outlier.tail,
+                         label = "Tail",
+                         choices = c("Lower", "Upper"),
+                         selected =  rv_linearManhattan_outlier.tail[[k]], # "Lower",
+                         inline=TRUE)
             )
 
         )
@@ -151,26 +419,26 @@
 
 
 
-## Generate K individual controls for each univariate plot,
-## produced using lapply method, K taken from actionButton:
-output$box_linearManhattan_controls <- renderUI({
-  k <- 1
-  k <- input$new_linearManhattan_button[1] + 1
-  if(length(k) > 0){
-    if(k > 0) {
-      lapply(1:k,function(i){
-        .get.linearManhattan.controls(cleanData())
-      })
-    }
-  }
-})
 
 
 ###################################
 ## .get.linearManhattan.controls.aes ##
 ###################################
 ## fn to get widgets to control plot AESTHETICS under plot
-.get.linearManhattan.controls.aes <- function(dat){
+.get.linearManhattan.controls.aes <- function(dat, k=1){
+
+  k <- as.character(k)
+
+  ## get Id's | k
+  id_linearManhattan_col.pal <- paste("linearManhattan_col.pal", k, sep="_")
+  id_linearManhattan_n.bins <- paste("linearManhattan_n.bins", k, sep="_")
+  id_linearManhattan_grid <- paste("linearManhattan_grid", k, sep="_")
+  id_linearManhattan_outlier.col.bg <- paste("linearManhattan_outlier.col.bg", k, sep="_")
+  id_linearManhattan_outlier.col <- paste("linearManhattan_outlier.col", k, sep="_")
+  id_linearManhattan_outlier.pch <- paste("linearManhattan_outlier.pch", k, sep="_")
+  id_linearManhattan_outlier.transp <- paste("linearManhattan_outlier.transp", k, sep="_")
+  id_linearManhattan_outlier.cex <- paste("linearManhattan_outlier.cex", k, sep="_")
+
 
   out <- NULL
 
@@ -181,172 +449,99 @@ output$box_linearManhattan_controls <- renderUI({
         collapsible=TRUE,
         width=12,
 
-        ## Number of bins
-        textInput("linearManhattan_nbins",
-                  label = "Number of bins",
-                  value = 100)
+        # h4("Scatter aesthetics:"),
+        box(title="Scatter aesthetics:",
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+
+            ## selectInput w col.pals
+            selectizeInput(id_linearManhattan_col.pal,
+                           label="Colour palette",
+                           choices = list("Heat colours" = "heat.colors",
+                                          "Terrain colours" = "terrain.colors",
+                                          "Topo colours" = "topo.colors",
+                                          "CM colours" = "cm.colors",
+                                          "Gray colours" = "gray.colors"),
+                           selected =  rv_linearManhattan_col.pal[[k]], # "heat.colors",
+                           multiple=FALSE),
+
+
+            sliderInput(id_linearManhattan_n.bins,
+                        label = "Number of bins:",
+                        min = 2, max = 1000,
+                        value =  rv_linearManhattan_n.bins[[k]], # 100,
+                        step = 1),
+
+
+            radioButtons(id_linearManhattan_grid,
+                         label="Overlay grid?",
+                         choices=list("Yes" = TRUE,
+                                      "No" = FALSE),
+                         selected = rv_linearManhattan_grid[[k]],
+                         inline = TRUE)
+        ),
+
+
+
+        box(title="Outlier aesthetics:",
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+
+            selectizeInput(id_linearManhattan_outlier.col.bg,
+                           label = "Outlier colour (fill):",
+                           choices = list("Red" = "red",
+                                          "Orange" = "orange",
+                                          "Yellow" = "yellow",
+                                          "Green" = "green",
+                                          "Blue" = "blue",
+                                          "Purple" = "purple"),
+                           selected =  rv_linearManhattan_outlier.col.bg[[k]], # "purple",
+                           multiple=FALSE),
+
+            selectizeInput(id_linearManhattan_outlier.col,
+                           label = "Outlier colour (outline):",
+                           choices = list("Red" = "red",
+                                          "Orange" = "orange",
+                                          "Yellow" = "yellow",
+                                          "Green" = "green",
+                                          "Blue" = "blue",
+                                          "Purple" = "purple"),
+                           selected =  rv_linearManhattan_outlier.col[[k]], # "blue",
+                           multiple=FALSE),
+
+            selectizeInput(id_linearManhattan_outlier.pch,
+                           label = "Outlier shape:",
+                           choices = list("Circle" = "21",
+                                          "Square" = "22",
+                                          "Diamond" = "23",
+                                          "Triangle, point-up" = "24",
+                                          "Triangle, point-down" = "25"
+                           ),
+                           selected =  rv_linearManhattan_outlier.pch[[k]], # "24",
+                           multiple=FALSE),
+
+            sliderInput(id_linearManhattan_outlier.transp,
+                        label = "Outlier transparency:",
+                        min = 0, max = 1,
+                        value =  rv_linearManhattan_outlier.transp[[k]], # 0.25,
+                        step = 0.05),
+
+            sliderInput(id_linearManhattan_outlier.cex,
+                        label = "Outlier size:",
+                        min = 0, max = 3,
+                        value =  rv_linearManhattan_outlier.cex[[k]], # 1.5,
+                        step = 0.1)
+        )
 
     ) # end box
 
   return(out)
 
 } # end .get.linearManhattan.controls.aes
-
-
-## Generate K individual controls for each univariate plot,
-## produced using lapply method, K taken from actionButton:
-output$box_linearManhattan_controls_aes <- renderUI({
-  k <- 1
-  k <- input$new_linearManhattan_button[1] + 1
-  if(length(k) > 0){
-    if(k > 0) {
-      lapply(1:k,function(i){
-        .get.linearManhattan.controls.aes(cleanData())
-      })
-    }
-  }
-})
-
-# #######################################################
-# ## Box: Global Controls for Univariate Distributions ##
-# #######################################################
-#
-# ## Fn to generate boxes containing controls for univariate distribution plots
-#
-# .get.linearManhattan.controls <- function(dat){
-#
-#   out <- NULL
-#
-#   out <-
-#
-#     box(title = "Select Variables:", # "Univariate Distributions"
-#       status = "primary",
-#       solidHeader = TRUE,
-#       value = NULL,
-#       collapsible = TRUE,
-#       width = 12,
-#
-#       ###################
-#       ## Choose x-axis ##
-#       ###################
-#
-#       box(title="Select x-axis:", # "Univariate Distributions"
-#           status="info",
-#           #status = "primary",
-#           solidHeader=TRUE,
-#           collapsible=TRUE,
-#           width=12,
-#
-#           ## NOTE: Would like to be able to pull the Chromosome and Position variables
-#           ## selected/generated in the Format Data tab to be available as options
-#           ## and autoatically selected below...
-#
-#           ## Choose chromosome variable
-#           selectizeInput('linearManhattan_chromosome',
-#                          label='Chromosome:',
-#                          choices= c(names(cleanData()$chrom), names(cleanData()$y)),
-#                          multiple=FALSE),
-#
-#           ## Choose position variable
-#           selectizeInput('linearManhattan_position',
-#                          label='Position:',
-#                          choices= c(names(cleanData()$pos), names(cleanData()$y)),
-#                          multiple=FALSE)
-#       ),
-#
-#       ###################
-#       ## Choose y-axis ##
-#       ###################
-#
-#       box(title="Select y-axis:",
-#           status="info",
-#           #status = "primary",
-#           solidHeader=TRUE,
-#           collapsible=TRUE,
-#           width=12,
-#
-#
-#           ## Choose y-axis variable
-#           selectizeInput('linearManhattan_yaxis',
-#                          label='Y-axis:',
-#                          choices= names(cleanData()$y),
-#                          multiple=FALSE),
-#
-#           ## log(y-axis) ?
-#           radioButtons("linearManhattan_logy",
-#                        label = "Log y-axis?",
-#                        choices = list("log2", "log10", "none"),
-#                        selected="none",
-#                        inline=TRUE),
-#
-#           ## Flip y-axis ?
-#           radioButtons("linearManhattan_flipy",
-#                        label = "Invert y-axis?",
-#                        choices = list("log2", "log10", "none"),
-#                        selected="none",
-#                        inline=TRUE),
-#
-#           ## Number of bins
-#           textInput("linearManhattan_nbins",
-#                     label = "Number of bins",
-#                     value = 100)
-#
-#       ),
-#
-#
-#       ###############################################
-#       ## Choose outlier variable (usually p-value) ##
-#       ###############################################
-#
-#       ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
-#       ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
-#
-#       box(title="Select outlier variable:",
-#           status="info",
-#           #status = "primary",
-#           solidHeader=TRUE,
-#           collapsible=TRUE,
-#           width=12,
-#
-#           ## Mark outliers by second variable (usually p-value)
-#           h5(strong('Highlight outliers by this variable:')),
-#           p("For example, you may wish to identify outliers according to a p-value
-#               that is recorded in another column of the data table."),
-#           selectizeInput('linearManhattan_var2',
-#                          label=NULL,
-#                          choices= names(cleanData()$y),
-#                          multiple=FALSE),
-#
-#           ## Cut-off for outliers to overlay
-#           # eg 0.01
-#           textInput("linearManhattan_cutoff",
-#                     label = "Cut-off for outliers to overlay",
-#                     value = 0.05)
-#       )
-#
-#   )
-#
-#   return(out)
-# } # end .get.linearManhattan.controls
-#
-#
-#
-# ## Generate K individual controls for each univariate plot,
-# ## produced using lapply method, K taken from actionButton:
-# output$box_linearManhattan_controls <- renderUI({
-#   k <- 1
-#   k <- input$new_linearManhattan_button[1] + 1
-#
-#   if(length(k) > 0){
-#     if(k > 0) {
-#       lapply(1:k,function(i){
-#         .get.linearManhattan.controls(cleanData())
-#       })
-#     }
-#   }
-# })
-#
-
 
 
 
@@ -368,9 +563,466 @@ output$box_linearManhattan_button <- renderUI({
   )
 })
 
-# output$buttonTest_linearManhattan <- renderPrint({
-#   print(input$new_linearManhattan_button[1])
-# })
+
+
+
+##############################
+## get.linearManhattan.plot ##
+##############################
+.get.linearManhattan.plot <- function(dat, k=1){
+
+  out <- NULL
+
+  if(!is.null(k)){
+
+    ## get unique outputId
+    id_linearManhattan <- paste("id_linearManhattan", k, sep="_")
+
+    out <-
+      box(title=NULL,
+          status="warning",
+          solidHeader=FALSE,
+          collapsible=TRUE,
+          width=12,
+          # plotOutput("plot_linearManhattan_plot")
+          renderPlot(plotOutput(
+            outputId = id_linearManhattan,
+            .get.linearManhattan(input, k=k)))
+      )
+  }
+  return(out)
+}
+# end .get.linearManhattan.plot
+
+######################################################################################################################
+
+###########################
+## Linear Manhattan Plot ##
+###########################
+
+# #######################
+# ## .getLinearMHTPlot ##
+# #######################
+# .getLinearMHTPlot <- function(mainData, input){
+#   xchr = input$choose_xaxis_chr
+#   xcood = input$choose_xaxis_cood
+#   yselect = input$choose_y1_plot
+#   logy = input$logy1Checkbox
+#   pselect = input$choose_pval
+#   poutlier = as.numeric(input$linearmhtpcut)
+#   flipYaxis = input$flipY
+#   n_bins <- as.numeric(as.character(input$linearmht_nbins))
+#
+#   mhtplots <- NULL
+#   if(!is.null(mainData)){
+#     if(!is.null(yselect) && !is.null(pselect)){
+#       mhtplots <- .mhtplot(mydata=mainData, Chr=xchr, BP = xcood, ycolnam=yselect, pcolnam=pselect,
+#                            pcut.outlier= poutlier, logY=logy, nbins=n_bins, flipY=flipYaxis)
+#     }
+#   }
+#   mhtplots
+# } # end .getLinearMHTPlot
+
+
+
+######################################################################################################################
+
+
+
+
+
+##########################
+## .get.linearManhattan ##
+##########################
+.get.linearManhattan <- function(input, k=1){
+
+  linearManhattan <- dat <- xData <- yData <- xSelection <- ySelection <-
+    logx <- logy <- flipX <- flipY <- col.pal <- outlier.var <- cutoff <- tail <-
+    outlier.col.bg <- outlier.col <- outlier.transp <- outlier.pch <- outlier.cex <- n.bins <- NULL
+
+  k <- as.character(k)
+
+  ## Get x-axis & y-axis
+  ySelection <- eval(parse(text=paste("input$linearManhattan_yaxis", k, sep="_")))
+
+  logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
+  logy <- eval(parse(text=paste("input$linearManhattan_logy", k, sep="_")))
+  flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
+  flipY <- eval(parse(text=paste("input$linearManhattan_flipy", k, sep="_")))
+
+
+  ## Get data and plot output
+  if(!is.null(cleanData())){
+    if(!is.null(ySelection)){
+
+      ## Get data
+      dat <- cleanData()
+
+      xSelection <- dat$pos
+
+      if(logx=="none"){logx=NULL}else{
+        if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
+                                      negative values in the X variable.
+                                      These values will not be plotted.")}
+        if(logx=="log2"){logx=2}
+        if(logx=="log10"){logx=10}
+        }
+
+      ## Log y-axis?
+      if(logy=="none"){logy=NULL}else{
+        if(sum(ySelection<0)>0){print("Error: You are trying to log-transform
+                                      negative values in the Y variable.
+                                      These values will not be plotted.")}
+        if(logy=="log2"){logy=2}
+        if(logy=="log10"){logy=10}
+        }
+
+      ## Invert x-axis?
+      if(flipX=="No"){flipX=1}else{
+        if(flipX=="Yes"){flipX=-1}}
+
+      ## Invert y-axis?
+      if(flipY=="No"){flipY=1}else{
+        if(flipY=="Yes"){flipY=-1}}
+
+      #########################
+      ## Get plot aesthetics ##
+      #########################
+
+      ## Get plot aesthetics
+      col.pal <- eval(parse(text=paste("input$linearManhattan_col.pal", k, sep="_")))
+      n.bins <- eval(parse(text=paste("input$linearManhattan_n.bins", k, sep="_")))
+      grid <- eval(parse(text=paste("input$linearManhattan_grid", k, sep="_")))
+
+      outlier.col.bg <- eval(parse(text=paste("input$linearManhattan_outlier.col.bg", k, sep="_")))
+      outlier.col <- eval(parse(text=paste("input$linearManhattan_outlier.col", k, sep="_")))
+      outlier.transp <- eval(parse(text=paste("input$linearManhattan_outlier.transp", k, sep="_")))
+      outlier.pch <- as.numeric(eval(parse(text=paste("input$linearManhattan_outlier.pch", k, sep="_"))))
+      outlier.cex <- eval(parse(text=paste("input$linearManhattan_outlier.cex", k, sep="_")))
+
+      ## Get outlier var
+      outlier.var <- eval(parse(text=paste("input$linearManhattan_outlier.var", k, sep="_")))
+      cutoff <- as.numeric(eval(parse(text=paste("input$linearManhattan_outlier.cutoff", k, sep="_"))))
+      tail <- eval(parse(text=paste("input$linearManhattan_outlier.tail", k, sep="_")))
+
+      n <- 100
+      start <- 0.25
+      end <- 0.9
+      alpha <- 1
+      if(col.pal == "gray.colors"){
+        col.pal <- eval(parse(text=paste(col.pal, "(n=n, start=start, end=end)", sep="")))
+      }else{
+        col.pal <- eval(parse(text=paste(col.pal, "(n=n, alpha=alpha)", sep="")))
+      }
+
+
+      ## Get X, Chr, Pos variables
+      ## Get Pos
+      Pos <- eval(parse(text="dat$pos"))
+
+      ## Get Chr
+      Chr <- eval(parse(text="dat$chrom"))
+
+      ## Get x-variable data
+      ## ie. EITHER POS OR CHROMOSOME...
+      if(!is.null(xSelection)){
+        ## Get variable to plot
+        xData <- xSelection # dat[,Pos] # eval(parse(text=paste("dat", xSelection, sep="$")))
+      }
+      ## Get x-variable data
+      ## ie. VARIABLE TO PLOT
+      if(!is.null(ySelection)){
+        ## Get variable to plot
+        yData <- eval(parse(text=paste("dat$y", ySelection, sep="$")))
+      }
+
+
+      ## Get outlier-variable data
+
+      if(!is.null(outlier.var)){
+        ## Get variable to plot
+        outlier.Data <- eval(parse(text=paste("dat$y", outlier.var, sep="$")))
+      }
+
+      if(length(logx)==1){xData=log(xData+1e-40, logx)}
+      if(length(logy)==1){yData=log(yData+1e-40, logy)}
+
+      if(is.na(cutoff)){cutoff=0.01}
+      if(tail=="Upper"){
+        cutoff=(1-cutoff)
+      }
+      outlier.DataNoNA <- outlier.Data[!is.na(outlier.Data)]
+      outlier.DataNew <- rank(outlier.DataNoNA)/length(outlier.DataNoNA)
+      outlier.DataNew2 <- outlier.Data
+      outlier.DataNew2[!is.na(outlier.Data)] <- outlier.DataNew
+
+      if(tail=="Lower"){
+        xData_sub <- xData[outlier.DataNew2<=cutoff]
+        yData_sub <- yData[outlier.DataNew2<=cutoff]
+      }
+      if(tail=="Upper"){
+        xData_sub <- xData[outlier.DataNew2>=cutoff]
+        yData_sub <- yData[outlier.DataNew2>=cutoff]
+      }
+      if(tail=="Two-tailed"){
+        xData_sub_l <- xData[outlier.DataNew2<=cutoff]
+        yData_sub_l <- yData[outlier.DataNew2<=cutoff]
+
+        cutoff <- (1-cutoff)
+        xData_sub_u <- xData[outlier.DataNew2>=cutoff]
+        yData_sub_u <- yData[outlier.DataNew2>=cutoff]
+
+        xData_sub <- c(xData_sub_l, xData_sub_u)
+        yData_sub <- c(yData_sub_l, yData_sub_u)
+      }
+
+      xData <- xData*flipX
+      yData <- yData*flipY
+      xData_sub <- xData_sub*flipX
+      yData_sub <- yData_sub*flipY
+
+      # get colors
+      #          get.levels <- levels(as.factor(colData))
+      #          n.levels <- length(get.levels)
+      #          colIndex <- as.numeric(as.factor(colData))
+      #           if(!(colPal=="black")){
+      #            myCol <- get(colPal)(n.levels)[colIndex]
+      #            }else(myCol <- rgb(0,0,0,0.2))
+
+
+      # produce plot
+      linearManhattan <- .mhtplot(x=xData, y=yData,
+                                  Chr=Chr, Pos=Pos,
+                                  xlab="Position", ylab=ySelection,
+                                  n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
+                                  col.pal=col.pal, grid=grid,
+                                  outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
+                                  outlier.transp=outlier.transp,
+                                  outlier.pch=outlier.pch, outlier.cex=outlier.cex)
+
+      }
+  }
+
+  return(linearManhattan)
+  # linearManhattan
+  } # end .get.linearManhattan
+
+
+
+
+##############
+## .mhtplot ##
+##############
+
+### Plot function, need to move to function area
+
+.mhtplot <- function(x, y,
+                     Chr, Pos,
+                    xlab, ylab,
+                    xlim=NULL, ylim=NULL,
+                    n.bins,
+                    x_sub, y_sub,
+                    col.pal, grid,
+                    outlier.col, outlier.col.bg,
+                    outlier.transp,
+                    outlier.pch, outlier.cex){
+
+  require(adegenet)
+
+  if(outlier.transp != 0){
+    outlier.transp <- 1 - outlier.transp
+    outlier.col <- transp(outlier.col, alpha = outlier.transp)
+    outlier.col.bg <- transp(outlier.col.bg, alpha = outlier.transp)
+  }
+
+  data1 <- cbind(x, y)
+  data1b <- data1[complete.cases(data1),]
+
+  # plot(1)
+
+  if(length(xlim)==0){
+    xlim_up <- max(x, na.rm=TRUE)
+    xlim_lower <- min(x, na.rm=TRUE)
+  }
+
+  if(length(ylim)==0){
+    ylim_up <- max(y, na.rm=TRUE)
+    ylim_lower <- min(y, na.rm=TRUE)
+  }
+
+  binned <- bin2(data1b,
+                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
+                 nbin=c(n.bins,n.bins))
+  binned$nc[binned$nc==0]=NA
+
+  x.axis.min <- xlim_lower
+  x.axis.max <- xlim_up
+  y.axis.min <- ylim_lower
+  y.axis.max <- ylim_up
+
+
+  # print(str(Chr))
+  dat <- cleanData()
+  mynewtoy <- split(dat, "chrom")# "Chr")# # split(mydata, mydata[,Chr])
+  chrs.max <- lapply(sapply(mynewtoy,'[',"pos"),max) # lapply(sapply(mynewtoy,'[',BP),max)
+  x.total <- cumsum(as.numeric(unlist(chrs.max)))
+  x.axis.scale<-300/max(x.total)
+  x.total2<-c(0,x.total)
+
+  # plot(1)
+
+  ## LINEAR MANHATTAN PLOT
+  image.plot(seq(x.axis.min,x.axis.max,length.out = n.bins),
+             seq(y.axis.min, y.axis.max, length.out=n.bins),
+             binned$nc,
+             xlab=xlab, ylab=ylab, add=FALSE,
+             col=col.pal, axes=TRUE)
+
+  ## ADD OUTLIER POINTS
+  points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
+  # points(x=xaxis_all[data.outlier], y=yaxis_all[data.outlier], pch=18, cex=1,col="red")
+
+#   #axis(1, at=axTicks(1), label=T)
+#   axis(1,at=x.axis.scale*x.total2,labels=T)
+#   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,
+#        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
+#   axis(2,at=axTicks(2),label=T)
+
+  ## ADD GRID
+  if(grid) grid()
+
+  ## SET TITLE TO VALUE BEING PLOTTED
+  ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
+  if(!is.null(xlab) & !is.null(ylab)) title(paste(ylab, "by", xlab, sep=" "))
+
+
+  #   ## SCATTER PLOT
+  #   image.plot(seq(xlim_lower,xlim_up,length.out = n.bins),
+  #              seq(ylim_lower,ylim_up, length.out=n.bins),
+  #              binned$nc,
+  #              xlab=xlab, ylab=ylab, add=FALSE, col=col.pal)
+  #
+  #   ## ADD OUTLIER POINTS
+  #   points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
+  #
+  #   ## ADD GRID
+  #   if(grid) grid()
+  #
+  #   ## SET TITLE TO VALUE BEING PLOTTED
+  #   ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
+  #   if(!is.null(xlab) & !is.null(ylab)) title(paste(xlab, "vs.", ylab, sep=" "))
+  #   # title(paste("xlab", eval(parse(text= HTML(em("versus")))), "ylab", sep=" "))
+} # end .mhtplot
+
+
+# ##############
+# ## .mhtplot ##
+# ##############
+# .mhtplot <- function(mydata=mytoy, Chr="Chr", BP="BP",
+#                      ycolnam="Trait1_Beta", pcolnam="Trait1_P",
+#                      ylim.max=10, ylim.min=-10,
+#                      colfig=NULL, titlemain=NULL,
+#                      logY=FALSE, flipY="No",
+#                      nbins=100, pcut.outlier=1e-4
+#
+#                      #,
+#                      #grid=FALSE
+# ){
+#   ### Manhattan Plot.
+#
+#   # print(".mhtplot")
+#
+#   if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata$y))  }
+#   if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata$y))  }
+#
+#   chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
+#
+#   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
+#   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
+#
+#   data.outlier <- which(mydata$y[,pvidx] < pcut.outlier)
+#
+#   if(logY %in% c("log2", "log10")){
+#     if(length(which(mydata$y[,betaidx] < 0)) > 0) {
+#       stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+#     logbase = ifelse(logY %in% "log2",2, 10)
+#     mydata$y[,betaidx] = log(abs(mydata$y[,betaidx]),logbase)
+#     ycolnam = paste(logY,"(", ycolnam,")",sep="")
+#   } else {
+#     mydata$y[,betaidx] = mydata$y[,betaidx]
+#     ycolnam = ycolnam
+#   }
+#
+#   flipY_base = ifelse(flipY %in% "Yes", -1, 1)
+#   mydata$y[, betaidx] = mydata$y[,betaidx] * flipY_base
+#
+#   mynewtoy <- split(mydata, mydata[,Chr])
+#   number_snp <- dim(mydata$y)[1]
+#
+#   ylim.max <- floor(max(mydata$y[,betaidx], na.rm=T) + 1)
+#   ylim.min <- floor(min(mydata$y[,betaidx], na.rm=T) - 1)
+#   if(ylim.min > 0) { ylim.min = 0}
+#   if(ylim.max < 0) { ylim.max = 0}
+#
+#   Chr <- chromosome
+#   BP <- pos
+#   mynewtoy <- split(mydata, mydata[,Chr])
+#   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
+#   x.total <- cumsum(as.numeric(unlist(chrs.max)))
+#   x.axis.scale<-300/max(x.total)
+  # x.total2<-c(0,x.total)
+#
+#   if(is.null(colfig)) {
+#     colfig <- rep(c(alpha("grey",0.6),alpha("black",0.3)),
+#                   round(length(mynewtoy)/2,0))
+#   } else{
+#     colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),
+#                   round(length(mynewtoy)/2,0))
+#   }
+#
+#   plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max),
+#        xlab="Chromosome", ylab=ycolnam ,main=titlemain,axes=F)
+#   abline(h=0,col=gray(0.5),lty="dashed")
+#
+#   xaxis_all <- c();  yaxis_all <- c();  collib <- c()
+#
+#   for (i in 1:length(x.total)){
+#     if(i==1){
+#       x.axis=mynewtoy[[i]][,BPidx] * x.axis.scale
+#     } else{
+#       x.axis=(x.total[i-1] + mynewtoy[[i]][,BPidx])*x.axis.scale
+#     }
+#
+#     xaxis_all <- c(xaxis_all,x.axis)
+#     yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
+#   }
+#
+#   dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
+#   dat4plot <- data.matrix(dat4plots[complete.cases(dat4plots),])
+#
+#   x.axis.min <- min(dat4plot[,1], na.rm=T)
+#   x.axis.max <- max(dat4plot[,1], na.rm=T)
+#   y.axis.min <- min(dat4plot[,2], na.rm=T)
+#   y.axis.max <- max(dat4plot[,2], na.rm=T)
+#
+#   datbin <- bin2(dat4plot, matrix(c(x.axis.min, x.axis.max, y.axis.min, y.axis.max),
+#                                   2,2, byrow=TRUE),   nbin=c(nbins,nbins))
+#
+#   datbin$nc[datbin$nc==0] = NA
+#
+#   image.plot(seq(x.axis.min,x.axis.max,length.out = nbins),
+#              seq(y.axis.min, y.axis.max, length.out=nbins),
+#              datbin$nc, xlab="", ylab="", add=FALSE,
+#              col=grey.colors(60, 0.6,0), axes=FALSE)
+#
+#   points(x=xaxis_all[data.outlier], y=yaxis_all[data.outlier], pch=18, cex=1,col="red")
+#
+#   x.total2<-c(0,x.total)
+#   axis(1,at=x.axis.scale*x.total2,labels=F)
+#   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,
+#        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
+#   axis(2,at=axTicks(2),label=T)
+# } # end .mhtplot
 
 
 
