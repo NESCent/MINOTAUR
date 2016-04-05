@@ -36,9 +36,9 @@ rv_linearManhattan_outlier.cex <- reactiveValues()
 
 
 
-#####################################
+#########################################
 ## .set.reactiveValues.linearManhattan ##
-#####################################
+#########################################
 ## fn to set reactiveValues initially for each k:
 .set.reactiveValues.linearManhattan <- function(dat, k){
 
@@ -93,9 +93,9 @@ rv_linearManhattan_outlier.cex <- reactiveValues()
 
 
 
-########################################
+############################################
 ## .update.reactiveValues.linearManhattan ##
-########################################
+############################################
 ## fn to set reactiveValues initially for each k:
 .update.reactiveValues.linearManhattan <- function(dat, k){
 
@@ -407,7 +407,7 @@ output$box_linearManhattan <- renderUI({
 
             radioButtons(id_linearManhattan_outlier.tail,
                          label = "Tail",
-                         choices = c("Lower", "Upper"),
+                         choices = c("Lower", "Upper", "Two-tailed"),
                          selected =  rv_linearManhattan_outlier.tail[[k]], # "Lower",
                          inline=TRUE)
             )
@@ -421,9 +421,9 @@ output$box_linearManhattan <- renderUI({
 
 
 
-###################################
+#######################################
 ## .get.linearManhattan.controls.aes ##
-###################################
+#######################################
 ## fn to get widgets to control plot AESTHETICS under plot
 .get.linearManhattan.controls.aes <- function(dat, k=1){
 
@@ -458,7 +458,7 @@ output$box_linearManhattan <- renderUI({
 
             ## selectInput w col.pals
             selectizeInput(id_linearManhattan_col.pal,
-                           label="Colour palette",
+                           label="Colour palette:",
                            choices = list("Heat colours" = "heat.colors",
                                           "Terrain colours" = "terrain.colors",
                                           "Topo colours" = "topo.colors",
@@ -792,7 +792,6 @@ output$box_linearManhattan_button <- renderUI({
 
       # produce plot
       linearManhattan <- .mhtplot(x=xData, y=yData,
-                                  Chr=Chr, Pos=Pos,
                                   xlab="Position", ylab=ySelection,
                                   n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
                                   col.pal=col.pal, grid=grid,
@@ -817,7 +816,6 @@ output$box_linearManhattan_button <- renderUI({
 ### Plot function, need to move to function area
 
 .mhtplot <- function(x, y,
-                     Chr, Pos,
                     xlab, ylab,
                     xlim=NULL, ylim=NULL,
                     n.bins,
@@ -861,9 +859,8 @@ output$box_linearManhattan_button <- renderUI({
   y.axis.max <- ylim_up
 
 
-  # print(str(Chr))
   dat <- cleanData()
-  mynewtoy <- split(dat, "chrom")# "Chr")# # split(mydata, mydata[,Chr])
+  mynewtoy <- split(dat, "chrom") # split(mydata, mydata[,Chr])
   chrs.max <- lapply(sapply(mynewtoy,'[',"pos"),max) # lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
   x.axis.scale<-300/max(x.total)
@@ -895,368 +892,239 @@ output$box_linearManhattan_button <- renderUI({
   ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
   if(!is.null(xlab) & !is.null(ylab)) title(paste(ylab, "by", xlab, sep=" "))
 
-
-  #   ## SCATTER PLOT
-  #   image.plot(seq(xlim_lower,xlim_up,length.out = n.bins),
-  #              seq(ylim_lower,ylim_up, length.out=n.bins),
-  #              binned$nc,
-  #              xlab=xlab, ylab=ylab, add=FALSE, col=col.pal)
-  #
-  #   ## ADD OUTLIER POINTS
-  #   points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
-  #
-  #   ## ADD GRID
-  #   if(grid) grid()
-  #
-  #   ## SET TITLE TO VALUE BEING PLOTTED
-  #   ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
-  #   if(!is.null(xlab) & !is.null(ylab)) title(paste(xlab, "vs.", ylab, sep=" "))
-  #   # title(paste("xlab", eval(parse(text= HTML(em("versus")))), "ylab", sep=" "))
 } # end .mhtplot
 
 
-# ##############
-# ## .mhtplot ##
-# ##############
-# .mhtplot <- function(mydata=mytoy, Chr="Chr", BP="BP",
-#                      ycolnam="Trait1_Beta", pcolnam="Trait1_P",
-#                      ylim.max=10, ylim.min=-10,
-#                      colfig=NULL, titlemain=NULL,
-#                      logY=FALSE, flipY="No",
-#                      nbins=100, pcut.outlier=1e-4
+
+# ##########################
+# ## Box: Navigation Plot ##
+# ##########################
 #
-#                      #,
-#                      #grid=FALSE
-# ){
-#   ### Manhattan Plot.
+# # box for navigation plot
+# output$box_linearManhattan_navigation <- renderUI({
+#   box(title="Manhattan Plot",
+#       status="warning",
+#       solidHeader=TRUE,
+#       collapsible=TRUE,
+#       width=12,
+#       fluidRow(
+#         column(6,
+#                selectInput('restrict_chrom',
+#                            label='Restrict chromosome',
+#                            choices=as.list(c('(all)',
+#                                              cleanData()$chromLevels)),
+#                            selected=navigationPolygons()$chromChosen, width=200)
+#         )
+#       ),
+#       plotOutput('plot_navigation',height=100,width='100%'),
+#       sliderInput('slider_navigate',
+#                   label=NULL,
+#                   min=navigationPolygons()$x_min,
+#                   max=navigationPolygons()$x_max,
+#                   value=c(navigationPolygons()$x_min, navigationPolygons()$x_max),
+#                   step=1,
+#                   width='100%'),
+#       div(style="display:inline-block",
+#           tags$button(id='apply_navigate_button', type="button",
+#                       class="btn action-button btn-primary",
+#                       style='font-size:15px; text-align:center',
+#                       HTML('<i class="icon-star"></i>Apply Changes'))
+#       )
+#   ) # end of tabBox
+# })
 #
-#   # print(".mhtplot")
+# # function evaluates when apply_navigate_button is pressed
+# apply_navigate <- eventReactive(input$apply_navigate_button,{})
 #
-#   if(!is.null(ycolnam)){    betaidx = match(ycolnam, names(mydata$y))  }
-#   if(!is.null(pcolnam)){    pvidx = match(pcolnam, names(mydata$y))  }
-#
-#   chridx = match(Chr,names(mydata));  BPidx = match(BP, names(mydata))
-#
-#   if(is.na(chridx)){  print(" 'Chr' is not in the column names of input data ")  }
-#   if(is.na(BPidx)) {   print(" 'BP' is not in the column names of input data ")  }
-#
-#   data.outlier <- which(mydata$y[,pvidx] < pcut.outlier)
-#
-#   if(logY %in% c("log2", "log10")){
-#     if(length(which(mydata$y[,betaidx] < 0)) > 0) {
-#       stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
-#     logbase = ifelse(logY %in% "log2",2, 10)
-#     mydata$y[,betaidx] = log(abs(mydata$y[,betaidx]),logbase)
-#     ycolnam = paste(logY,"(", ycolnam,")",sep="")
+# # subset cleanData() ready for Manhattan plot based on selectize_linearManhattan_variables
+# ManhattanData <- reactive({
+#   data <- cleanData()
+#   if (is.null(input$selectize_linearManhattan_variables)) {
+#     output <- list(pos=data$pos,
+#                    pos_modifier=data$pos_modifier,
+#                    chrom=data$chrom,
+#                    chromLevels=data$chromLevels,
+#                    chromIndex=data$chromIndex,
+#                    chromMidpoint=data$chromMidpoint,
+#                    y=NULL,
+#                    y_col=0,
+#                    pos_userDefined=data$pos_userDefined,
+#                    chrom_userDefined=data$chrom_userDefined)
 #   } else {
-#     mydata$y[,betaidx] = mydata$y[,betaidx]
-#     ycolnam = ycolnam
+#     y <- data$y[,input$selectize_linearManhattan_variables,drop=FALSE]
+#     output <- list(pos=data$pos,
+#                    pos_modifier=data$pos_modifier,
+#                    chrom=data$chrom,
+#                    chromLevels=data$chromLevels,
+#                    chromIndex=data$chromIndex,
+#                    chromMidpoint=data$chromMidpoint,
+#                    y=y,
+#                    y_col=ncol(y),
+#                    pos_userDefined=data$pos_userDefined,
+#                    chrom_userDefined=data$chrom_userDefined)
+#   }
+#   return(output)
+# })
+#
+# ## reactive conductor for subsetting ManhattanData
+# ## based on restrict_chrom selector, and converting into
+# ## series of polygons for navigation plot.
+# ## Returns:
+# # # list(x_min,
+# # #      x_max,
+# # #      y_min,
+# # #      y_max,
+# # #      polygon=list(x,y,chromIndex),
+# # #      chromLevels,
+# # #      chromMidpoint)
+#
+#
+# navigationPolygons <- reactive({
+#
+#   nullOutput <- list(x_min=0,
+#                      x_max=100,
+#                      y_min=0,
+#                      y_max=1,
+#                      polygon=list(),
+#                      chromLevels=NULL,
+#                      chromMidpoint=NULL,
+#                      chromChosen='(all)')
+#
+#   data <- ManhattanData()
+#
+#   # if data$y is NULL, return nullOutput
+#   if (is.null(data$y))
+#     return(nullOutput)
+#
+#   # if input$restrict_chrom is NULL, return nullOutput
+#   chromChosen <- input$restrict_chrom
+#   if (is.null(chromChosen))
+#     return(nullOutput)
+#
+#   # if plotting all chromosomes
+#   if (chromChosen=='(all)') {
+#     x <- data$pos + data$pos_modifier
+#     y <- data$y[,1]
+#     chromIndex <- data$chromIndex
+#     chromLevels <- data$chromLevels
+#
+#   # if plotting single chromosome
+#   } else {
+#     x <- subset(data$pos,
+#                 data$chrom==input$restrict_chrom)
+#     y <- subset(data$y[,1],
+#                 data$chrom==input$restrict_chrom)
+#     chromIndex <- subset(data$chromIndex,
+#                          data$chrom==input$restrict_chrom)
+#     chromLevels <- input$restrict_chrom
 #   }
 #
-#   flipY_base = ifelse(flipY %in% "Yes", -1, 1)
-#   mydata$y[, betaidx] = mydata$y[,betaidx] * flipY_base
+#   ## convert x and y to polygons
+#   polyNum <- 200
+#   x_min <- min(x,na.rm=TRUE)
+#   x_max <- max(x,na.rm=TRUE)
+#   y_min <- min(y,na.rm=TRUE)
+#   y_max <- max(y,na.rm=TRUE)
 #
-#   mynewtoy <- split(mydata, mydata[,Chr])
-#   number_snp <- dim(mydata$y)[1]
-#
-#   ylim.max <- floor(max(mydata$y[,betaidx], na.rm=T) + 1)
-#   ylim.min <- floor(min(mydata$y[,betaidx], na.rm=T) - 1)
-#   if(ylim.min > 0) { ylim.min = 0}
-#   if(ylim.max < 0) { ylim.max = 0}
-#
-#   Chr <- chromosome
-#   BP <- pos
-#   mynewtoy <- split(mydata, mydata[,Chr])
-#   chrs.max <- lapply(sapply(mynewtoy,'[',BP),max)
-#   x.total <- cumsum(as.numeric(unlist(chrs.max)))
-#   x.axis.scale<-300/max(x.total)
-  # x.total2<-c(0,x.total)
-#
-#   if(is.null(colfig)) {
-#     colfig <- rep(c(alpha("grey",0.6),alpha("black",0.3)),
-#                   round(length(mynewtoy)/2,0))
-#   } else{
-#     colfig <- rep(c(alpha(colfig[1],0.6),alpha(colfig[2],0.3)),
-#                   round(length(mynewtoy)/2,0))
-#   }
-#
-#   plot(x=1:300,type="n",ylim=c(ylim.min,ylim.max),
-#        xlab="Chromosome", ylab=ycolnam ,main=titlemain,axes=F)
-#   abline(h=0,col=gray(0.5),lty="dashed")
-#
-#   xaxis_all <- c();  yaxis_all <- c();  collib <- c()
-#
-#   for (i in 1:length(x.total)){
-#     if(i==1){
-#       x.axis=mynewtoy[[i]][,BPidx] * x.axis.scale
-#     } else{
-#       x.axis=(x.total[i-1] + mynewtoy[[i]][,BPidx])*x.axis.scale
+#   df <- data.frame(y=y, chromIndex=chromIndex)
+#   breakVec <- seq(x_min, x_max, l=polyNum+1)
+#   breakDelta <- (breakVec[2]-breakVec[1])/2
+#   breakMids <- (breakVec[-1]+breakVec[-length(breakVec)])/2
+#   ## split df into list based on which interval x falls into
+#   c <- split(df,f=cut(x,breaks=breakVec))
+#   output <- list(x_min=x_min,
+#                  x_max=x_max,
+#                  y_min=y_min,
+#                  y_max=y_max,
+#                  polygon=list(),
+#                  chromLevels=chromLevels,
+#                  chromMidpoint=data$chromMidpoint,
+#                  chromChosen=chromChosen)
+#   for (i in 1:length(c)) {
+#     if (length(c[[i]]$y)>0) {
+#       r <- range(c[[i]]$y,na.rm=TRUE)
+#       output$polygon[[i]] <- list(x=c(breakMids[i]-breakDelta,
+#                                       breakMids[i]+breakDelta,
+#                                       breakMids[i]+breakDelta,
+#                                       breakMids[i]-breakDelta),
+#                                   y=c(r[1],r[1],r[2],r[2]),
+#                                       chromIndex=c[[i]]$chromIndex[1])
 #     }
+#   }
+#   return(output)
+# })
 #
-#     xaxis_all <- c(xaxis_all,x.axis)
-#     yaxis_all <- c(yaxis_all, mynewtoy[[i]][,betaidx])
+# # navigation plot
+# output$plot_navigation <- renderPlot({
+#   polys <- navigationPolygons()
+#
+#   # if no polygons, plot placeholder
+#   if (length(polys$polygon)==0) {
+#     par(mar=c(0.2,0.8,0.2,0.8))
+#     plot(0, type='n',
+#          xlim=c(0,1), ylim=c(0,1),
+#          xaxs='i', yaxs='i', axes=FALSE)
+#     text(0.5, 0.5,
+#          '(Select plotting variables)',
+#          cex=1.5)
+#     return()
 #   }
 #
-#   dat4plots <- data.frame(xv = xaxis_all, yv=yaxis_all)
-#   dat4plot <- data.matrix(dat4plots[complete.cases(dat4plots),])
+#   # produce empty plot
+#   par(mar=c(0.2,0.8,0.2,0.8), xpd=NA)
+#   k <- 0.8
+#   ylim <- c(polys$y_min,
+#             polys$y_max*(0.5+k) + polys$y_min*(0.5-k))
+#   plot(0, type='n',
+#        xlim=c(polys$x_min,polys$x_max), ylim=ylim,
+#        xaxs='i', yaxs='i', axes=FALSE)
 #
-#   x.axis.min <- min(dat4plot[,1], na.rm=T)
-#   x.axis.max <- max(dat4plot[,1], na.rm=T)
-#   y.axis.min <- min(dat4plot[,2], na.rm=T)
-#   y.axis.max <- max(dat4plot[,2], na.rm=T)
+#   # add text numbering chromosomes
+#   if (!is.null(polys$chromLevels)) {
+#     text(x=polys$chromMidpoint,
+#          y=polys$y_max*(0.5+0.7) + polys$y_min*(0.5-0.7),
+#          labels=polys$chromLevels, font=2)
+#   }
 #
-#   datbin <- bin2(dat4plot, matrix(c(x.axis.min, x.axis.max, y.axis.min, y.axis.max),
-#                                   2,2, byrow=TRUE),   nbin=c(nbins,nbins))
+#   # add polygons, including outside border
+#   for (i in 1:length(polys$polygon)) {
+#     polygon(polys$polygon[[i]]$x,
+#             polys$polygon[[i]]$y,
+#             col=c('black','red')[2-polys$polygon[[i]]$chromIndex%%2],
+#             border='white')
+#   }
+#   polygon(c(polys$x_min,polys$x_max, polys$x_max,polys$x_min),
+#           c(polys$y_min,polys$y_min, polys$y_max,polys$y_max))
 #
-#   datbin$nc[datbin$nc==0] = NA
+#   # grey-out side regions based on slider
+#   s <- input$slider_navigate
+#   polygon(c(polys$x_min,s[1],s[1],polys$x_min),
+#           c(polys$y_min,polys$y_min,polys$y_max,polys$y_max),
+#           col=rgb(1,1,1,0.8))
+#   polygon(c(polys$x_max,s[2],s[2],polys$x_max),
+#           c(polys$y_min,polys$y_min,polys$y_max,polys$y_max),
+#           col=rgb(1,1,1,0.8))
+# })
 #
-#   image.plot(seq(x.axis.min,x.axis.max,length.out = nbins),
-#              seq(y.axis.min, y.axis.max, length.out=nbins),
-#              datbin$nc, xlab="", ylab="", add=FALSE,
-#              col=grey.colors(60, 0.6,0), axes=FALSE)
 #
-#   points(x=xaxis_all[data.outlier], y=yaxis_all[data.outlier], pch=18, cex=1,col="red")
+# ###########################
+# ## Box: Univariate Plots ##
+# ###########################
 #
-#   x.total2<-c(0,x.total)
-#   axis(1,at=x.axis.scale*x.total2,labels=F)
-#   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,
-#        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
-#   axis(2,at=axTicks(2),label=T)
-# } # end .mhtplot
-
-
-
-
-
-##########################
-## Box: Navigation Plot ##
-##########################
-
-# box for navigation plot
-output$box_linearManhattan_navigation <- renderUI({
-  box(title="Manhattan Plot",
-      status="warning",
-      solidHeader=TRUE,
-      collapsible=TRUE,
-      width=12,
-      fluidRow(
-        column(6,
-               selectInput('restrict_chrom',
-                           label='Restrict chromosome',
-                           choices=as.list(c('(all)',
-                                             cleanData()$chromLevels)),
-                           selected=navigationPolygons()$chromChosen, width=200)
-        )
-      ),
-      plotOutput('plot_navigation',height=100,width='100%'),
-      sliderInput('slider_navigate',
-                  label=NULL,
-                  min=navigationPolygons()$x_min,
-                  max=navigationPolygons()$x_max,
-                  value=c(navigationPolygons()$x_min, navigationPolygons()$x_max),
-                  step=1,
-                  width='100%'),
-      div(style="display:inline-block",
-          tags$button(id='apply_navigate_button', type="button",
-                      class="btn action-button btn-primary",
-                      style='font-size:15px; text-align:center',
-                      HTML('<i class="icon-star"></i>Apply Changes'))
-      )
-  ) # end of tabBox
-})
-
-# function evaluates when apply_navigate_button is pressed
-apply_navigate <- eventReactive(input$apply_navigate_button,{})
-
-# subset cleanData() ready for Manhattan plot based on selectize_linearManhattan_variables
-ManhattanData <- reactive({
-  data <- cleanData()
-  if (is.null(input$selectize_linearManhattan_variables)) {
-    output <- list(pos=data$pos,
-                   pos_modifier=data$pos_modifier,
-                   chrom=data$chrom,
-                   chromLevels=data$chromLevels,
-                   chromIndex=data$chromIndex,
-                   chromMidpoint=data$chromMidpoint,
-                   y=NULL,
-                   y_col=0,
-                   pos_userDefined=data$pos_userDefined,
-                   chrom_userDefined=data$chrom_userDefined)
-  } else {
-    y <- data$y[,input$selectize_linearManhattan_variables,drop=FALSE]
-    output <- list(pos=data$pos,
-                   pos_modifier=data$pos_modifier,
-                   chrom=data$chrom,
-                   chromLevels=data$chromLevels,
-                   chromIndex=data$chromIndex,
-                   chromMidpoint=data$chromMidpoint,
-                   y=y,
-                   y_col=ncol(y),
-                   pos_userDefined=data$pos_userDefined,
-                   chrom_userDefined=data$chrom_userDefined)
-  }
-  return(output)
-})
-
-## reactive conductor for subsetting ManhattanData
-## based on restrict_chrom selector, and converting into
-## series of polygons for navigation plot.
-## Returns:
-# # list(x_min,
-# #      x_max,
-# #      y_min,
-# #      y_max,
-# #      polygon=list(x,y,chromIndex),
-# #      chromLevels,
-# #      chromMidpoint)
-
-
-navigationPolygons <- reactive({
-
-  nullOutput <- list(x_min=0,
-                     x_max=100,
-                     y_min=0,
-                     y_max=1,
-                     polygon=list(),
-                     chromLevels=NULL,
-                     chromMidpoint=NULL,
-                     chromChosen='(all)')
-
-  data <- ManhattanData()
-
-  # if data$y is NULL, return nullOutput
-  if (is.null(data$y))
-    return(nullOutput)
-
-  # if input$restrict_chrom is NULL, return nullOutput
-  chromChosen <- input$restrict_chrom
-  if (is.null(chromChosen))
-    return(nullOutput)
-
-  # if plotting all chromosomes
-  if (chromChosen=='(all)') {
-    x <- data$pos + data$pos_modifier
-    y <- data$y[,1]
-    chromIndex <- data$chromIndex
-    chromLevels <- data$chromLevels
-
-  # if plotting single chromosome
-  } else {
-    x <- subset(data$pos,
-                data$chrom==input$restrict_chrom)
-    y <- subset(data$y[,1],
-                data$chrom==input$restrict_chrom)
-    chromIndex <- subset(data$chromIndex,
-                         data$chrom==input$restrict_chrom)
-    chromLevels <- input$restrict_chrom
-  }
-
-  ## convert x and y to polygons
-  polyNum <- 200
-  x_min <- min(x,na.rm=TRUE)
-  x_max <- max(x,na.rm=TRUE)
-  y_min <- min(y,na.rm=TRUE)
-  y_max <- max(y,na.rm=TRUE)
-
-  df <- data.frame(y=y, chromIndex=chromIndex)
-  breakVec <- seq(x_min, x_max, l=polyNum+1)
-  breakDelta <- (breakVec[2]-breakVec[1])/2
-  breakMids <- (breakVec[-1]+breakVec[-length(breakVec)])/2
-  ## split df into list based on which interval x falls into
-  c <- split(df,f=cut(x,breaks=breakVec))
-  output <- list(x_min=x_min,
-                 x_max=x_max,
-                 y_min=y_min,
-                 y_max=y_max,
-                 polygon=list(),
-                 chromLevels=chromLevels,
-                 chromMidpoint=data$chromMidpoint,
-                 chromChosen=chromChosen)
-  for (i in 1:length(c)) {
-    if (length(c[[i]]$y)>0) {
-      r <- range(c[[i]]$y,na.rm=TRUE)
-      output$polygon[[i]] <- list(x=c(breakMids[i]-breakDelta,
-                                      breakMids[i]+breakDelta,
-                                      breakMids[i]+breakDelta,
-                                      breakMids[i]-breakDelta),
-                                  y=c(r[1],r[1],r[2],r[2]),
-                                      chromIndex=c[[i]]$chromIndex[1])
-    }
-  }
-  return(output)
-})
-
-# navigation plot
-output$plot_navigation <- renderPlot({
-  polys <- navigationPolygons()
-
-  # if no polygons, plot placeholder
-  if (length(polys$polygon)==0) {
-    par(mar=c(0.2,0.8,0.2,0.8))
-    plot(0, type='n',
-         xlim=c(0,1), ylim=c(0,1),
-         xaxs='i', yaxs='i', axes=FALSE)
-    text(0.5, 0.5,
-         '(Select plotting variables)',
-         cex=1.5)
-    return()
-  }
-
-  # produce empty plot
-  par(mar=c(0.2,0.8,0.2,0.8), xpd=NA)
-  k <- 0.8
-  ylim <- c(polys$y_min,
-            polys$y_max*(0.5+k) + polys$y_min*(0.5-k))
-  plot(0, type='n',
-       xlim=c(polys$x_min,polys$x_max), ylim=ylim,
-       xaxs='i', yaxs='i', axes=FALSE)
-
-  # add text numbering chromosomes
-  if (!is.null(polys$chromLevels)) {
-    text(x=polys$chromMidpoint,
-         y=polys$y_max*(0.5+0.7) + polys$y_min*(0.5-0.7),
-         labels=polys$chromLevels, font=2)
-  }
-
-  # add polygons, including outside border
-  for (i in 1:length(polys$polygon)) {
-    polygon(polys$polygon[[i]]$x,
-            polys$polygon[[i]]$y,
-            col=c('black','red')[2-polys$polygon[[i]]$chromIndex%%2],
-            border='white')
-  }
-  polygon(c(polys$x_min,polys$x_max, polys$x_max,polys$x_min),
-          c(polys$y_min,polys$y_min, polys$y_max,polys$y_max))
-
-  # grey-out side regions based on slider
-  s <- input$slider_navigate
-  polygon(c(polys$x_min,s[1],s[1],polys$x_min),
-          c(polys$y_min,polys$y_min,polys$y_max,polys$y_max),
-          col=rgb(1,1,1,0.8))
-  polygon(c(polys$x_max,s[2],s[2],polys$x_max),
-          c(polys$y_min,polys$y_min,polys$y_max,polys$y_max),
-          col=rgb(1,1,1,0.8))
-})
-
-
-###########################
-## Box: Univariate Plots ##
-###########################
-
-# box for plotting univariate distributions
-output$box_plot_linearManhattan <- renderUI({
-  box(title=NULL, status="warning",
-      solidHeader=FALSE, collapsible=FALSE, width=12,
-      h2(input$univariate_main_title, align='center'),
-      h3(input$univariate_sub_title, align='center'),
-      plotOutput('plot1',height=200*ManhattanData()$y_col+100+20)
-  )
-})
-
-# plot univariate distributions
-output$plot1 <- renderPlot({
-
-  barplot(rep(10, 5), col=funky(5))
+# # box for plotting univariate distributions
+# output$box_plot_linearManhattan <- renderUI({
+#   box(title=NULL, status="warning",
+#       solidHeader=FALSE, collapsible=FALSE, width=12,
+#       h2(input$univariate_main_title, align='center'),
+#       h3(input$univariate_sub_title, align='center'),
+#       plotOutput('plot1',height=200*ManhattanData()$y_col+100+20)
+#   )
+# })
+#
+# # plot univariate distributions
+# output$plot1 <- renderPlot({
+#
+#   barplot(rep(10, 5), col=funky(5))
 
 #   # only evaluate when apply_navigate_button is pressed
 #   apply_navigate()
@@ -1338,8 +1206,8 @@ output$plot1 <- renderPlot({
 #     points(x, y, col=colVec, pch=20, cex=1)
 #     box()
 #   }
-
-})
+#
+# })
 
 
 

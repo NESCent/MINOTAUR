@@ -450,7 +450,7 @@ output$box_scatterPlot <- renderUI({
 
     ## selectInput w col.pals
     selectizeInput(id_scatterPlot_col.pal,
-                  label="Colour palette",
+                  label="Colour palette:",
                   choices = list("Heat colours" = "heat.colors",
                                  "Terrain colours" = "terrain.colors",
                                  "Topo colours" = "topo.colors",

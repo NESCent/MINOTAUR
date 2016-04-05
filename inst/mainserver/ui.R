@@ -206,42 +206,18 @@ ui <- dashboardPage(title= "MINOTAUR",
                        uiOutput("box_linearManhattan_button")
                 )
               )
-              #               fluidRow(
-              #                 column(4,
-              #                        # controls for linear Manhattan plots
-              #                        uiOutput("box_linearManhattan_controls"),
-              #
-              #                        uiOutput("box_linearManhattan_button")
-              #                        #textOutput("buttonTest_linearManhattan")
-              #                 ),
-              #                 column(8,
-              #                        # plot linear Manhattan
-              #                        uiOutput("box_plot_linearManhattan"),
-              #
-              #                        # navigation panel
-              #                        uiOutput("box_linearManhattan_controls_aes")
-              #                 )
-              #               )
       ), # end of Linear Manhattan Plot page tabItem
 
       #### Circular Manhattan Plot page
       tabItem(tabName="plots_circular_Manhattan",
-      fluidRow(
-        column(4,
-               # controls for circular Manhattan plots
-               uiOutput("box_circularManhattan_controls"),
-
-               uiOutput("box_circularManhattan_button")
-               #textOutput("buttonTest_circularManhattan")
-        ),
-        column(8,
-               # plot circular Manhattan
-               uiOutput("box_plot_circularManhattan"),
-
-               # navigation panel
-               uiOutput("box_circularManhattan_controls_aes")
-        )
-      )
+              fluidRow(
+                column(12,
+                       uiOutput("box_circularManhattan")
+                ),
+                column(4,
+                       uiOutput("box_circularManhattan_button")
+                )
+              )
     ) # end of Circular Manhattan Plot page tabItem
 
 
