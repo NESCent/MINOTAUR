@@ -12,13 +12,13 @@
 output$box_formatData <- renderUI({
   box(title="Identify Variables", status="primary", solidHeader=TRUE, collapsible=TRUE, width=12,
       h3('Identify Genomic Variables'),
-      p('Here you can identify which variables (if any) define genomic position and chromosome.'),
+      p('Here you can identify which variables (if any) define genomic position and grouping (e.g. chromosome).'),
       fluidRow(
         column(6,
                selectInput('formatData_select_position', label='Position variable', choices=as.list(c('(none)',names(rawData()$data))), selected=stripPositionChromosome()$posVar, multiple=FALSE)
         ),
         column(6,
-               selectInput('formatData_select_chromosome', label='Chromosome variable', choices=as.list(c('(none)',names(rawData()$data))), selected=stripPositionChromosome()$chromVar, multiple=FALSE)
+               selectInput('formatData_select_chromosome', label='Grouping variable', choices=as.list(c('(none)',names(rawData()$data))), selected=stripPositionChromosome()$chromVar, multiple=FALSE)
         )
       )
   )

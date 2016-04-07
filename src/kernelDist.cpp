@@ -12,7 +12,7 @@ Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2) 
     int dims = int(data.size());
     int n = data[0].size();
     double C1 = 0.5/sigma2;
-    double C2 = 2*log(double(n)) + dims*log(6.283185*sigma2);
+    double C2 = 2*log(double(n-1)) + dims*log(6.283185*sigma2);
 
     double z, x;
     vector<double> distance(n);

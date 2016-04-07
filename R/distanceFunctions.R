@@ -256,11 +256,11 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 } # end kernelDist
 
 
-############# kernel density log-likelihood #############################################
+############# kernel density deviabce #############################################
 
-#' Kernel Density Log-likelihood
+#' Kernel Density Deviance
 #'
-#' Calculates the log-likelihood of the data under the same kernel density model used
+#' Calculates the Bayesian deviance (-2*log-likelihood) under the same kernel density model used
 #' by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
 #' (maximum likelihood) bandwith to use in the kernelDist() function (see example).
 #'
@@ -285,11 +285,11 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 #' # create a vector of bandwidths to explore
 #' lambda <- seq(0.1,2,0.1)
 #'
-#' # obtain log-likelihood at each of these bandwidths
-#' logLike <- kernelLogLike(df,bandwidth=lambda,reportProgress=TRUE)
+#' # obtain deviance at each of these bandwidths
+#' deviance <- kernelDeviance(df,bandwidth=lambda,reportProgress=TRUE)
 #'
-#' # find the maximum-likelihood bandwidth
-#' lambda_ML <- lambda[which.max(logLike)]
+#' # find the maximum-likelihood (minimum-deviance) bandwidth
+#' lambda_ML <- lambda[which.min(deviance)]
 #'
 #' # use this value when calculating kernel density distances
 #' distances <- kernelDist(df,bandwidth=lambda_ML)
@@ -339,18 +339,18 @@ kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1)
     df.vars[,i] <- (df.vars[,i]-mean(df.vars[,i]))/sd(df.vars[,i])
   }
 
-  #### calculate log-likelihood for all bandwidths
+  #### calculate deviance for all bandwidths
   output <- rep(NA,length(bandwidth))
   for (i in 1:length(bandwidth)) {
     if (reportProgress) {
       message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
       flush.console()
     }
-    output[i] <- C_kernelLogLike(split(t(df.vars), 1:dims), bandwidth[i]^2)$logLike
+    output[i] <- C_kernelDeviance(split(t(df.vars), 1:dims), bandwidth[i]^2)$logLike
   }
 
   return(output)
-} # end kernelLogLike
+} # end kernelDeviance
 
 
 ############# nearest neighbor distance #############################################
