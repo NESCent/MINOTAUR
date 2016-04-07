@@ -299,7 +299,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
 
 ########################################################################
 
-kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), reportProgress=FALSE){
+kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), reportProgress=FALSE){
 
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -313,7 +313,7 @@ kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1)
   # extract variables from dfv
   df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
   n <- nrow(df.vars)
-  dims <- ncol(df.vars)
+  d <- ncol(df.vars)
 
   # check that all selected columns are numeric
   if (any(!apply(df.vars,2,is.numeric)))
@@ -335,7 +335,7 @@ kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1)
     stop("bandwidth must contain values greater than 0 and less than infinity")
 
   #### standardise in each dimension
-  for (i in 1:dims) {
+  for (i in 1:d) {
     df.vars[,i] <- (df.vars[,i]-mean(df.vars[,i]))/sd(df.vars[,i])
   }
 
@@ -346,7 +346,7 @@ kernelLogLike <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1)
       message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
       flush.console()
     }
-    output[i] <- C_kernelDeviance(split(t(df.vars), 1:dims), bandwidth[i]^2)$logLike
+    output[i] <- C_kernelDeviance(split(t(df.vars), 1:d), bandwidth[i]^2)$deviance
   }
 
   return(output)
@@ -422,6 +422,198 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv)){
 
   #### calculate nearest neighbor distances using C++ function
   distances <- C_neighborDist(split(t(df.vars), 1:dims))$distance
+
+  return(distances)
+} # end neighborDist
+
+
+########################################################################
+# second version of harmonicDist that takes into account all covariances
+harmonicDist2 <- function(dfv, column.nums=1:ncol(dfv)){
+
+  #### perform simple checks on data
+  # check that dfv is a matrix or data frame
+  if (!is.matrix(dfv) & !is.data.frame(dfv))
+    stop("dfv must be a matrix or data frame")
+
+  # check that column.nums can be used to index dfv without error
+  if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
+    stop("column.nums must contain valid indexes for choosing columns in dfv")
+
+  # extract variables from dfv
+  df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+  n <- nrow(df.vars)
+  d <- ncol(df.vars)
+
+  # check that all selected columns are numeric
+  if (any(!apply(df.vars,2,is.numeric)))
+    stop("all selected columns of dfv must be numeric")
+
+  # check that no NA values
+  if (any(is.na(df.vars)))
+    stop("dfv cannot contain NA values")
+
+  # check that at least two rows in df.vars
+  nlocs <- nrow(df.vars)
+  if (nlocs<2)
+    stop("dfv must contain at least two rows")
+
+  # calculate inverse covariance matrix
+  S <- cov(df.vars)
+  S_inv <- solve(S)
+
+  #### calculate harmonic mean distances using C++ function
+  distances <- C_harmonicDist2(split(t(df.vars),1:d), split(S_inv,1:d))$distance
+
+  return(distances)
+} # end harmonicDist
+
+########################################################################
+# second version of kernelDist that takes into account all covariances
+kernelDist2 <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default"){
+
+  #### perform simple checks on data
+  # check that dfv is a matrix or data frame
+  if (!is.matrix(dfv) & !is.data.frame(dfv))
+    stop("dfv must be a matrix or data frame")
+
+  # check that column.nums can be used to index dfv without error
+  if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
+    stop("column.nums must contain valid indexes for choosing columns in dfv")
+
+  # extract variables from dfv
+  df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+  n <- nrow(df.vars)
+  d <- ncol(df.vars)
+
+  # check that all selected columns are numeric
+  if (any(!apply(df.vars,2,is.numeric)))
+    stop("all selected columns of dfv must be numeric")
+
+  # check that no NA values
+  if (any(is.na(df.vars)))
+    stop("dfv cannot contain NA values")
+
+  # check that at least two rows in df.vars
+  if (n<2)
+    stop("dfv must contain at least two rows")
+
+  # check that bandwidth is either "default" or numeric. If default then apply Silverman's rule.
+  if (is.numeric(bandwidth)) {
+    if (bandwidth<=0 | !is.finite(bandwidth))
+      stop("bandwidth must be greater than 0 and less than infinity")
+  } else {
+    if (is.na(bandwidth=="default")) {
+      stop("bandwidth must be 'default' or numeric")
+    } else {
+      if (bandwidth=="default") {
+        bandwidth = (4/(d+2))^(1/(d+4))*n^(-1/(d+4))
+      } else {
+        stop("bandwidth must be 'default' or numeric")
+      }
+    }
+  }
+
+  # calculate inverse covariance matrix
+  S <- cov(df.vars)
+  S_inv <- solve(S)
+
+  #### calculate kernel density distances using C++ function
+  distances <- C_kernelDist2(split(t(df.vars), 1:d), bandwidth^2, split(S_inv,1:d))$distance
+
+  return(distances)
+} # end kernelDist
+
+########################################################################
+# second version of kernelDeviance that takes into account all covariances
+kernelDeviance2 <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), reportProgress=FALSE){
+
+  #### perform simple checks on data
+  # check that dfv is a matrix or data frame
+  if (!is.matrix(dfv) & !is.data.frame(dfv))
+    stop("dfv must be a matrix or data frame")
+
+  # check that column.nums can be used to index dfv without error
+  if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
+    stop("column.nums must contain valid indexes for choosing columns in dfv")
+
+  # extract variables from dfv
+  df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+  n <- nrow(df.vars)
+  d <- ncol(df.vars)
+
+  # check that all selected columns are numeric
+  if (any(!apply(df.vars,2,is.numeric)))
+    stop("all selected columns of dfv must be numeric")
+
+  # check that no NA values
+  if (any(is.na(df.vars)))
+    stop("dfv cannot contain NA values")
+
+  # check that at least two rows in df.vars
+  if (n<2)
+    stop("dfv must contain at least two rows")
+
+  # check that all elements of bandwidth are numeric and between 0 and infinity
+  bandwidth <- as.vector(unlist(bandwidth))
+  if (any(!is.numeric(bandwidth)))
+    stop("bandwidth must be a numeric vector")
+  if (any(bandwidth<=0) | any(!is.finite(bandwidth)))
+    stop("bandwidth must contain values greater than 0 and less than infinity")
+
+  # calculate inverse covariance matrix
+  S <- cov(df.vars)
+  S_inv <- solve(S)
+
+  #### calculate deviance for all bandwidths
+  output <- rep(NA,length(bandwidth))
+  for (i in 1:length(bandwidth)) {
+    if (reportProgress) {
+      message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
+      flush.console()
+    }
+    output[i] <- C_kernelDeviance2(split(t(df.vars), 1:d), bandwidth[i]^2, split(S_inv,1:d))$deviance
+  }
+
+  return(output)
+} # end kernelDeviance
+
+########################################################################
+# second version of neighborDist that takes into account all covariances
+neighborDist2 <- function(dfv, column.nums=1:ncol(dfv)){
+
+  #### perform simple checks on data
+  # check that dfv is a matrix or data frame
+  if (!is.matrix(dfv) & !is.data.frame(dfv))
+    stop("dfv must be a matrix or data frame")
+
+  # check that column.nums can be used to index dfv without error
+  if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
+    stop("column.nums must contain valid indexes for choosing columns in dfv")
+
+  # extract variables from dfv
+  df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+  n <- nrow(df.vars)
+  d <- ncol(df.vars)
+
+  # check that all selected columns are numeric
+  if (any(!apply(df.vars,2,is.numeric)))
+    stop("all selected columns of dfv must be numeric")
+
+  # check that no NA values
+  if (any(is.na(df.vars)))
+    stop("dfv cannot contain NA values")
+
+  # check that at least two rows in df.vars
+  if (n<2)
+    stop("dfv must contain at least two rows")
+
+  # calculate inverse covariance matrix
+  S <- cov(df.vars)
+  S_inv <- solve(S)
+
+  #### calculate nearest neighbor distances using C++ function
+  distances <- C_neighborDist2(split(t(df.vars), 1:d), split(S_inv,1:d))$distance
 
   return(distances)
 } # end neighborDist

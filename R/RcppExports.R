@@ -5,15 +5,31 @@ C_harmonicDist <- function(data) {
     .Call('MINOTAUR_C_harmonicDist', PACKAGE = 'MINOTAUR', data)
 }
 
+C_harmonicDist2 <- function(data, S_inv) {
+    .Call('MINOTAUR_C_harmonicDist2', PACKAGE = 'MINOTAUR', data, S_inv)
+}
+
+C_kernelDeviance <- function(data, sigma2) {
+    .Call('MINOTAUR_C_kernelDeviance', PACKAGE = 'MINOTAUR', data, sigma2)
+}
+
+C_kernelDeviance2 <- function(data, sigma2, S_inv) {
+    .Call('MINOTAUR_C_kernelDeviance2', PACKAGE = 'MINOTAUR', data, sigma2, S_inv)
+}
+
 C_kernelDist <- function(data, sigma2) {
     .Call('MINOTAUR_C_kernelDist', PACKAGE = 'MINOTAUR', data, sigma2)
 }
 
-C_kernelLogLike <- function(data, sigma2) {
-    .Call('MINOTAUR_C_kernelLogLike', PACKAGE = 'MINOTAUR', data, sigma2)
+C_kernelDist2 <- function(data, sigma2, S_inv) {
+    .Call('MINOTAUR_C_kernelDist2', PACKAGE = 'MINOTAUR', data, sigma2, S_inv)
 }
 
 C_neighborDist <- function(data) {
     .Call('MINOTAUR_C_neighborDist', PACKAGE = 'MINOTAUR', data)
+}
+
+C_neighborDist2 <- function(data, S_inv) {
+    .Call('MINOTAUR_C_neighborDist2', PACKAGE = 'MINOTAUR', data, S_inv)
 }
 
