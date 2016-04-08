@@ -1,11 +1,13 @@
 
-getwd()
+getwd() #setwd("/Users/katie/Desktop/CurrResearch/3-MINOTAUR")
 source("misc/evalsims/distanceFunctionsOther.R")
 #source("misc/evalsims/ComparePlot.R")
 source("misc/evalsims/GetAllMultiStats.R")
-install.packages("devtools", dependencies=TRUE)
+source("misc/evalsims/getEmpiricalP2.R")
+library(qvalue)
+#install.packages("devtools", dependencies=TRUE)
 library(devtools)
-install_github("NESCent/MINOTAUR")
+#install_github("NESCent/MINOTAUR")
 library(MINOTAUR)
 
 #### Non Parameteric Simulation Example ######
@@ -14,39 +16,41 @@ library(MINOTAUR)
   np2 <- Getdf(np)
   col <- rep("grey", nrow(np2))
   pch <- rep(19, nrow(np2))
+  cex <- rep(0.8, nrow(np2))
   col[nrow(np2)] <- "blue"
   pch[nrow(np2)] <- 17
-  ind <- c(1:999/1000,1.01)
- png("misc/evalsims/nonPara_log.png", width=3, height=8, res=450, units="in")
-  par(mfrow=c(4,1), mar=c(3,4,1,1), bty="l")
-    plot(ind,log(np2$Md), col=col, pch=pch, ylab= "Mahalanobis")
+  cex[nrow(np2)] <- 2
+  ind <- c(1:999/10000,.11)
+ png("misc/evalsims/nonPara_log.png", width=10, height=8, res=300, units="in")
+  par(mfrow=c(2,2), mar=c(3,4,1,1), bty="l")
+    plot(ind,log(np2$Md), col=col, pch=pch, ylab= "log(Mahalanobis)", cex=cex, xaxt="n")
       #abline(sort(log(dfv3.out$Md[dfv3.out$s==0]))[9900*0.999],0)
       text(0,1.5, "A", cex=2)
 
-    plot(ind,log(np2$Hd), col=col, pch=pch, ylab= "Harmonic mean dist.")
+    plot(ind,log(np2$Hd), col=col, pch=pch, ylab= "log(Harmonic mean dist.)", cex=cex, xaxt="n")
       #abline(sort(log(dfv3.out$Hd[dfv3.out$s==0]))[9900*0.999],0)
       text(0,1.5, "B", cex=2)
       #text(0,2.3,round(getEmpPower(dfv3.out$Hd,dfv3.out$s_high==0),2))
 
-    plot(ind, log(np2$Kd), col=col, pch=pch, ylab= "Kernel density")
+    plot(ind, log(np2$Kd), col=col, pch=pch, ylab= "log(Kernel density)", cex=cex, xaxt="n")
       #abline(sort(log(dfv3.out$Kd[dfv3.out$s==0]))[9900*0.999],0)
       text(0,4.0, "C", cex=2)
       #text(0,4.1,round(getEmpPower(dfv3.out$Kd,dfv3.out$s_high==0),2))
 
-    plot(ind, log(np2$Nd), col=col, pch=pch, ylab= "Nearest neighbor")
+    plot(ind, log(np2$Nd), col=col, pch=pch, ylab= "log(Nearest neighbor)", cex=cex, xaxt="n")
       #abline(sort(log(dfv3.out$Nd[dfv3.out$s==0]))[9900*0.999],0)
       text(0,0, "D", cex=2)
       #text(0,0.1,round(getEmpPower(dfv3.out$Nd,dfv3.out$s_high==0),2))
   dev.off()
 
-#### One Refuge Simulation Example ######
+#### 2 Refuge Simulation Example ######
   d1 <- read.table("~/Google Drive/MultiOutlierVisualization/practiceData/KatieSims/2R_R30_1351142970_988_6_NumPops=30_NumInd=20Bayenv2LFMMpca.Cpval", header=TRUE)
   head(d1)
   dfv <- d1[c(1,3,4,5,10,12,13,15:17,34)]
   dim(dfv)
   head(dfv)
   #dfv2 <- dfv[dfv$SNPIncluded,]
-  colnums <- 9:11
+  colnums <- 8:11
   #head(dfv)
   #str(dfv)
   #cbind(colnames(dfv))
@@ -67,29 +71,66 @@ library(MINOTAUR)
   levels(col) = c("grey",  "#9ad0f3", "#0072B2", "#D55E00")
   col <- as.character(col)
   ind <- c(1:9900/100, 100:199)
-  png("misc/evalsims/TwoRef_log.png", width=6, height=10, res=450, units="in")
-   par(mfrow=c(4,1), mar=c(3,4,1,1), bty="l")
-    plot(ind, log(dfv3.out$Md), col=col, pch=19, ylab= "Mahalanobis")
+  cex <- c(rep(0.8, 9900), rep(1.1, 100))
+  pch <- c(rep(19, 9900), rep(17, 100))
+  png("misc/evalsims/TwoRef_log.png", width=10, height=8, res=450, units="in")
+   par(mfrow=c(2,2), mar=c(3,4,1,1), bty="l")
+    plot(ind, log(dfv3.out$Md), col=col, pch=pch, ylab= "log(Mahalanobis)", cex=cex)
       abline(sort(log(dfv3.out$Md[dfv3.out$s==0]))[9900*0.999],0)
-      text(0,2.5, "A", cex=2)
-      text(0,2.1,round(getEmpPower(dfv3.out$Md,dfv3.out$s_high==0),2))
+      text(0,3, "A", cex=2)
+      text(20,3,round(getEmpPower(dfv3.out$Md,dfv3.out$s_high==0),2))
+      legend(125, 0, legend=c("Neutral", "s = 0.005", "s=0.01", "s=0.1"),
+             pch=c(19, 17, 17,17), col=c("grey",  "#9ad0f3", "#0072B2", "#D55E00"))
 
-    plot(ind, log(dfv3.out$Hd), col=col, pch=19, ylab= "Harmonic mean dist.")
+    plot(ind, log(dfv3.out$Hd), col=col, pch=pch, ylab= "log(Harmonic mean dist.)", cex=cex)
       abline(sort(log(dfv3.out$Hd[dfv3.out$s==0]))[9900*0.999],0)
-      text(0,2.5, "B", cex=2)
-      text(0,2.3,round(getEmpPower(dfv3.out$Hd,dfv3.out$s_high==0),2))
+      text(0,3.1, "B", cex=2)
+      text(20,3.1,round(getEmpPower(dfv3.out$Hd,dfv3.out$s_high==0),2))
 
-    plot(ind, log(dfv3.out$Kd), col=col, pch=19, ylab= "Kernel density")
+    plot(ind, log(dfv3.out$Kd), col=col, pch=pch, ylab= "log(Kernel density)", cex=cex)
       abline(sort(log(dfv3.out$Kd[dfv3.out$s==0]))[9900*0.999],0)
-      text(0,4.5, "C", cex=2)
-      text(0,4.1,round(getEmpPower(dfv3.out$Kd,dfv3.out$s_high==0),2))
+      text(0,6, "C", cex=2)
+      text(20,6,round(getEmpPower(dfv3.out$Kd,dfv3.out$s_high==0),2))
 
-    plot(ind, log(dfv3.out$Nd), col=col, pch=19, ylab= "Nearest neighbor")
+    plot(ind, log(dfv3.out$Nd), col=col, pch=pch, ylab= "log(Nearest neighbor)", cex=cex)
       abline(sort(log(dfv3.out$Nd[dfv3.out$s==0]))[9900*0.999],0)
-      text(0,0.5, "D", cex=2)
-      text(0,0.1,round(getEmpPower(dfv3.out$Nd,dfv3.out$s_high==0),2))
+      text(0,1.5, "D", cex=2)
+      text(20,1.5,round(getEmpPower(dfv3.out$Nd,dfv3.out$s_high==0),2))
 
   dev.off()
+
+  png("misc/evalsims/TwoRefUnivarDist.png", width=6, height=6, res=450, units="in")
+    dplot <- dfv[,colnums]
+    dplot[,2] <- abs(dplot[,2]) #abs for rho
+    names <- c("log(Bayes Factor)", "Spearman's rho", "XTX", "Z-Score")
+    colnames(dplot)
+    par(mfrow=c(3,3), mar=c(3,3,0,0), oma=c(1,1,1,1))
+      # (1,1) BF vs rho
+      plot(dplot[,1], dplot[,2], col=col, pch=pch, bty="n") 
+        mtext("Bayes Factor", side=1, line=2.5, cex=1)
+        mtext("Spearman's rho", side=2, line=2.5, cex=1)
+      # (1,2) XTX vs rho
+      plot(dplot[,3], dplot[,2], col=col, pch=pch, bty="n")
+      # (1,3) Z vs rhow
+      plot(dplot[,4], dplot[,2], col=col, pch=pch, bty="n")
+      # (2, 1) blank
+      plot(NULL, NULL, xlim=c(0,1), ylim=c(0,1), xaxt="n", yaxt="n", bty="n")
+      # (2,2) XTX vs BF
+      plot(dplot[,3], dplot[,1], col=col, pch=pch, bty="n")
+        mtext("XTX", side=1, line=2.5, cex=1)
+        mtext("Bayes Factor", side=2, line=2.5, cex=1)
+      # (2,3) Z vs BF
+      plot(dplot[,4], dplot[,1], col=col, pch=pch, bty="n")
+      # (3, 1) blank
+      plot(NULL, NULL, xlim=c(0,1), ylim=c(0,1), xaxt="n", yaxt="n", bty="n")
+      # (3, 2) blank
+      plot(NULL, NULL, xlim=c(0,1), ylim=c(0,1), xaxt="n", yaxt="n", bty="n")
+      # (2,3) Z vs XTX
+      plot(dplot[,4], dplot[,3], col=col, pch=pch, bty="n")
+          mtext("Z-score", side=1, line=2.5, cex=1) 
+          mtext("XTX", side=2, line=2.5, cex=1)
+    dev.off()
+        
 
   png("misc/evalsims/TwoRefUnivar.png", width=6, height=10, res=450, units="in")
     par(mfrow=c(4,1), mar=c(3,4,1,1), bty="l")
@@ -114,19 +155,7 @@ library(MINOTAUR)
       text(0,2.3,round(getEmpPower(dfv3.out$TW.Zscore,dfv3.out$s_high==0),2))
   dev.off()
 ##################################################
-
-##################################################
-#### Non-parametric example with toy data ######
-  dfv3 <- read.table("data/NonParamEx.txt", header=TRUE)
-  dfv3.out <- Getdf(dfv3, c(1,2))
-  head(dfv3)
-  pdf("misc/evalsims/NonParamEx.pdf", width = 4, height = 4)
-    plot(dfv3$x2, dfv3$y2, col=c(rep(1,10000),3), pch=19)
-  dev.off()
-  png("misc/evalsims/NonParamEx_multiV.png", width = 6, height = 10, res=450, units="in")
-    ComparePlot(dfv3.out, colorVect=c(rep(grey(0.8),10000),"blue"), ind=NULL)
-  dev.off()
-##################################################
+####################################
 
 ##################################################
 #### Liuyang's data ######
