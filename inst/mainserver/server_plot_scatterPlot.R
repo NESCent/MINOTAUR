@@ -241,7 +241,9 @@ output$box_scatterPlot <- renderUI({
                        .get.scatterPlot.plot(dat, i),
                        .get.scatterPlot.controls.aes(dat, i)
                 )
-              )
+              ),
+
+              style = list('background-color: #B6B6B6') # dark gray (amber)
           )
         }
       })
@@ -289,8 +291,9 @@ output$box_scatterPlot <- renderUI({
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
-        status="primary",
-        solidHeader=TRUE,
+        # status="primary",
+        status="warning",
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
@@ -299,8 +302,9 @@ output$box_scatterPlot <- renderUI({
         ###################
 
         box(title="Select x-axis:", # "Univariate Distributions"
-            status="info",
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -328,7 +332,9 @@ output$box_scatterPlot <- renderUI({
                          label = "Invert x-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_scatterPlot_flipx[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
         ),
 
         ###################
@@ -336,8 +342,9 @@ output$box_scatterPlot <- renderUI({
         ###################
 
         box(title="Select y-axis:",
-            status="info",
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -361,7 +368,9 @@ output$box_scatterPlot <- renderUI({
                          label = "Invert y-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_scatterPlot_flipy[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
 
         ),
 
@@ -374,8 +383,9 @@ output$box_scatterPlot <- renderUI({
         ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
 
         box(title="Select outlier variable:",
-            status="info",
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -401,7 +411,9 @@ output$box_scatterPlot <- renderUI({
                          label = "Tail",
                          choices = c("Lower", "Upper", "Two-tailed"),
                          selected =  rv_scatterPlot_outlier.tail[[k]], # "Lower",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
             )
 
         )
@@ -437,7 +449,7 @@ output$box_scatterPlot <- renderUI({
   out <-
     box(title="Adjust Plot Aesthetics:",
         status="warning",
-        solidHeader=TRUE,
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
@@ -448,6 +460,7 @@ output$box_scatterPlot <- renderUI({
         collapsible=TRUE,
         width=12,
 
+        fluidRow(column(4,
     ## selectInput w col.pals
     selectizeInput(id_scatterPlot_col.pal,
                   label="Colour palette:",
@@ -457,24 +470,27 @@ output$box_scatterPlot <- renderUI({
                                  "CM colours" = "cm.colors",
                                  "Gray colours" = "gray.colors"),
                   selected =  rv_scatterPlot_col.pal[[k]], # "heat.colors",
-                  multiple=FALSE),
+                  multiple=FALSE)),
 
-
+    column(4,
     sliderInput(id_scatterPlot_n.bins,
                 label = "Number of bins:",
                 min = 2, max = 1000,
                 value =  rv_scatterPlot_n.bins[[k]], # 100,
-                step = 1),
+                step = 1)),
 
 
+    column(4,
     radioButtons(id_scatterPlot_grid,
                  label="Overlay grid?",
                  choices=list("Yes" = TRUE,
                               "No" = FALSE),
                  selected = rv_scatterPlot_grid[[k]],
                  inline = TRUE)
-    ),
+    )),
 
+    style = list('background-color: #FFECB3') # pale amber
+    ),
 
 
     box(title="Outlier aesthetics:",
@@ -483,6 +499,8 @@ output$box_scatterPlot <- renderUI({
         collapsible=TRUE,
         width=12,
 
+        fluidRow(
+          column(4,
     selectizeInput(id_scatterPlot_outlier.col.bg,
                    label = "Outlier colour (fill):",
                    choices = list("Red" = "red",
@@ -492,8 +510,9 @@ output$box_scatterPlot <- renderUI({
                                   "Blue" = "blue",
                                   "Purple" = "purple"),
                    selected =  rv_scatterPlot_outlier.col.bg[[k]], # "purple",
-                   multiple=FALSE),
+                   multiple=FALSE)),
 
+    column(4,
     selectizeInput(id_scatterPlot_outlier.col,
                   label = "Outlier colour (outline):",
                   choices = list("Red" = "red",
@@ -503,8 +522,9 @@ output$box_scatterPlot <- renderUI({
                                  "Blue" = "blue",
                                  "Purple" = "purple"),
                   selected =  rv_scatterPlot_outlier.col[[k]], # "blue",
-                  multiple=FALSE),
+                  multiple=FALSE)),
 
+    column(4,
     selectizeInput(id_scatterPlot_outlier.pch,
                    label = "Outlier shape:",
                    choices = list("Circle" = "21",
@@ -514,19 +534,28 @@ output$box_scatterPlot <- renderUI({
                                   "Triangle, point-down" = "25"
                                   ),
                    selected =  rv_scatterPlot_outlier.pch[[k]], # "24",
-                   multiple=FALSE),
+                   multiple=FALSE))
+    ),
 
+    hr(),
+
+    fluidRow(
+      column(6,
     sliderInput(id_scatterPlot_outlier.transp,
                 label = "Outlier transparency:",
                 min = 0, max = 1,
                 value =  rv_scatterPlot_outlier.transp[[k]], # 0.25,
-                step = 0.05),
+                step = 0.05)),
 
+    column(6,
     sliderInput(id_scatterPlot_outlier.cex,
                 label = "Outlier size:",
                 min = 0, max = 3,
                 value =  rv_scatterPlot_outlier.cex[[k]], # 1.5,
-                step = 0.1)
+                step = 0.1))
+    ),
+
+    style = list('background-color: #FFECB3') # pale amber
     )
 
     ) # end box

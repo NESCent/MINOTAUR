@@ -68,6 +68,7 @@ ui <- dashboardPage(title= "MINOTAUR",
   ################
 
   dashboardBody(
+
     tabItems(
 
       #### Welcome page

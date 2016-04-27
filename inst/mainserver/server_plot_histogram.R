@@ -172,7 +172,9 @@ output$box_hist_1D <- renderUI({
                        .get.hist_1D.plot(dat, i),
                        .get.hist_1D.controls.aes(dat, i)
                 )
-              )
+              ),
+
+              style = list('background-color: #B6B6B6') # dark gray (amber)
           )
         }
       })
@@ -208,8 +210,9 @@ output$box_hist_1D <- renderUI({
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
-        status="primary",
-        solidHeader=TRUE,
+        # status="primary",
+        status="warning",
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
@@ -218,8 +221,9 @@ output$box_hist_1D <- renderUI({
         ###################
 
         box(title="Select a variable to plot:", # "Univariate Distributions"
-            status="info",
+            # status="info",
             #status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -233,7 +237,9 @@ output$box_hist_1D <- renderUI({
                            label="Variable:",
                            choices= var.choices,
                            selected = rv_hist_1D_var[[k]],
-                           multiple=FALSE)
+                           multiple=FALSE),
+
+            style = list('background-color: #FFECB3') # pale amber
         )
 
         )
@@ -264,23 +270,37 @@ output$box_hist_1D <- renderUI({
   out <-
     box(title="Adjust Plot Aesthetics:",
         status="warning",
-        solidHeader=TRUE,
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
+        box(title="Histogram aesthetics:",
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+
+        fluidRow(
+          column(6,
         sliderInput(id_hist_1D_n.bins,
                     label = "Number of bins:",
                     min = 2, max = 1000,
                     value = rv_hist_1D_n.bins[[k]],
-                    step = 1),
+                    step = 1)),
 
+        column(6,
         radioButtons(id_hist_1D_grid,
                      label="Overlay grid?",
                      choices=list("Yes" = TRUE,
                                   "No" = FALSE),
                      selected = rv_hist_1D_grid[[k]],
-                     inline = TRUE),
+                     inline = TRUE))
+        ),
 
+        hr(),
+
+        fluidRow(
+        column(6,
         selectizeInput(id_hist_1D_col,
                        label = "Colour:", # (fill)
                        choices = list("Red" = "red",
@@ -290,13 +310,17 @@ output$box_hist_1D <- renderUI({
                                       "Blue" = "blue",
                                       "Purple" = "purple"),
                        selected =  rv_hist_1D_col[[k]], # "purple",
-                       multiple=FALSE),
+                       multiple=FALSE)),
 
+        column(6,
         sliderInput(id_hist_1D_transp,
                     label = "Transparency:",
                     min = 0, max = 1,
                     value =  rv_hist_1D_transp[[k]], # 0.25,
-                    step = 0.05)
+                    step = 0.05))
+        ),
+        style = list('background-color: #FFECB3') # pale amber
+        )
     ) # end box
 
   return(out)

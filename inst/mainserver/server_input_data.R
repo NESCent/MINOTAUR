@@ -57,125 +57,224 @@ output$headerBox_loadData <- renderUI({
 # box for loading data
 output$tabBox_loadData <- renderUI({
 
-  tabBox(width=12,
+  tabBox(id = "tabSet_loadData",
+         width=12,
          status='warning',
 
       ##################
       ## LOAD EXAMPLE ##
       ##################
-      tabPanel(title=HTML('<font size=4>Example Data</font>'), icon=icon("bar-chart"),
+      tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
               h3('Work with example data'),
               selectInput('exampleData', label='Select example',
                             choices=list("(use own data)" = "use_own",
-                                         "Expansion from One Refugia" = "OneRefSim",
+                                         "Expansion from Two Refugia" = "TwoRefSim",
                                          "Human GWAS" = "HumanGWAS",
-                                         "Non-Parametric Data" = "NonParamEx"), selected="OneRefSim")
+                                         "Non-Parametric Data" = "NonParamEx"),
+                          selected="TwoRefSim")
       ),
 
 
       #########################
       ## LOAD DATA FROM FILE ##
       #########################
-      tabPanel(title=HTML('<font size=4>Upload Data</font>'), icon=icon("upload"),
+      tabPanel(value = "user", title = HTML('<font size=4>Upload Data</font>'), icon = icon("upload"),
               h3('Upload data from file'),
               p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt).
                 Headers and delimiters can be specified below'),
 
-                    wellPanel(
-                      fluidRow(
-                        column(6,
-                               p(strong('Headers')),
-                               checkboxInput('headerOnCheckBox',
-                                             label='Use headers',
-                                             value=TRUE)
-                        ),
-                        column(6,
-                               p(strong('Delimiters')),
-                               radioButtons('delimiters',
-                                            label=NULL,
-                                            choices=list('comma-separated'=',',
-                                                         'tab-separated'='\t',
-                                                         'space-separated'=' '))
-                        )
-                      ), style='padding: 10px;'
-                    ),
+              #                     wellPanel(
+              #                       fluidRow(
+              #                         column(6,
+              #                                p(strong('Headers')),
+              #                                checkboxInput('headerOnCheckBox',
+              #                                              label='Use headers',
+              #                                              value=TRUE)
+              #                         ),
+              #                         column(6,
+              #                                p(strong('Delimiters')),
+              #                                radioButtons('delimiters',
+              #                                             label=NULL,
+              #                                             choices=list('comma-separated'=',',
+              #                                                          'tab-separated'='\t',
+              #                                                          'space-separated'=' '))
+              #                         )
+              #                       ), style='padding: 10px;'
+              #                     ),
 
-              fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
+              fileInput('inputFile', label='Load data from file', accept=NULL),
+              # fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
+              # "application/x-r-data"
               #, "RData","Rdata","Rda","RDA", "rdata", "rda"
-              hr()
+              hr(),
+
+              ## make CSV-related options a conditional panel, to appear only if file type is NOT Rdata:
+              conditionalPanel("output.userInputCSV == true",
+                               #input$inputFile$type %in% "application/x-r-data"
+                wellPanel(
+                  fluidRow(
+                    column(6,
+                           p(strong('Headers')),
+                           checkboxInput('headerOnCheckBox',
+                                         label='Use headers',
+                                         value=TRUE)
+                    ),
+                    column(6,
+                           p(strong('Delimiters')),
+                           radioButtons('delimiters',
+                                        label=NULL,
+                                        choices=list('comma-separated'=',',
+                                                     'tab-separated'='\t',
+                                                     'space-separated'=' '))
+                    )
+                  ), style='padding: 10px;'
+                )
+              )
               )
 
   )
 })
 
-# reactive conductor for reading data from file, or using example data. Returns list(data,name,description,rows,cols)
-rawData <- reactive({
-  nullOutput <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
 
-  # if both user data and example data are NULL (ie. on startup), return nullOutput
-  if (is.null(input$inputFile) & is.null(input$exampleData))
-    return(nullOutput)
-
-  # if user data is NULL and example data is 'use_own', return nullOutput
-  if (is.null(input$inputFile) & input$exampleData=='use_own')
-    return(nullOutput)
-
-  # if using example data then this takes precedence over user data
-  ## OneRefSim ##
-  if (input$exampleData=='OneRefSim') {
-    data(OneRefSim, package="MINOTAUR", envir=environment())
-    output <- list(data=OneRefSim,
-                   name='Example: Simulated Expansion from One Refugia',
-                   description='This is Katie\'s data set that contains population genetic data simulating expansion from one refugia.
-                   NOTE-- TO BE CHANGED TO TwoRefSim, the Expansion from TWO Refugia simulated dataset.',
-                   rows=nrow(OneRefSim),
-                   cols=ncol(OneRefSim))
-    return(output)
-  }
-  ## HumanGWAS ##
-  if (input$exampleData=='HumanGWAS') {
-    data(HumanGWAS, package="MINOTAUR", envir=environment())
-    output <- list(data=HumanGWAS,
-                   name='Example: Human GWAS',
-                   description='This is Liuyang\'s data set that contains an example of output returned from a human GWAS analysis.',
-                   rows=nrow(HumanGWAS),
-                   cols=ncol(HumanGWAS))
-    return(output)
-  }
-  ## NonParamEx ##
-  if (input$exampleData=='NonParamEx') {
-    data(NonParamEx, package="MINOTAUR", envir=environment())
-    output <- list(data=NonParamEx,
-                   name='Example: Non-Parametric Data',
-                   description='This is a simple two-variable data set that contains an example of non-parametric data...
-                   (Special use for this data set? Any additional advice needed here??).',
-                   rows=nrow(NonParamEx),
-                   cols=ncol(NonParamEx))
-    return(output)
-  }
-
-
-
-  # by this point we know that the user has chosen to load their own data (all other options are exhausted)
-  if (input$inputFile$type%in%c('text/csv','text/plain')) {
-    userData <- try(data.frame(fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
-    if (class(userData)=='try-error') {
-      print(userData)
-      output <- list(data=NULL,
-                     name=input$inputFile$name,
-                     description='Error: failed to import data. Check that data is formatted correctly.',
-                     rows=NULL,
-                     cols=NULL)
-      return(output)
-    } else {
-      output <- list(data=userData,
-                     name=input$inputFile$name,
-                     description=NULL,
-                     rows=nrow(userData),
-                     cols=ncol(userData))
-      return(output)
+## Dummy output to tell conditionalPanel whether data uploaded is Rdata (ie. is NOT CSV)
+output$userInputCSV <- reactive({
+  out <- FALSE
+  if(!is.null(input$inputFile)){
+    if(!is.null(input$inputFile$type)){
+      if (!input$inputFile$type %in% "application/x-r-data") {
+        out <- TRUE
+      }
     }
   }
+  return(out)
+})
+outputOptions(output, "userInputCSV", suspendWhenHidden=FALSE)
+
+
+
+# reactive conductor for reading data from file, or using example data. Returns list(data,name,description,rows,cols)
+rawData <- reactive({
+
+  # output <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
+  output <- NULL
+
+
+  if(is.null(input$tabSet_loadData)){
+    ## if no tab panel yet created (ie. on start-up),
+    ## (and no input of example data has been selected -- if this is even possible),
+    ## automatically load the TwoRefSim example dataset:
+    if (is.null(input$inputFile) & is.null(input$exampleData)){
+      data(TwoRefSim, package="MINOTAUR", envir=environment())
+      output <- list(data=TwoRefSim,
+                     name='Example: Simulated Expansion from Two Refugia',
+                     description='This data set contains population genetic data simulating expansion from two refugia.',
+                     rows=nrow(TwoRefSim),
+                     cols=ncol(TwoRefSim))
+    }
+
+  }else{
+    ## If the tabset panel has been created, choose either eg or user data to load:
+
+    # if using example data...
+    if(input$tabSet_loadData == "eg"){
+    ## TwoRefSim ##
+    if (input$exampleData=='TwoRefSim') {
+      data(TwoRefSim, package="MINOTAUR", envir=environment())
+      output <- list(data=TwoRefSim,
+                     name='Example: Simulated Expansion from Two Refugia',
+                     description='This data set contains population genetic data simulating expansion from two refugia.',
+                     rows=nrow(TwoRefSim),
+                     cols=ncol(TwoRefSim))
+    }
+    ## HumanGWAS ##
+    if (input$exampleData=='HumanGWAS') {
+      data(HumanGWAS, package="MINOTAUR", envir=environment())
+      output <- list(data=HumanGWAS,
+                     name='Example: Human GWAS',
+                     description='This data set contains an example of output returned from a human GWAS analysis.',
+                     rows=nrow(HumanGWAS),
+                     cols=ncol(HumanGWAS))
+    }
+    ## NonParamEx ##
+    if (input$exampleData=='NonParamEx') {
+      data(NonParamEx, package="MINOTAUR", envir=environment())
+      output <- list(data=NonParamEx,
+                     name='Example: Non-Parametric Data',
+                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
+
+                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
+
+                     rows=nrow(NonParamEx),
+                     cols=ncol(NonParamEx))
+    }
+    } # end eg input selected
+
+
+
+    ## if the user has chosen to load their own data
+    if(input$tabSet_loadData == "user"){
+
+      ## If no data yet loaded, print initial message:
+      output <- list(data=NULL,
+                     name=NULL,
+                     description="To upload your own data, click on the 'Choose file' button located in the panel at left.",
+                     rows=NULL,
+                     cols=NULL)
+
+      if(!is.null(input$inputFile)){
+        if(!is.null(input$inputFile$type)){
+          ###################
+          ## Load if Rdata ##
+          ###################
+          if (input$inputFile$type %in% "application/x-r-data") {
+            userData <- try(get(load(input$inputFile$datapath)), silent=TRUE)
+            if (class(userData)=='try-error') {
+              print(userData)
+              output <- list(data=NULL,
+                             name=input$inputFile$name,
+                             description='Error: failed to import data. Check that data is formatted correctly.',
+                             rows=NULL,
+                             cols=NULL)
+            } else {
+              output <- list(data=userData,
+                             name=input$inputFile$name,
+                             description=NULL,
+                             rows=nrow(userData),
+                             cols=ncol(userData))
+            }
+          }else{
+            #######################
+            ## load if CSV-type: ##
+            #######################
+            # if (input$inputFile$type%in%c('text/csv','text/plain')) {
+            userData <- try(data.frame(fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
+            if (class(userData)=='try-error') {
+              print(userData)
+              output <- list(data=NULL,
+                             name=input$inputFile$name,
+                             description='Error: failed to import data. Check that data is formatted correctly.',
+                             rows=NULL,
+                             cols=NULL)
+            }else {
+              output <- list(data=userData,
+                             name=input$inputFile$name,
+                             description=NULL,
+                             rows=nrow(userData),
+                             cols=ncol(userData))
+            }
+          }
+
+        }else{
+          output <- list(data=NULL,
+                         name=input$inputFile$name,
+                         description='Error: failed to import data. Check that file type is one of: CSV, plain text, or Rdata.',
+                         rows=NULL,
+                         cols=NULL)
+        }
+        } # end check for inputFile
+      } # end user input selected
+    } # end check for tabSet loaded
+  return(output)
 })
 
 #######################
@@ -206,6 +305,7 @@ output$valueBox_cols <- renderUI({
 
 # tabBox for displaying raw data and data summary
 output$tabBox_rawDataSummary <- renderUI({
+
   tabBox(title=NULL, status='warning', width=12,
          tabPanel(title=HTML('<font size=4>Raw data table</font>'),
                   dataTableOutput("rawDataTable")
@@ -217,7 +317,6 @@ output$tabBox_rawDataSummary <- renderUI({
 })
 
 # ## Example: Colour cells
-
 
 #############
 # # raw data table (original)
@@ -237,17 +336,57 @@ options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
 ## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
 #devtools::install_github('rstudio/DT')
 
+
 output$rawDataTable <- DT::renderDataTable({
+
+  out <- NULL
 
   ## Get data:
   dat <- rawData()$data
 
-  ## For the moment, I'm only using the first 200 rows for this example.
-  ## Gets slow by 1,000 rows and runs into an error w full dataset...
-  dat <- dat[c(1:200),]
-
   #set.seed(1)
   #dat <- matrix(sample(c(1:20), 500, replace=TRUE), nrow=50, byrow=TRUE)
+  if(!is.null(dat)){
+
+    ## For the moment, I'm only using the first 200 rows for this example.
+    ## Gets slow by 1,000 rows and runs into an error w full dataset...
+    dat <- dat[c(1:200),]
+
+    ## try to render & run expression
+    try.out <- try(.get.colorTable.style(dat), silent=TRUE)
+
+    if(class(try.out) != "try-error"){
+      temp <- .get.colorTable.style(dat) # try.out
+      style <- temp$style
+      levs <- temp$levs
+      myCol <- temp$myCol
+      ## collapse elements of style together w %>%
+      paste(style, collapse=" %>% ")
+      ## paste datatable fn to elements of style w %>%
+      out <- paste("datatable(dat)", paste(style, collapse=" %>% "), sep=" %>% ")
+      out <- eval(parse(text=out))
+      # out <- dataTableOutput(out)
+    }else{
+      #       rawDT.error <- "Error: Data table could not be generated from file.
+      #                   Check that the appropriate controls have been selected in the panel at left
+      #                   and that the file is in the right format."
+      #       print(rawDT.error)
+      #       # out <- textOutput(print(rawDT.error))
+      #       out <- rawDT.error
+      out <- NULL
+    }
+
+  } # end null check
+
+  return(out)
+})
+
+
+
+###########################
+## .get.colorTable.style ##
+###########################
+.get.colorTable.style <- function(dat){
 
   if(!is.null(dat)){
 
@@ -338,25 +477,25 @@ output$rawDataTable <- DT::renderDataTable({
       }
       #print(style[[i]])
     }
-
     ## temp:
     #     ## check length of elements of levs
     #     lev.l <- sapply(c(1:length(levs)), function(e) lapply(levs[[e]], length))
     #     ## check length of elements of myCol
     #     col.l <- lapply(myCol, length)
     #     df <- rbind(col.l, lev.l)
+  }
 
-    ## collapse elements of style together w %>%
-    paste(style, collapse=" %>% ")
-    ## paste datatable fn to elements of style w %>%
-    out <- paste("datatable(dat)", paste(style, collapse=" %>% "), sep=" %>% ")
+  temp <- list(style=style,
+               levs=levs,
+               myCol=myCol)
 
-    ## render & run expression
-    eval(parse(text=out))
+  return(temp)
 
-  } # end null check
+} # end .get.colorTable.style
 
-})
+
+
+
 
 
 #############

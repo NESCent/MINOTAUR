@@ -228,22 +228,29 @@ output$box_linearManhattan <- renderUI({
 
         ## get box of boxes
         if(!is.null(dat)){
+
           box(title=title.k,
               status="warning",
+              # status="danger",
               solidHeader=TRUE,
               collapsible=TRUE,
               width=12,
+              # background="teal",
 
               fluidRow(
                 column(4,
                        .get.linearManhattan.controls(dat, i)
                 ),
 
+              # fluidRow(
                 column(8,
                        .get.linearManhattan.plot(dat, i),
                        .get.linearManhattan.controls.aes(dat, i)
                 )
-              )
+              ),
+              style = list('background-color: #B6B6B6') # dark gray (amber)
+              # style = list('background-color: #727272') # dark gray (light blue)
+
           )
         }
       })
@@ -293,21 +300,25 @@ output$box_linearManhattan <- renderUI({
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
-        status="primary",
-        solidHeader=TRUE,
+        status="warning",
+        # status="primary",
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
+        # background="teal",
 
         ###################
         ## Choose x-axis ##
         ###################
 
         box(title="Adjust x-axis:", # "Univariate Distributions"
-            status="info",
-            # status = "primary",
+            # status="info",
+            status = "warning",
+            # status="primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
+
 
             ## NOTE: Would like to be able to pull the Chromosome and Position variables
             ## selected/generated in the Format Data tab to be available as options
@@ -336,7 +347,11 @@ output$box_linearManhattan <- renderUI({
                          label = "Invert x-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_linearManhattan_flipx[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
+            # style = list('background-color: #B2EBF2') # pale cyan
+            # style = list('background-color: #B3E5FC') # pale light blue
         ),
 
         ###################
@@ -344,8 +359,9 @@ output$box_linearManhattan <- renderUI({
         ###################
 
         box(title="Select y-axis:",
-            status="info",
-            # status = "primary",
+            # status="info",
+            status = "warning",
+            # status="primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -369,7 +385,11 @@ output$box_linearManhattan <- renderUI({
                          label = "Invert y-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_linearManhattan_flipy[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
+            # style = list('background-color: #B2EBF2') # pale cyan
+            # style = list('background-color: #B3E5FC') # pale light blue
 
         ),
 
@@ -382,8 +402,9 @@ output$box_linearManhattan <- renderUI({
         ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
 
         box(title="Select outlier variable:",
-            status="info",
-            # status = "primary",
+            # status="info",
+            status = "warning",
+            # status="primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -409,8 +430,15 @@ output$box_linearManhattan <- renderUI({
                          label = "Tail",
                          choices = c("Lower", "Upper", "Two-tailed"),
                          selected =  rv_linearManhattan_outlier.tail[[k]], # "Lower",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
+            # style = list('background-color: #B2EBF2') # pale cyan
+            # style = list('background-color: #B3E5FC') # pale light blue
             )
+
+        # style = list('background-color: #FFECB3')
+        # style = list('background-color: #FFFFFF') # pale gray (light blue)
 
         )
 
@@ -445,17 +473,23 @@ output$box_linearManhattan <- renderUI({
   out <-
     box(title="Adjust Plot Aesthetics:",
         status="warning",
-        solidHeader=TRUE,
+        # status="primary",
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
+        # background="yellow",
 
         # h4("Scatter aesthetics:"),
         box(title="Scatter aesthetics:",
             status="warning",
+            # status="primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
 
+
+            fluidRow(
+              column(4,
             ## selectInput w col.pals
             selectizeInput(id_linearManhattan_col.pal,
                            label="Colour palette:",
@@ -465,32 +499,40 @@ output$box_linearManhattan <- renderUI({
                                           "CM colours" = "cm.colors",
                                           "Gray colours" = "gray.colors"),
                            selected =  rv_linearManhattan_col.pal[[k]], # "heat.colors",
-                           multiple=FALSE),
+                           multiple=FALSE)),
 
-
+            column(4,
             sliderInput(id_linearManhattan_n.bins,
                         label = "Number of bins:",
                         min = 2, max = 1000,
                         value =  rv_linearManhattan_n.bins[[k]], # 100,
-                        step = 1),
+                        step = 1)),
 
-
+            column(4,
             radioButtons(id_linearManhattan_grid,
                          label="Overlay grid?",
                          choices=list("Yes" = TRUE,
                                       "No" = FALSE),
                          selected = rv_linearManhattan_grid[[k]],
-                         inline = TRUE)
+                         inline = TRUE))
+            ),
+
+            style = list('background-color: #FFECB3') # pale amber
+            # style = list('background-color: #B2EBF2') # pale cyan
+            # style = list('background-color: #B3E5FC') # pale light blue
         ),
 
 
 
         box(title="Outlier aesthetics:",
             status="warning",
+            # status="primary",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
 
+            fluidRow(
+              column(4,
             selectizeInput(id_linearManhattan_outlier.col.bg,
                            label = "Outlier colour (fill):",
                            choices = list("Red" = "red",
@@ -500,8 +542,9 @@ output$box_linearManhattan <- renderUI({
                                           "Blue" = "blue",
                                           "Purple" = "purple"),
                            selected =  rv_linearManhattan_outlier.col.bg[[k]], # "purple",
-                           multiple=FALSE),
+                           multiple=FALSE)),
 
+            column(4,
             selectizeInput(id_linearManhattan_outlier.col,
                            label = "Outlier colour (outline):",
                            choices = list("Red" = "red",
@@ -511,8 +554,9 @@ output$box_linearManhattan <- renderUI({
                                           "Blue" = "blue",
                                           "Purple" = "purple"),
                            selected =  rv_linearManhattan_outlier.col[[k]], # "blue",
-                           multiple=FALSE),
+                           multiple=FALSE)),
 
+            column(4,
             selectizeInput(id_linearManhattan_outlier.pch,
                            label = "Outlier shape:",
                            choices = list("Circle" = "21",
@@ -522,20 +566,33 @@ output$box_linearManhattan <- renderUI({
                                           "Triangle, point-down" = "25"
                            ),
                            selected =  rv_linearManhattan_outlier.pch[[k]], # "24",
-                           multiple=FALSE),
+                           multiple=FALSE))
+            ),
 
+            hr(),
+
+            fluidRow(
+              column(6,
             sliderInput(id_linearManhattan_outlier.transp,
                         label = "Outlier transparency:",
                         min = 0, max = 1,
                         value =  rv_linearManhattan_outlier.transp[[k]], # 0.25,
-                        step = 0.05),
+                        step = 0.05)),
 
+            column(6,
             sliderInput(id_linearManhattan_outlier.cex,
                         label = "Outlier size:",
                         min = 0, max = 3,
                         value =  rv_linearManhattan_outlier.cex[[k]], # 1.5,
-                        step = 0.1)
+                        step = 0.1))
+            ),
+
+            style = list('background-color: #FFECB3') # pale amber
+            # style = list('background-color: #B2EBF2') # pale cyan
+            # style = list('background-color: #B3E5FC') # pale light blue
         )
+
+        # style = list('background-color: #FFFFFF') # pale gray (light blue)
 
     ) # end box
 

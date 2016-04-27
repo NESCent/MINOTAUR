@@ -16,20 +16,30 @@ rv_circularManhattan_logy <- reactiveValues()
 rv_circularManhattan_flipx <- reactiveValues()
 rv_circularManhattan_flipy <- reactiveValues()
 
-rv_circularManhattan_outlier.var <- reactiveValues()
-rv_circularManhattan_outlier.cutoff <- reactiveValues()
-rv_circularManhattan_outlier.tail <- reactiveValues()
+rv_circularManhattan_outlier.var1 <- reactiveValues()
+rv_circularManhattan_outlier.cutoff1 <- reactiveValues()
+rv_circularManhattan_outlier.tail1 <- reactiveValues()
+
+rv_circularManhattan_outlier.var2 <- reactiveValues()
+rv_circularManhattan_outlier.cutoff2 <- reactiveValues()
+rv_circularManhattan_outlier.tail2 <- reactiveValues()
 
 ## aesthetics
 rv_circularManhattan_col.pal <- reactiveValues()
 rv_circularManhattan_n.bins <- reactiveValues()
 rv_circularManhattan_grid <- reactiveValues()
 
-rv_circularManhattan_outlier.col.bg <- reactiveValues()
-rv_circularManhattan_outlier.col <- reactiveValues()
-rv_circularManhattan_outlier.pch <- reactiveValues()
-rv_circularManhattan_outlier.transp <- reactiveValues()
-rv_circularManhattan_outlier.cex <- reactiveValues()
+rv_circularManhattan_outlier.col.bg1 <- reactiveValues()
+rv_circularManhattan_outlier.col1 <- reactiveValues()
+rv_circularManhattan_outlier.pch1 <- reactiveValues()
+rv_circularManhattan_outlier.transp1 <- reactiveValues()
+rv_circularManhattan_outlier.cex1 <- reactiveValues()
+
+rv_circularManhattan_outlier.col.bg2 <- reactiveValues()
+rv_circularManhattan_outlier.col2 <- reactiveValues()
+rv_circularManhattan_outlier.pch2 <- reactiveValues()
+rv_circularManhattan_outlier.transp2 <- reactiveValues()
+rv_circularManhattan_outlier.cex2 <- reactiveValues()
 
 
 
@@ -58,14 +68,26 @@ rv_circularManhattan_outlier.cex <- reactiveValues()
     numCols <- which(sapply(c(1:ncol(dat$y)),
                             function(e) is.numeric(dat$y[,e])))
 
+    #     dat <- HumanGWAS
+    #     numCols <- which(sapply(c(1:ncol(dat[,c(2,4:ncol(dat))])),
+    #                             function(e) is.numeric(dat[,c(2,4:ncol(dat))][,e])))
+    #     var.choices <- c(names(dat)[numCols])
+
     var.choices <- c(names(dat$y)[numCols])
 
     x.var.choices <- y.var.choices <- o.var.choices <- var.choices
 
-    x.var.sel <- x.var.choices[1]
+    #     x.var.sel <- x.var.choices[1]
+    #     y.var.sel <- y.var.choices[2]
+    #
+    #     o.var.sel1 <- o.var.choices[3]
+    #     o.var.sel2 <- o.var.choices[4]
 
-    y.var.sel <- y.var.choices[2]
-    o.var.sel <- o.var.choices[3]
+    x.var.sel <- x.var.choices[1]
+    y.var.sel <- y.var.choices[3]
+
+    o.var.sel1 <- o.var.choices[2]
+    o.var.sel2 <- o.var.choices[4]
 
     ## set intial values
     rv_circularManhattan_xaxis[[k]] <- x.var.sel
@@ -74,19 +96,30 @@ rv_circularManhattan_outlier.cex <- reactiveValues()
     rv_circularManhattan_logy[[k]] <- "none"
     rv_circularManhattan_flipx[[k]] <- "No"
     rv_circularManhattan_flipy[[k]] <- "No"
-    rv_circularManhattan_outlier.var[[k]] <- o.var.sel
-    rv_circularManhattan_outlier.cutoff[[k]] <- 0.05
-    rv_circularManhattan_outlier.tail[[k]] <- "Lower"
+
+    rv_circularManhattan_outlier.var1[[k]] <- o.var.sel1
+    rv_circularManhattan_outlier.cutoff1[[k]] <- 0.002 # 0.05
+    rv_circularManhattan_outlier.tail1[[k]] <- "Lower"
+
+    rv_circularManhattan_outlier.var2[[k]] <- o.var.sel2
+    rv_circularManhattan_outlier.cutoff2[[k]] <- 0.002 # 0.05
+    rv_circularManhattan_outlier.tail2[[k]] <- "Lower"
 
     rv_circularManhattan_col.pal[[k]] <- "heat.colors"
     rv_circularManhattan_n.bins[[k]] <- 100
     rv_circularManhattan_grid[[k]] <- FALSE
 
-    rv_circularManhattan_outlier.col.bg[[k]] <- "purple"
-    rv_circularManhattan_outlier.col[[k]] <- "blue"
-    rv_circularManhattan_outlier.pch[[k]] <- "24"
-    rv_circularManhattan_outlier.transp[[k]] <- 0.25
-    rv_circularManhattan_outlier.cex[[k]] <- 1.5
+    rv_circularManhattan_outlier.col.bg1[[k]] <- "red"
+    rv_circularManhattan_outlier.col1[[k]] <- "red"
+    rv_circularManhattan_outlier.pch1[[k]] <- "24"
+    rv_circularManhattan_outlier.transp1[[k]] <- 0.5
+    rv_circularManhattan_outlier.cex1[[k]] <- 1
+
+    rv_circularManhattan_outlier.col.bg2[[k]] <- "blue"
+    rv_circularManhattan_outlier.col2[[k]] <- "blue"
+    rv_circularManhattan_outlier.pch2[[k]] <- "24"
+    rv_circularManhattan_outlier.transp2[[k]] <- 0.5
+    rv_circularManhattan_outlier.cex2[[k]] <- 1
 
   }
 } # end .set.reactiveValues.circularManhattan
@@ -103,7 +136,7 @@ rv_circularManhattan_outlier.cex <- reactiveValues()
 
   x.var.choices <- x.var.sel <-
     y.var.choices <- y.var.sel <-
-    o.var.choices <- o.var.sel <- NULL
+    o.var.choices <- o.var.sel1 <- o.var.sel2 <- NULL
 
   ## get variables
   if(!is.null(dat)){
@@ -124,18 +157,30 @@ rv_circularManhattan_outlier.cex <- reactiveValues()
     n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
     grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
 
-    outlier.col.bg <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg", k, sep="_")))
-    outlier.col <- eval(parse(text=paste("input$circularManhattan_outlier.col", k, sep="_")))
-    outlier.transp <- eval(parse(text=paste("input$circularManhattan_outlier.transp", k, sep="_")))
-    outlier.pch <- eval(parse(text=paste("input$circularManhattan_outlier.pch", k, sep="_")))
-    outlier.cex <- eval(parse(text=paste("input$circularManhattan_outlier.cex", k, sep="_")))
+    outlier.col.bg1 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg1", k, sep="_")))
+    outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
+    outlier.transp1 <- eval(parse(text=paste("input$circularManhattan_outlier.transp1", k, sep="_")))
+    outlier.pch1 <- eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_")))
+    outlier.cex1 <- eval(parse(text=paste("input$circularManhattan_outlier.cex1", k, sep="_")))
+
+    outlier.col.bg2 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg2", k, sep="_")))
+    outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
+    outlier.transp2 <- eval(parse(text=paste("input$circularManhattan_outlier.transp2", k, sep="_")))
+    outlier.pch2 <- eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_")))
+    outlier.cex2 <- eval(parse(text=paste("input$circularManhattan_outlier.cex2", k, sep="_")))
 
 
 
-    ## Get outlier var
-    outlier.var <- eval(parse(text=paste("input$circularManhattan_outlier.var", k, sep="_")))
-    cutoff <- eval(parse(text=paste("input$circularManhattan_outlier.cutoff", k, sep="_")))
-    tail <- eval(parse(text=paste("input$circularManhattan_outlier.tail", k, sep="_")))
+    ## Get outlier var #1
+    outlier.var1 <- eval(parse(text=paste("input$circularManhattan_outlier.var1", k, sep="_")))
+    cutoff1 <- eval(parse(text=paste("input$circularManhattan_outlier.cutoff1", k, sep="_")))
+    tail1 <- eval(parse(text=paste("input$circularManhattan_outlier.tail1", k, sep="_")))
+
+    ## Get outlier var #2
+    outlier.var2 <- eval(parse(text=paste("input$circularManhattan_outlier.var2", k, sep="_")))
+    cutoff2 <- eval(parse(text=paste("input$circularManhattan_outlier.cutoff2", k, sep="_")))
+    tail2 <- eval(parse(text=paste("input$circularManhattan_outlier.tail2", k, sep="_")))
+
 
     ## update "intial" values to current values
     rv_circularManhattan_xaxis[[k]] <- xSelection
@@ -144,19 +189,30 @@ rv_circularManhattan_outlier.cex <- reactiveValues()
     rv_circularManhattan_logy[[k]] <- logy
     rv_circularManhattan_flipx[[k]] <- flipX
     rv_circularManhattan_flipy[[k]] <- flipY
-    rv_circularManhattan_outlier.var[[k]] <- outlier.var
-    rv_circularManhattan_outlier.cutoff[[k]] <- cutoff
-    rv_circularManhattan_outlier.tail[[k]] <- tail
+
+    rv_circularManhattan_outlier.var1[[k]] <- outlier.var1
+    rv_circularManhattan_outlier.cutoff1[[k]] <- cutoff1
+    rv_circularManhattan_outlier.tail1[[k]] <- tail1
+
+    rv_circularManhattan_outlier.var2[[k]] <- outlier.var2
+    rv_circularManhattan_outlier.cutoff2[[k]] <- cutoff2
+    rv_circularManhattan_outlier.tail2[[k]] <- tail2
 
     rv_circularManhattan_n.bins[[k]] <- n.bins
     rv_circularManhattan_col.pal[[k]] <- col.pal
     rv_circularManhattan_grid[[k]] <- grid
 
-    rv_circularManhattan_outlier.col.bg[[k]] <- outlier.col.bg
-    rv_circularManhattan_outlier.col[[k]] <- outlier.col
-    rv_circularManhattan_outlier.pch[[k]] <- outlier.pch
-    rv_circularManhattan_outlier.transp[[k]] <- outlier.transp
-    rv_circularManhattan_outlier.cex[[k]] <- outlier.cex
+    rv_circularManhattan_outlier.col.bg1[[k]] <- outlier.col.bg1
+    rv_circularManhattan_outlier.col1[[k]] <- outlier.col1
+    rv_circularManhattan_outlier.pch1[[k]] <- outlier.pch1
+    rv_circularManhattan_outlier.transp1[[k]] <- outlier.transp1
+    rv_circularManhattan_outlier.cex1[[k]] <- outlier.cex1
+
+    rv_circularManhattan_outlier.col.bg2[[k]] <- outlier.col.bg2
+    rv_circularManhattan_outlier.col2[[k]] <- outlier.col2
+    rv_circularManhattan_outlier.pch2[[k]] <- outlier.pch2
+    rv_circularManhattan_outlier.transp2[[k]] <- outlier.transp2
+    rv_circularManhattan_outlier.cex2[[k]] <- outlier.cex2
 
   }
 } # end .update.reactiveValues.circularManhattan
@@ -243,7 +299,8 @@ output$box_circularManhattan <- renderUI({
                        .get.circularManhattan.plot(dat, i),
                        .get.circularManhattan.controls.aes(dat, i)
                 )
-              )
+              ),
+              style = list('background-color: #B6B6B6') # dark gray (amber)
           )
         }
       })
@@ -287,14 +344,20 @@ output$box_circularManhattan <- renderUI({
   id_circularManhattan_yaxis <- paste("circularManhattan_yaxis", k, sep="_")
   id_circularManhattan_logy <- paste("circularManhattan_logy", k, sep="_")
   id_circularManhattan_flipy <- paste("circularManhattan_flipy", k, sep="_")
-  id_circularManhattan_outlier.var <- paste("circularManhattan_outlier.var", k, sep="_")
-  id_circularManhattan_outlier.cutoff <- paste("circularManhattan_outlier.cutoff", k, sep="_")
-  id_circularManhattan_outlier.tail <- paste("circularManhattan_outlier.tail", k, sep="_")
+
+  id_circularManhattan_outlier.var1 <- paste("circularManhattan_outlier.var1", k, sep="_")
+  id_circularManhattan_outlier.cutoff1 <- paste("circularManhattan_outlier.cutoff1", k, sep="_")
+  id_circularManhattan_outlier.tail1 <- paste("circularManhattan_outlier.tail1", k, sep="_")
+
+  id_circularManhattan_outlier.var2 <- paste("circularManhattan_outlier.var2", k, sep="_")
+  id_circularManhattan_outlier.cutoff2 <- paste("circularManhattan_outlier.cutoff2", k, sep="_")
+  id_circularManhattan_outlier.tail2 <- paste("circularManhattan_outlier.tail2", k, sep="_")
 
   out <-
     box(title="Select Variables:", # "Univariate Distributions"
-        status="primary",
-        solidHeader=TRUE,
+        # status="primary",
+        status="warning",
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
@@ -302,9 +365,10 @@ output$box_circularManhattan <- renderUI({
         ## Choose x-axis ##
         ###################
 
-        box(title="Adjust x-axis:", # "Univariate Distributions"
-            status="info",
+        box(title="Select x-axis:", # "Univariate Distributions"
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -332,7 +396,9 @@ output$box_circularManhattan <- renderUI({
                          label = "Invert x-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_circularManhattan_flipx[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
             ),
 
         ###################
@@ -340,8 +406,9 @@ output$box_circularManhattan <- renderUI({
         ###################
 
         box(title="Select y-axis:",
-            status="info",
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -365,7 +432,9 @@ output$box_circularManhattan <- renderUI({
                          label = "Invert y-axis?",
                          choices = list("Yes", "No"),
                          selected= rv_circularManhattan_flipy[[k]], # "No",
-                         inline=TRUE)
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
 
         ),
 
@@ -377,9 +446,10 @@ output$box_circularManhattan <- renderUI({
         ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
         ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
 
-        box(title="Select outlier variable:",
-            status="info",
+        box(title="Select outlier variable #1:",
+            # status="info",
             # status = "primary",
+            status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
@@ -388,25 +458,64 @@ output$box_circularManhattan <- renderUI({
             h5(strong('Highlight outliers by this variable:')),
             p("For example, you may wish to identify outliers according to a p-value
               that is recorded in another column of the data table."),
-            selectizeInput(id_circularManhattan_outlier.var,
+            selectizeInput(id_circularManhattan_outlier.var1,
                            label = NULL,
                            choices = o.var.choices,
-                           selected = rv_circularManhattan_outlier.var[[k]], # o.var.sel,
+                           selected = rv_circularManhattan_outlier.var1[[k]], # o.var.sel,
                            multiple = FALSE),
 
             ## Cut-off for outliers to overlay
             # eg 0.01
-            textInput(id_circularManhattan_outlier.cutoff,
+            textInput(id_circularManhattan_outlier.cutoff1,
                       label = "Cut-off for outliers to overlay",
-                      value =  rv_circularManhattan_outlier.cutoff[[k]] # 0.05
+                      value =  rv_circularManhattan_outlier.cutoff1[[k]] # 0.05
             ),
 
-            radioButtons(id_circularManhattan_outlier.tail,
+            radioButtons(id_circularManhattan_outlier.tail1,
                          label = "Tail",
                          choices = c("Lower", "Upper", "Two-tailed"),
-                         selected =  rv_circularManhattan_outlier.tail[[k]], # "Lower",
-                         inline=TRUE)
-            )
+                         selected =  rv_circularManhattan_outlier.tail1[[k]], # "Lower",
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
+            ),
+
+
+
+        box(title="Select outlier variable #2:",
+            # status="info",
+            # status = "primary",
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+
+            ## Mark outliers by second variable (usually p-value)
+            h5(strong('Highlight outliers by this variable:')),
+            # p("For example, you may wish to identify outliers according to a p-value
+              # that is recorded in another column of the data table."),
+            selectizeInput(id_circularManhattan_outlier.var2,
+                           label = NULL,
+                           choices = o.var.choices,
+                           selected = rv_circularManhattan_outlier.var2[[k]], # o.var.sel,
+                           multiple = FALSE),
+
+            ## Cut-off for outliers to overlay
+            # eg 0.01
+            textInput(id_circularManhattan_outlier.cutoff2,
+                      label = "Cut-off for outliers to overlay",
+                      value =  rv_circularManhattan_outlier.cutoff2[[k]] # 0.05
+            ),
+
+            radioButtons(id_circularManhattan_outlier.tail2,
+                         label = "Tail",
+                         choices = c("Lower", "Upper", "Two-tailed"),
+                         selected =  rv_circularManhattan_outlier.tail2[[k]], # "Lower",
+                         inline=TRUE),
+
+            style = list('background-color: #FFECB3') # pale amber
+        )
+
 
         )
 
@@ -429,11 +538,18 @@ output$box_circularManhattan <- renderUI({
   id_circularManhattan_col.pal <- paste("circularManhattan_col.pal", k, sep="_")
   id_circularManhattan_n.bins <- paste("circularManhattan_n.bins", k, sep="_")
   id_circularManhattan_grid <- paste("circularManhattan_grid", k, sep="_")
-  id_circularManhattan_outlier.col.bg <- paste("circularManhattan_outlier.col.bg", k, sep="_")
-  id_circularManhattan_outlier.col <- paste("circularManhattan_outlier.col", k, sep="_")
-  id_circularManhattan_outlier.pch <- paste("circularManhattan_outlier.pch", k, sep="_")
-  id_circularManhattan_outlier.transp <- paste("circularManhattan_outlier.transp", k, sep="_")
-  id_circularManhattan_outlier.cex <- paste("circularManhattan_outlier.cex", k, sep="_")
+
+  id_circularManhattan_outlier.col.bg1 <- paste("circularManhattan_outlier.col.bg1", k, sep="_")
+  id_circularManhattan_outlier.col1 <- paste("circularManhattan_outlier.col1", k, sep="_")
+  id_circularManhattan_outlier.pch1 <- paste("circularManhattan_outlier.pch1", k, sep="_")
+  id_circularManhattan_outlier.transp1 <- paste("circularManhattan_outlier.transp1", k, sep="_")
+  id_circularManhattan_outlier.cex1 <- paste("circularManhattan_outlier.cex1", k, sep="_")
+
+  id_circularManhattan_outlier.col.bg2 <- paste("circularManhattan_outlier.col.bg2", k, sep="_")
+  id_circularManhattan_outlier.col2 <- paste("circularManhattan_outlier.col2", k, sep="_")
+  id_circularManhattan_outlier.pch2 <- paste("circularManhattan_outlier.pch2", k, sep="_")
+  id_circularManhattan_outlier.transp2 <- paste("circularManhattan_outlier.transp2", k, sep="_")
+  id_circularManhattan_outlier.cex2 <- paste("circularManhattan_outlier.cex2", k, sep="_")
 
 
   out <- NULL
@@ -441,7 +557,7 @@ output$box_circularManhattan <- renderUI({
   out <-
     box(title="Adjust Plot Aesthetics:",
         status="warning",
-        solidHeader=TRUE,
+        solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
 
@@ -451,6 +567,8 @@ output$box_circularManhattan <- renderUI({
             collapsible=TRUE,
             width=12,
 
+            fluidRow(
+              column(4,
             ## selectInput w col.pals
             selectizeInput(id_circularManhattan_col.pal,
                            label="Colour palette:",
@@ -460,33 +578,38 @@ output$box_circularManhattan <- renderUI({
                                           "CM colours" = "cm.colors",
                                           "Gray colours" = "gray.colors"),
                            selected =  rv_circularManhattan_col.pal[[k]], # "heat.colors",
-                           multiple=FALSE),
+                           multiple=FALSE)),
 
-
+            column(4,
             sliderInput(id_circularManhattan_n.bins,
                         label = "Number of bins:",
                         min = 2, max = 1000,
                         value =  rv_circularManhattan_n.bins[[k]], # 100,
-                        step = 1),
+                        step = 1)),
 
-
+            column(4,
             radioButtons(id_circularManhattan_grid,
                          label="Overlay grid?",
                          choices=list("Yes" = TRUE,
                                       "No" = FALSE),
                          selected = rv_circularManhattan_grid[[k]],
-                         inline = TRUE)
+                         inline = TRUE))
+            ),
+
+            style = list('background-color: #FFECB3') # pale amber
         ),
 
 
 
-        box(title="Outlier aesthetics:",
+        box(title="Outlier #1 aesthetics:",
             status="warning",
             solidHeader=TRUE,
             collapsible=TRUE,
             width=12,
 
-            selectizeInput(id_circularManhattan_outlier.col.bg,
+            fluidRow(
+              column(4,
+            selectizeInput(id_circularManhattan_outlier.col.bg1,
                            label = "Outlier colour (fill):",
                            choices = list("Red" = "red",
                                           "Orange" = "orange",
@@ -494,10 +617,11 @@ output$box_circularManhattan <- renderUI({
                                           "Green" = "green",
                                           "Blue" = "blue",
                                           "Purple" = "purple"),
-                           selected =  rv_circularManhattan_outlier.col.bg[[k]], # "purple",
-                           multiple=FALSE),
+                           selected =  rv_circularManhattan_outlier.col.bg1[[k]], # "blue",
+                           multiple=FALSE)),
 
-            selectizeInput(id_circularManhattan_outlier.col,
+            column(4,
+            selectizeInput(id_circularManhattan_outlier.col1,
                            label = "Outlier colour (outline):",
                            choices = list("Red" = "red",
                                           "Orange" = "orange",
@@ -505,10 +629,11 @@ output$box_circularManhattan <- renderUI({
                                           "Green" = "green",
                                           "Blue" = "blue",
                                           "Purple" = "purple"),
-                           selected =  rv_circularManhattan_outlier.col[[k]], # "blue",
-                           multiple=FALSE),
+                           selected =  rv_circularManhattan_outlier.col1[[k]], # NULL,
+                           multiple=FALSE)),
 
-            selectizeInput(id_circularManhattan_outlier.pch,
+            column(4,
+            selectizeInput(id_circularManhattan_outlier.pch1,
                            label = "Outlier shape:",
                            choices = list("Circle" = "21",
                                           "Square" = "22",
@@ -516,20 +641,95 @@ output$box_circularManhattan <- renderUI({
                                           "Triangle, point-up" = "24",
                                           "Triangle, point-down" = "25"
                            ),
-                           selected =  rv_circularManhattan_outlier.pch[[k]], # "24",
-                           multiple=FALSE),
+                           selected =  rv_circularManhattan_outlier.pch1[[k]], # "24",
+                           multiple=FALSE))
+            ),
 
-            sliderInput(id_circularManhattan_outlier.transp,
+            hr(),
+
+            fluidRow(
+              column(6,
+            sliderInput(id_circularManhattan_outlier.transp1,
                         label = "Outlier transparency:",
                         min = 0, max = 1,
-                        value =  rv_circularManhattan_outlier.transp[[k]], # 0.25,
-                        step = 0.05),
+                        value =  rv_circularManhattan_outlier.transp1[[k]], # 0.25,
+                        step = 0.05)),
 
-            sliderInput(id_circularManhattan_outlier.cex,
+            column(6,
+            sliderInput(id_circularManhattan_outlier.cex1,
                         label = "Outlier size:",
                         min = 0, max = 3,
-                        value =  rv_circularManhattan_outlier.cex[[k]], # 1.5,
-                        step = 0.1)
+                        value =  rv_circularManhattan_outlier.cex1[[k]], # 1.5,
+                        step = 0.1))
+            ),
+
+            style = list('background-color: #FFECB3') # pale amber
+        ),
+
+
+        box(title="Outlier #2 aesthetics:",
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+
+            fluidRow(
+              column(4,
+                     selectizeInput(id_circularManhattan_outlier.col.bg2,
+                                    label = "Outlier colour (fill):",
+                                    choices = list("Red" = "red",
+                                                   "Orange" = "orange",
+                                                   "Yellow" = "yellow",
+                                                   "Green" = "green",
+                                                   "Blue" = "blue",
+                                                   "Purple" = "purple"),
+                                    selected =  rv_circularManhattan_outlier.col.bg2[[k]], # "orange",
+                                    multiple=FALSE)),
+
+              column(4,
+                     selectizeInput(id_circularManhattan_outlier.col2,
+                                    label = "Outlier colour (outline):",
+                                    choices = list("Red" = "red",
+                                                   "Orange" = "orange",
+                                                   "Yellow" = "yellow",
+                                                   "Green" = "green",
+                                                   "Blue" = "blue",
+                                                   "Purple" = "purple"),
+                                    selected =  rv_circularManhattan_outlier.col2[[k]], # NULL,
+                                    multiple=FALSE)),
+
+              column(4,
+                     selectizeInput(id_circularManhattan_outlier.pch2,
+                                    label = "Outlier shape:",
+                                    choices = list("Circle" = "21",
+                                                   "Square" = "22",
+                                                   "Diamond" = "23",
+                                                   "Triangle, point-up" = "24",
+                                                   "Triangle, point-down" = "25"
+                                    ),
+                                    selected =  rv_circularManhattan_outlier.pch2[[k]], # "24",
+                                    multiple=FALSE))
+            ),
+
+            hr(),
+
+            fluidRow(
+              column(6,
+                     sliderInput(id_circularManhattan_outlier.transp2,
+                                 label = "Outlier transparency:",
+                                 min = 0, max = 1,
+                                 value =  rv_circularManhattan_outlier.transp2[[k]], # 0.25,
+                                 step = 0.05)),
+
+              column(6,
+                     sliderInput(id_circularManhattan_outlier.cex2,
+                                 label = "Outlier size:",
+                                 min = 0, max = 3,
+                                 value =  rv_circularManhattan_outlier.cex2[[k]], # 1.5,
+                                 step = 0.1))
+            ),
+
+            style = list('background-color: #FFECB3') # pale amber
         )
 
     ) # end box
@@ -601,9 +801,13 @@ output$box_circularManhattan_button <- renderUI({
 ############################
 .get.circularManhattan <- function(input, k=1){
 
-  circularManhattan <- dat <- xData <- yData <- xSelection <- ySelection <-
-    logx <- logy <- flipX <- flipY <- col.pal <- outlier.var <- cutoff <- tail <-
-    outlier.col.bg <- outlier.col <- outlier.transp <- outlier.pch <- outlier.cex <- n.bins <- NULL
+  circularManhattan <- dat <- xData <- yData <- xSelection <- ySelection <- SNPselection <-
+    logx <- logy <- flipX <- flipY <- col.pal <-
+    outlier.var1 <- cutoff1 <- tail1 <-
+    outlier.var2 <- cutoff2 <- tail2 <-
+    outlier.col.bg1 <- outlier.col1 <- outlier.transp1 <- outlier.pch1 <- outlier.cex1 <-
+    outlier.col.bg2 <- outlier.col2 <- outlier.transp2 <- outlier.pch2 <- outlier.cex2 <-
+    n.bins <- NULL
 
   k <- as.character(k)
 
@@ -658,16 +862,30 @@ output$box_circularManhattan_button <- renderUI({
       n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
       grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
 
-      outlier.col.bg <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg", k, sep="_")))
-      outlier.col <- eval(parse(text=paste("input$circularManhattan_outlier.col", k, sep="_")))
-      outlier.transp <- eval(parse(text=paste("input$circularManhattan_outlier.transp", k, sep="_")))
-      outlier.pch <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch", k, sep="_"))))
-      outlier.cex <- eval(parse(text=paste("input$circularManhattan_outlier.cex", k, sep="_")))
+      outlier.col.bg1 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg1", k, sep="_")))
+      outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
+      outlier.transp1 <- eval(parse(text=paste("input$circularManhattan_outlier.transp1", k, sep="_")))
+      outlier.pch1 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_"))))
+      outlier.cex1 <- eval(parse(text=paste("input$circularManhattan_outlier.cex1", k, sep="_")))
+
+      outlier.col.bg2 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg2", k, sep="_")))
+      outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
+      outlier.transp2 <- eval(parse(text=paste("input$circularManhattan_outlier.transp2", k, sep="_")))
+      outlier.pch2 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_"))))
+      outlier.cex2 <- eval(parse(text=paste("input$circularManhattan_outlier.cex2", k, sep="_")))
+
 
       ## Get outlier var
-      outlier.var <- eval(parse(text=paste("input$circularManhattan_outlier.var", k, sep="_")))
-      cutoff <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.cutoff", k, sep="_"))))
-      tail <- eval(parse(text=paste("input$circularManhattan_outlier.tail", k, sep="_")))
+      outlier.var1 <- eval(parse(text=paste("input$circularManhattan_outlier.var1", k, sep="_")))
+      cutoff1 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.cutoff1", k, sep="_"))))
+      tail1 <- eval(parse(text=paste("input$circularManhattan_outlier.tail1", k, sep="_")))
+
+      outlier.var2 <- eval(parse(text=paste("input$circularManhattan_outlier.var2", k, sep="_")))
+      cutoff2 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.cutoff2", k, sep="_"))))
+      tail2 <- eval(parse(text=paste("input$circularManhattan_outlier.tail2", k, sep="_")))
+
+      outlier.transp1 <- 1-outlier.transp1
+      outlier.transp2 <- 1-outlier.transp2
 
       n <- 100
       start <- 0.25
@@ -703,38 +921,38 @@ output$box_circularManhattan_button <- renderUI({
 
       ## Get outlier-variable data
 
-      if(!is.null(outlier.var)){
+      if(!is.null(outlier.var1)){
         ## Get variable to plot
-        outlier.Data <- eval(parse(text=paste("dat$y", outlier.var, sep="$")))
+        outlier.Data1 <- eval(parse(text=paste("dat$y", outlier.var1, sep="$")))
       }
 
       if(length(logx)==1){xData=log(xData+1e-40, logx)}
       if(length(logy)==1){yData=log(yData+1e-40, logy)}
 
-      if(is.na(cutoff)){cutoff=0.01}
-      if(tail=="Upper"){
-        cutoff=(1-cutoff)
+      if(is.na(cutoff1)){cutoff1=0.01}
+      if(tail1=="Upper"){
+        cutoff1=(1-cutoff1)
       }
-      outlier.DataNoNA <- outlier.Data[!is.na(outlier.Data)]
-      outlier.DataNew <- rank(outlier.DataNoNA)/length(outlier.DataNoNA)
-      outlier.DataNew2 <- outlier.Data
-      outlier.DataNew2[!is.na(outlier.Data)] <- outlier.DataNew
+      outlier.Data1NoNA <- outlier.Data1[!is.na(outlier.Data1)]
+      outlier.Data1New <- rank(outlier.Data1NoNA)/length(outlier.Data1NoNA)
+      outlier.Data1New2 <- outlier.Data1
+      outlier.Data1New2[!is.na(outlier.Data1)] <- outlier.Data1New
 
-      if(tail=="Lower"){
-        xData_sub <- xData[outlier.DataNew2<=cutoff]
-        yData_sub <- yData[outlier.DataNew2<=cutoff]
+      if(tail1=="Lower"){
+        xData_sub <- xData[outlier.Data1New2<=cutoff1]
+        yData_sub <- yData[outlier.Data1New2<=cutoff1]
       }
-      if(tail=="Upper"){
-        xData_sub <- xData[outlier.DataNew2>=cutoff]
-        yData_sub <- yData[outlier.DataNew2>=cutoff]
+      if(tail1=="Upper"){
+        xData_sub <- xData[outlier.Data1New2>=cutoff1]
+        yData_sub <- yData[outlier.Data1New2>=cutoff1]
       }
-      if(tail=="Two-tailed"){
-        xData_sub_l <- xData[outlier.DataNew2<=cutoff]
-        yData_sub_l <- yData[outlier.DataNew2<=cutoff]
+      if(tail1=="Two-tailed"){
+        xData_sub_l <- xData[outlier.Data1New2<=cutoff1]
+        yData_sub_l <- yData[outlier.Data1New2<=cutoff1]
 
-        cutoff <- (1-cutoff)
-        xData_sub_u <- xData[outlier.DataNew2>=cutoff]
-        yData_sub_u <- yData[outlier.DataNew2>=cutoff]
+        cutoff1 <- (1-cutoff1)
+        xData_sub_u <- xData[outlier.Data1New2>=cutoff1]
+        yData_sub_u <- yData[outlier.Data1New2>=cutoff1]
 
         xData_sub <- c(xData_sub_l, xData_sub_u)
         yData_sub <- c(yData_sub_l, yData_sub_u)
@@ -754,29 +972,29 @@ output$box_circularManhattan_button <- renderUI({
       #            }else(myCol <- rgb(0,0,0,0.2))
 
 
-      # produce plot
-      #       circularManhattan <- .mhtplot(x=xData, y=yData,
-      #                                   xlab=xSelection, ylab=ySelection,
-      #                                   n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
-      #                                   col.pal=col.pal, grid=grid,
-      #                                   outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
-      #                                   outlier.transp=outlier.transp,
-      #                                   outlier.pch=outlier.pch, outlier.cex=outlier.cex)
-
-
       ## PRODUCE PLOT
       circularManhattan <- .circosmht(mydata=dat,
                                       traitsname = c(xSelection, ySelection),
                                       logV1 = logx, logV2 = logy,
-                                      trait.pvalnam = c("Trait1_P","Trait2_P"), # c(xSelection, ySelection), ## ????
-                                      pcut.outlier= cutoff)
+                                      trait.pvalnam = c(outlier.var1, outlier.var2), # c("Trait1_P","Trait2_P"), # c(xSelection, ySelection), ## ????
+                                      pcut.outlier= c(cutoff1, cutoff2),
+                                      outlier.col = c(outlier.col.bg1, outlier.col.bg2),
+                                      outlier.transp = c(outlier.transp1, outlier.transp2),
+                                      outlier.cex = c(outlier.cex1, outlier.cex2))
 
 
       }
     }
 
-  return(circularManhattan)
+  #   circularManhattan <-   .circosmht(mydata=HumanGWAS,
+  #                                     traitsname = c("Trait1_Beta","Trait2_Beta"),
+  #                                     logV1 = NULL, logV2 = NULL,
+  #                                     trait.pvalnam = c("Trait1_P","Trait2_P"),
+  #                                     pcut.outlier=0.002)
+
   # circularManhattan
+  return(circularManhattan)
+
   } # end .get.circularManhattan
 
 
@@ -818,36 +1036,6 @@ output$box_circularManhattan_button <- renderUI({
 } # end .linkcreat
 
 
-#   ###
-#     res <- do.call(rbind, lapply(split(dat.outlier, dat.outlier$seg.name), function(x) {
-#       if (length(x$seg.no) > 1)
-#         setNames(data.frame(x$seg.name[1],
-#                             t(combn(x$seg.no, 2))),
-#                  c("seg.name", paste0("seg.no", c("", 1))))
-#       else transform(x, seg.no1 = seg.no)
-#     }))
-#
-#     row.names(res) <- 1:nrow(res)
-#   ###
-
-# pos <- c(1:nrow(mydata))
-# # chrom <- rep(1, nrow(mydata))
-# chrom <- rep(c(1:10), nrow(mydata))
-# chrom <- chrom[1:nrow(mydata)]
-# seg.file <- data.frame(seg.name=chrom, seg.Start=pos, seg.End=pos+1, the.v="NA", NO="NA")
-# seg.value <- cbind(pos, chrom, mydata)
-# names(seg.value) <- c("seg.no", "seg.name", names(mydata))
-# pcut.outlier <- 0.05
-#
-# #seg.value <- seg.value[c(1:100),]
-#
-# outlier.LINK <- list()
-# for(i in 1:2){
-# outlier.LINK[[i]] = .linkcreat(dat=seg.value,
-#                           traitid=traitidxlist[i],
-#                           pvalid=trait.pidxlist[i],
-#                           pcut.outlier=pcut.outlier)
-# }
 
 
 ################
@@ -857,7 +1045,10 @@ output$box_circularManhattan_button <- renderUI({
                        traitsname = c("Trait1_Beta","Trait2_Beta"),
                        logV1 = NULL, logV2 = NULL,
                        trait.pvalnam = c("Trait1_P","Trait2_P"),
-                       pcut.outlier=0.002){
+                       pcut.outlier=c(0.002, 0.002),
+                       outlier.col = c("red", "blue"),
+                       outlier.transp = c(0.5, 0.5),
+                       outlier.cex = c(1,1)){
 
   require(OmicCircos)
 
@@ -866,22 +1057,39 @@ output$box_circularManhattan_button <- renderUI({
                          seg.End=mydata$pos+1,
                          the.v="NA", NO="NA")
 
-  # seg.file <- seg.file[c(1:100),]
+  #   data("HumanGWAS")
+  #   mydata <- HumanGWAS
+  #   traitsname = c("Trait1_Beta","Trait2_Beta")
+  #   logV1 = NULL
+  #   logV2 = NULL
+  #   trait.pvalnam = c("Trait1_P","Trait2_P")
+  #   pcut.outlier=0.002
+  #
+  #   seg.file <- data.frame(seg.name=mydata$Chr,
+  #                          seg.Start=mydata$BP,
+  #                          seg.End=mydata$BP+1,
+  #                          the.v="NA", NO="NA")
+  #   seg.value = subset(mydata, select=-SNP)
+  #   # seg.value <- mydata
+  #   names(seg.value) <- c("Chromosome", "Position", names(seg.value)[c(3:length(names(seg.value)))])
+  #   toKeep <- which(names(seg.value) %in% c("Chromosome", "Position", traitsname, trait.pvalnam))
+  #   seg.value <- seg.value[,toKeep]
+  #   mydata <- seg.value
 
-  print(str(seg.file))
 
-  # seg.value = subset(mydata, select=-SNP)
-  seg.value <- cbind(mydata$pos, mydata$chrom, mydata$y)
-  names(seg.value) <- c("Position", "Chromosome", names(mydata$y))
+  toKeep <- which(names(mydata$y) %in% c(traitsname, trait.pvalnam))
+  seg.value <- cbind(mydata$chrom, mydata$pos, mydata$y[,toKeep])
+  names(seg.value) <- c("Chromosome", "Position", names(mydata$y[,toKeep]))
+  mydata <- seg.value
 
-  # seg.value <- seg.value[c(1:100),]
+  print("mydata"); print(str(mydata))
 
-  print(str(seg.value))
+  # print(str(seg.value))
   print("SUMMARY CHROMOSOME"); print(summary(seg.value$Chromosome))
 
   traitidxlist = match(traitsname, names(seg.value))
   trait.pidxlist = match(trait.pvalnam, names(seg.value))
-  chridx = match("Chromosome",names(seg.value))
+  chridx = match("Chromosome", names(seg.value))
   BPidx = match("Position", names(seg.value))
 
 
@@ -909,51 +1117,223 @@ output$box_circularManhattan_button <- renderUI({
 
   names(seg.value)[chridx] <- "seg.name"
   names(seg.value)[BPidx] <- "seg.no"
-  seg.number <- length(unique(mydata$chrom))
-  # seg.name <- sort(unique(mydata$chrom))
-  seg.name <- as.character(sort(unique(mydata$chrom))) # paste("chr", , sep=)
+
+  print("seg.value"); print(str(seg.value))
+
+  seg.number <- length(unique(mydata$Chromosome))
+  seg.name <- as.character(sort(unique(mydata$Chromosome))) # paste("chr", , sep=)
+
   db <- segAnglePo(seg.file, seg=seg.name);
 
   colors <- brewer.pal(9, "Set1")
+  # barplot(rep(10, length(colors)), col=colors) ## temp: check out colors
 
-  #   outlier.link = .linkcreat(dat=seg.value,
-  #                             traitid=traitidxlist[i],
-  #                             pvalid=trait.pidxlist[i],
-  #                             pcut.outlier=pcut.outlier)
+  print("traitidxlist"); print(str(traitidxlist))
 
   o.l <- list()
   for(i in 1:length(traitidxlist)){
   o.l[[i]] = .linkcreat(dat=seg.value,
                         traitid=traitidxlist[i],
                         pvalid=trait.pidxlist[i],
-                        pcut.outlier=pcut.outlier)
+                        pcut.outlier=pcut.outlier[i])
   print("OUTLIER.LINK"); print(str(o.l[[i]]))
   }
 
-  outlier.link <- o.l[[1]]
+  # outlier.link <- o.l[[1]]
 
   par(mar=c(2,2,2,2));
   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
+  ## get outer-most lines indicating chromosomes:
   circos(R=400,type="chr", cir=db,
          col=rep(alpha(colors,0.6), length.out=seg.number),
          print.chr.lab=T,
          W=40, scale=T); #scale=T
 
   for (i in 1:length(traitidxlist)){
-    tmpcolor = alpha(colors[i], 0.3)
-    outlier.link;
-    # outlier.link = outlier.LINK[[i]];
+    # tmpcolor = alpha(colors[i], 0.3)
+    tmpcolor = alpha(outlier.col[i], outlier.transp[i])
+    # outlier.link = outlier.link
+    outlier.link = o.l[[i]]
+    ## get dots:
     circos(R= 120 + (i-1) * 100, cir=db,
            W= 180, mapping=seg.value,
            col.v=traitidxlist[i],type="s",
-           B=F, col=tmpcolor,lwd=0.15, scale=T); #scale=T
+           B=F, col=tmpcolor,
+           cex=outlier.cex[i],
+           lwd=0.15, scale=T) #scale=T
+    ## get lines indicating links:
     circos(R=100, cir=db, W=100,
            mapping=outlier.link,
-           type="link",lwd=0.2,col= tmpcolor);
+           type="link",lwd=0.2,
+           col= tmpcolor)
   }
 
 } # end .circosmht
+
+#####
+# > str(seg.value)
+
+## GOOD: ##
+
+# 'data.frame':	17624 obs. of  6 variables:
+#   $ seg.name   : int  1 1 1 1 1 1 1 1 1 1 ...
+# $ seg.no     : int  10 155313 276777 310011 319847 324206 335029 696942 706680 709966 ...
+# $ Trait1_Beta: num  -2.609 0.115 1.398 0.683 1.119 ...
+# $ Trait1_P   : num  0.3197 0.9059 0.5947 0.2017 0.0899 ...
+# $ Trait2_Beta: num  0.673 -3.054 6.557 -0.602 0.35 ...
+# $ Trait2_P   : num  0.8509 0.185 0.0661 0.5467 0.7809 ...
+
+## BAD (no -SNP): ##
+# 'data.frame':	17624 obs. of  6 variables:
+#   $ seg.name   : int  1 1 1 1 1 1 1 1 1 1 ...
+# $ seg.no     : Factor w/ 17624 levels "AFFX-SNP_10783944__rs7287369",..: 508 910 7913 15526 5264 8979 13252 3508 13991 11452 ...
+# $ Trait1_Beta: num  -2.609 0.115 1.398 0.683 1.119 ...
+# $ Trait1_P   : num  0.3197 0.9059 0.5947 0.2017 0.0899 ...
+# $ Trait2_Beta: num  0.673 -3.054 6.557 -0.602 0.35 ...
+# $ Trait2_P   : num  0.8509 0.185 0.0661 0.5467 0.7809 ...
+
+
+
+
+# ################
+# ## .circosmht ##
+# ################
+# # WORKING EXAMPLE on HumanGWAS (requires no inputs)
+# .circosmht <- function(mydata=HumanGWAS,
+#                        traitsname = c("Trait1_Beta","Trait2_Beta"),
+#                        logV1 = NULL, logV2 = NULL,
+#                        trait.pvalnam = c("Trait1_P","Trait2_P"),
+#                        pcut.outlier=0.002){
+#
+#   require(OmicCircos)
+#
+#   #   seg.file <- data.frame(seg.name=mydata$chrom,
+#   #                          seg.Start=mydata$pos,
+#   #                          seg.End=mydata$pos+1,
+#   #                          the.v="NA", NO="NA")
+#
+#   data("HumanGWAS")
+#   mydata <- HumanGWAS
+#   traitsname = c("Trait1_Beta","Trait2_Beta")
+#   logV1 = NULL
+#   logV2 = NULL
+#   trait.pvalnam = c("Trait1_P","Trait2_P")
+#   pcut.outlier=0.002
+#
+#   seg.file <- data.frame(seg.name=mydata$Chr,
+#                          seg.Start=mydata$BP,
+#                          seg.End=mydata$BP+1,
+#                          the.v="NA", NO="NA")
+#   seg.value = subset(mydata, select=-SNP)
+#   # seg.value <- mydata
+#   names(seg.value) <- c("Chromosome", "Position", names(seg.value)[c(3:length(names(seg.value)))])
+#   toKeep <- which(names(seg.value) %in% c("Position", "Chromosome", traitsname, trait.pvalnam))
+#   seg.value <- seg.value[,toKeep]
+#   mydata <- seg.value
+#
+#
+#   #   # seg.value = subset(mydata, select=-SNP)
+#   #   # seg.value <- cbind(mydata$pos, mydata$chrom, mydata$y)
+#   #   # names(seg.value) <- c("Position", "Chromosome", names(mydata$y))
+#
+#   #   toKeep <- which(names(mydata$y) %in% c(traitsname, trait.pvalnam))
+#   #   seg.value <- cbind(mydata$pos, mydata$chrom, mydata$y[,toKeep])
+#   #   names(seg.value) <- c("Position", "Chromosome", names(mydata$y[,toKeep]))
+#   #   mydata <- seg.value
+#
+#   print("mydata"); print(str(mydata))
+#
+#   # print(str(seg.value))
+#   print("SUMMARY CHROMOSOME"); print(summary(seg.value$Chromosome))
+#
+#   traitidxlist = match(traitsname, names(seg.value))
+#   trait.pidxlist = match(trait.pvalnam, names(seg.value))
+#   chridx = match("Chromosome",names(seg.value))
+#   BPidx = match("Position", names(seg.value))
+#
+#
+#   if(is.null(logV1)){
+#     seg.value[,traitidxlist[1]] = seg.value[,traitidxlist[1]]
+#   } else{
+#     if(logV1 %in% c("log2", "log10")){
+#       if(length(which(seg.value[,traitidxlist[1]] < 0)) > 0) {
+#         stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+#       logbase = ifelse(logV1 %in% "log2",2, 10)
+#       seg.value[,traitidxlist[1]] = -log(abs(seg.value[,traitidxlist[1]]), logbase)
+#     }
+#   }
+#
+#   if(is.null(logV2)){
+#     seg.value[,traitidxlist[2]] = seg.value[,traitidxlist[2]]
+#   } else{
+#     if(logV2 %in% c("log2", "log10")){
+#       if(length(which(seg.value[,traitidxlist[2]] < 0)) > 0) {
+#         stop("Selected Y-axis variable contains negative values, can't be log-transformed\n ")}
+#       logbase = ifelse(logV2 %in% "log2",2, 10)
+#       seg.value[,traitidxlist[2]] = -log(abs(seg.value[,traitidxlist[2]]), logbase)
+#     }
+#   }
+#
+#   names(seg.value)[chridx] <- "seg.name"
+#   names(seg.value)[BPidx] <- "seg.no"
+#
+#   print("seg.value"); print(str(seg.value))
+#
+#   seg.number <- length(unique(mydata$Chromosome))
+#   seg.name <- as.character(sort(unique(mydata$Chromosome))) # paste("chr", , sep=)
+#
+#   db <- segAnglePo(seg.file, seg=seg.name);
+#
+#   colors <- brewer.pal(9, "Set1")
+#
+#   print("traitidxlist"); print(str(traitidxlist))
+#
+#   o.l <- list()
+#   for(i in 1:length(traitidxlist)){
+#     o.l[[i]] = .linkcreat(dat=seg.value,
+#                           traitid=traitidxlist[i],
+#                           pvalid=trait.pidxlist[i],
+#                           pcut.outlier=pcut.outlier)
+#     print("OUTLIER.LINK"); print(str(o.l[[i]]))
+#   }
+#
+#   outlier.link <- o.l[[1]]
+#
+#   par(mar=c(2,2,2,2));
+#   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
+#   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
+#   ## get outer-most lines indicating chromosomes:
+#   circos(R=400,type="chr", cir=db,
+#          col=rep(alpha(colors,0.6), length.out=seg.number),
+#          print.chr.lab=T,
+#          W=40, scale=T); #scale=T
+#
+#   for (i in 1:length(traitidxlist)){
+#     tmpcolor = alpha(colors[i], 0.3)
+#     outlier.link = outlier.link
+#     # outlier.link = outlier.LINK[[i]];
+#     ## get dots:
+#     circos(R= 120 + (i-1) * 100, cir=db,
+#            W= 180, mapping=seg.value,
+#            col.v=traitidxlist[i],type="s",
+#            B=F, col=tmpcolor,lwd=0.15, scale=T) #scale=T
+#     ## get lines indicating links:
+#     circos(R=100, cir=db, W=100,
+#            mapping=outlier.link,
+#            type="link",lwd=0.2,col= tmpcolor)
+#   }
+#
+# } # end .circosmht
+
+
+
+
+
+
+
+
+
 
 
 

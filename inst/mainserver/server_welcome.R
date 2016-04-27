@@ -25,7 +25,10 @@ output$MinotaurBanner <- renderUI({
                   &#9899;
                   </h4>")
              )
-             ), style = list('background-color: #ffffcc')
+             ),
+
+    # style = list('background-color: #ffffcc')
+    style = list('background-color: #FFECB3') # pale amber
              )
 })
 
