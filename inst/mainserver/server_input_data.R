@@ -68,10 +68,10 @@ output$tabBox_loadData <- renderUI({
               h3('Work with example data'),
               selectInput('exampleData', label='Select example',
                             choices=list("(use own data)" = "use_own",
-                                         "Expansion from Two Refugia" = "TwoRefSim",
                                          "Human GWAS" = "HumanGWAS",
+                                         "Expansion from Two Refugia" = "TwoRefSim",
                                          "Non-Parametric Data" = "NonParamEx"),
-                          selected="TwoRefSim")
+                          selected="HumanGWAS")
       ),
 
 
@@ -164,12 +164,13 @@ rawData <- reactive({
     ## (and no input of example data has been selected -- if this is even possible),
     ## automatically load the TwoRefSim example dataset:
     if (is.null(input$inputFile) & is.null(input$exampleData)){
-      data(TwoRefSim, package="MINOTAUR", envir=environment())
-      output <- list(data=TwoRefSim,
-                     name='Example: Simulated Expansion from Two Refugia',
-                     description='This data set contains population genetic data simulating expansion from two refugia.',
-                     rows=nrow(TwoRefSim),
-                     cols=ncol(TwoRefSim))
+      ## HumanGWAS ##
+      data(HumanGWAS, package="MINOTAUR", envir=environment())
+      output <- list(data=HumanGWAS,
+                     name='Example: Human GWAS',
+                     description='This data set contains an example of output returned from a human GWAS analysis.',
+                     rows=nrow(HumanGWAS),
+                     cols=ncol(HumanGWAS))
     }
 
   }else{
@@ -177,15 +178,6 @@ rawData <- reactive({
 
     # if using example data...
     if(input$tabSet_loadData == "eg"){
-    ## TwoRefSim ##
-    if (input$exampleData=='TwoRefSim') {
-      data(TwoRefSim, package="MINOTAUR", envir=environment())
-      output <- list(data=TwoRefSim,
-                     name='Example: Simulated Expansion from Two Refugia',
-                     description='This data set contains population genetic data simulating expansion from two refugia.',
-                     rows=nrow(TwoRefSim),
-                     cols=ncol(TwoRefSim))
-    }
     ## HumanGWAS ##
     if (input$exampleData=='HumanGWAS') {
       data(HumanGWAS, package="MINOTAUR", envir=environment())
@@ -194,6 +186,15 @@ rawData <- reactive({
                      description='This data set contains an example of output returned from a human GWAS analysis.',
                      rows=nrow(HumanGWAS),
                      cols=ncol(HumanGWAS))
+    }
+    ## TwoRefSim ##
+    if (input$exampleData=='TwoRefSim') {
+      data(TwoRefSim, package="MINOTAUR", envir=environment())
+      output <- list(data=TwoRefSim,
+                     name='Example: Simulated Expansion from Two Refugia',
+                     description='This data set contains population genetic data simulating expansion from two refugia.',
+                     rows=nrow(TwoRefSim),
+                     cols=ncol(TwoRefSim))
     }
     ## NonParamEx ##
     if (input$exampleData=='NonParamEx') {
@@ -399,14 +400,12 @@ output$rawDataTable <- DT::renderDataTable({
     for(i in 1:ncol(dat)){
 
       levs[[i]] <- list()
-      #require(adegenet)
       #levs[[i]] <- levels(as.factor(dat[,i]))
       levs[[i]][[1]] <- unique(dat[,i])
       ## if levs contains no numbers, convert to numeric:
 
       ## When using formatStyle to colour table later,
       ## we will need levels sorted as numeric or as character:
-      #require(Hmisc)
       if(all.is.numeric(levs[[i]][[1]])){
         levs[[i]][[2]] <- as.numeric(levs[[i]][[1]])
         ## remove highest level??

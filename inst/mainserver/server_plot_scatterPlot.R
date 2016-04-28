@@ -850,10 +850,6 @@ output$box_scatterPlot_button <- renderUI({
                     outlier.transp,
                     outlier.pch, outlier.cex){
 
-  require(ash)
-  require(fields)
-  require(adegenet)
-
   if(outlier.transp != 0){
     outlier.transp <- 1 - outlier.transp
     outlier.col <- transp(outlier.col, alpha = outlier.transp)

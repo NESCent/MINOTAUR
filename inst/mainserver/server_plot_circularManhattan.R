@@ -25,19 +25,19 @@ rv_circularManhattan_outlier.cutoff2 <- reactiveValues()
 rv_circularManhattan_outlier.tail2 <- reactiveValues()
 
 ## aesthetics
-rv_circularManhattan_col.pal <- reactiveValues()
-rv_circularManhattan_n.bins <- reactiveValues()
-rv_circularManhattan_grid <- reactiveValues()
+# rv_circularManhattan_col.pal <- reactiveValues()
+# rv_circularManhattan_n.bins <- reactiveValues()
+# rv_circularManhattan_grid <- reactiveValues()
 
 rv_circularManhattan_outlier.col.bg1 <- reactiveValues()
-rv_circularManhattan_outlier.col1 <- reactiveValues()
-rv_circularManhattan_outlier.pch1 <- reactiveValues()
+# rv_circularManhattan_outlier.col1 <- reactiveValues()
+# rv_circularManhattan_outlier.pch1 <- reactiveValues()
 rv_circularManhattan_outlier.transp1 <- reactiveValues()
 rv_circularManhattan_outlier.cex1 <- reactiveValues()
 
 rv_circularManhattan_outlier.col.bg2 <- reactiveValues()
-rv_circularManhattan_outlier.col2 <- reactiveValues()
-rv_circularManhattan_outlier.pch2 <- reactiveValues()
+# rv_circularManhattan_outlier.col2 <- reactiveValues()
+# rv_circularManhattan_outlier.pch2 <- reactiveValues()
 rv_circularManhattan_outlier.transp2 <- reactiveValues()
 rv_circularManhattan_outlier.cex2 <- reactiveValues()
 
@@ -105,19 +105,19 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
     rv_circularManhattan_outlier.cutoff2[[k]] <- 0.002 # 0.05
     rv_circularManhattan_outlier.tail2[[k]] <- "Lower"
 
-    rv_circularManhattan_col.pal[[k]] <- "heat.colors"
-    rv_circularManhattan_n.bins[[k]] <- 100
-    rv_circularManhattan_grid[[k]] <- FALSE
+    #     rv_circularManhattan_col.pal[[k]] <- "heat.colors"
+    #     rv_circularManhattan_n.bins[[k]] <- 100
+    #     rv_circularManhattan_grid[[k]] <- FALSE
 
     rv_circularManhattan_outlier.col.bg1[[k]] <- "red"
-    rv_circularManhattan_outlier.col1[[k]] <- "red"
-    rv_circularManhattan_outlier.pch1[[k]] <- "24"
+    # rv_circularManhattan_outlier.col1[[k]] <- "red"
+    # rv_circularManhattan_outlier.pch1[[k]] <- "24"
     rv_circularManhattan_outlier.transp1[[k]] <- 0.5
     rv_circularManhattan_outlier.cex1[[k]] <- 1
 
     rv_circularManhattan_outlier.col.bg2[[k]] <- "blue"
-    rv_circularManhattan_outlier.col2[[k]] <- "blue"
-    rv_circularManhattan_outlier.pch2[[k]] <- "24"
+    # rv_circularManhattan_outlier.col2[[k]] <- "blue"
+    # rv_circularManhattan_outlier.pch2[[k]] <- "24"
     rv_circularManhattan_outlier.transp2[[k]] <- 0.5
     rv_circularManhattan_outlier.cex2[[k]] <- 1
 
@@ -153,20 +153,20 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
     flipY <- eval(parse(text=paste("input$circularManhattan_flipy", k, sep="_")))
 
     ## Get plot aesthetics
-    col.pal <- eval(parse(text=paste("input$circularManhattan_col.pal", k, sep="_")))
-    n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
-    grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
+    # col.pal <- eval(parse(text=paste("input$circularManhattan_col.pal", k, sep="_")))
+    # n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
+    # grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
 
     outlier.col.bg1 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg1", k, sep="_")))
-    outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
+    # outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
     outlier.transp1 <- eval(parse(text=paste("input$circularManhattan_outlier.transp1", k, sep="_")))
-    outlier.pch1 <- eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_")))
+    # outlier.pch1 <- eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_")))
     outlier.cex1 <- eval(parse(text=paste("input$circularManhattan_outlier.cex1", k, sep="_")))
 
     outlier.col.bg2 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg2", k, sep="_")))
-    outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
+    # outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
     outlier.transp2 <- eval(parse(text=paste("input$circularManhattan_outlier.transp2", k, sep="_")))
-    outlier.pch2 <- eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_")))
+    # outlier.pch2 <- eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_")))
     outlier.cex2 <- eval(parse(text=paste("input$circularManhattan_outlier.cex2", k, sep="_")))
 
 
@@ -198,19 +198,19 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
     rv_circularManhattan_outlier.cutoff2[[k]] <- cutoff2
     rv_circularManhattan_outlier.tail2[[k]] <- tail2
 
-    rv_circularManhattan_n.bins[[k]] <- n.bins
-    rv_circularManhattan_col.pal[[k]] <- col.pal
-    rv_circularManhattan_grid[[k]] <- grid
+    # rv_circularManhattan_n.bins[[k]] <- n.bins
+    # rv_circularManhattan_col.pal[[k]] <- col.pal
+    # rv_circularManhattan_grid[[k]] <- grid
 
     rv_circularManhattan_outlier.col.bg1[[k]] <- outlier.col.bg1
-    rv_circularManhattan_outlier.col1[[k]] <- outlier.col1
-    rv_circularManhattan_outlier.pch1[[k]] <- outlier.pch1
+    # rv_circularManhattan_outlier.col1[[k]] <- outlier.col1
+    # rv_circularManhattan_outlier.pch1[[k]] <- outlier.pch1
     rv_circularManhattan_outlier.transp1[[k]] <- outlier.transp1
     rv_circularManhattan_outlier.cex1[[k]] <- outlier.cex1
 
     rv_circularManhattan_outlier.col.bg2[[k]] <- outlier.col.bg2
-    rv_circularManhattan_outlier.col2[[k]] <- outlier.col2
-    rv_circularManhattan_outlier.pch2[[k]] <- outlier.pch2
+    # rv_circularManhattan_outlier.col2[[k]] <- outlier.col2
+    # rv_circularManhattan_outlier.pch2[[k]] <- outlier.pch2
     rv_circularManhattan_outlier.transp2[[k]] <- outlier.transp2
     rv_circularManhattan_outlier.cex2[[k]] <- outlier.cex2
 
@@ -535,19 +535,19 @@ output$box_circularManhattan <- renderUI({
   k <- as.character(k)
 
   ## get Id's | k
-  id_circularManhattan_col.pal <- paste("circularManhattan_col.pal", k, sep="_")
-  id_circularManhattan_n.bins <- paste("circularManhattan_n.bins", k, sep="_")
-  id_circularManhattan_grid <- paste("circularManhattan_grid", k, sep="_")
+  # id_circularManhattan_col.pal <- paste("circularManhattan_col.pal", k, sep="_")
+  # id_circularManhattan_n.bins <- paste("circularManhattan_n.bins", k, sep="_")
+  # id_circularManhattan_grid <- paste("circularManhattan_grid", k, sep="_")
 
   id_circularManhattan_outlier.col.bg1 <- paste("circularManhattan_outlier.col.bg1", k, sep="_")
-  id_circularManhattan_outlier.col1 <- paste("circularManhattan_outlier.col1", k, sep="_")
-  id_circularManhattan_outlier.pch1 <- paste("circularManhattan_outlier.pch1", k, sep="_")
+  # id_circularManhattan_outlier.col1 <- paste("circularManhattan_outlier.col1", k, sep="_")
+  # id_circularManhattan_outlier.pch1 <- paste("circularManhattan_outlier.pch1", k, sep="_")
   id_circularManhattan_outlier.transp1 <- paste("circularManhattan_outlier.transp1", k, sep="_")
   id_circularManhattan_outlier.cex1 <- paste("circularManhattan_outlier.cex1", k, sep="_")
 
   id_circularManhattan_outlier.col.bg2 <- paste("circularManhattan_outlier.col.bg2", k, sep="_")
-  id_circularManhattan_outlier.col2 <- paste("circularManhattan_outlier.col2", k, sep="_")
-  id_circularManhattan_outlier.pch2 <- paste("circularManhattan_outlier.pch2", k, sep="_")
+  # id_circularManhattan_outlier.col2 <- paste("circularManhattan_outlier.col2", k, sep="_")
+  # id_circularManhattan_outlier.pch2 <- paste("circularManhattan_outlier.pch2", k, sep="_")
   id_circularManhattan_outlier.transp2 <- paste("circularManhattan_outlier.transp2", k, sep="_")
   id_circularManhattan_outlier.cex2 <- paste("circularManhattan_outlier.cex2", k, sep="_")
 
@@ -560,46 +560,6 @@ output$box_circularManhattan <- renderUI({
         solidHeader=FALSE,
         collapsible=TRUE,
         width=12,
-
-        box(title="Scatter aesthetics:",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
-
-            fluidRow(
-              column(4,
-            ## selectInput w col.pals
-            selectizeInput(id_circularManhattan_col.pal,
-                           label="Colour palette:",
-                           choices = list("Heat colours" = "heat.colors",
-                                          "Terrain colours" = "terrain.colors",
-                                          "Topo colours" = "topo.colors",
-                                          "CM colours" = "cm.colors",
-                                          "Gray colours" = "gray.colors"),
-                           selected =  rv_circularManhattan_col.pal[[k]], # "heat.colors",
-                           multiple=FALSE)),
-
-            column(4,
-            sliderInput(id_circularManhattan_n.bins,
-                        label = "Number of bins:",
-                        min = 2, max = 1000,
-                        value =  rv_circularManhattan_n.bins[[k]], # 100,
-                        step = 1)),
-
-            column(4,
-            radioButtons(id_circularManhattan_grid,
-                         label="Overlay grid?",
-                         choices=list("Yes" = TRUE,
-                                      "No" = FALSE),
-                         selected = rv_circularManhattan_grid[[k]],
-                         inline = TRUE))
-            ),
-
-            style = list('background-color: #FFECB3') # pale amber
-        ),
-
-
 
         box(title="Outlier #1 aesthetics:",
             status="warning",
@@ -621,47 +581,47 @@ output$box_circularManhattan <- renderUI({
                            multiple=FALSE)),
 
             column(4,
-            selectizeInput(id_circularManhattan_outlier.col1,
-                           label = "Outlier colour (outline):",
-                           choices = list("Red" = "red",
-                                          "Orange" = "orange",
-                                          "Yellow" = "yellow",
-                                          "Green" = "green",
-                                          "Blue" = "blue",
-                                          "Purple" = "purple"),
-                           selected =  rv_circularManhattan_outlier.col1[[k]], # NULL,
-                           multiple=FALSE)),
+                   sliderInput(id_circularManhattan_outlier.transp1,
+                               label = "Outlier transparency:",
+                               min = 0, max = 1,
+                               value =  rv_circularManhattan_outlier.transp1[[k]], # 0.25,
+                               step = 0.05)),
 
             column(4,
-            selectizeInput(id_circularManhattan_outlier.pch1,
-                           label = "Outlier shape:",
-                           choices = list("Circle" = "21",
-                                          "Square" = "22",
-                                          "Diamond" = "23",
-                                          "Triangle, point-up" = "24",
-                                          "Triangle, point-down" = "25"
-                           ),
-                           selected =  rv_circularManhattan_outlier.pch1[[k]], # "24",
-                           multiple=FALSE))
+                   sliderInput(id_circularManhattan_outlier.cex1,
+                               label = "Outlier size:",
+                               min = 0, max = 3,
+                               value =  rv_circularManhattan_outlier.cex1[[k]], # 1.5,
+                               step = 0.1))
             ),
 
-            hr(),
-
-            fluidRow(
-              column(6,
-            sliderInput(id_circularManhattan_outlier.transp1,
-                        label = "Outlier transparency:",
-                        min = 0, max = 1,
-                        value =  rv_circularManhattan_outlier.transp1[[k]], # 0.25,
-                        step = 0.05)),
-
-            column(6,
-            sliderInput(id_circularManhattan_outlier.cex1,
-                        label = "Outlier size:",
-                        min = 0, max = 3,
-                        value =  rv_circularManhattan_outlier.cex1[[k]], # 1.5,
-                        step = 0.1))
-            ),
+            #             hr(),
+            #
+            #             fluidRow(
+            #               column(6,
+            #                      selectizeInput(id_circularManhattan_outlier.pch1,
+            #                                     label = "Outlier shape:",
+            #                                     choices = list("Circle" = "21",
+            #                                                    "Square" = "22",
+            #                                                    "Diamond" = "23",
+            #                                                    "Triangle, point-up" = "24",
+            #                                                    "Triangle, point-down" = "25"
+            #                                     ),
+            #                                     selected =  rv_circularManhattan_outlier.pch1[[k]], # "24",
+            #                                     multiple=FALSE)),
+            #
+            #             column(6,
+            #                    selectizeInput(id_circularManhattan_outlier.col1,
+            #                                   label = "Outlier colour (outline):",
+            #                                   choices = list("Red" = "red",
+            #                                                  "Orange" = "orange",
+            #                                                  "Yellow" = "yellow",
+            #                                                  "Green" = "green",
+            #                                                  "Blue" = "blue",
+            #                                                  "Purple" = "purple"),
+            #                                   selected =  rv_circularManhattan_outlier.col1[[k]], # NULL,
+            #                                   multiple=FALSE))
+            #             ),
 
             style = list('background-color: #FFECB3') # pale amber
         ),
@@ -687,47 +647,47 @@ output$box_circularManhattan <- renderUI({
                                     multiple=FALSE)),
 
               column(4,
-                     selectizeInput(id_circularManhattan_outlier.col2,
-                                    label = "Outlier colour (outline):",
-                                    choices = list("Red" = "red",
-                                                   "Orange" = "orange",
-                                                   "Yellow" = "yellow",
-                                                   "Green" = "green",
-                                                   "Blue" = "blue",
-                                                   "Purple" = "purple"),
-                                    selected =  rv_circularManhattan_outlier.col2[[k]], # NULL,
-                                    multiple=FALSE)),
-
-              column(4,
-                     selectizeInput(id_circularManhattan_outlier.pch2,
-                                    label = "Outlier shape:",
-                                    choices = list("Circle" = "21",
-                                                   "Square" = "22",
-                                                   "Diamond" = "23",
-                                                   "Triangle, point-up" = "24",
-                                                   "Triangle, point-down" = "25"
-                                    ),
-                                    selected =  rv_circularManhattan_outlier.pch2[[k]], # "24",
-                                    multiple=FALSE))
-            ),
-
-            hr(),
-
-            fluidRow(
-              column(6,
-                     sliderInput(id_circularManhattan_outlier.transp2,
-                                 label = "Outlier transparency:",
-                                 min = 0, max = 1,
-                                 value =  rv_circularManhattan_outlier.transp2[[k]], # 0.25,
-                                 step = 0.05)),
-
-              column(6,
                      sliderInput(id_circularManhattan_outlier.cex2,
                                  label = "Outlier size:",
                                  min = 0, max = 3,
                                  value =  rv_circularManhattan_outlier.cex2[[k]], # 1.5,
-                                 step = 0.1))
+                                 step = 0.1)),
+
+              column(4,
+                     sliderInput(id_circularManhattan_outlier.transp2,
+                                 label = "Outlier transparency:",
+                                 min = 0, max = 1,
+                                 value =  rv_circularManhattan_outlier.transp2[[k]], # 0.25,
+                                 step = 0.05))
             ),
+
+            #             hr(),
+            #
+            #             fluidRow(
+            #               column(6,
+            #                      selectizeInput(id_circularManhattan_outlier.pch2,
+            #                                     label = "Outlier shape:",
+            #                                     choices = list("Circle" = "21",
+            #                                                    "Square" = "22",
+            #                                                    "Diamond" = "23",
+            #                                                    "Triangle, point-up" = "24",
+            #                                                    "Triangle, point-down" = "25"
+            #                                     ),
+            #                                     selected =  rv_circularManhattan_outlier.pch2[[k]], # "24",
+            #                                     multiple=FALSE)),
+            #
+            #               column(6,
+            #                      selectizeInput(id_circularManhattan_outlier.col2,
+            #                                     label = "Outlier colour (outline):",
+            #                                     choices = list("Red" = "red",
+            #                                                    "Orange" = "orange",
+            #                                                    "Yellow" = "yellow",
+            #                                                    "Green" = "green",
+            #                                                    "Blue" = "blue",
+            #                                                    "Purple" = "purple"),
+            #                                     selected =  rv_circularManhattan_outlier.col2[[k]], # NULL,
+            #                                     multiple=FALSE))
+            #             ),
 
             style = list('background-color: #FFECB3') # pale amber
         )
@@ -858,20 +818,20 @@ output$box_circularManhattan_button <- renderUI({
       #########################
 
       ## Get plot aesthetics
-      col.pal <- eval(parse(text=paste("input$circularManhattan_col.pal", k, sep="_")))
-      n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
-      grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
+      # col.pal <- eval(parse(text=paste("input$circularManhattan_col.pal", k, sep="_")))
+      # n.bins <- eval(parse(text=paste("input$circularManhattan_n.bins", k, sep="_")))
+      # grid <- eval(parse(text=paste("input$circularManhattan_grid", k, sep="_")))
 
       outlier.col.bg1 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg1", k, sep="_")))
-      outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
+      # outlier.col1 <- eval(parse(text=paste("input$circularManhattan_outlier.col1", k, sep="_")))
       outlier.transp1 <- eval(parse(text=paste("input$circularManhattan_outlier.transp1", k, sep="_")))
-      outlier.pch1 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_"))))
+      # outlier.pch1 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch1", k, sep="_"))))
       outlier.cex1 <- eval(parse(text=paste("input$circularManhattan_outlier.cex1", k, sep="_")))
 
       outlier.col.bg2 <- eval(parse(text=paste("input$circularManhattan_outlier.col.bg2", k, sep="_")))
-      outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
+      # outlier.col2 <- eval(parse(text=paste("input$circularManhattan_outlier.col2", k, sep="_")))
       outlier.transp2 <- eval(parse(text=paste("input$circularManhattan_outlier.transp2", k, sep="_")))
-      outlier.pch2 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_"))))
+      # outlier.pch2 <- as.numeric(eval(parse(text=paste("input$circularManhattan_outlier.pch2", k, sep="_"))))
       outlier.cex2 <- eval(parse(text=paste("input$circularManhattan_outlier.cex2", k, sep="_")))
 
 
@@ -891,11 +851,11 @@ output$box_circularManhattan_button <- renderUI({
       start <- 0.25
       end <- 0.9
       alpha <- 1
-      if(col.pal == "gray.colors"){
-        col.pal <- eval(parse(text=paste(col.pal, "(n=n, start=start, end=end)", sep="")))
-      }else{
-        col.pal <- eval(parse(text=paste(col.pal, "(n=n, alpha=alpha)", sep="")))
-      }
+      #       if(col.pal == "gray.colors"){
+      #         col.pal <- eval(parse(text=paste(col.pal, "(n=n, start=start, end=end)", sep="")))
+      #       }else{
+      #         col.pal <- eval(parse(text=paste(col.pal, "(n=n, alpha=alpha)", sep="")))
+      #       }
 
 
       ## Get X, Chr, Pos variables
@@ -1049,8 +1009,6 @@ output$box_circularManhattan_button <- renderUI({
                        outlier.col = c("red", "blue"),
                        outlier.transp = c(0.5, 0.5),
                        outlier.cex = c(1,1)){
-
-  require(OmicCircos)
 
   seg.file <- data.frame(seg.name=mydata$chrom,
                          seg.Start=mydata$pos,

@@ -5,17 +5,19 @@ Authors@R: person("Caitlin", "Collins", , "caitiecollins@gmail.com", role = "cre
 Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space. 
 Depends: 
     R (>= 3.2.3)
-Imports: shiny,
-    shinydashboard,
-    Rcpp,
-    DT,
-    shinyjs,
-    ggplot2,
-    ggvis,
-    RColorBrewer,
-    Hmisc,
-    adegenet,
-    fields
+Imports: adegenet, 
+	ash,
+	data.table, 
+	DT, 
+	fields, 
+	ggplot2, 
+	Hmisc, 	
+	OmicCircos,
+	RColorBrewer, 
+	Rcpp,
+	shiny,
+	shinydashboard,
+	shinyjs
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true

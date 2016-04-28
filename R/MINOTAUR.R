@@ -35,12 +35,19 @@
 #' ## run function
 #' MINOTAUR()
 #'
-#' @import shiny shinydashboard shinyjs DT
-#'  stats4 adegenet  MASS RColorBrewer
-#'  ggplot2 scales hexbin  data.table ash fields Rcpp
-#'  Hmisc
+#' @import adegenet ash data.table DT
+#' fields ggplot2 Hmisc
+#' OmicCircos RColorBrewer Rcpp
+#' shiny shinydashboard shinyjs
 #'
 #' @export
+
+## PKG LIST (28/04/2016): ##
+# adegenet ash data.table DT
+# fields ggplot2 hexbin Hmisc
+# MASS OmicCircos RColorBrewer Rcpp
+# scales shiny shinydashboard shinyjs stats4
+
 
 
 # Rcpp
@@ -79,26 +86,23 @@ MINOTAUR <- function(){
   ## Fortunately we do not need this class from either pkg.
   #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
 
+  require(adegenet)
+  require(ash) # .plot2D
+  require(data.table)
+  require(DT)
+  require(fields) # .plot2D
+  require(ggplot2)
+  require(Hmisc) # only for color table demo -- may NOT need!
+  require(OmicCircos)
+  require(RColorBrewer)
+  require(Rcpp)
   require(shiny)
   require(shinydashboard)
-  require(data.table)
   require(shinyjs)
-  require(DT)
-  require(Hmisc)
-  require(adegenet)
-  #require(rCharts)
-  #require(rHighcharts)
-  #require(stats4)
-  #require(adegenet)
-  #require(MASS)
-  require(RColorBrewer)
-  require(ggplot2)
-  #require(scales)
-  #require(hexbin)
-  #require(OmicCircos)
-  require(data.table)
-  require(ash)
-  require(fields)
+  # require(MASS) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
+  # require(scales) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
+  # require(stats4) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
+
 
   syst.file <- base::system.file
 
