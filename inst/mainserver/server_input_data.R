@@ -316,186 +316,180 @@ output$tabBox_rawDataSummary <- renderUI({
   )
 })
 
-# ## Example: Colour cells
+# raw data table (original)
+output$rawDataTable <- renderDataTable({
+  rawData()$data
+},options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
+)
 
-#############
-# # raw data table (original)
-# output$rawDataTable <- renderDataTable({
-#   rawData()$data
-# },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
-# )
-#############
+# ## Example: Colour cells - ARCHIVED FOR NOW DUE TO DIFFICULTIES WORKING WITH LARGE TABLES
 
-# raw data table
-options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
-
-## output as table (example) ##
-## example: coloured cells
-
-## REQUIRES THE GITHUB VERSION OF DT!!!!!!!
-## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
-#devtools::install_github('rstudio/DT')
-
-
-output$rawDataTable <- DT::renderDataTable({
-
-  out <- NULL
-
-  ## Get data:
-  dat <- rawData()$data
-
-  #set.seed(1)
-  #dat <- matrix(sample(c(1:20), 500, replace=TRUE), nrow=50, byrow=TRUE)
-  if(!is.null(dat)){
-
-    ## For the moment, I'm only using the first 200 rows for this example.
-    ## Gets slow by 1,000 rows and runs into an error w full dataset...
-    dat <- dat[c(1:200),]
-
-    ## try to render & run expression
-    try.out <- try(.get.colorTable.style(dat), silent=TRUE)
-
-    if(class(try.out) != "try-error"){
-      temp <- .get.colorTable.style(dat) # try.out
-      style <- temp$style
-      levs <- temp$levs
-      myCol <- temp$myCol
-      ## collapse elements of style together w %>%
-      paste(style, collapse=" %>% ")
-      ## paste datatable fn to elements of style w %>%
-      out <- paste("datatable(dat)", paste(style, collapse=" %>% "), sep=" %>% ")
-      out <- eval(parse(text=out))
-      # out <- dataTableOutput(out)
-    }else{
-      #       rawDT.error <- "Error: Data table could not be generated from file.
-      #                   Check that the appropriate controls have been selected in the panel at left
-      #                   and that the file is in the right format."
-      #       print(rawDT.error)
-      #       # out <- textOutput(print(rawDT.error))
-      #       out <- rawDT.error
-      out <- NULL
-    }
-
-  } # end null check
-
-  return(out)
-})
-
-
-
-###########################
-## .get.colorTable.style ##
-###########################
-.get.colorTable.style <- function(dat){
-
-  if(!is.null(dat)){
-
-    ## Select colours for levels of table cells to be coloured.
-    levs <- myCol <- style <- list()
-
-    #par(mfrow=c(1,5))
-
-    ## for loop to get levels and colour schemes for each column of dat:
-    for(i in 1:ncol(dat)){
-
-      levs[[i]] <- list()
-      #require(adegenet)
-      #levs[[i]] <- levels(as.factor(dat[,i]))
-      levs[[i]][[1]] <- unique(dat[,i])
-      ## if levs contains no numbers, convert to numeric:
-
-      ## When using formatStyle to colour table later,
-      ## we will need levels sorted as numeric or as character:
-      #require(Hmisc)
-      if(all.is.numeric(levs[[i]][[1]])){
-        levs[[i]][[2]] <- as.numeric(levs[[i]][[1]])
-        ## remove highest level??
-        #levs[[i]][[2]] <- levs[[i]][[2]][-which(levs[[i]][[2]] == levs[[i]][[2]][which.max(levs[[i]][[2]])])]
-      }else{
-        levs[[i]][[2]] <- as.character(levs[[i]][[1]])
-      }
-      levs[[i]][[2]] <- sort(levs[[i]][[2]])
-
-      ## For colour scheme, we need numeric levels:
-      levs[[i]][[1]] <- as.numeric(as.factor(levs[[i]][[1]]))
-
-      ## NOTE: Could change this to check before for loop if we wanted
-      ## to stick w ONE colour scheme throughout table, regardless of levels in each column
-      ## (eg. to use heat.colors if any column has > 20 unique values/levels)...
-      if(length(levs[[i]][[1]]) <= 20){
-        ## Can use adegenet colour palettes for factors w < 20 levels
-        if(all.is.numeric(levs[[i]][[2]])){
-          myCol[[i]] <- funky(n=length(levs[[i]][[1]])+1)
-        }else{
-          myCol[[i]] <- funky(n=length(levs[[i]][[1]]))
-        }
-        ## Add transparency? ##
-        ## NOTE: transparency not working for background colours in table cells.
-        ## Would be nice to find a way to add some because the colours are a little blunt as is...
-        #myCol <- transp(myCol, 0.5)
-      }else{
-        ## Could use heat.colorsfor "factors" w Inf levels...
-        if(all.is.numeric(levs[[i]][[2]])){
-          myCol[[i]] <- heat.colors(n=length(levs[[i]][[1]])+1)
-        }else{
-          myCol[[i]] <- heat.colors(n=length(levs[[i]][[1]]))
-        }
-        ## , alpha=0.8 # to add transparency (not working)
-        ## NOTE: Because heat.colors automatically adds the last two "transparency" characters
-        ## to the character strings it generates to specify colours, we need to remove these (they are/must be
-        ## NULL anyway as transparency not working in tables), which can be done w a utils.R fn I borrowed from treeWAS.
-        myCol[[i]] <- .removeLastN(myCol[[i]], 2)
-      }
-      ## (temp:) check out colours in console
-      #barplot(rep(10, length(myCol[[i]])), col=myCol[[i]])
-
-      #       ## NOTE: heat.colors has a maximum n.levels of 511.
-      #       ## For any styleInterval w > 512 levels, need to set cut points appropriately:
-      #       if(length(levs[[i]][[2]]) > 512){
-      #         levs[[i]][[2]] <- levs[[i]][[2]][which(duplicated(myCol[[i]])==FALSE)]
-      #         myCol[[i]] <- unique(myCol[[i]])
-      #       }
-
-
-      ## get formatStyle expression for this column:
-      if(all.is.numeric(levs[[i]][[2]])){
-        style[[i]] <- paste("formatStyle(",
-                            i,
-                            ", target='cell', backgroundColor = styleInterval(levs[[",
-                            i,
-                            "]][[2]], myCol[[",
-                            i,
-                            "]]))", sep="")
-      }else{
-        style[[i]] <- paste("formatStyle(",
-                            i,
-                            ", target='cell', backgroundColor = styleEqual(levs[[",
-                            i,
-                            "]][[2]], myCol[[",
-                            i,
-                            "]]))", sep="")
-      }
-      #print(style[[i]])
-    }
-    ## temp:
-    #     ## check length of elements of levs
-    #     lev.l <- sapply(c(1:length(levs)), function(e) lapply(levs[[e]], length))
-    #     ## check length of elements of myCol
-    #     col.l <- lapply(myCol, length)
-    #     df <- rbind(col.l, lev.l)
-  }
-
-  temp <- list(style=style,
-               levs=levs,
-               myCol=myCol)
-
-  return(temp)
-
-} # end .get.colorTable.style
-
-
-
-
+# # raw data table
+# options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
+# 
+# ## output as table (example) ##
+# ## example: coloured cells
+# 
+# ## REQUIRES THE GITHUB VERSION OF DT!!!!!!!
+# ## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
+# #devtools::install_github('rstudio/DT')
+# 
+# 
+# output$rawDataTable <- DT::renderDataTable({
+# 
+#   out <- NULL
+# 
+#   ## Get data:
+#   dat <- rawData()$data
+# 
+#   #set.seed(1)
+#   #dat <- matrix(sample(c(1:20), 500, replace=TRUE), nrow=50, byrow=TRUE)
+#   if(!is.null(dat)){
+# 
+#     ## For the moment, I'm only using the first 200 rows for this example.
+#     ## Gets slow by 1,000 rows and runs into an error w full dataset...
+#     dat <- dat[c(1:200),]
+# 
+#     ## try to render & run expression
+#     try.out <- try(.get.colorTable.style(dat), silent=TRUE)
+# 
+#     if(class(try.out) != "try-error"){
+#       temp <- .get.colorTable.style(dat) # try.out
+#       style <- temp$style
+#       levs <- temp$levs
+#       myCol <- temp$myCol
+#       ## collapse elements of style together w %>%
+#       paste(style, collapse=" %>% ")
+#       ## paste datatable fn to elements of style w %>%
+#       out <- paste("datatable(dat)", paste(style, collapse=" %>% "), sep=" %>% ")
+#       out <- eval(parse(text=out))
+#       # out <- dataTableOutput(out)
+#     }else{
+#       #       rawDT.error <- "Error: Data table could not be generated from file.
+#       #                   Check that the appropriate controls have been selected in the panel at left
+#       #                   and that the file is in the right format."
+#       #       print(rawDT.error)
+#       #       # out <- textOutput(print(rawDT.error))
+#       #       out <- rawDT.error
+#       out <- NULL
+#     }
+# 
+#   } # end null check
+# 
+#   return(out)
+# })
+# 
+# 
+# 
+# ###########################
+# ## .get.colorTable.style ##
+# ###########################
+# .get.colorTable.style <- function(dat){
+# 
+#   if(!is.null(dat)){
+# 
+#     ## Select colours for levels of table cells to be coloured.
+#     levs <- myCol <- style <- list()
+# 
+#     #par(mfrow=c(1,5))
+# 
+#     ## for loop to get levels and colour schemes for each column of dat:
+#     for(i in 1:ncol(dat)){
+# 
+#       levs[[i]] <- list()
+#       #require(adegenet)
+#       #levs[[i]] <- levels(as.factor(dat[,i]))
+#       levs[[i]][[1]] <- unique(dat[,i])
+#       ## if levs contains no numbers, convert to numeric:
+# 
+#       ## When using formatStyle to colour table later,
+#       ## we will need levels sorted as numeric or as character:
+#       #require(Hmisc)
+#       if(all.is.numeric(levs[[i]][[1]])){
+#         levs[[i]][[2]] <- as.numeric(levs[[i]][[1]])
+#         ## remove highest level??
+#         #levs[[i]][[2]] <- levs[[i]][[2]][-which(levs[[i]][[2]] == levs[[i]][[2]][which.max(levs[[i]][[2]])])]
+#       }else{
+#         levs[[i]][[2]] <- as.character(levs[[i]][[1]])
+#       }
+#       levs[[i]][[2]] <- sort(levs[[i]][[2]])
+# 
+#       ## For colour scheme, we need numeric levels:
+#       levs[[i]][[1]] <- as.numeric(as.factor(levs[[i]][[1]]))
+# 
+#       ## NOTE: Could change this to check before for loop if we wanted
+#       ## to stick w ONE colour scheme throughout table, regardless of levels in each column
+#       ## (eg. to use heat.colors if any column has > 20 unique values/levels)...
+#       if(length(levs[[i]][[1]]) <= 20){
+#         ## Can use adegenet colour palettes for factors w < 20 levels
+#         if(all.is.numeric(levs[[i]][[2]])){
+#           myCol[[i]] <- funky(n=length(levs[[i]][[1]])+1)
+#         }else{
+#           myCol[[i]] <- funky(n=length(levs[[i]][[1]]))
+#         }
+#         ## Add transparency? ##
+#         ## NOTE: transparency not working for background colours in table cells.
+#         ## Would be nice to find a way to add some because the colours are a little blunt as is...
+#         #myCol <- transp(myCol, 0.5)
+#       }else{
+#         ## Could use heat.colorsfor "factors" w Inf levels...
+#         if(all.is.numeric(levs[[i]][[2]])){
+#           myCol[[i]] <- heat.colors(n=length(levs[[i]][[1]])+1)
+#         }else{
+#           myCol[[i]] <- heat.colors(n=length(levs[[i]][[1]]))
+#         }
+#         ## , alpha=0.8 # to add transparency (not working)
+#         ## NOTE: Because heat.colors automatically adds the last two "transparency" characters
+#         ## to the character strings it generates to specify colours, we need to remove these (they are/must be
+#         ## NULL anyway as transparency not working in tables), which can be done w a utils.R fn I borrowed from treeWAS.
+#         myCol[[i]] <- .removeLastN(myCol[[i]], 2)
+#       }
+#       ## (temp:) check out colours in console
+#       #barplot(rep(10, length(myCol[[i]])), col=myCol[[i]])
+# 
+#       #       ## NOTE: heat.colors has a maximum n.levels of 511.
+#       #       ## For any styleInterval w > 512 levels, need to set cut points appropriately:
+#       #       if(length(levs[[i]][[2]]) > 512){
+#       #         levs[[i]][[2]] <- levs[[i]][[2]][which(duplicated(myCol[[i]])==FALSE)]
+#       #         myCol[[i]] <- unique(myCol[[i]])
+#       #       }
+# 
+# 
+#       ## get formatStyle expression for this column:
+#       if(all.is.numeric(levs[[i]][[2]])){
+#         style[[i]] <- paste("formatStyle(",
+#                             i,
+#                             ", target='cell', backgroundColor = styleInterval(levs[[",
+#                             i,
+#                             "]][[2]], myCol[[",
+#                             i,
+#                             "]]))", sep="")
+#       }else{
+#         style[[i]] <- paste("formatStyle(",
+#                             i,
+#                             ", target='cell', backgroundColor = styleEqual(levs[[",
+#                             i,
+#                             "]][[2]], myCol[[",
+#                             i,
+#                             "]]))", sep="")
+#       }
+#       #print(style[[i]])
+#     }
+#     ## temp:
+#     #     ## check length of elements of levs
+#     #     lev.l <- sapply(c(1:length(levs)), function(e) lapply(levs[[e]], length))
+#     #     ## check length of elements of myCol
+#     #     col.l <- lapply(myCol, length)
+#     #     df <- rbind(col.l, lev.l)
+#   }
+# 
+#   temp <- list(style=style,
+#                levs=levs,
+#                myCol=myCol)
+# 
+#   return(temp)
+# 
+# } # end .get.colorTable.style
 
 
 #############

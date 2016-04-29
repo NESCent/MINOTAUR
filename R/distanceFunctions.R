@@ -78,7 +78,7 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   
   # check that S has the same number of rows and cols as variables in df.vars
   if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
-    stop('S must contain the same number of rows and columns as there are selected variables in dfv')
+    stop("S must contain the same number of rows and columns as there are selected variables in dfv")
 
   # check that S contains no NA values
   if (any(is.na(S)))
