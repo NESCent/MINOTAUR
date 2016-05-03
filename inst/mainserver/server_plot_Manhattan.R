@@ -801,8 +801,12 @@ output$box_linearManhattan_button <- renderUI({
         outlier.Data <- eval(parse(text=paste("dat$y", outlier.var, sep="$")))
       }
 
-      if(length(logx)==1){xData=log(xData+1e-40, logx)}
-      if(length(logy)==1){yData=log(yData+1e-40, logy)}
+      if(length(logx)==1){
+        xData=log(xData+1e-40, logx)
+        }
+      if(length(logy)==1){
+        yData=log(yData+1e-40, logy)
+        }
 
       if(is.na(cutoff)){cutoff=0.01}
       if(tail=="Upper"){
@@ -837,14 +841,6 @@ output$box_linearManhattan_button <- renderUI({
       yData <- yData*flipY
       xData_sub <- xData_sub*flipX
       yData_sub <- yData_sub*flipY
-
-      # get colors
-      #          get.levels <- levels(as.factor(colData))
-      #          n.levels <- length(get.levels)
-      #          colIndex <- as.numeric(as.factor(colData))
-      #           if(!(colPal=="black")){
-      #            myCol <- get(colPal)(n.levels)[colIndex]
-      #            }else(myCol <- rgb(0,0,0,0.2))
 
 
       # produce plot

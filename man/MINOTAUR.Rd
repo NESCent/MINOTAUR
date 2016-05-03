@@ -20,6 +20,7 @@ and identify outliers in multivariate and univariate space.
 ## run function
 MINOTAUR()
 
+
 }
 \author{
 Caitlin Collins \email{caitiecollins@gmail.com}

@@ -3,10 +3,10 @@
 ## INPUT DATA PAGE ##  ------------------------------------------------------------------------------------
 #####################
 
-##############
-## EXAMPLES ##   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
-##############
-
+# ##############
+# ## EXAMPLES ##   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+# ##############
+#
 # ##################
 # ## 1) OneRefSim ##
 # ##################
@@ -19,15 +19,48 @@
 # use_data(OneRefSim, overwrite=TRUE) # , overwrite=TRUE
 # data("OneRefSim")
 #
+# ##################
+# ## 1) TwoRefSim ##
+# ##################
+#
+# TwoRefSim <- read.table("~/MINOTAUR/data/TwoRefSimForShinyMCD.txt", header=TRUE)
+# str(TwoRefSim)
+# head(TwoRefSim)
+# save(TwoRefSim, file="~/MINOTAUR/data/TwoRefSim.Rdata")
+# use_data(TwoRefSim, overwrite=TRUE) # , overwrite=TRUE
+# data("TwoRefSim")
+#
+#
 # ###################
 # ## 2) NonParamEx ##
 # ###################
+#
+# ## (A) ##
 # NonParamEx <- read.table("~/MINOTAUR (copy)/data/NonParamEx.txt", header=TRUE)
 # str(NonParamEx)
 # head(NonParamEx)
 # save(NonParamEx, file="~/MINOTAUR (copy)/data/NonParamEx.Rdata")
 # use_data(NonParamEx, overwrite=TRUE)
 # data("NonParamEx")
+
+# ## (B) ##
+# library(data.table)
+# library(devtools)
+# NonParamEx1 <- fread("~/MINOTAUR/data/df_inverse.csv", header=TRUE)
+# str(NonParamEx1)
+# head(NonParamEx1)
+# save(NonParamEx1, file="~/MINOTAUR/data/NonParamEx1.Rdata")
+# use_data(NonParamEx1, overwrite=TRUE)
+# data("NonParamEx1")
+#
+# ## (C) ##
+# NonParamEx2 <- fread("~/MINOTAUR/data/df_multimodal.csv", header=TRUE)
+# str(NonParamEx2)
+# head(NonParamEx2)
+# save(NonParamEx2, file="~/MINOTAUR/data/NonParamEx2.Rdata")
+# use_data(NonParamEx2, overwrite=TRUE)
+# data("NonParamEx2")
+#
 #
 # ##################
 # ## 3) HumanGWAS ##
@@ -70,7 +103,7 @@ output$tabBox_loadData <- renderUI({
                             choices=list("(use own data)" = "use_own",
                                          "Human GWAS" = "HumanGWAS",
                                          "Expansion from Two Refugia" = "TwoRefSim",
-                                         "Non-Parametric Data" = "NonParamEx"),
+                                         "Non-Parametric Data" = "NonParamEx1"),
                           selected="HumanGWAS")
       ),
 
@@ -196,17 +229,29 @@ rawData <- reactive({
                      rows=nrow(TwoRefSim),
                      cols=ncol(TwoRefSim))
     }
-    ## NonParamEx ##
-    if (input$exampleData=='NonParamEx') {
-      data(NonParamEx, package="MINOTAUR", envir=environment())
-      output <- list(data=NonParamEx,
-                     name='Example: Non-Parametric Data',
+    ## NonParamEx1 ##
+    if (input$exampleData=='NonParamEx1') {
+      data(NonParamEx1, package="MINOTAUR", envir=environment())
+      output <- list(data=NonParamEx1,
+                     name='Example: Non-Parametric Data 1',
                      description='This is a simple two-variable data set that contains an example of non-parametric data.',
 
                      ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
 
-                     rows=nrow(NonParamEx),
-                     cols=ncol(NonParamEx))
+                     rows=nrow(NonParamEx1),
+                     cols=ncol(NonParamEx1))
+    }
+    ## NonParamEx2 ##
+    if (input$exampleData=='NonParamEx2') {
+      data(NonParamEx2, package="MINOTAUR", envir=environment())
+      output <- list(data=NonParamEx2,
+                     name='Example: Non-Parametric Data 2',
+                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
+
+                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
+
+                     rows=nrow(NonParamEx2),
+                     cols=ncol(NonParamEx2))
     }
     } # end eg input selected
 
@@ -309,7 +354,9 @@ output$tabBox_rawDataSummary <- renderUI({
 
   tabBox(title=NULL, status='warning', width=12,
          tabPanel(title=HTML('<font size=4>Raw data table</font>'),
-                  dataTableOutput("rawDataTable")
+                  #dataTableOutput("rawDataTable")
+                  DT::dataTableOutput("rawDataTable")
+                  # tableOutput("rawDataTable2")
          ),
          tabPanel(title=HTML('<font size=4>Summary table</font>'),
                   DT::dataTableOutput("rawDataSummary")
@@ -337,6 +384,13 @@ options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
 ## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
 #devtools::install_github('rstudio/DT')
 
+# output$rawDataTable2 <- renderTable({
+#   rawData()$data
+# })
+
+output$rawDataTable2 <- renderDataTable({
+  rawData()$data
+})
 
 output$rawDataTable <- DT::renderDataTable({
 
@@ -375,8 +429,8 @@ output$rawDataTable <- DT::renderDataTable({
       #       # out <- textOutput(print(rawDT.error))
       #       out <- rawDT.error
       out <- NULL
+      out <- datatable(dat)
     }
-
   } # end null check
 
   return(out)
@@ -500,7 +554,7 @@ output$rawDataTable <- DT::renderDataTable({
 #############
 
 # raw data summary table
-output$rawDataSummary <- renderDataTable({
+output$rawDataSummary <- DT::renderDataTable({
   rawData <- rawData()
 
   # if rawData$data is NULL, return NULL (no table)

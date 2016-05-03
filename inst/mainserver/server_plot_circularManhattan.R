@@ -1040,10 +1040,10 @@ output$box_circularManhattan_button <- renderUI({
   names(seg.value) <- c("Chromosome", "Position", names(mydata$y[,toKeep]))
   mydata <- seg.value
 
-  print("mydata"); print(str(mydata))
+  # print("mydata"); print(str(mydata))
 
   # print(str(seg.value))
-  print("SUMMARY CHROMOSOME"); print(summary(seg.value$Chromosome))
+  # print("SUMMARY CHROMOSOME"); print(summary(seg.value$Chromosome))
 
   traitidxlist = match(traitsname, names(seg.value))
   trait.pidxlist = match(trait.pvalnam, names(seg.value))
@@ -1076,7 +1076,7 @@ output$box_circularManhattan_button <- renderUI({
   names(seg.value)[chridx] <- "seg.name"
   names(seg.value)[BPidx] <- "seg.no"
 
-  print("seg.value"); print(str(seg.value))
+  # print("seg.value"); print(str(seg.value))
 
   seg.number <- length(unique(mydata$Chromosome))
   seg.name <- as.character(sort(unique(mydata$Chromosome))) # paste("chr", , sep=)
@@ -1086,7 +1086,7 @@ output$box_circularManhattan_button <- renderUI({
   colors <- brewer.pal(9, "Set1")
   # barplot(rep(10, length(colors)), col=colors) ## temp: check out colors
 
-  print("traitidxlist"); print(str(traitidxlist))
+  # print("traitidxlist"); print(str(traitidxlist))
 
   o.l <- list()
   for(i in 1:length(traitidxlist)){
@@ -1094,7 +1094,7 @@ output$box_circularManhattan_button <- renderUI({
                         traitid=traitidxlist[i],
                         pvalid=trait.pidxlist[i],
                         pcut.outlier=pcut.outlier[i])
-  print("OUTLIER.LINK"); print(str(o.l[[i]]))
+  # print("OUTLIER.LINK"); print(str(o.l[[i]]))
   }
 
   # outlier.link <- o.l[[1]]

@@ -35,12 +35,22 @@
 #' ## run function
 #' MINOTAUR()
 #'
-#' @import adegenet ash data.table DT
-#' fields ggplot2 Hmisc
-#' OmicCircos RColorBrewer Rcpp
-#' shiny shinydashboard shinyjs
+#'
+#' @import shiny shinydashboard shinyjs DT
+#'  adegenet  RColorBrewer
+#'  ggplot2 hexbin  data.table ash fields Rcpp
+#'  Hmisc OmicCircos Rcpp
+#'
 #'
 #' @export
+
+## WORKING:
+# #' @import shiny shinydashboard shinyjs DT
+# #'  stats4 adegenet  MASS RColorBrewer
+# #'  ggplot2 scales hexbin  data.table ash fields Rcpp
+# #'  Hmisc OmicCircos Rcpp
+# f
+
 
 ## PKG LIST (28/04/2016): ##
 # adegenet ash data.table DT
@@ -48,7 +58,11 @@
 # MASS OmicCircos RColorBrewer Rcpp
 # scales shiny shinydashboard shinyjs stats4
 
-
+# #' @import adegenet ash data.table DT
+# #' fields ggplot2 Hmisc
+# #' OmicCircos RColorBrewer Rcpp
+# #' shiny shinydashboard shinyjs
+# f
 
 # Rcpp
 # useDynLib(RgeoProfile)
@@ -86,19 +100,34 @@ MINOTAUR <- function(){
   ## Fortunately we do not need this class from either pkg.
   #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
 
-  require(adegenet)
-  require(ash) # .plot2D
+  require(shiny)
+  require(shinydashboard)
   require(data.table)
+  require(shinyjs)
   require(DT)
-  require(fields) # .plot2D
-  require(ggplot2)
   require(Hmisc) # only for color table demo -- may NOT need!
+  require(adegenet)
+  require(ash)
+  require(fields)
+  require(data.table)
+  require(ggplot2)
   require(OmicCircos)
   require(RColorBrewer)
   require(Rcpp)
-  require(shiny)
-  require(shinydashboard)
-  require(shinyjs)
+
+  #   require(adegenet)
+  #   require(ash) # .plot2D
+  #   require(data.table)
+  #   require(DT)
+  #   require(fields) # .plot2D
+  #   require(ggplot2)
+  #   require(Hmisc) # only for color table demo -- may NOT need!
+  #   require(OmicCircos)
+  #   require(RColorBrewer)
+  #   require(Rcpp)
+  #   require(shiny)
+  #   require(shinydashboard)
+  #   require(shinyjs)
   # require(MASS) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
   # require(scales) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
   # require(stats4) # NOT SURE IF USED -- REMOVED (unless someone needs it???)

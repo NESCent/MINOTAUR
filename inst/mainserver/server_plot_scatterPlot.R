@@ -812,7 +812,7 @@ output$box_scatterPlot_button <- renderUI({
 
       # produce plot
       #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
-      scatterplot <- .plot_2D(xData, yData, xlab=xSelection, ylab=ySelection,
+      scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection,
                               n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
                               col.pal=col.pal, grid=grid,
                               outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
@@ -825,72 +825,6 @@ output$box_scatterPlot_button <- renderUI({
   # scatterplot
 } # end .get.scatterPlot
 
-
-
-##############
-## .plot_2D ##
-##############
-
-### Plot function, need to move to function area
-
-## QUESTION: DO WE WANT TO RELEASE plot_2D FOR
-## PUBLIC USE AS A STAND-ALONE FUNCTION????????????????????????????????????????????????????
-## (If so, we need to (1) remove the (.) from
-## the front of the fn name and in every instance of its use in the app,
-## and (2) document the fn using roxygen2-style comments
-## s.t it is added to the namespace and Rd/man folder etc.)
-
-.plot_2D<- function(x, y,
-                    xlab, ylab,
-                    xlim=NULL, ylim=NULL,
-                    n.bins,
-                    x_sub, y_sub,
-                    col.pal, grid,
-                    outlier.col, outlier.col.bg,
-                    outlier.transp,
-                    outlier.pch, outlier.cex){
-
-  if(outlier.transp != 0){
-    outlier.transp <- 1 - outlier.transp
-    outlier.col <- transp(outlier.col, alpha = outlier.transp)
-    outlier.col.bg <- transp(outlier.col.bg, alpha = outlier.transp)
-  }
-
-  data1 <- cbind(x, y)
-  data1b <- data1[complete.cases(data1),]
-
-  if(length(xlim)==0){
-    xlim_up <- max(x, na.rm=TRUE)
-    xlim_lower <- min(x, na.rm=TRUE)
-  }
-
-  if(length(ylim)==0){
-    ylim_up <- max(y, na.rm=TRUE)
-    ylim_lower <- min(y, na.rm=TRUE)
-  }
-
-  binned <- bin2(data1b,
-                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
-                 nbin=c(n.bins,n.bins))
-  binned$nc[binned$nc==0]=NA
-
-  ## SCATTER PLOT
-  image.plot(seq(xlim_lower,xlim_up,length.out = n.bins),
-             seq(ylim_lower,ylim_up, length.out=n.bins),
-             binned$nc,
-             xlab=xlab, ylab=ylab, add=FALSE, col=col.pal)
-
-  ## ADD OUTLIER POINTS
-  points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
-
-  ## ADD GRID
-  if(grid) grid()
-
-  ## SET TITLE TO VALUE BEING PLOTTED
-  ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
-  if(!is.null(xlab) & !is.null(ylab)) title(paste(xlab, "vs.", ylab, sep=" "))
-    # title(paste("xlab", eval(parse(text= HTML(em("versus")))), "ylab", sep=" "))
-} # end .plot_2D
 
 
 

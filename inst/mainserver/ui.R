@@ -18,8 +18,8 @@
 # data.table - fast reading in of data
 # shinyjs - options for deactivating shiny inputs
 
-#devtools::install_github('rstudio/DT')
-
+# devtools::install_github('rstudio/DT')
+# devtools::install_github("Bioconductor-mirror/OmicCircos")
 
 # ---------------------------------------------------------------------------------------------------------------
 
