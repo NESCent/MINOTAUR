@@ -50,7 +50,10 @@ stripPositionChromosome <- reactive({
 
   if(!is.null(rawData())){
     if(!is.null(rawData()$data)){
-      # extract pos
+      
+      #### NOTE - PERFORM CHECKS THAT POS AND GROUP VARIABLES ARE SENSIBLE AT THIS STAGE. ERROR MESSAGE IF NOT.
+      
+      # extract position variable
       posVar <- input$formatData_select_position
       if (is.null(posVar))
         posVar <- '(none)'
@@ -60,7 +63,7 @@ stripPositionChromosome <- reactive({
         pos <- rawData()$data[,posVar]
       }
 
-      # extract chrom
+      # extract grouping variable
       chromVar <- input$formatData_select_chromosome
       if (is.null(chromVar))
         chromVar <- '(none)'
@@ -68,12 +71,12 @@ stripPositionChromosome <- reactive({
         chrom <- NULL
       } else {
         chrom <- rawData()$data[,chromVar]
-        if (length(unique(chrom))>100) {
-          errorOn('too_many_chroms')
-          chrom <- NULL
-        } else {
-          errorOff('too_many_chroms')
-        }
+        #if (length(unique(chrom))>100) {
+        #  errorOn('too_many_chroms')
+        #  chrom <- NULL
+        #} else {
+        #  errorOff('too_many_chroms')
+        #}
       }
 
       # all other variables make up y
@@ -98,29 +101,38 @@ stripPositionChromosome <- reactive({
 
 # tabBox for producing genomic summary plots
 output$tabBox_plotGenomic <- renderUI({
-  box(title='Breakdown By Chromosome',
+  box(title='Breakdown By Group',
       status="warning",
       solidHeader=TRUE,
-      collapsible=FALSE,
+      collapsible=TRUE,
       width=12,
       height=300,
 
       if (is.null(stripPositionChromosome()$chrom)) {
-        p('Choose a ',strong('Chromosome variable'),'
-          to produce a plot showing the breakdown of observations by chromosome.')
+        p('Choose a ',strong('Grouping variable'),'
+          (for example grouping by chromosome) to produce a plot showing the breakdown of observations by group')
       } else {
-        plotOutput('formatData_plot_genomic_observations',height=220)
+        # if too many unique groups then give warning message
+        if (length(unique(stripPositionChromosome()$chrom))>100) {
+          p('(Grouping variable contains too many unique levels to plot)')
+        } else {
+          p('INSERT PLOTTING CODE')
+          #plotOutput('formatData_plot_genomic_observations',height=220)
+        }
       }
   )
 })
 
 # barplot showing number of observations for each chromosome
-output$formatData_plot_genomic_observations <- renderPlot({
-  barplot(table(stripPositionChromosome()$chrom),
-          col=grey(0.2),
-          xlab='Chromosome', ylab='#Observations',
-          main='(this will be improved in final version)')
-})
+#output$formatData_plot_genomic_observations <- renderPlot({
+#  groupingVar <- stripPositionChromosome()$chrom
+#  uniques <- length(unique(groupingVar))
+#  
+#  barplot(table(groupingVar),
+#          col=grey(0.2),
+#          xlab='Chromosome', ylab='#Observations',
+#          main='(this will be improved in final version)')
+#})
 
 ######################
 ## Box: Subset Data ##

@@ -3,6 +3,12 @@
 ## FIND OUTLIERS PAGE ##  ------------------------------------------------------------------------------------
 ########################
 
+## generate reactiveValues data frame of all compound distance metrics
+rv_outliers_dist <- reactiveValues()
+rv_outliers_dist$df_summary <- NULL
+rv_outliers_dist$df_values <- NULL
+rv_outliers_dist$dist <- NULL
+
 ###################################################
 ## Box: Controls for Producing Compound Measures ##
 ###################################################
@@ -13,12 +19,24 @@ output$tabBox_produce_compound <- renderUI({
          tabPanel('Summary','',
                   h3('Producing Compound Measures'),
                   p('This tab will contain an introduction to the idea of using multiple univariate measures to compute compound measures.'),
-                  p('It will also contain a table showing a list of currently used compound measures. The user will be able to create new measures to add to this list, and delete from this list.')
+                  p('It will also contain a table showing a list of currently used compound measures. The user will be able to create new measures to add to this list, and delete from this list.'),
+                  if (!is.null(rv_outliers_dist$df_summary)) {
+                    dataTableOutput("distDataTable")
+                  } else {
+                    dataTableOutput("distDataTable_example")
+                  }
          ),
          tabPanel('Distance-Based','',
                   h3('Distance-Based Methods'),
                   p('Mahalanobis, harmonic mean and nearest neighbour distances.'),
-                  actionButton('button1',label='Here is a button')
+                  selectizeInput('outliers_distance_selectize_variables',
+                                 label='Select univariate statistics',
+                                 choices=stripPositionChromosome()$otherVar,
+                                 multiple=TRUE),
+                  actionButton('calculate_Mahalanobis',label='calculate Mahalanobis'),
+                  actionButton('calculate_harmonic',label='calculate harmonic'),
+                  hr(),
+                  actionButton('tab2_addToTable',label='Add to table')
          ),
          tabPanel('Density-Based','',
                   h3('Density-Based Methods'),
@@ -31,6 +49,55 @@ output$tabBox_produce_compound <- renderUI({
                   actionButton('button3',label='Here is a button')
          )
   )
+})
+
+# table of outlier metrics
+output$distDataTable <- renderDataTable({
+  rv_outliers_dist$df_summary
+},options=list(scrollX=TRUE, scrollY='150px', searching=FALSE, paging=FALSE) #, rownames=FALSE
+)
+
+# example table if rv_outliers_dist is empty
+output$distDataTable_example <- renderDataTable({
+  data.frame(name='(example name)', method='Mahalanobis', parameters='(none)', notes='foobar')
+},options=list(scrollX=TRUE, scrollY='150px', searching=FALSE, paging=FALSE) #, rownames=FALSE
+)
+
+calculate_Mahalanobis <- observe({
+  if (!is.null(input$calculate_Mahalanobis)) {
+    if (input$calculate_Mahalanobis>0) {
+      selectedVars <- isolate(input$outliers_distance_selectize_variables)
+      if (!is.null(selectedVars)) {
+        dfv <- isolate(stripPositionChromosome()$y[,selectedVars,drop=FALSE])
+        rv_outliers_dist$dist <- Mahalanobis(dfv)
+      }
+    }
+  }
+})
+
+calculate_harmonic <- observe({
+  if (!is.null(input$calculate_harmonic)) {
+    if (input$calculate_harmonic>0) {
+      selectedVars <- isolate(input$outliers_distance_selectize_variables)
+      if (!is.null(selectedVars)) {
+        dfv <- isolate(stripPositionChromosome()$y[,selectedVars,drop=FALSE])
+        print(head(dfv))
+        for (i in 1:ncol(dfv)) {
+          print(any(is.na(dfv[,i])))
+        }
+        #rv_outliers_dist$dist <- harmonicDist(dfv)
+        rv_outliers_dist$dist <- Mahalanobis(dfv)
+      }
+    }
+  }
+})
+
+tab2_addToTable <- observe({
+  if (!is.null(input$tab2_addToTable)) {
+    if (input$tab2_addToTable>0) {
+      isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=runif(1), method='Mahalanobis', parameters='(none)', notes='foobar')))
+    }
+  }
 })
 
 ######################################
@@ -46,8 +113,10 @@ output$box_density_compound <- renderUI({
 
 # example plot
 output$plot2 <- renderPlot({
-  x <- seq(0,10,l=501)
-  plot(dgamma(x,4,3), type='l', lwd=2, main='density plot of distance measure')
+  dist <- rv_outliers_dist$dist
+  if (!is.null(dist)) {
+    hist(dist, col=grey(0.8), breaks=100, main='histogram of distance measure')
+  }
 })
 
 

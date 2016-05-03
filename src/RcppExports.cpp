@@ -6,98 +6,52 @@
 using namespace Rcpp;
 
 // C_harmonicDist
-Rcpp::List C_harmonicDist(std::vector< std::vector<double> > data);
-RcppExport SEXP MINOTAUR_C_harmonicDist(SEXP dataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
-    __result = Rcpp::wrap(C_harmonicDist(data));
-    return __result;
-END_RCPP
-}
-// C_harmonicDist2
-Rcpp::List C_harmonicDist2(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv);
-RcppExport SEXP MINOTAUR_C_harmonicDist2(SEXP dataSEXP, SEXP S_invSEXP) {
+Rcpp::List C_harmonicDist(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv);
+RcppExport SEXP MINOTAUR_C_harmonicDist(SEXP dataSEXP, SEXP S_invSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type S_inv(S_invSEXP);
-    __result = Rcpp::wrap(C_harmonicDist2(data, S_inv));
+    __result = Rcpp::wrap(C_harmonicDist(data, S_inv));
     return __result;
 END_RCPP
 }
 // C_kernelDeviance
-Rcpp::List C_kernelDeviance(std::vector< std::vector<double> > data, double sigma2);
-RcppExport SEXP MINOTAUR_C_kernelDeviance(SEXP dataSEXP, SEXP sigma2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    __result = Rcpp::wrap(C_kernelDeviance(data, sigma2));
-    return __result;
-END_RCPP
-}
-// C_kernelDeviance2
-Rcpp::List C_kernelDeviance2(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv);
-RcppExport SEXP MINOTAUR_C_kernelDeviance2(SEXP dataSEXP, SEXP sigma2SEXP, SEXP S_invSEXP) {
+Rcpp::List C_kernelDeviance(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv);
+RcppExport SEXP MINOTAUR_C_kernelDeviance(SEXP dataSEXP, SEXP sigma2SEXP, SEXP S_invSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type S_inv(S_invSEXP);
-    __result = Rcpp::wrap(C_kernelDeviance2(data, sigma2, S_inv));
+    __result = Rcpp::wrap(C_kernelDeviance(data, sigma2, S_inv));
     return __result;
 END_RCPP
 }
 // C_kernelDist
-Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2);
-RcppExport SEXP MINOTAUR_C_kernelDist(SEXP dataSEXP, SEXP sigma2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    __result = Rcpp::wrap(C_kernelDist(data, sigma2));
-    return __result;
-END_RCPP
-}
-// C_kernelDist2
-Rcpp::List C_kernelDist2(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv);
-RcppExport SEXP MINOTAUR_C_kernelDist2(SEXP dataSEXP, SEXP sigma2SEXP, SEXP S_invSEXP) {
+Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv);
+RcppExport SEXP MINOTAUR_C_kernelDist(SEXP dataSEXP, SEXP sigma2SEXP, SEXP S_invSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type S_inv(S_invSEXP);
-    __result = Rcpp::wrap(C_kernelDist2(data, sigma2, S_inv));
+    __result = Rcpp::wrap(C_kernelDist(data, sigma2, S_inv));
     return __result;
 END_RCPP
 }
 // C_neighborDist
-Rcpp::List C_neighborDist(std::vector< std::vector<double> > data);
-RcppExport SEXP MINOTAUR_C_neighborDist(SEXP dataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
-    __result = Rcpp::wrap(C_neighborDist(data));
-    return __result;
-END_RCPP
-}
-// C_neighborDist2
-Rcpp::List C_neighborDist2(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv);
-RcppExport SEXP MINOTAUR_C_neighborDist2(SEXP dataSEXP, SEXP S_invSEXP) {
+Rcpp::List C_neighborDist(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv);
+RcppExport SEXP MINOTAUR_C_neighborDist(SEXP dataSEXP, SEXP S_invSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type data(dataSEXP);
     Rcpp::traits::input_parameter< std::vector< std::vector<double> > >::type S_inv(S_invSEXP);
-    __result = Rcpp::wrap(C_neighborDist2(data, S_inv));
+    __result = Rcpp::wrap(C_neighborDist(data, S_inv));
     return __result;
 END_RCPP
 }
