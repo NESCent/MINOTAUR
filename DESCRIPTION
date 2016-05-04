@@ -17,7 +17,8 @@ Imports: adegenet,
 	Rcpp,
 	shiny,
 	shinydashboard,
-	shinyjs
+	shinyjs,
+    devtools
 Remotes: Bioconductor-mirror/OmicCircos@b772950,
 	rstudio/DT@24d71f2
 LinkingTo: Rcpp

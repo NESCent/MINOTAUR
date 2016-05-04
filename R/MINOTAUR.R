@@ -39,7 +39,7 @@
 #' @import shiny shinydashboard shinyjs DT
 #'  adegenet  RColorBrewer
 #'  ggplot2 hexbin  data.table ash fields Rcpp
-#'  Hmisc OmicCircos Rcpp
+#'  Hmisc devtools OmicCircos Rcpp
 #'
 #'
 #' @export
@@ -112,9 +112,12 @@ MINOTAUR <- function(){
   require(fields)
   require(data.table)
   require(ggplot2)
-  require(OmicCircos)
   require(RColorBrewer)
   require(Rcpp)
+
+  require(devtools)
+  install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+  require(OmicCircos)
 
   #   require(adegenet)
   #   require(ash) # .plot2D
