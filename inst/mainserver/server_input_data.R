@@ -364,7 +364,7 @@ output$tabBox_rawDataSummary <- renderUI({
   )
 })
 
-<<<<<<< HEAD
+
 # ## Example: Colour cells
 
 #############
@@ -548,9 +548,6 @@ output$rawDataTable <- DT::renderDataTable({
 } # end .get.colorTable.style
 
 
-
-
-=======
 # raw data table (original)
 output$rawDataTable <- renderDataTable({
   rawData()$data
@@ -725,7 +722,6 @@ output$rawDataTable <- renderDataTable({
 #   return(temp)
 # 
 # } # end .get.colorTable.style
->>>>>>> 038b67bc9c2236362319b64f794b122163960dd0
 
 
 #############

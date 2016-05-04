@@ -116,7 +116,7 @@ output$tabBox_plotGenomic <- renderUI({
         if (length(unique(stripPositionChromosome()$chrom))>100) {
           p('(Grouping variable contains too many unique levels to plot)')
         } else {
-          p('INSERT PLOTTING CODE')
+          p('UNDER CONSTRUCTION')
           #plotOutput('formatData_plot_genomic_observations',height=220)
         }
       }
@@ -178,21 +178,25 @@ output$box_subsetData <- renderUI({
 
 ## Reactive conductor for producing final 'clean' data object after removing rows and columns.
 ## Returns:
-# list(pos,
-#      pos_modifier,
-#      chrom,
-#      chromLevels,
-#      chromIndex,
-#      chromMidpoint,
-#      y,
-#      pos_userDefined,
-#      chrom_userDefined)
-
+# list(posVar=posVar, <- which variable defines the position
+#      chromVar=chromVar,  <- which variable defines the group (chromosome)
+#      otherVar=otherVar,  <- which variables define all other chosen columns
+#      pos,  <- vector of positions
+#      pos_modifier,  <- modifier to make positions increasing over chromosomes (for plotting)
+#      chrom,  <- vector of raw groupings, could be factors
+#      chromLevels, <- vector of unique levels of grouping variable
+#      chromIndex,  <- same as chrom but converted to integer that indexes value in chromlevels
+#      chromMidpoint,  <- midpoint of all pos in each group (for plotting)
+#      y,  <- data
+#      pos_userDefined, <- whether pos is user-defined or default
+#      chrom_userDefined) <- whether chrom is user-defined or default
 cleanData <- reactive({
-
-  output <- NULL
-
-  nullOutput <- list(pos=NULL,
+  
+  # define null output to return if some sort of error. Ensures that output format is maintained even in event of an error.
+  nullOutput <- list(posVar=NULL,
+                     chromVar=NULL,
+                     otherVar=NULL,
+                     pos=NULL,
                      pos_modifier=NULL,
                      chrom=NULL,
                      chromLevels=NULL,
@@ -202,56 +206,57 @@ cleanData <- reactive({
                      pos_userDefined=NULL,
                      chrom_userDefined=NULL)
 
+  # initialise output as null, then fill in elements one at a time
+  output <- nullOutput
+  
+  # read in data from previous step
   data <- stripPositionChromosome()
 
-  if(!is.null(data)){
-
-  # if data$y is NULL, return nullOutput
-  if (is.null(data$y))
-    # return(nullOutput)
-    output <- nullOutput
+  if(!is.null(data)) {
 
   # subset columns
   chooseVars <- data$otherVar
   if(!is.null(input$formatData_check_takeAllForward)){
-  if (!input$formatData_check_takeAllForward) {
-    if (input$formatData_radio_removeOrRetain=='remove') {
-      chooseVars <- setdiff(data$otherVar,
-                            input$formatData_selectize_variables)
-    } else {
-      chooseVars <- input$formatData_selectize_variables
+    if (!input$formatData_check_takeAllForward) {
+      if (input$formatData_radio_removeOrRetain=='remove') {
+        chooseVars <- setdiff(data$otherVar,
+                              input$formatData_selectize_variables)
+      } else {
+        chooseVars <- input$formatData_selectize_variables
+      }
     }
   }
-  }
-  y <- data$y[,chooseVars,drop=FALSE]
-  if (ncol(y)==0) # if all columns removed
-    # return(nullOutput)
-    output <- nullOutput
+  output$y <- data$y[,chooseVars,drop=FALSE]
+  if (ncol(output$y)==0) # if all columns removed
+    return(nullOutput)
+  output$posVar <- data$posVar
+  output$chromVar <- data$chromVar
+  output$otherVar <- chooseVars
 
   ## Use chromosome variable if present,
   ## otherwise temporarily set to 1 everywhere
   if (is.null(data$chrom)) {
-    chrom_userDefined <- FALSE
-    chrom <- rep(1,nrow(y))
+    output$chrom_userDefined <- FALSE
+    output$chrom <- rep(1,nrow(output$y))
   } else {
-    chrom_userDefined <- TRUE
-    chrom <- data$chrom
+    output$chrom_userDefined <- TRUE
+    output$chrom <- data$chrom
   }
 
   ## Use position variable if present,
   ## otherwise temporarily set to 1 everywhere
   if (is.null(data$pos)) {
-    pos_userDefined <- FALSE
-    pos <- rep(1,nrow(y))
+    output$pos_userDefined <- FALSE
+    output$pos <- rep(1,nrow(output$y))
   } else {
-    pos_userDefined <- TRUE
-    pos <- data$pos
+    output$pos_userDefined <- TRUE
+    output$pos <- data$pos
   }
 
   # subset rows
   if (!is.null(input$formatData_check_removeMissing)) {
-    df <- cbind(pos,chrom,y)
-    keepVec <- rep(1,nrow(y))
+    df <- cbind(output$pos, output$chrom, output$y)
+    keepVec <- rep(1,nrow(output$y))
 
     # remove NA
     if ('NA'%in%input$formatData_check_removeMissing)
@@ -266,54 +271,44 @@ cleanData <- reactive({
     if ('non-finite'%in%input$removeMissing)
       keepVec <- keepVec * (rowSums(mapply(function(x){x%in%c('Inf','-Inf')},df),
                                     na.rm=TRUE)==0)
-
+    
     # apply all conditions
-    pos <- pos[which(keepVec==1)]
-    chrom <- chrom[which(keepVec==1)]
-    y <- y[which(keepVec==1),,drop=FALSE]
+    output$pos <- output$pos[which(keepVec==1)]
+    output$chrom <- output$chrom[which(keepVec==1)]
+    output$y <- output$y[which(keepVec==1),,drop=FALSE]
     if (!any(keepVec==1))  # if all rows removed
-      # return(nullOutput)
       output <- nullOutput
   }
 
   # finalise chromosome variable
-  if (chrom_userDefined) {
-    chromLevels <- unique(as.character(chrom))
-    chromIndex <- match(chrom,chromLevels)
+  if (output$chrom_userDefined) {
+    output$chromLevels <- unique(as.character(output$chrom))
+    output$chromIndex <- match(output$chrom, output$chromLevels)
   } else {
-    chromLevels <- NULL
-    chromIndex <- rep(1,nrow(y))
+    output$chromLevels <- NULL
+    output$chromIndex <- rep(1,nrow(output$y))
   }
 
   # finalise position variable - if not user defined increase linearly over chromosomes
-  if (pos_userDefined==FALSE) {
-    if (chrom_userDefined) {
-      chromCounts <- data.frame(table(chrom))
-      chromCounts <- chromCounts[match(chromCounts[,1],chromLevels),2]
+  if (output$pos_userDefined==FALSE) {
+    if (output$chrom_userDefined) {
+      chromCounts <- data.frame(table(output$chrom))
+      chromCounts <- chromCounts[match(chromCounts[,1], output$chromLevels),2]
     } else {
-      chromCounts <- nrow(y)
+      chromCounts <- nrow(output$y)
     }
-    pos <- sequence(chromCounts)
+    output$pos <- sequence(chromCounts)
   }
 
   # calculate position modifier
-  pos_list <- split(pos,chrom)
-  pos_maxPerChromosome <- unlist(lapply(pos_list,FUN=function(x){max(x,na.rm=TRUE)}))
+  pos_list <- split(output$pos, output$chrom)
+  pos_maxPerChromosome <- as.numeric(unlist(lapply(pos_list,FUN=function(x){max(x,na.rm=TRUE)})))
   pos_maxIncreasing <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome
-  chromMidpoint <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome/2
-  pos_modifier <- pos_maxIncreasing[chromIndex]
-
-  # return output
-  output <- list(pos=pos,
-                 pos_modifier=pos_modifier,
-                 chrom=chrom,
-                 chromLevels=chromLevels,
-                 chromIndex=chromIndex,
-                 chromMidpoint=chromMidpoint,
-                 y=y,
-                 pos_userDefined=pos_userDefined,
-                 chrom_userDefined=chrom_userDefined)
+  output$chromMidpoint <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome/2
+  output$pos_modifier <- pos_maxIncreasing[output$chromIndex]
+  
   }
+  
   # print("str output"); print(str(output))
   return(output)
 
@@ -357,11 +352,11 @@ output$table_finalData <- renderDataTable({
   if (is.null(cleanData()$y))
     return(NULL)
 
-  df <- data.frame(Position=cleanData()$pos,
-                   Chromosome=cleanData()$chrom)
+  df <- data.frame(Position_variable=cleanData()$pos,
+                   Grouping_variable=cleanData()$chrom)
   df <- cbind(df,cleanData()$y)
   return(df)
-},options=list(scrollX=TRUE, scrollY='500px') #, rownames=FALSE
+},options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
 )
 
 
