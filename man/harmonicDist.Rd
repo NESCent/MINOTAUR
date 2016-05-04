@@ -4,13 +4,15 @@
 \alias{harmonicDist}
 \title{Harmonic Mean Distance}
 \usage{
-harmonicDist(dfv, column.nums = 1:ncol(dfv))
+harmonicDist(dfv, column.nums = 1:ncol(dfv), S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
 calculate harmonic distance (all other columns are ignored).}
+
+\item{S}{the covariance matrix used to normalise the data in the harmonic mean calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
 }
 \description{
 Calculates harmonic mean
@@ -19,7 +21,7 @@ distance of all points from all others.
 \details{
 Takes a matrix or data frame as input, with observations in rows and statistics in columns.
 Values are first normalized in each dimension by subtracting from the
-mean and dividing by the standard deviation before calculating harmonic mean distances.
+mean and multiplying by the inverse covariance matrix before calculating harmonic mean distances.
 
 Note that this method cannot handle NA values.
 }

@@ -44,6 +44,8 @@
 #'
 #' @export
 
+########################################################################
+
 ## WORKING:
 # #' @import shiny shinydashboard shinyjs DT
 # #'  stats4 adegenet  MASS RColorBrewer
@@ -71,11 +73,8 @@
 
 ## OmicCircos ## this works...
 # library(devtools)
-# source("https://bioconductor.org/biocLite.R")
-# biocLite("BiocInstaller")
-# install_github("Bioconductor-mirror/OmicCircos")
+# install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
 # require(OmicCircos)
-
 
 ## devtools fns ##
 # document() # adds imports to NAMESPACE and doc to Rd files (for all saved .R files)
@@ -84,7 +83,9 @@
 # for(i in (1:length(imports))){
 #   use_package(imports[i])
 # }
+
 ########################################################################
+
 
 MINOTAUR <- function(){
   .run.MINOTAUR()

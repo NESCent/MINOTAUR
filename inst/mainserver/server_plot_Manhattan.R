@@ -795,20 +795,32 @@ output$box_linearManhattan_button <- renderUI({
 
 
       ## Get outlier-variable data
-
       if(!is.null(outlier.var)){
         ## Get variable to plot
         outlier.Data <- eval(parse(text=paste("dat$y", outlier.var, sep="$")))
       }
 
-      if(length(logx)==1){
-        xData=log(xData+1e-40, logx)
-        }
-      if(length(logy)==1){
-        yData=log(yData+1e-40, logy)
-        }
+      ## get log of x and y variables:
+      toRemove <- toRemoveX <- toRemoveY <- NULL
+      if(length(logx) == 1){
+        toRemoveX <- which(xData <= 0)
+      }
+      if(length(logy) == 1){
+        toRemoveY <- which(yData <= 0)
+      }
+      toRemove <- c(toRemoveX, toRemoveY)
 
-      if(is.na(cutoff)){cutoff=0.01}
+      xData <- replace(xData, toRemove, NA)
+      yData <- replace(yData, toRemove, NA)
+
+      if(length(logx)==1){
+        xData <- log(xData+1e-40, logx)
+      }
+      if(length(logy)==1){
+        yData <- log(yData+1e-40, logy)
+      }
+
+      if(is.na(cutoff)){cutoff=0}
       if(tail=="Upper"){
         cutoff=(1-cutoff)
       }
@@ -817,31 +829,36 @@ output$box_linearManhattan_button <- renderUI({
       outlier.DataNew2 <- outlier.Data
       outlier.DataNew2[!is.na(outlier.Data)] <- outlier.DataNew
 
+      ## handle outliers | log of x, y
+      outlier.Data <- outlier.DataNew2
+
       if(tail=="Lower"){
-        xData_sub <- xData[outlier.DataNew2<=cutoff]
-        yData_sub <- yData[outlier.DataNew2<=cutoff]
+        xData_sub <- xData[outlier.Data<=cutoff]
+        yData_sub <- yData[outlier.Data<=cutoff]
       }
       if(tail=="Upper"){
-        xData_sub <- xData[outlier.DataNew2>=cutoff]
-        yData_sub <- yData[outlier.DataNew2>=cutoff]
+        xData_sub <- xData[outlier.Data>=cutoff]
+        yData_sub <- yData[outlier.Data>=cutoff]
       }
       if(tail=="Two-tailed"){
-        xData_sub_l <- xData[outlier.DataNew2<=cutoff]
-        yData_sub_l <- yData[outlier.DataNew2<=cutoff]
+        xData_sub_l <- xData[outlier.Data<=cutoff]
+        yData_sub_l <- yData[outlier.Data<=cutoff]
 
         cutoff <- (1-cutoff)
-        xData_sub_u <- xData[outlier.DataNew2>=cutoff]
-        yData_sub_u <- yData[outlier.DataNew2>=cutoff]
+        xData_sub_u <- xData[outlier.Data>=cutoff]
+        yData_sub_u <- yData[outlier.Data>=cutoff]
 
         xData_sub <- c(xData_sub_l, xData_sub_u)
         yData_sub <- c(yData_sub_l, yData_sub_u)
       }
 
+      xData_sub <- xData_sub[!is.na(xData_sub)]
+      yData_sub <- yData_sub[!is.na(yData_sub)]
+
       xData <- xData*flipX
       yData <- yData*flipY
       xData_sub <- xData_sub*flipX
       yData_sub <- yData_sub*flipY
-
 
       # produce plot
       linearManhattan <- .mhtplot(x=xData, y=yData,
@@ -851,7 +868,6 @@ output$box_linearManhattan_button <- renderUI({
                                   outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
                                   outlier.transp=outlier.transp,
                                   outlier.pch=outlier.pch, outlier.cex=outlier.cex)
-
       }
   }
 
