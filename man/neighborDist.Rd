@@ -4,13 +4,15 @@
 \alias{neighborDist}
 \title{Nearest Neighbor Distance}
 \usage{
-neighborDist(dfv, column.nums = 1:ncol(dfv))
+neighborDist(dfv, column.nums = 1:ncol(dfv), S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
 calculate nearest neighbor distance (all other columns are ignored).}
+
+\item{S}{the covariance matrix used to normalise the data in the nearest neighbor calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
 }
 \description{
 Calculates euclidean distance to nearest neighbor for all points.

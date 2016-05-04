@@ -764,6 +764,19 @@ output$box_scatterPlot_button <- renderUI({
         }
       }
 
+      ## get log of x and y variables:
+      toRemove <- toRemoveX <- toRemoveY <- NULL
+      if(length(logx) == 1){
+        toRemoveX <- which(xData <= 0)
+      }
+      if(length(logy) == 1){
+        toRemoveY <- which(yData <= 0)
+      }
+      toRemove <- c(toRemoveX, toRemoveY)
+
+      xData <- replace(xData, toRemove, NA)
+      yData <- replace(yData, toRemove, NA)
+
       if(length(logx)==1){xData=log(xData+1e-40, logx)}
       if(length(logy)==1){yData=log(yData+1e-40, logy)}
 

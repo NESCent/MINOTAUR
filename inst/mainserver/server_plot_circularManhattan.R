@@ -13,8 +13,8 @@ rv_circularManhattan_xaxis <- reactiveValues()
 rv_circularManhattan_yaxis <- reactiveValues()
 rv_circularManhattan_logx <- reactiveValues()
 rv_circularManhattan_logy <- reactiveValues()
-rv_circularManhattan_flipx <- reactiveValues()
-rv_circularManhattan_flipy <- reactiveValues()
+# rv_circularManhattan_flipx <- reactiveValues()
+# rv_circularManhattan_flipy <- reactiveValues()
 
 rv_circularManhattan_outlier.var1 <- reactiveValues()
 rv_circularManhattan_outlier.cutoff1 <- reactiveValues()
@@ -94,8 +94,8 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
     rv_circularManhattan_yaxis[[k]] <- y.var.sel
     rv_circularManhattan_logx[[k]] <- "none"
     rv_circularManhattan_logy[[k]] <- "none"
-    rv_circularManhattan_flipx[[k]] <- "No"
-    rv_circularManhattan_flipy[[k]] <- "No"
+    # rv_circularManhattan_flipx[[k]] <- "No"
+    # rv_circularManhattan_flipy[[k]] <- "No"
 
     rv_circularManhattan_outlier.var1[[k]] <- o.var.sel1
     rv_circularManhattan_outlier.cutoff1[[k]] <- 0.002 # 0.05
@@ -149,8 +149,8 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
 
     logx <- eval(parse(text=paste("input$circularManhattan_logx", k, sep="_")))
     logy <- eval(parse(text=paste("input$circularManhattan_logy", k, sep="_")))
-    flipX <- eval(parse(text=paste("input$circularManhattan_flipx", k, sep="_")))
-    flipY <- eval(parse(text=paste("input$circularManhattan_flipy", k, sep="_")))
+    # flipX <- eval(parse(text=paste("input$circularManhattan_flipx", k, sep="_")))
+    # flipY <- eval(parse(text=paste("input$circularManhattan_flipy", k, sep="_")))
 
     ## Get plot aesthetics
     # col.pal <- eval(parse(text=paste("input$circularManhattan_col.pal", k, sep="_")))
@@ -187,8 +187,8 @@ rv_circularManhattan_outlier.cex2 <- reactiveValues()
     rv_circularManhattan_yaxis[[k]] <- ySelection
     rv_circularManhattan_logx[[k]] <- logx
     rv_circularManhattan_logy[[k]] <- logy
-    rv_circularManhattan_flipx[[k]] <- flipX
-    rv_circularManhattan_flipy[[k]] <- flipY
+    # rv_circularManhattan_flipx[[k]] <- flipX
+    # rv_circularManhattan_flipy[[k]] <- flipY
 
     rv_circularManhattan_outlier.var1[[k]] <- outlier.var1
     rv_circularManhattan_outlier.cutoff1[[k]] <- cutoff1
@@ -340,10 +340,10 @@ output$box_circularManhattan <- renderUI({
   # k <- 1
   id_circularManhattan_xaxis <- paste("circularManhattan_xaxis", k, sep="_")
   id_circularManhattan_logx <- paste("circularManhattan_logx", k, sep="_")
-  id_circularManhattan_flipx <- paste("circularManhattan_flipx", k, sep="_")
+  # id_circularManhattan_flipx <- paste("circularManhattan_flipx", k, sep="_")
   id_circularManhattan_yaxis <- paste("circularManhattan_yaxis", k, sep="_")
   id_circularManhattan_logy <- paste("circularManhattan_logy", k, sep="_")
-  id_circularManhattan_flipy <- paste("circularManhattan_flipy", k, sep="_")
+  # id_circularManhattan_flipy <- paste("circularManhattan_flipy", k, sep="_")
 
   id_circularManhattan_outlier.var1 <- paste("circularManhattan_outlier.var1", k, sep="_")
   id_circularManhattan_outlier.cutoff1 <- paste("circularManhattan_outlier.cutoff1", k, sep="_")
@@ -365,7 +365,7 @@ output$box_circularManhattan <- renderUI({
         ## Choose x-axis ##
         ###################
 
-        box(title="Select x-axis:", # "Univariate Distributions"
+        box(title="Select inner circle:", # "Univariate Distributions"
             # status="info",
             # status = "primary",
             status="warning",
@@ -379,24 +379,24 @@ output$box_circularManhattan <- renderUI({
 
             ## Choose x-axis variable
             selectizeInput(id_circularManhattan_xaxis,
-                           label = 'X-axis:',
+                           label = 'Inner circle:',
                            choices = x.var.choices,
                            selected = rv_circularManhattan_xaxis[[k]], # x.var.sel,
                            multiple = FALSE),
 
             ## log(x-axis) ?
             radioButtons(id_circularManhattan_logx,
-                         label = "Log x-axis?",
+                         label = "Log inner axis?",
                          choices = list("log2", "log10", "none"),
                          selected= rv_circularManhattan_logx[[k]], # "none",
                          inline=TRUE),
 
-            ## Flip x-axis ?
-            radioButtons(id_circularManhattan_flipx,
-                         label = "Invert x-axis?",
-                         choices = list("Yes", "No"),
-                         selected= rv_circularManhattan_flipx[[k]], # "No",
-                         inline=TRUE),
+            #             ## Flip x-axis ?
+            #             radioButtons(id_circularManhattan_flipx,
+            #                          label = "Invert inner axis?",
+            #                          choices = list("Yes", "No"),
+            #                          selected= rv_circularManhattan_flipx[[k]], # "No",
+            #                          inline=TRUE),
 
             style = list('background-color: #FFECB3') # pale amber
             ),
@@ -405,7 +405,7 @@ output$box_circularManhattan <- renderUI({
         ## Choose y-axis ##
         ###################
 
-        box(title="Select y-axis:",
+        box(title="Select outer circle:",
             # status="info",
             # status = "primary",
             status="warning",
@@ -415,24 +415,24 @@ output$box_circularManhattan <- renderUI({
 
             ## Choose y-axis variable
             selectizeInput(id_circularManhattan_yaxis,
-                           label = 'Y-axis:',
+                           label = 'Outer circle:',
                            choices = y.var.choices,
                            selected =  rv_circularManhattan_yaxis[[k]], # y.var.sel,
                            multiple = FALSE),
 
             ## log(y-axis) ?
             radioButtons(id_circularManhattan_logy,
-                         label = "Log y-axis?",
+                         label = "Log outer axis?",
                          choices = list("log2", "log10", "none"),
                          selected= rv_circularManhattan_logy[[k]], # "none",
                          inline=TRUE),
 
-            ## Flip y-axis ?
-            radioButtons(id_circularManhattan_flipy,
-                         label = "Invert y-axis?",
-                         choices = list("Yes", "No"),
-                         selected= rv_circularManhattan_flipy[[k]], # "No",
-                         inline=TRUE),
+            #             ## Flip y-axis ?
+            #             radioButtons(id_circularManhattan_flipy,
+            #                          label = "Invert outer axis?",
+            #                          choices = list("Yes", "No"),
+            #                          selected= rv_circularManhattan_flipy[[k]], # "No",
+            #                          inline=TRUE),
 
             style = list('background-color: #FFECB3') # pale amber
 
@@ -777,8 +777,8 @@ output$box_circularManhattan_button <- renderUI({
 
   logx <- eval(parse(text=paste("input$circularManhattan_logx", k, sep="_")))
   logy <- eval(parse(text=paste("input$circularManhattan_logy", k, sep="_")))
-  flipX <- eval(parse(text=paste("input$circularManhattan_flipx", k, sep="_")))
-  flipY <- eval(parse(text=paste("input$circularManhattan_flipy", k, sep="_")))
+  # flipX <- eval(parse(text=paste("input$circularManhattan_flipx", k, sep="_")))
+  # flipY <- eval(parse(text=paste("input$circularManhattan_flipy", k, sep="_")))
 
 
   ## Get data and plot output
@@ -806,12 +806,12 @@ output$box_circularManhattan_button <- renderUI({
         }
 
       ## Invert x-axis?
-      if(flipX=="No"){flipX=1}else{
-        if(flipX=="Yes"){flipX=-1}}
-
-      ## Invert y-axis?
-      if(flipY=="No"){flipY=1}else{
-        if(flipY=="Yes"){flipY=-1}}
+      #       if(flipX=="No"){flipX=1}else{
+      #         if(flipX=="Yes"){flipX=-1}}
+      #
+      #       ## Invert y-axis?
+      #       if(flipY=="No"){flipY=1}else{
+      #         if(flipY=="Yes"){flipY=-1}}
 
       #########################
       ## Get plot aesthetics ##
@@ -879,49 +879,75 @@ output$box_circularManhattan_button <- renderUI({
       }
 
 
+      if(is.na(cutoff1)){cutoff1=0}
+      if(tail2=="Upper"){
+        cutoff2=(1-cutoff2)
+      }
+
+      if(is.na(cutoff2)){cutoff2=0}
+      if(tail2=="Upper"){
+        cutoff2=(1-cutoff2)
+      }
+
+
+
       ## Get outlier-variable data
+      #       if(!is.null(outlier.var1)){
+      #         ## Get variable to plot
+      #         outlier.Data1 <- eval(parse(text=paste("dat$y", outlier.var1, sep="$")))
+      #       }
+      #
+      #       if(!is.null(outlier.var2)){
+      #         ## Get variable to plot
+      #         outlier.Data2 <- eval(parse(text=paste("dat$y", outlier.var2, sep="$")))
+      #       }
 
-      if(!is.null(outlier.var1)){
-        ## Get variable to plot
-        outlier.Data1 <- eval(parse(text=paste("dat$y", outlier.var1, sep="$")))
-      }
+      #       ## get log of x and y variables:
+      #       toRemove <- toRemoveX <- toRemoveY <- NULL
+      #       if(length(logx) == 1){
+      #         toRemoveX <- which(xData <= 0)
+      #       }
+      #       if(length(logy) == 1){
+      #         toRemoveY <- which(yData <= 0)
+      #       }
+      #       toRemove <- c(toRemoveX, toRemoveY)
+      #
+      #       xData <- replace(xData, toRemove, NA)
+      #       yData <- replace(yData, toRemove, NA)
+      #
+      #       if(length(logx)==1){xData=log(xData+1e-40, logx)}
+      #       if(length(logy)==1){yData=log(yData+1e-40, logy)}
 
-      if(length(logx)==1){xData=log(xData+1e-40, logx)}
-      if(length(logy)==1){yData=log(yData+1e-40, logy)}
 
-      if(is.na(cutoff1)){cutoff1=0.01}
-      if(tail1=="Upper"){
-        cutoff1=(1-cutoff1)
-      }
-      outlier.Data1NoNA <- outlier.Data1[!is.na(outlier.Data1)]
-      outlier.Data1New <- rank(outlier.Data1NoNA)/length(outlier.Data1NoNA)
-      outlier.Data1New2 <- outlier.Data1
-      outlier.Data1New2[!is.na(outlier.Data1)] <- outlier.Data1New
-
-      if(tail1=="Lower"){
-        xData_sub <- xData[outlier.Data1New2<=cutoff1]
-        yData_sub <- yData[outlier.Data1New2<=cutoff1]
-      }
-      if(tail1=="Upper"){
-        xData_sub <- xData[outlier.Data1New2>=cutoff1]
-        yData_sub <- yData[outlier.Data1New2>=cutoff1]
-      }
-      if(tail1=="Two-tailed"){
-        xData_sub_l <- xData[outlier.Data1New2<=cutoff1]
-        yData_sub_l <- yData[outlier.Data1New2<=cutoff1]
-
-        cutoff1 <- (1-cutoff1)
-        xData_sub_u <- xData[outlier.Data1New2>=cutoff1]
-        yData_sub_u <- yData[outlier.Data1New2>=cutoff1]
-
-        xData_sub <- c(xData_sub_l, xData_sub_u)
-        yData_sub <- c(yData_sub_l, yData_sub_u)
-      }
-
-      xData <- xData*flipX
-      yData <- yData*flipY
-      xData_sub <- xData_sub*flipX
-      yData_sub <- yData_sub*flipY
+      #       outlier.Data1NoNA <- outlier.Data1[!is.na(outlier.Data1)]
+      #       outlier.Data1New <- rank(outlier.Data1NoNA)/length(outlier.Data1NoNA)
+      #       outlier.Data1New2 <- outlier.Data1
+      #       outlier.Data1New2[!is.na(outlier.Data1)] <- outlier.Data1New
+      #
+      #       if(tail1=="Lower"){
+      #         xData_sub <- xData[outlier.Data1New2<=cutoff1]
+      #         yData_sub <- yData[outlier.Data1New2<=cutoff1]
+      #       }
+      #       if(tail1=="Upper"){
+      #         xData_sub <- xData[outlier.Data1New2>=cutoff1]
+      #         yData_sub <- yData[outlier.Data1New2>=cutoff1]
+      #       }
+      #       if(tail1=="Two-tailed"){
+      #         xData_sub_l <- xData[outlier.Data1New2<=cutoff1]
+      #         yData_sub_l <- yData[outlier.Data1New2<=cutoff1]
+      #
+      #         cutoff1 <- (1-cutoff1)
+      #         xData_sub_u <- xData[outlier.Data1New2>=cutoff1]
+      #         yData_sub_u <- yData[outlier.Data1New2>=cutoff1]
+      #
+      #         xData_sub <- c(xData_sub_l, xData_sub_u)
+      #         yData_sub <- c(yData_sub_l, yData_sub_u)
+      #       }
+      #
+      #       xData <- xData*flipX
+      #       yData <- yData*flipY
+      #       xData_sub <- xData_sub*flipX
+      #       yData_sub <- yData_sub*flipY
 
       # get colors
       #          get.levels <- levels(as.factor(colData))

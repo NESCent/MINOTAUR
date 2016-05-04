@@ -5,7 +5,7 @@
 \title{Kernel Density Deviance}
 \usage{
 kernelDeviance(dfv, column.nums = 1:ncol(dfv), bandwidth = seq(0.1, 1, 0.1),
-  reportProgress = FALSE)
+  S = NULL, reportProgress = FALSE)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
@@ -14,6 +14,8 @@ kernelDeviance(dfv, column.nums = 1:ncol(dfv), bandwidth = seq(0.1, 1, 0.1),
 calculate kernel log-likelihood (all other columns are ignored).}
 
 \item{bandwidth}{a vector containing the range of bandwidths to be explored.}
+
+\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
 
 \item{reportProgress}{whether to report current progress of the algorithm to the console (TRUE/FALSE).}
 }

@@ -4,7 +4,8 @@
 \alias{kernelDist}
 \title{Kernel Density Distance}
 \usage{
-kernelDist(dfv, column.nums = 1:ncol(dfv), bandwidth = "default")
+kernelDist(dfv, column.nums = 1:ncol(dfv), bandwidth = "default",
+  S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
@@ -13,6 +14,8 @@ kernelDist(dfv, column.nums = 1:ncol(dfv), bandwidth = "default")
 calculate kernel distance (all other columns are ignored).}
 
 \item{bandwidth}{standard deviation of the normal kernel in each dimension. Can be a numerical value, or can be set to 'default', in which case Silverman's rule is used to select the bandwidth.}
+
+\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
 }
 \description{
 Calculates kernel density of all points from all others in multivariate space. Returns -2*log(density)
@@ -32,7 +35,7 @@ Note that this method cannot handle NA values.
 df <- data.frame(x=rnorm(100),y=rnorm(100))
 
 # calculate kernel density distances
-distances <- harmonicDist(df)
+distances <- kernelDist(df)
 
 # use this distance to look for outliers
 Q95 <- quantile(distances, 0.95)

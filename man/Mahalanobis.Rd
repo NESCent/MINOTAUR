@@ -4,13 +4,15 @@
 \alias{Mahalanobis}
 \title{Mahalanobis}
 \usage{
-Mahalanobis(dfv, column.nums = 1:ncol(dfv))
+Mahalanobis(dfv, column.nums = 1:ncol(dfv), S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
 \item{column.nums}{indexes the columns of the data frame that contain the statistics used to
 calculate Mahalanobis distance (all other columns are ignored).}
+
+\item{S}{the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
 }
 \description{
 Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. The input
@@ -31,6 +33,6 @@ which(distances>Q95)
 
 }
 \author{
-KE Lotterhos \email{k.lotterhos@neu.edu}
+Robert Verity \email{r.verity@imperial.ac.uk}
 }
 
