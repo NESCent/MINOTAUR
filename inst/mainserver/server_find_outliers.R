@@ -19,8 +19,8 @@ output$tabBox_produce_compound <- renderUI({
   tabBox(title=NULL, width=12,
          tabPanel('Summary','',
                   h3('Producing Compound Measures'),
-                  p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point.'),
-                  p('Once you are happy with your chosen compound distance measure you can add it to the table below, along with some notes etc.'),
+                  p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point in multivariate space.'),
+                  p('Once you are happy with your chosen compound distance measure you can add it to the table below.'),
                   if (!is.null(rv_outliers_dist$df_summary)) {
                     dataTableOutput("distDataTable")
                   } else {
@@ -29,20 +29,32 @@ output$tabBox_produce_compound <- renderUI({
          ),
          tabPanel('Distance-Based','',
                   h3('Distance-Based Methods'),
-                  p('Mahalanobis, harmonic mean and nearest neighbour distances.'),
+                  p('The distance between points is given by a modification of the Euclidean distance that accounts for covariance between observations.'),
                   selectizeInput('outliers_distance_selectize_variables',
                                  label='Select univariate statistics',
                                  choices=cleanData()$otherVar,
                                  multiple=TRUE),
-                  radioButtons('outliers_distance_radio_distanceMethod',
-                               label='Select distance method',
-                               choices=list('Mahalanobis distance'='Mahalanobis',
-                                            'Harmonic mean distance'='harmonic',
-                                            'Nearest neighbor distance'='nearestNeighbor')),
-                  actionButton('calculate_distance',label='Calculate!'),
+                  fluidRow(
+                    column(4,
+                           radioButtons('outliers_distance_radio_distanceMethod',
+                                        label='Select distance method',
+                                        choices=list('Mahalanobis distance'='Mahalanobis',
+                                                     'Harmonic mean distance'='harmonic',
+                                                     'Nearest neighbor distance'='nearestNeighbor')),
+                           actionButton('calculate_distance',label='Calculate!')
+                           ),
+                    column(8,
+                           wellPanel(
+                             textOutput("outliers_distance_description")
+                           )
+                           )
+                  ),
                   hr(),
                   textInput('outliers_distance_name', label='Enter name for this measure', placeholder='(example name)'),
-                  actionButton('tab2_addToTable',label='Add to table')
+                  actionButton('tab2_addToTable',label='Add to table'),
+                  conditionalPanel(condition='output.outliers_distance_error1 == "error"',
+                                   div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
+                                   )
          ),
          tabPanel('Density-Based','',
                   h3('Density-Based Methods'),
@@ -56,6 +68,31 @@ output$tabBox_produce_compound <- renderUI({
          )
   )
 })
+
+# description corresponding to each distance measure
+output$outliers_distance_description <- reactive({
+  if (!is.null(input$outliers_distance_radio_distanceMethod)) {
+    if (input$outliers_distance_radio_distanceMethod=="Mahalanobis") {
+      return('The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of a distribution. It is best suited to situations where points follow a relatively simple parametric distribution.')
+    } else if (input$outliers_distance_radio_distanceMethod=="harmonic") {
+      return('The harmonic mean distance (as defined here) is equal to the harmonic mean of the distance of each point from every other. Unlike the arithmetic mean, the harmonic mean is heavily influenced by small values, meaning local effects play a disproportionately large role in the final value (although global effects do still play a role).')
+    } else if (input$outliers_distance_radio_distanceMethod=="nearestNeighbor") {
+      return('The nearest neighbor distance is simply the smallest distance between a point and any other. Hence, it is only a measure of local effects and is not influenced by the overall distribution of the data.')
+    }
+  }
+})
+
+# error if name already being used (activates conditional panel)
+output$outliers_distance_error1 <- reactive({
+  if (!is.null(input$outliers_distance_name)) {
+    if (input$outliers_distance_name%in%rv_outliers_dist$df_summary$name) {
+      return('error')
+    } else {
+      return('no_error')
+    }
+  }
+})
+outputOptions(output, 'outliers_distance_error1', suspendWhenHidden=FALSE)
 
 # table of user-defined compound distance measures
 output$distDataTable <- renderDataTable({
@@ -79,8 +116,8 @@ calculate_distance <- observe({
         radioChoice <- isolate(input$outliers_distance_radio_distanceMethod)
         if (!is.null(radioChoice)) {
           if (radioChoice=='Mahalanobis') {
-            #rv_outliers_dist$dist <- Mahalanobis(dfv)
-            rv_outliers_dist$dist <- rnorm(nrow(dfv))
+            rv_outliers_dist$dist <- Mahalanobis(dfv)
+            #rv_outliers_dist$dist <- rnorm(nrow(dfv))
           } else if (radioChoice=='harmonic') {
             #rv_outliers_dist$dist <- harmonicDist(dfv)
             rv_outliers_dist$dist <- rgamma(nrow(dfv),2,2)
@@ -98,15 +135,15 @@ calculate_distance <- observe({
 tab2_addToTable <- observe({
   if (!is.null(input$tab2_addToTable)) {
     if (input$tab2_addToTable>0) {
-      if (input$outliers_distance_name%in%rv_outliers_dist$df_summary$name) {
-        thisRow <- which(rv_outliers_dist$df_summary$name==input$outliers_distance_name)[1]
-        isolate(rv_outliers_dist$df_summary[thisRow,] <- c(input$outliers_distance_name, 'Mahalanobis', '(none)', 'over'))
-      } else {
-        isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=input$outliers_distance_name, method='Mahalanobis', parameters='(none)', notes='foobar')))
+      oldNames <- isolate(rv_outliers_dist$df_summary$name)
+      newName <- isolate(input$outliers_distance_name)
+      if (!is.null(newName)) {
+        if (!newName%in%oldNames) {
+          isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=newName, method='Mahalanobis', parameters='(none)', notes='foobar')))
+        }
       }
     }
   }
-  print('fooboo')
 })
 
 ######################################
