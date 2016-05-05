@@ -5,31 +5,52 @@
 
 ## generate reactiveValues data frame of all compound distance metrics
 rv_outliers_dist <- reactiveValues()
-rv_outliers_dist$df_summary <- NULL
+#rv_outliers_dist$df_summary <- NULL
+rv_outliers_dist$df_summary <- data.frame(name=NA, method=NA, parameters=NA, notes=NA)[-1,]
 rv_outliers_dist$df_values <- NULL
 rv_outliers_dist$dist <- NULL
 
-###################################################
-## Box: Controls for Producing Compound Measures ##
-###################################################
+###########################
+## Box: Main Outliers UI ##
+###########################
+
+# header box
+output$headerBox_produce_compound <- renderUI({
+  #tags$head(tags$style(HTML(".small-box {height: 50px}")))
+  valueBox(
+    subtitle = HTML(paste('<font size=5>Produce Compound Measures</font>')),
+    color = "light-blue",
+    value = NULL,
+    width=12
+  )
+})
 
 # box containing controls for distance-based measure plots
 output$tabBox_produce_compound <- renderUI({
-  #tabBox(title=NULL, width=12, height=480,
   tabBox(title=NULL, width=12,
          tabPanel('Summary','',
-                  h3('Producing Compound Measures'),
+                  h3('Summary of current measures'),
                   p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point in multivariate space.'),
                   p('Once you are happy with your chosen compound distance measure you can add it to the table below.'),
-                  if (!is.null(rv_outliers_dist$df_summary)) {
-                    dataTableOutput("distDataTable")
-                  } else {
-                    dataTableOutput("distDataTable_example")
-                  }
+                  dataTableOutput("distDataTable"),
+                  hr(),
+                  p(strong('select compound measure')),
+                  fluidRow(
+                    column(4,
+                           selectInput('outliers_distance_chooseTableVariable', label=NULL, choices=as.character(rv_outliers_dist$df_summary$name))
+                           ),
+                    column(3,
+                           actionButton('outliers_distance_plotFromTable',label='Plot selected', width=150)
+                           ),
+                    column(3,
+                           actionButton('outliers_distance_deleteFromTable',label='Delete selected', width=150)
+                           )
+                  )
          ),
          tabPanel('Distance-Based','',
-                  h3('Distance-Based Methods'),
-                  p('The distance between points is given by a modification of the Euclidean distance that accounts for covariance between observations.'),
+                  h3('Distance-based methods'),
+                  p('These methods are all based on the distance between points in multivariate space. See help for further details of the individual methods.'),
+                  hr(),
                   selectizeInput('outliers_distance_selectize_variables',
                                  label='Select univariate statistics',
                                  choices=cleanData()$otherVar,
@@ -49,25 +70,87 @@ output$tabBox_produce_compound <- renderUI({
                            )
                            )
                   ),
+                  conditionalPanel(condition='output.outliers_distance_error2 == "error"',
+                                   div("Warning: selected data contains non-numeric or missing values. Filter data in the 'Format Data' panel before calculating this distance measure.", style="color:red")
+                                   ),
                   hr(),
-                  textInput('outliers_distance_name', label='Enter name for this measure', placeholder='(example name)'),
+                  fluidRow(
+                    column(6,
+                           textInput('outliers_distance_name', label='Enter name for this measure', placeholder='(example name)')
+                           ),
+                    column(6,
+                           textInput('outliers_distance_note', label='Enter note for this measure', placeholder='(example note)')
+                           )
+                  ),
                   actionButton('tab2_addToTable',label='Add to table'),
                   conditionalPanel(condition='output.outliers_distance_error1 == "error"',
                                    div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
                                    )
          ),
          tabPanel('Density-Based','',
-                  h3('Density-Based Methods'),
+                  h3('Density-based methods'),
                   p('Kernel density based methods, with bandwidth being either user-defined, set to default, or calculated by maximum likelihood.'),
                   actionButton('button2',label='Here is a button')
          ),
          tabPanel('Use Existing','',
-                  h3('Use Existing Measures'),
+                  h3('Use existing variables'),
                   p('Use variables in the data directly as distance measures.'),
                   actionButton('button3',label='Here is a button')
          )
   )
 })
+
+#########################
+## Tab1: Summary Table ##
+#########################
+
+# table of user-defined compound distance measures
+output$distDataTable <- renderDataTable({
+  rv_outliers_dist$df_summary
+},options=list(scrollX=TRUE, scrollY='150px', searching=FALSE, paging=FALSE) #, rownames=FALSE
+)
+
+# plot selected button
+plotFromTable <- observe({
+  if (!is.null(input$outliers_distance_plotFromTable)) {
+    if (input$outliers_distance_plotFromTable>0) {
+      selected <- isolate(input$outliers_distance_chooseTableVariable)
+      if (selected!="") {
+        w <- which(rv_outliers_dist$df_summary$name==selected)
+        if (length(w)>0) {
+          rv_outliers_dist$dist <- rv_outliers_dist$df_values[,w]
+        } else {
+          rv_outliers_dist$dist <- NULL
+        }
+      }
+    }
+  }
+})
+
+# delete selected button
+deleteFromTable <- observe({
+  if (!is.null(input$outliers_distance_deleteFromTable)) {
+    if (input$outliers_distance_deleteFromTable>0) {
+      selected <- isolate(input$outliers_distance_chooseTableVariable)
+      if (selected!="") {
+        names <- isolate(rv_outliers_dist$df_summary$name)
+        if (length(names)>0) {
+          w <- which(names==selected)[1]
+          isolate(rv_outliers_dist$df_summary <- rv_outliers_dist$df_summary[-w,,drop=FALSE])
+          isolate(row.names(rv_outliers_dist$df_summary) <- 1:nrow(rv_outliers_dist$df_summary))
+          isolate(rv_outliers_dist$df_values <- rv_outliers_dist$df_values[,-w,drop=FALSE])
+          if (w==1) {
+            rv_outliers_dist$dist <- NULL
+          }
+        }
+      }
+    }
+  }
+})
+
+##################################
+## Tab2: Distance-based Methods ##
+##################################
 
 # description corresponding to each distance measure
 output$outliers_distance_description <- reactive({
@@ -75,12 +158,54 @@ output$outliers_distance_description <- reactive({
     if (input$outliers_distance_radio_distanceMethod=="Mahalanobis") {
       return('The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of a distribution. It is best suited to situations where points follow a relatively simple parametric distribution.')
     } else if (input$outliers_distance_radio_distanceMethod=="harmonic") {
-      return('The harmonic mean distance (as defined here) is equal to the harmonic mean of the distance of each point from every other. Unlike the arithmetic mean, the harmonic mean is heavily influenced by small values, meaning local effects play a disproportionately large role in the final value (although global effects do still play a role).')
+      return('The harmonic mean distance (as defined here) is equal to the harmonic mean of the distance of each point from every other. Unlike the arithmetic mean, the harmonic mean is heavily influenced by small values meaning local effects play a large role in the final value, although global effects do still play a role.')
     } else if (input$outliers_distance_radio_distanceMethod=="nearestNeighbor") {
       return('The nearest neighbor distance is simply the smallest distance between a point and any other. Hence, it is only a measure of local effects and is not influenced by the overall distribution of the data.')
     }
   }
 })
+
+# button to calculate distances
+calculate_distance <- observe({
+  if (!is.null(input$calculate_distance)) {
+    if (input$calculate_distance>0) {
+      selectedVars <- isolate(input$outliers_distance_selectize_variables)
+      if (!is.null(selectedVars)) {
+        dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
+        radioChoice <- isolate(input$outliers_distance_radio_distanceMethod)
+        if (!is.null(radioChoice)) {
+          if (radioChoice=='Mahalanobis') {
+            if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
+              rv_outliers_dist$dist <- Mahalanobis(dfv)
+            }
+          } else if (radioChoice=='harmonic') {
+            if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
+              rv_outliers_dist$dist <- harmonicDist(dfv)
+            }
+          } else if (radioChoice=='nearestNeighbor') {
+            if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
+              rv_outliers_dist$dist <- neighborDist(dfv)
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
+# error if any problematic NAs in data (activates conditional panel)
+output$outliers_distance_error2 <- reactive({
+  selectedVars <- input$outliers_distance_selectize_variables
+  if (!is.null(selectedVars)) {
+    dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
+    if (any(mapply(function(x){any(is.na(x))}, dfv)) | any(!mapply(is.numeric,dfv))) {
+      return('error')
+    } else {
+      return('no_error')
+    }
+  }
+})
+outputOptions(output, 'outliers_distance_error2', suspendWhenHidden=FALSE)
 
 # error if name already being used (activates conditional panel)
 output$outliers_distance_error1 <- reactive({
@@ -94,74 +219,48 @@ output$outliers_distance_error1 <- reactive({
 })
 outputOptions(output, 'outliers_distance_error1', suspendWhenHidden=FALSE)
 
-# table of user-defined compound distance measures
-output$distDataTable <- renderDataTable({
-  rv_outliers_dist$df_summary
-},options=list(scrollX=TRUE, scrollY='150px', searching=FALSE, paging=FALSE) #, rownames=FALSE
-)
-
-# example table if rv_outliers_dist is empty
-output$distDataTable_example <- renderDataTable({
-  data.frame(name='(example name)', method='Mahalanobis', parameters='(none)', notes='foobar')
-},options=list(scrollX=TRUE, scrollY='150px', searching=FALSE, paging=FALSE) #, rownames=FALSE
-)
-
-# button to calculate distances
-calculate_distance <- observe({
-  if (!is.null(input$calculate_distance)) {
-    if (input$calculate_distance>0) {
-      selectedVars <- isolate(input$outliers_distance_selectize_variables)
-      if (!is.null(selectedVars)) {
-        dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
-        radioChoice <- isolate(input$outliers_distance_radio_distanceMethod)
-        if (!is.null(radioChoice)) {
-          if (radioChoice=='Mahalanobis') {
-            rv_outliers_dist$dist <- Mahalanobis(dfv)
-            #rv_outliers_dist$dist <- rnorm(nrow(dfv))
-          } else if (radioChoice=='harmonic') {
-            #rv_outliers_dist$dist <- harmonicDist(dfv)
-            rv_outliers_dist$dist <- rgamma(nrow(dfv),2,2)
-          } else if (radioChoice=='nearestNeighbor') {
-            #rv_outliers_dist$dist <- neighborDist(dfv)
-            rv_outliers_dist$dist <- rbeta(nrow(dfv),2,2)
-          }
-        }
-      }
-    }
-  }
-})
-
-# add to table button on second tab
+# add to table button
 tab2_addToTable <- observe({
   if (!is.null(input$tab2_addToTable)) {
     if (input$tab2_addToTable>0) {
       oldNames <- isolate(rv_outliers_dist$df_summary$name)
       newName <- isolate(input$outliers_distance_name)
-      if (!is.null(newName)) {
-        if (!newName%in%oldNames) {
-          isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=newName, method='Mahalanobis', parameters='(none)', notes='foobar')))
+      note <- isolate(input$outliers_distance_note)
+      distMethod <- isolate(input$outliers_distance_radio_distanceMethod)
+      if (!is.null(newName) & !is.null(distMethod)) {
+        if (!newName%in%oldNames & newName!="") {
+          if (distMethod=="Mahalanobis") {
+            isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=newName, method='Mahalanobis', parameters='(none)', notes=note)))
+          } else if (distMethod=="harmonic") {
+            isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=newName, method='harmonic', parameters='(none)', notes=note)))
+          }
+          else if (distMethod=="nearestNeighbor") {
+            isolate(rv_outliers_dist$df_summary <- rbind(rv_outliers_dist$df_summary, data.frame(name=newName, method='nearest neighbor', parameters='(none)', notes=note)))
+          }
+          isolate(row.names(rv_outliers_dist$df_summary) <- 1:nrow(rv_outliers_dist$df_summary))
+          isolate(rv_outliers_dist$df_values <- cbind(rv_outliers_dist$df_values, rv_outliers_dist$dist))
         }
       }
     }
   }
 })
 
-######################################
-## Box: Density of Compound Measure ##
-######################################
+########################################
+## Box: Histogram of Compound Measure ##
+########################################
 
-#
+# box for histogram
 output$box_density_compound <- renderUI({
-  box(title="Density", status="warning", solidHeader=TRUE, collapsible=TRUE, width=12, height=480,
+  box(title="Histogram", status="warning", solidHeader=TRUE, collapsible=TRUE, width=12,
       plotOutput('plot2')
   )
 })
 
-# example plot
+# hist plot
 output$plot2 <- renderPlot({
   dist <- rv_outliers_dist$dist
   if (!is.null(dist)) {
-    hist(dist, col=grey(0.8), breaks=100, main='histogram of distance measure')
+    hist(dist, col=grey(0.8), breaks=100, xlab='compound distance measure', main='')
   }
 })
 

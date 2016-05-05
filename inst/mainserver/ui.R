@@ -135,23 +135,24 @@ ui <- dashboardPage(title= "MINOTAUR",
               fluidRow(
                 column(7,
                        # controls for producing compound measures
+                       uiOutput("headerBox_produce_compound"),
                        uiOutput('tabBox_produce_compound')
                 ),
                 column(5,
                        # density plot of compound measure
                        uiOutput('box_density_compound')
                 )
-              ),
-              fluidRow(
-                column(4,
-                       #
-                       uiOutput('box_choose_threshold')
-                ),
-                column(8,
-                       #
-                       uiOutput('box_list_outliers')
-                )
-              )
+              )#,
+              #fluidRow(
+              #  column(4,
+              #         #
+              #         uiOutput('box_choose_threshold')
+              #  ),
+              #  column(8,
+              #         #
+              #         uiOutput('box_list_outliers')
+              #  )
+              #)
       ), # end of Find Outliers page tabItem
 
       #### Compare Outliers page

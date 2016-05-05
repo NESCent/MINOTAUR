@@ -78,6 +78,7 @@
 ## Box: Load Data ##
 ####################
 
+# header box
 output$headerBox_loadData <- renderUI({
   valueBox(
     subtitle = HTML(paste('<font size=5>Load Data</font>')),
