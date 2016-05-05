@@ -5,7 +5,6 @@
 
 ## generate reactiveValues data frame of all compound distance metrics
 rv_outliers_dist <- reactiveValues()
-#rv_outliers_dist$df_summary <- NULL
 rv_outliers_dist$df_summary <- data.frame(name=NA, method=NA, parameters=NA, notes=NA)[-1,]
 rv_outliers_dist$df_values <- NULL
 rv_outliers_dist$dist <- NULL
@@ -28,6 +27,7 @@ output$headerBox_produce_compound <- renderUI({
 # box containing controls for distance-based measure plots
 output$tabBox_produce_compound <- renderUI({
   tabBox(title=NULL, width=12,
+         
          tabPanel('Summary','',
                   h3('Summary of current measures'),
                   p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point in multivariate space.'),
@@ -47,6 +47,7 @@ output$tabBox_produce_compound <- renderUI({
                            )
                   )
          ),
+         
          tabPanel('Distance-Based','',
                   h3('Distance-based methods'),
                   p('These methods are all based on the distance between points in multivariate space. See help for further details of the individual methods.'),
@@ -87,10 +88,52 @@ output$tabBox_produce_compound <- renderUI({
                                    div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
                                    )
          ),
+         
          tabPanel('Density-Based','',
                   h3('Density-based methods'),
                   p('Kernel density based methods, with bandwidth being either user-defined, set to default, or calculated by maximum likelihood.'),
-                  actionButton('button2',label='Here is a button')
+                  hr(),
+                  selectizeInput('outliers_density_selectize_variables',
+                                 label='Select univariate statistics',
+                                 choices=cleanData()$otherVar,
+                                 multiple=TRUE),
+                  fluidRow(
+                    column(4,
+                           radioButtons('outliers_density_howToChooseBandwidth',
+                                        label='Bandwidth estimation method',
+                                        choices=list('default'='default',
+                                                     'manual'='manual',
+                                                     'maximum likelihood'='ML')),
+                           actionButton('calculate_density',label='Calculate!')
+                           ),
+                    column(8,
+                           wellPanel(
+                             conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "default"',
+                                              p("Bandwidth will be chosen via Silverman's rule.")
+                             ),
+                             conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "manual"',
+                                              numericInput('outliers_density_manual_bandwidth', label='set bandwidth', value=1.0, min=0.0001, step=0.01, width=100)
+                             ),
+                             conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "ML"',
+                                              p(strong('choose range of bandwidths to explore')),
+                                              plotOutput('ML_plot')
+                             )
+                           )
+                           )
+                  ),
+                  hr(),
+                  fluidRow(
+                    column(6,
+                           textInput('outliers_density_name', label='Enter name for this measure', placeholder='(example name)')
+                    ),
+                    column(6,
+                           textInput('outliers_density_note', label='Enter note for this measure', placeholder='(example note)')
+                    )
+                  ),
+                  actionButton('outliers_density_addToTable',label='Add to table'),
+                  conditionalPanel(condition='output.outliers_density_error1 == "error"',
+                                   div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
+                  )
          ),
          tabPanel('Use Existing','',
                   h3('Use existing variables'),
@@ -245,19 +288,42 @@ tab2_addToTable <- observe({
   }
 })
 
+#################################
+## Tab3: Density-based Methods ##
+#################################
+
+# hist plot
+output$ML_plot <- renderPlot({
+  plot(5)
+})
+
+# 
+#output$outliers_density_bandwidthMethod <- reactive({
+#  selectedMethod <- input$outliers_density_howToChooseBandwidth
+#  if (!is.null(selectedMethod)) {
+#    dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
+#    if (any(mapply(function(x){any(is.na(x))}, dfv)) | any(!mapply(is.numeric,dfv))) {
+#      return('error')
+#    } else {
+#      return('no_error')
+#    }
+#  }
+#})
+#outputOptions(output, 'outliers_distance_error2', suspendWhenHidden=FALSE)
+
 ########################################
 ## Box: Histogram of Compound Measure ##
 ########################################
 
 # box for histogram
-output$box_density_compound <- renderUI({
+output$box_histogram_compound <- renderUI({
   box(title="Histogram", status="warning", solidHeader=TRUE, collapsible=TRUE, width=12,
-      plotOutput('plot2')
+      plotOutput('histogram_compound')
   )
 })
 
 # hist plot
-output$plot2 <- renderPlot({
+output$histogram_compound <- renderPlot({
   dist <- rv_outliers_dist$dist
   if (!is.null(dist)) {
     hist(dist, col=grey(0.8), breaks=100, xlab='compound distance measure', main='')
