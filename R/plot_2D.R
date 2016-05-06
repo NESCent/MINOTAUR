@@ -19,28 +19,50 @@
 #' Generate x-y scatter plots with outliers overlayed.
 #' Easily control the aesthetics of plot scatter and outlier points.
 #'
+#' @param x A numeric vector containing a variable to be plotted along the x-axis of the xy scatter.
+#' @param y A numeric vector containing a variable to be plotted along the y-axis of the xy scatter.
+#' @param xlab An optional character string specifying a label for the x-axis.
+#' @param ylab An optional character string specifying a label for the y-axis.
+#' @param xlim An optional numeric vector of length 2 specifying limits for the x-axis.
+#' @param ylim An optional numeric vector of length 2 specifying limits for the y-axis.
+#' @param n.bins An integer specifying the number of bins for the xy scatter pixels.
+#' @param col.pal A character string specifying the color palette to be used for the xy scatter pixels.
+#' @param grid A logical specifying whether to overlay a grid on top of the plotting area.
+#' @param outlier.x An optional numeric vector giving the x-coordinates of an outlier to be plotted as points.
+#' @param outlier.y An optional numeric vector (required if outlier.x is provided)
+#' giving the y-coordinates of an outlier to be plotted as points.
+#' @param outlier.col A character string specifying the color of the outline of the outlier points.
+#' @param outlier.col.bg A character string specifying the background (fill) color of the outlier points.
+#' @param outlier.transp A number between 0 and 1 specifying the degree of transparency to be added to the outlier points.
+#' @param outlier.pch A number between 21 and 25 specifying the shape of the outlier points. (See ?par for details.)
+#' @param outlier.cex A number specifying the cex (size) of the outlier points.
 #'
 #' @author Caitlin Collins \email{caitiecollins@@gmail.com}
-#' @examples
+#' @author Kathleen Lotterhos \email{k.lotterhos@@neu.edu}
 #'
 #' @import ash fields
 #'
 #' @export
 
+## TO DO: Add @examples content
+
 ########################################################################
 
 plot_2D<- function(x, y,
-                   xlab, ylab,
+                   xlab=NULL, ylab=NULL,
                    xlim=NULL, ylim=NULL,
-                   n.bins,
-                   x_sub, y_sub,
-                   col.pal, grid=FALSE,
-                   outlier.col, outlier.col.bg,
-                   outlier.transp,
-                   outlier.pch, outlier.cex){
+                   n.bins=100,
+                   col.pal="heat.colors", grid=FALSE,
+                   outlier.x=NULL, outlier.y=NULL,
+                   outlier.col="blue", outlier.col.bg="purple",
+                   outlier.transp=0.25,
+                   outlier.pch=24, outlier.cex=1.5){
 
   require(ash)
   require(fields)
+
+  x_sub <- outlier.x
+  y_sub <- outlier.y
 
   if(outlier.transp != 0){
     outlier.transp <- 1 - outlier.transp

@@ -10,11 +10,15 @@
 
 # install.packages("devtools", dependencies=TRUE)
 # library(devtools)
-# install.packages("OmicCircos", dependencies=TRUE)
-# library(OmicCircos)
+# install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+# install_github("rstudio/DT", ref="24d71f2")
 # install_github("NESCent/MINOTAUR")
 # library(MINOTAUR)
 # MINOTAUR()
+
+# ERROR: dependencies 'DT', 'OmicCircos', 'shinydashboard', 'shinyjs' are not available for package 'MINOTAUR'
+
+#library(devtools); devtools::check()
 
 ########################################################################
 
@@ -38,33 +42,28 @@
 #'
 #' @import shiny shinydashboard shinyjs DT
 #'  adegenet  RColorBrewer
-#'  ggplot2 hexbin  data.table ash fields Rcpp
-#'  Hmisc devtools OmicCircos Rcpp
-#'
+#'  ggplot2 data.table ash fields Rcpp
+#'  OmicCircos
 #'
 #' @export
 
 ########################################################################
 
-## WORKING:
+# importFrom(fields,flame)
+# importFrom(shiny,dataTableOutput)
+# importFrom(shiny,renderDataTable)
+# importFrom(shinyjs,runExample)
+# importFrom(shinyjs,show)
+
+# ## WORKING:
 # #' @import shiny shinydashboard shinyjs DT
-# #'  stats4 adegenet  MASS RColorBrewer
-# #'  ggplot2 scales hexbin  data.table ash fields Rcpp
-# #'  Hmisc OmicCircos Rcpp
-# f
-
-
-## PKG LIST (28/04/2016): ##
-# adegenet ash data.table DT
-# fields ggplot2 hexbin Hmisc
-# MASS OmicCircos RColorBrewer Rcpp
-# scales shiny shinydashboard shinyjs stats4
-
-# #' @import adegenet ash data.table DT
-# #' fields ggplot2 Hmisc
-# #' OmicCircos RColorBrewer Rcpp
-# #' shiny shinydashboard shinyjs
-# f
+# #'  adegenet  RColorBrewer
+# #'  ggplot2 data.table ash fields Rcpp
+# #'  OmicCircos
+#
+# #'  @importFrom fields flame
+# #'  @importFrom shiny dataTableOutput renderDataTable
+# #'  @importFrom shinyjs runExample show
 
 # Rcpp
 # useDynLib(RgeoProfile)
@@ -75,11 +74,14 @@
 # library(devtools)
 # install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
 # require(OmicCircos)
+# install_github("rstudio/DT", ref="24d71f2")
+# require(DT)
+
 
 ## devtools fns ##
 # document() # adds imports to NAMESPACE and doc to Rd files (for all saved .R files)
 # use_package("package") # adds imports to DESCRIPTION
-# imports <- c("shiny", "stats4", "adegenet", "MASS", "RColorBrewer", "ggplot2", "scales", "hexbin", "data.table", "ash", "fields")
+# imports <- c("shiny", "shinydashboard", "shinyjs", "adegenet", "RColorBrewer", "ggplot2", "data.table", "ash", "fields", "Rcpp")
 # for(i in (1:length(imports))){
 #   use_package(imports[i])
 # }
@@ -101,40 +103,59 @@ MINOTAUR <- function(){
   ## Fortunately we do not need this class from either pkg.
   #connection <- setClass("connection", slots = c(x="numeric", y="numeric")) ## not resolving warning...
 
-  require(shiny)
-  require(shinydashboard)
-  require(data.table)
-  require(shinyjs)
-  require(DT)
-  require(Hmisc) # only for color table demo -- may NOT need!
-  require(adegenet)
-  require(ash)
-  require(fields)
-  require(data.table)
-  require(ggplot2)
-  require(RColorBrewer)
-  require(Rcpp)
 
-  require(devtools)
-  install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
-  require(OmicCircos)
+  ## handling check error: library or require calls not declared from [all imported pkgs]
 
-  #   require(adegenet)
-  #   require(ash) # .plot2D
-  #   require(data.table)
-  #   require(DT)
-  #   require(fields) # .plot2D
-  #   require(ggplot2)
-  #   require(Hmisc) # only for color table demo -- may NOT need!
-  #   require(OmicCircos)
-  #   require(RColorBrewer)
-  #   require(Rcpp)
+  ## get list of dependencies:
+  pkgs <- list("shiny",
+               "shinydashboard",
+               "shinyjs",
+               "adegenet",
+               "RColorBrewer",
+               "ggplot2",
+               "data.table",
+               "ash",
+               "fields",
+               "Rcpp")
+  ## require/install/load pks:
+  for(i in 1:length(pkgs)){
+    .dynamic_require(pkgs[[i]])
+  }
+  ## require/install_GITHUB/load DT, OmicCircos:
+  .dynamic_require_DT("DT")
+  .dynamic_require_OmicCircos("OmicCircos")
+
+  #   requireNamespace("shiny")
+  #   requireNamespace("shinydashboard")
+  #   requireNamespace("shinyjs")
+  #   requireNamespace("DT")
+  #   requireNamespace("adegenet")
+  #   requireNamespace("RColorBrewer")
+  #   requireNamespace("ggplot2")
+  #   requireNamespace("data.table")
+  #   requireNamespace("ash")
+  #   requireNamespace("fields")
+  #   requireNamespace("Rcpp")
+  #   requireNamespace("OmicCircos")
+
   #   require(shiny)
   #   require(shinydashboard)
+  #   require(data.table)
   #   require(shinyjs)
-  # require(MASS) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
-  # require(scales) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
-  # require(stats4) # NOT SURE IF USED -- REMOVED (unless someone needs it???)
+  #   # require(Hmisc) # only for color table demo -- may NOT need!
+  #   require(adegenet)
+  #   require(ash)
+  #   require(fields)
+  #   require(data.table)
+  #   require(ggplot2)
+  #   require(RColorBrewer)
+  #   require(Rcpp)
+
+  # require(devtools)
+  # install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+  # require(OmicCircos)
+  # install_github("rstudio/DT", ref="24d71f2")
+  # require(DT)
 
 
   syst.file <- base::system.file
@@ -156,3 +177,49 @@ MINOTAUR <- function(){
   runApp(filename, launch.browser=TRUE)
 }
 
+#################################
+## .dynamic_require_OmicCircos ##
+#################################
+.dynamic_require_OmicCircos <- function(package="OmicCircos"){
+  if(eval(parse(text=paste("require(",
+                           package,
+                           ", quietly=TRUE)")))) return(TRUE)
+
+  .dynamic_require("devtools")
+  install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+  return(eval(parse(text=paste("require(",
+                               package,
+                               ", quietly=TRUE)"))))
+} # .dynamic_require_OmicCircos
+
+#########################
+## .dynamic_require_DT ##
+#########################
+.dynamic_require_DT <- function(package="DT"){
+  if(eval(parse(text=paste("require(",
+                           package,
+                           ", quietly=TRUE)")))) return(TRUE)
+
+  .dynamic_require("devtools")
+  install_github("rstudio/DT", ref="24d71f2")
+  return(eval(parse(text=paste("require(",
+                               package,
+                               ", quietly=TRUE)"))))
+} # .dynamic_require_DT
+
+######################
+## .dynamic_require ##
+######################
+.dynamic_require <- function(package){
+  if(eval(parse(text=paste("require(",
+                           package,
+                           ", quietly=TRUE)")))) return(TRUE)
+
+  install.packages(package,
+                   dependencies=TRUE,
+                   quiet=TRUE,
+                   verbose=FALSE)
+  return(eval(parse(text=paste("require(",
+                               package,
+                               ", quietly=TRUE)"))))
+} # end .dynamic_require

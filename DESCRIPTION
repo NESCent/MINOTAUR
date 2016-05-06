@@ -1,5 +1,5 @@
 Package: MINOTAUR
-Title: MultIvariate Nifty OuTlier Analysis Using R
+Title: MultIvariate visualisatioN and OuTlier Analysis Using R
 Version: 0.0.0.9000
 Authors@R: person("Caitlin", "Collins", , "caitiecollins@gmail.com", role = "cre")
 Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space. 
@@ -10,15 +10,13 @@ Imports: adegenet,
 	data.table, 
 	DT, 
 	fields, 
-	ggplot2, 
-	Hmisc, 	
+	ggplot2, 	 	
 	OmicCircos,
 	RColorBrewer, 
 	Rcpp,
 	shiny,
 	shinydashboard,
-	shinyjs,
-    devtools
+	shinyjs
 Remotes: Bioconductor-mirror/OmicCircos@b772950,
 	rstudio/DT@24d71f2
 LinkingTo: Rcpp

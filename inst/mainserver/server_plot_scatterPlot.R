@@ -825,12 +825,14 @@ output$box_scatterPlot_button <- renderUI({
 
       # produce plot
       #scatterplot <- plot(xData, yData, xlab=xSelection, ylab=ySelection, col=myCol, pch=20)
-      scatterplot <- plot_2D(xData, yData, xlab=xSelection, ylab=ySelection,
-                              n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
-                              col.pal=col.pal, grid=grid,
-                              outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
-                              outlier.transp=outlier.transp,
-                              outlier.pch=outlier.pch, outlier.cex=outlier.cex)
+      scatterplot <- plot_2D(xData, yData,
+                             xlab=xSelection, ylab=ySelection,
+                             n.bins=n.bins,
+                             col.pal=col.pal, grid=grid,
+                             outlier.x=xData_sub, outlier.y=yData_sub,
+                             outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
+                             outlier.transp=outlier.transp,
+                             outlier.pch=outlier.pch, outlier.cex=outlier.cex)
 
     }
   }

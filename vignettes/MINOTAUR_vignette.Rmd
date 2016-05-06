@@ -5,7 +5,7 @@ date: "December 11, 2015"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MINOTAUR Workflow Vignette}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render} %knitr::rmarkdown
   %\VignetteEncoding{UTF-8}
 ---
 

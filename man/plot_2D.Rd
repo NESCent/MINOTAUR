@@ -4,18 +4,52 @@
 \alias{plot_2D}
 \title{Generate x-y scatter plots.}
 \usage{
-plot_2D(x, y, xlab, ylab, xlim = NULL, ylim = NULL, n.bins, x_sub, y_sub,
-  col.pal, grid = FALSE, outlier.col, outlier.col.bg, outlier.transp,
-  outlier.pch, outlier.cex)
+plot_2D(x, y, xlab = NULL, ylab = NULL, xlim = NULL, ylim = NULL,
+  n.bins = 100, col.pal = "heat.colors", grid = FALSE, outlier.x = NULL,
+  outlier.y = NULL, outlier.col = "blue", outlier.col.bg = "purple",
+  outlier.transp = 0.25, outlier.pch = 24, outlier.cex = 1.5)
+}
+\arguments{
+\item{x}{A numeric vector containing a variable to be plotted along the x-axis of the xy scatter.}
+
+\item{y}{A numeric vector containing a variable to be plotted along the y-axis of the xy scatter.}
+
+\item{xlab}{An optional character string specifying a label for the x-axis.}
+
+\item{ylab}{An optional character string specifying a label for the y-axis.}
+
+\item{xlim}{An optional numeric vector of length 2 specifying limits for the x-axis.}
+
+\item{ylim}{An optional numeric vector of length 2 specifying limits for the y-axis.}
+
+\item{n.bins}{An integer specifying the number of bins for the xy scatter pixels.}
+
+\item{col.pal}{A character string specifying the color palette to be used for the xy scatter pixels.}
+
+\item{grid}{A logical specifying whether to overlay a grid on top of the plotting area.}
+
+\item{outlier.x}{An optional numeric vector giving the x-coordinates of an outlier to be plotted as points.}
+
+\item{outlier.y}{An optional numeric vector (required if outlier.x is provided)
+giving the y-coordinates of an outlier to be plotted as points.}
+
+\item{outlier.col}{A character string specifying the color of the outline of the outlier points.}
+
+\item{outlier.col.bg}{A character string specifying the background (fill) color of the outlier points.}
+
+\item{outlier.transp}{A number between 0 and 1 specifying the degree of transparency to be added to the outlier points.}
+
+\item{outlier.pch}{A number between 21 and 25 specifying the shape of the outlier points. (See ?par for details.)}
+
+\item{outlier.cex}{A number specifying the cex (size) of the outlier points.}
 }
 \description{
 Generate x-y scatter plots with outliers overlayed.
 Easily control the aesthetics of plot scatter and outlier points.
 }
-\examples{
-
-}
 \author{
 Caitlin Collins \email{caitiecollins@gmail.com}
+
+Kathleen Lotterhos \email{k.lotterhos@neu.edu}
 }
 
