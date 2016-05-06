@@ -71,18 +71,18 @@ stripPositionChromosome <- reactive({
         chrom <- NULL
       } else {
         chrom <- rawData()$data[,chromVar]
-        #if (length(unique(chrom))>100) {
+        #if (length(unique(chrom))>100) { #### REPLACE WITH ERROR IN CONDITIONAL PANEL
         #  errorOn('too_many_chroms')
         #  chrom <- NULL
         #} else {
         #  errorOff('too_many_chroms')
         #}
       }
-
+      
       # all other variables make up y
       otherVar <- setdiff(names(rawData()$data),c(posVar,chromVar))
       y <- rawData()$data[,otherVar,drop=FALSE]
-
+      
       # return output
       output <- list(posVar=posVar,
                      chromVar=chromVar,
@@ -347,14 +347,15 @@ output$box_finalData <- renderUI({
 
 # filtered data table
 output$table_finalData <- renderDataTable({
-
+  
   # if cleanData()$y is NULL, return NULL
   if (is.null(cleanData()$y))
     return(NULL)
 
-  df <- data.frame(Position_variable=cleanData()$pos,
-                   Grouping_variable=cleanData()$chrom)
-  df <- cbind(df,cleanData()$y)
+  #df <- data.frame(Position_variable=cleanData()$pos,
+  #                 Grouping_variable=cleanData()$chrom)
+  #df <- cbind(df,cleanData()$y)
+  df <- data.frame(x=1:5,y=1:5)
   return(df)
 },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
 )

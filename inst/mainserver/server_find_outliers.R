@@ -8,6 +8,7 @@ rv_outliers_dist <- reactiveValues()
 rv_outliers_dist$df_summary <- data.frame(name=NA, method=NA, parameters=NA, notes=NA)[-1,]
 rv_outliers_dist$df_values <- NULL
 rv_outliers_dist$dist <- NULL
+rv_outliers_dist$deviance <- NULL
 
 ###########################
 ## Box: Main Outliers UI ##
@@ -91,7 +92,8 @@ output$tabBox_produce_compound <- renderUI({
          
          tabPanel('Density-Based','',
                   h3('Density-based methods'),
-                  p('Kernel density based methods, with bandwidth being either user-defined, set to default, or calculated by maximum likelihood.'),
+                  p('Kernel density based methods provide a flexible way of describing complex distributions. Points in areas of low density can then be identified as outliers.'),
+                  p('One challenge with these methods is choice of the bandwidth (size) of the kernel. Three methods for choosing the bandwidth are implemented here.'),
                   hr(),
                   selectizeInput('outliers_density_selectize_variables',
                                  label='Select univariate statistics',
@@ -109,13 +111,38 @@ output$tabBox_produce_compound <- renderUI({
                     column(8,
                            wellPanel(
                              conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "default"',
-                                              p("Bandwidth will be chosen via Silverman's rule.")
+                                              htmlOutput("outliers_density_SilvermanDescription")
                              ),
                              conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "manual"',
                                               numericInput('outliers_density_manual_bandwidth', label='set bandwidth', value=1.0, min=0.0001, step=0.01, width=100)
                              ),
                              conditionalPanel(condition='input.outliers_density_howToChooseBandwidth == "ML"',
-                                              p(strong('choose range of bandwidths to explore')),
+                                              HTML(paste('<font size=3>Choose a range of bandwidths to explore. Note that this calculation may take some time for large data sets.</font>')),
+                                              fluidRow(
+                                                column(3,
+                                                       p(strong('min'))
+                                                ),
+                                                column(3,
+                                                       p(strong('max'))
+                                                ),
+                                                column(3,
+                                                       p(strong('steps'))
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(3,
+                                                       numericInput('outliers_density_MLmin', label=NULL, value=0.1, min=0.0001, step=0.01)
+                                                ),
+                                                column(3,
+                                                       numericInput('outliers_density_MLmax', label=NULL, value=0.1, min=0.0001, step=0.01)
+                                                ),
+                                                column(3,
+                                                       numericInput('outliers_density_MLby', label=NULL, value=11, min=2, step=1)
+                                                ),
+                                                column(3,
+                                                       actionButton('outliers_density_MLgo', label='Go!')
+                                                )
+                                              ),
                                               plotOutput('ML_plot')
                              )
                            )
@@ -292,24 +319,49 @@ tab2_addToTable <- observe({
 ## Tab3: Density-based Methods ##
 #################################
 
-# hist plot
-output$ML_plot <- renderPlot({
-  plot(5)
+# description of Silverman's rule
+output$outliers_density_SilvermanDescription <- reactive({
+  if (!is.null(input$outliers_density_howToChooseBandwidth)) {
+    if (input$outliers_density_howToChooseBandwidth=="default") {
+      return(HTML(paste("Bandwidth will be chosen via Silverman's rule, which in this case yields a value of <b>",0.5,"</b>.",sep="")))
+    }
+  }
 })
 
-# 
-#output$outliers_density_bandwidthMethod <- reactive({
-#  selectedMethod <- input$outliers_density_howToChooseBandwidth
-#  if (!is.null(selectedMethod)) {
-#    dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
-#    if (any(mapply(function(x){any(is.na(x))}, dfv)) | any(!mapply(is.numeric,dfv))) {
-#      return('error')
-#    } else {
-#      return('no_error')
-#    }
-#  }
-#})
-#outputOptions(output, 'outliers_distance_error2', suspendWhenHidden=FALSE)
+# button to get ML bandwidth
+outliers_density_MLgo <- observe({
+  if (!is.null(input$outliers_density_MLgo)) {
+    if (input$outliers_density_MLgo>0) {
+      MLmin <- isolate(input$outliers_density_MLmin)
+      MLmax <- isolate(input$outliers_density_MLmax)
+      MLby <- isolate(input$outliers_density_MLby)
+      if (MLmin>0 & MLmax>MLmin) {
+        MLvec <- seq(MLmin, MLmax, l=MLby)
+        selectedVars <- isolate(input$outliers_density_selectize_variables)
+        if (!is.null(selectedVars)) {
+          dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
+          if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
+            print('calculating...')
+            rv_outliers_dist$deviance <- NULL
+            for (i in 1:length(MLvec)) {
+              print(i)
+              rv_outliers_dist$deviance <- c(rv_outliers_dist$deviance, kernelDeviance(dfv, bandwidth=MLvec[i]))
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
+# bandwidth ML plot
+output$ML_plot <- renderPlot({
+  deviance <- rv_outliers_dist$deviance
+  if (!is.null(deviance)) {
+    plot(deviance, type='o', pch=20, lwd=1.5)
+  }
+})
+
 
 ########################################
 ## Box: Histogram of Compound Measure ##

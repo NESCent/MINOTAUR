@@ -215,6 +215,7 @@ rawData <- reactive({
     ## HumanGWAS ##
     if (input$exampleData=='HumanGWAS') {
       data(HumanGWAS, package="MINOTAUR", envir=environment())
+      HumanGWAS <- as.data.frame(HumanGWAS)
       output <- list(data=HumanGWAS,
                      name='Example: Human GWAS',
                      description='This data set contains an example of output returned from a human GWAS analysis.',
@@ -224,6 +225,7 @@ rawData <- reactive({
     ## TwoRefSim ##
     if (input$exampleData=='TwoRefSim') {
       data(TwoRefSim, package="MINOTAUR", envir=environment())
+      TwoRefSim <- as.data.frame(TwoRefSim)
       output <- list(data=TwoRefSim,
                      name='Example: Simulated Expansion from Two Refugia',
                      description='This data set contains population genetic data simulating expansion from two refugia.',
@@ -233,24 +235,20 @@ rawData <- reactive({
     ## NonParamEx1 ##
     if (input$exampleData=='NonParamEx1') {
       data(NonParamEx1, package="MINOTAUR", envir=environment())
+      NonParamEx1 <- as.data.frame(NonParamEx1)
       output <- list(data=NonParamEx1,
                      name='Example: Non-Parametric Data 1',
-                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
-
-                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
-
+                     description='This is a simple two-variable data set with an inverse relationship between variables.',
                      rows=nrow(NonParamEx1),
                      cols=ncol(NonParamEx1))
     }
     ## NonParamEx2 ##
     if (input$exampleData=='NonParamEx2') {
       data(NonParamEx2, package="MINOTAUR", envir=environment())
+      NonParamEx2 <- as.data.frame(NonParamEx2)
       output <- list(data=NonParamEx2,
                      name='Example: Non-Parametric Data 2',
-                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
-
-                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
-
+                     description='This is a simple two-variable data set that is highly multi-modal.',
                      rows=nrow(NonParamEx2),
                      cols=ncol(NonParamEx2))
     }
@@ -392,7 +390,7 @@ output$rawDataTable <- DT::renderDataTable({
 
   ## Get data:
   dat <- rawData()$data
-
+  
   ## Get data table (DT)
   if(!is.null(dat)){
     out <- datatable(dat)
