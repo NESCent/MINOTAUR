@@ -37,7 +37,7 @@
 #' @param outlier.pch A number between 21 and 25 specifying the shape of the outlier points. (See ?par for details.)
 #' @param outlier.cex A number specifying the cex (size) of the outlier points.
 #'
-#' @author Caitlin Collins \email{caitiecollins@@gmail.com}
+#' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
 #' @author Kathleen Lotterhos \email{k.lotterhos@@neu.edu}
 #'
 #' @import ash fields

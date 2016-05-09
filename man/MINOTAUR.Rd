@@ -23,6 +23,6 @@ MINOTAUR()
 
 }
 \author{
-Caitlin Collins \email{caitiecollins@gmail.com}
+Caitlin Collins \email{caitlin.collins12@imperial.ac.uk}
 }
 

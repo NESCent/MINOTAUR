@@ -4,7 +4,7 @@ URL_list <- list("MINOTAUR" = "https://github.com/NESCent/MINOTAUR",
                  "NESCent" = "http://nescent.org/",
                  "Report a Bug" = "https://github.com/NESCent/MINOTAUR/issues/new",
                  "Contact the Developers" =
-                   "mailto:caitiecollins@gmail.com,
+                   "mailto:caitlin.collins12@@imperial.ac.uk,
                  r.verity@imperial.ac.uk,
                  k.lotterhos@neu.edu,
                  dcard@uta.edu,
@@ -73,7 +73,7 @@ server <- function(input, output) {
                              style='font-size:15px; text-align:center',
                              HTML('<i class="icon-star"></i>Load Data')),
                  HTML(paste('<input type="text" value="',rv$data_name,'" readonly="readonly">',sep=''))
-                 ),
+             ),
              align='center')
     )
   })

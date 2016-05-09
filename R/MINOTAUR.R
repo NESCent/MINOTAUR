@@ -33,7 +33,7 @@
 #' and identify outliers in multivariate and univariate space.
 #'
 #'
-#' @author Caitlin Collins \email{caitiecollins@@gmail.com}
+#' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
 #' @examples
 #'
 #' ## run function

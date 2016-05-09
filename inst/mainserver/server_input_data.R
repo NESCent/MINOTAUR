@@ -43,23 +43,23 @@
 # use_data(NonParamEx, overwrite=TRUE)
 # data("NonParamEx")
 
-# ## (B) ##
+# ## (B) ## Inverse
 # library(data.table)
 # library(devtools)
-# NonParamEx1 <- fread("~/MINOTAUR/data/df_inverse.csv", header=TRUE)
-# str(NonParamEx1)
-# head(NonParamEx1)
-# save(NonParamEx1, file="~/MINOTAUR/data/NonParamEx1.Rdata")
-# use_data(NonParamEx1, overwrite=TRUE)
-# data("NonParamEx1")
+# NonParametricInverse <- fread("~/MINOTAUR/data/df_inverse.csv", header=TRUE)
+# str(NonParametricInverse)
+# head(NonParametricInverse)
+# save(NonParametricInverse, file="~/MINOTAUR/data/NonParametricInverse.Rdata")
+# use_data(NonParametricInverse, overwrite=TRUE)
+# data("NonParametricInverse")
 #
-# ## (C) ##
-# NonParamEx2 <- fread("~/MINOTAUR/data/df_multimodal.csv", header=TRUE)
-# str(NonParamEx2)
-# head(NonParamEx2)
-# save(NonParamEx2, file="~/MINOTAUR/data/NonParamEx2.Rdata")
-# use_data(NonParamEx2, overwrite=TRUE)
-# data("NonParamEx2")
+# ## (C) ## Multimodal
+# NonParametricMultimodal <- fread("~/MINOTAUR/data/df_multimodal.csv", header=TRUE)
+# str(NonParametricMultimodal)
+# head(NonParametricMultimodal)
+# save(NonParametricMultimodal, file="~/MINOTAUR/data/NonParametricMultimodal.Rdata")
+# use_data(NonParametricMultimodal, overwrite=TRUE)
+# data("NonParametricMultimodal")
 #
 #
 # ##################
@@ -78,6 +78,7 @@
 ## Box: Load Data ##
 ####################
 
+# header box
 output$headerBox_loadData <- renderUI({
   valueBox(
     subtitle = HTML(paste('<font size=5>Load Data</font>')),
@@ -94,76 +95,61 @@ output$tabBox_loadData <- renderUI({
          width=12,
          status='warning',
 
-      ##################
-      ## LOAD EXAMPLE ##
-      ##################
-      tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
-              h3('Work with example data'),
-              selectInput('exampleData', label='Select example',
-                            choices=list("(use own data)" = "use_own",
-                                         "Human GWAS" = "HumanGWAS",
-                                         "Expansion from Two Refugia" = "TwoRefSim",
-                                         "Non-Parametric Data" = "NonParamEx1"),
-                          selected="HumanGWAS")
-      ),
+         ##################
+         ## LOAD EXAMPLE ##
+         ##################
+         tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
+                  h3('Work with example data'),
+                  selectInput('exampleData', label='Select example',
+                              choices=list("(use own data)" = "use_own",
+                                           "Human GWAS" = "HumanGWAS",
+                                           "Expansion from Two Refugia" = "TwoRefSim",
+                                           "Non-Parametric Inverse" = "NonParametricInverse",
+                                           "Non-Parametric Multimodal" = "NonParametricMultimodal"),
+                              selected="HumanGWAS")
+         ),
 
 
-      #########################
-      ## LOAD DATA FROM FILE ##
-      #########################
-      tabPanel(value = "user", title = HTML('<font size=4>Upload Data</font>'), icon = icon("upload"),
-              h3('Upload data from file'),
-              p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt).
-                Headers and delimiters can be specified below'),
+         #########################
+         ## LOAD DATA FROM FILE ##
+         #########################
+         tabPanel(value = "user",
+                  title = HTML('<font size=4>Upload Data</font>'),
+                  icon = icon("upload"),
 
-              #                     wellPanel(
-              #                       fluidRow(
-              #                         column(6,
-              #                                p(strong('Headers')),
-              #                                checkboxInput('headerOnCheckBox',
-              #                                              label='Use headers',
-              #                                              value=TRUE)
-              #                         ),
-              #                         column(6,
-              #                                p(strong('Delimiters')),
-              #                                radioButtons('delimiters',
-              #                                             label=NULL,
-              #                                             choices=list('comma-separated'=',',
-              #                                                          'tab-separated'='\t',
-              #                                                          'space-separated'=' '))
-              #                         )
-              #                       ), style='padding: 10px;'
-              #                     ),
+                  h3('Upload data from file'),
+                  p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt).
+                    Headers and delimiters can be specified below'),
 
-              fileInput('inputFile', label='Load data from file', accept=NULL),
-              # fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
-              # "application/x-r-data"
-              #, "RData","Rdata","Rda","RDA", "rdata", "rda"
-              hr(),
+                  fileInput('inputFile', label='Load data from file', accept=NULL),
+                  # fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
+                  # "application/x-r-data"
+                  #, "RData","Rdata","Rda","RDA", "rdata", "rda"
+                  hr(),
 
-              ## make CSV-related options a conditional panel, to appear only if file type is NOT Rdata:
-              conditionalPanel("output.userInputCSV == true",
-                               #input$inputFile$type %in% "application/x-r-data"
-                wellPanel(
-                  fluidRow(
-                    column(6,
-                           p(strong('Headers')),
-                           checkboxInput('headerOnCheckBox',
-                                         label='Use headers',
-                                         value=TRUE)
-                    ),
-                    column(6,
-                           p(strong('Delimiters')),
-                           radioButtons('delimiters',
-                                        label=NULL,
-                                        choices=list('comma-separated'=',',
-                                                     'tab-separated'='\t',
-                                                     'space-separated'=' '))
-                    )
-                  ), style='padding: 10px;'
-                )
-              )
-              )
+                  ## make CSV-related options a conditional panel, to appear only if file type is NOT Rdata:
+                  conditionalPanel("output.userInputCSV == true",
+                                   #input$inputFile$type %in% "application/x-r-data"
+                                   wellPanel(
+                                     fluidRow(
+                                       column(6,
+                                              p(strong('Headers')),
+                                              checkboxInput('headerOnCheckBox',
+                                                            label='Use headers',
+                                                            value=TRUE)
+                                       ),
+                                       column(6,
+                                              p(strong('Delimiters')),
+                                              radioButtons('delimiters',
+                                                           label=NULL,
+                                                           choices=list('comma-separated'=',',
+                                                                        'tab-separated'='\t',
+                                                                        'space-separated'=' '))
+                                       )
+                                     ), style='padding: 10px;'
+                                   )
+                  )
+                  )
 
   )
 })
@@ -185,7 +171,8 @@ outputOptions(output, "userInputCSV", suspendWhenHidden=FALSE)
 
 
 
-# reactive conductor for reading data from file, or using example data. Returns list(data,name,description,rows,cols)
+## reactive conductor for reading data from file, or using example data.
+## Returns list(data,name,description,rows,cols)
 rawData <- reactive({
 
   # output <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
@@ -201,7 +188,8 @@ rawData <- reactive({
       data(HumanGWAS, package="MINOTAUR", envir=environment())
       output <- list(data=HumanGWAS,
                      name='Example: Human GWAS',
-                     description='This data set contains an example of output returned from a human GWAS analysis.',
+                     description='This data set contains an example of
+                     output returned from a human GWAS analysis.',
                      rows=nrow(HumanGWAS),
                      cols=ncol(HumanGWAS))
     }
@@ -211,48 +199,50 @@ rawData <- reactive({
 
     # if using example data...
     if(input$tabSet_loadData == "eg"){
-    ## HumanGWAS ##
-    if (input$exampleData=='HumanGWAS') {
-      data(HumanGWAS, package="MINOTAUR", envir=environment())
-      output <- list(data=HumanGWAS,
-                     name='Example: Human GWAS',
-                     description='This data set contains an example of output returned from a human GWAS analysis.',
-                     rows=nrow(HumanGWAS),
-                     cols=ncol(HumanGWAS))
-    }
-    ## TwoRefSim ##
-    if (input$exampleData=='TwoRefSim') {
-      data(TwoRefSim, package="MINOTAUR", envir=environment())
-      output <- list(data=TwoRefSim,
-                     name='Example: Simulated Expansion from Two Refugia',
-                     description='This data set contains population genetic data simulating expansion from two refugia.',
-                     rows=nrow(TwoRefSim),
-                     cols=ncol(TwoRefSim))
-    }
-    ## NonParamEx1 ##
-    if (input$exampleData=='NonParamEx1') {
-      data(NonParamEx1, package="MINOTAUR", envir=environment())
-      output <- list(data=NonParamEx1,
-                     name='Example: Non-Parametric Data 1',
-                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
-
-                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
-
-                     rows=nrow(NonParamEx1),
-                     cols=ncol(NonParamEx1))
-    }
-    ## NonParamEx2 ##
-    if (input$exampleData=='NonParamEx2') {
-      data(NonParamEx2, package="MINOTAUR", envir=environment())
-      output <- list(data=NonParamEx2,
-                     name='Example: Non-Parametric Data 2',
-                     description='This is a simple two-variable data set that contains an example of non-parametric data.',
-
-                     ##  NOTE: Special use for this data set? Any additional advice needed here?????????????????????????????????????????????????
-
-                     rows=nrow(NonParamEx2),
-                     cols=ncol(NonParamEx2))
-    }
+      ## HumanGWAS ##
+      if (input$exampleData=='HumanGWAS') {
+        data(HumanGWAS, package="MINOTAUR", envir=environment())
+        HumanGWAS <- as.data.frame(HumanGWAS)
+        output <- list(data=HumanGWAS,
+                       name='Example: Human GWAS',
+                       description='This data set contains an example of
+                       output returned from a human GWAS analysis.',
+                       rows=nrow(HumanGWAS),
+                       cols=ncol(HumanGWAS))
+      }
+      ## TwoRefSim ##
+      if (input$exampleData=='TwoRefSim') {
+        data(TwoRefSim, package="MINOTAUR", envir=environment())
+        TwoRefSim <- as.data.frame(TwoRefSim)
+        output <- list(data=TwoRefSim,
+                       name='Example: Simulated Expansion from Two Refugia',
+                       description='This data set contains population genetic data
+                       simulating expansion from two refugia.',
+                       rows=nrow(TwoRefSim),
+                       cols=ncol(TwoRefSim))
+      }
+      ## NonParametricInverse ##
+      if (input$exampleData=='NonParametricInverse') {
+        data(NonParametricInverse, package="MINOTAUR", envir=environment())
+        NonParametricInverse <- as.data.frame(NonParametricInverse)
+        output <- list(data=NonParametricInverse,
+                       name='Example: Non-Parametric Inverse',
+                       description='This is a simple two-variable dataset
+                       with an inverse relationship between variables.',
+                       rows=nrow(NonParametricInverse),
+                       cols=ncol(NonParametricInverse))
+      }
+      ## NonParametricMultimodal ##
+      if (input$exampleData=='NonParametricMultimodal') {
+        data(NonParametricMultimodal, package="MINOTAUR", envir=environment())
+        NonParametricMultimodal <- as.data.frame(NonParametricMultimodal)
+        output <- list(data=NonParametricMultimodal,
+                       name='Example: Non-Parametric Multimodal',
+                       description='This is a simple two-variable dataset
+                       that is multimodal.',
+                       rows=nrow(NonParametricMultimodal),
+                       cols=ncol(NonParametricMultimodal))
+      }
     } # end eg input selected
 
 
@@ -317,11 +307,11 @@ rawData <- reactive({
                          rows=NULL,
                          cols=NULL)
         }
-        } # end check for inputFile
-      } # end user input selected
-    } # end check for tabSet loaded
+      } # end check for inputFile
+    } # end user input selected
+  } # end check for tabSet loaded
   return(output)
-})
+      })
 
 #######################
 ## Box: Data Summary ##
@@ -641,7 +631,7 @@ output$rawDataSummary <- DT::renderDataTable({
                            'Number NAs', 'Proportion NAs',
                            'Min', 'Median', 'Mean', 'Max'),
                 options=list(dom='ltpr')
-                )
+  )
 
 
 })

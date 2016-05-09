@@ -48,7 +48,7 @@ Generate x-y scatter plots with outliers overlayed.
 Easily control the aesthetics of plot scatter and outlier points.
 }
 \author{
-Caitlin Collins \email{caitiecollins@gmail.com}
+Caitlin Collins \email{caitlin.collins12@imperial.ac.uk}
 
 Kathleen Lotterhos \email{k.lotterhos@neu.edu}
 }

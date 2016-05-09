@@ -39,7 +39,7 @@ output$box_formatData <- renderUI({
                            multiple=FALSE)
         )
       )
-  )
+      )
 })
 
 ## Strip out pos and chrom columns from other variables.
@@ -50,9 +50,9 @@ stripPositionChromosome <- reactive({
 
   if(!is.null(rawData())){
     if(!is.null(rawData()$data)){
-      
+
       #### NOTE - PERFORM CHECKS THAT POS AND GROUP VARIABLES ARE SENSIBLE AT THIS STAGE. ERROR MESSAGE IF NOT.
-      
+
       # extract position variable
       posVar <- input$formatData_select_position
       if (is.null(posVar))
@@ -71,7 +71,7 @@ stripPositionChromosome <- reactive({
         chrom <- NULL
       } else {
         chrom <- rawData()$data[,chromVar]
-        #if (length(unique(chrom))>100) {
+        #if (length(unique(chrom))>100) { #### REPLACE WITH ERROR IN CONDITIONAL PANEL
         #  errorOn('too_many_chroms')
         #  chrom <- NULL
         #} else {
@@ -121,13 +121,13 @@ output$tabBox_plotGenomic <- renderUI({
         }
       }
   )
-})
+  })
 
 # barplot showing number of observations for each chromosome
 #output$formatData_plot_genomic_observations <- renderPlot({
 #  groupingVar <- stripPositionChromosome()$chrom
 #  uniques <- length(unique(groupingVar))
-#  
+#
 #  barplot(table(groupingVar),
 #          col=grey(0.2),
 #          xlab='Chromosome', ylab='#Observations',
@@ -165,7 +165,7 @@ output$box_subsetData <- renderUI({
                        radioButtons('formatData_radio_removeOrRetain',
                                     label=NULL,
                                     choices=list('remove chosen columns'='remove',
-                                                'retain chosen columns'='retain'))
+                                                 'retain chosen columns'='retain'))
       ),
       p(strong('Remove Missing Data')),
       checkboxGroupInput('formatData_check_removeMissing',
@@ -173,7 +173,7 @@ output$box_subsetData <- renderUI({
                          choices=list('Remove NA'='NA',
                                       'Remove NaN'='NaN',
                                       'Remove non-finite\n(Inf and -Inf)'='non-finite'))
-  )
+      )
 })
 
 ## Reactive conductor for producing final 'clean' data object after removing rows and columns.
@@ -191,8 +191,9 @@ output$box_subsetData <- renderUI({
 #      pos_userDefined, <- whether pos is user-defined or default
 #      chrom_userDefined) <- whether chrom is user-defined or default
 cleanData <- reactive({
-  
-  # define null output to return if some sort of error. Ensures that output format is maintained even in event of an error.
+
+  ## define null output to return if some sort of error.
+  ## Ensures that output format is maintained even in event of an error.
   nullOutput <- list(posVar=NULL,
                      chromVar=NULL,
                      otherVar=NULL,
@@ -208,107 +209,107 @@ cleanData <- reactive({
 
   # initialise output as null, then fill in elements one at a time
   output <- nullOutput
-  
+
   # read in data from previous step
   data <- stripPositionChromosome()
 
   if(!is.null(data)) {
 
-  # subset columns
-  chooseVars <- data$otherVar
-  if(!is.null(input$formatData_check_takeAllForward)){
-    if (!input$formatData_check_takeAllForward) {
-      if (input$formatData_radio_removeOrRetain=='remove') {
-        chooseVars <- setdiff(data$otherVar,
-                              input$formatData_selectize_variables)
-      } else {
-        chooseVars <- input$formatData_selectize_variables
+    # subset columns
+    chooseVars <- data$otherVar
+    if(!is.null(input$formatData_check_takeAllForward)){
+      if (!input$formatData_check_takeAllForward) {
+        if (input$formatData_radio_removeOrRetain=='remove') {
+          chooseVars <- setdiff(data$otherVar,
+                                input$formatData_selectize_variables)
+        } else {
+          chooseVars <- input$formatData_selectize_variables
+        }
       }
     }
-  }
-  output$y <- data$y[,chooseVars,drop=FALSE]
-  if (ncol(output$y)==0) # if all columns removed
-    return(nullOutput)
-  output$posVar <- data$posVar
-  output$chromVar <- data$chromVar
-  output$otherVar <- chooseVars
+    output$y <- data$y[,chooseVars,drop=FALSE]
+    if (ncol(output$y)==0) # if all columns removed
+      return(nullOutput)
+    output$posVar <- data$posVar
+    output$chromVar <- data$chromVar
+    output$otherVar <- chooseVars
 
-  ## Use chromosome variable if present,
-  ## otherwise temporarily set to 1 everywhere
-  if (is.null(data$chrom)) {
-    output$chrom_userDefined <- FALSE
-    output$chrom <- rep(1,nrow(output$y))
-  } else {
-    output$chrom_userDefined <- TRUE
-    output$chrom <- data$chrom
-  }
-
-  ## Use position variable if present,
-  ## otherwise temporarily set to 1 everywhere
-  if (is.null(data$pos)) {
-    output$pos_userDefined <- FALSE
-    output$pos <- rep(1,nrow(output$y))
-  } else {
-    output$pos_userDefined <- TRUE
-    output$pos <- data$pos
-  }
-
-  # subset rows
-  if (!is.null(input$formatData_check_removeMissing)) {
-    df <- cbind(output$pos, output$chrom, output$y)
-    keepVec <- rep(1,nrow(output$y))
-
-    # remove NA
-    if ('NA'%in%input$formatData_check_removeMissing)
-      keepVec <- keepVec * (rowSums(mapply(is.na,df))==0)
-
-    # remove NaN
-    if ('NaN'%in%input$removeMissing)
-      keepVec <- keepVec * (rowSums(mapply(function(x){x=='NaN'},df),
-                                    na.rm=TRUE)==0)
-
-    # remove non-finite (Inf and -Inf)
-    if ('non-finite'%in%input$removeMissing)
-      keepVec <- keepVec * (rowSums(mapply(function(x){x%in%c('Inf','-Inf')},df),
-                                    na.rm=TRUE)==0)
-    
-    # apply all conditions
-    output$pos <- output$pos[which(keepVec==1)]
-    output$chrom <- output$chrom[which(keepVec==1)]
-    output$y <- output$y[which(keepVec==1),,drop=FALSE]
-    if (!any(keepVec==1))  # if all rows removed
-      output <- nullOutput
-  }
-
-  # finalise chromosome variable
-  if (output$chrom_userDefined) {
-    output$chromLevels <- unique(as.character(output$chrom))
-    output$chromIndex <- match(output$chrom, output$chromLevels)
-  } else {
-    output$chromLevels <- NULL
-    output$chromIndex <- rep(1,nrow(output$y))
-  }
-
-  # finalise position variable - if not user defined increase linearly over chromosomes
-  if (output$pos_userDefined==FALSE) {
-    if (output$chrom_userDefined) {
-      chromCounts <- data.frame(table(output$chrom))
-      chromCounts <- chromCounts[match(chromCounts[,1], output$chromLevels),2]
+    ## Use chromosome variable if present,
+    ## otherwise temporarily set to 1 everywhere
+    if (is.null(data$chrom)) {
+      output$chrom_userDefined <- FALSE
+      output$chrom <- rep(1,nrow(output$y))
     } else {
-      chromCounts <- nrow(output$y)
+      output$chrom_userDefined <- TRUE
+      output$chrom <- data$chrom
     }
-    output$pos <- sequence(chromCounts)
+
+    ## Use position variable if present,
+    ## otherwise temporarily set to 1 everywhere
+    if (is.null(data$pos)) {
+      output$pos_userDefined <- FALSE
+      output$pos <- rep(1,nrow(output$y))
+    } else {
+      output$pos_userDefined <- TRUE
+      output$pos <- data$pos
+    }
+
+    # subset rows
+    if (!is.null(input$formatData_check_removeMissing)) {
+      df <- cbind(output$pos, output$chrom, output$y)
+      keepVec <- rep(1,nrow(output$y))
+
+      # remove NA
+      if ('NA'%in%input$formatData_check_removeMissing)
+        keepVec <- keepVec * (rowSums(mapply(is.na,df))==0)
+
+      # remove NaN
+      if ('NaN'%in%input$removeMissing)
+        keepVec <- keepVec * (rowSums(mapply(function(x){x=='NaN'},df),
+                                      na.rm=TRUE)==0)
+
+      # remove non-finite (Inf and -Inf)
+      if ('non-finite'%in%input$removeMissing)
+        keepVec <- keepVec * (rowSums(mapply(function(x){x%in%c('Inf','-Inf')},df),
+                                      na.rm=TRUE)==0)
+
+      # apply all conditions
+      output$pos <- output$pos[which(keepVec==1)]
+      output$chrom <- output$chrom[which(keepVec==1)]
+      output$y <- output$y[which(keepVec==1),,drop=FALSE]
+      if (!any(keepVec==1))  # if all rows removed
+        output <- nullOutput
+    }
+
+    # finalise chromosome variable
+    if (output$chrom_userDefined) {
+      output$chromLevels <- unique(as.character(output$chrom))
+      output$chromIndex <- match(output$chrom, output$chromLevels)
+    } else {
+      output$chromLevels <- NULL
+      output$chromIndex <- rep(1,nrow(output$y))
+    }
+
+    # finalise position variable - if not user defined increase linearly over chromosomes
+    if (output$pos_userDefined==FALSE) {
+      if (output$chrom_userDefined) {
+        chromCounts <- data.frame(table(output$chrom))
+        chromCounts <- chromCounts[match(chromCounts[,1], output$chromLevels),2]
+      } else {
+        chromCounts <- nrow(output$y)
+      }
+      output$pos <- sequence(chromCounts)
+    }
+
+    # calculate position modifier
+    pos_list <- split(output$pos, output$chrom)
+    pos_maxPerChromosome <- as.numeric(unlist(lapply(pos_list,FUN=function(x){max(x,na.rm=TRUE)})))
+    pos_maxIncreasing <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome
+    output$chromMidpoint <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome/2
+    output$pos_modifier <- pos_maxIncreasing[output$chromIndex]
+
   }
 
-  # calculate position modifier
-  pos_list <- split(output$pos, output$chrom)
-  pos_maxPerChromosome <- as.numeric(unlist(lapply(pos_list,FUN=function(x){max(x,na.rm=TRUE)})))
-  pos_maxIncreasing <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome
-  output$chromMidpoint <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome/2
-  output$pos_modifier <- pos_maxIncreasing[output$chromIndex]
-  
-  }
-  
   # print("str output"); print(str(output))
   return(output)
 
@@ -355,6 +356,7 @@ output$table_finalData <- renderDataTable({
   df <- data.frame(Position_variable=cleanData()$pos,
                    Grouping_variable=cleanData()$chrom)
   df <- cbind(df,cleanData()$y)
+  # df <- data.frame(x=1:5,y=1:5)
   return(df)
 },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
 )
