@@ -73,7 +73,7 @@ output$description <- renderUI({
     HTML(
       "<h4><strong><i>Welcome to the labyrinth!</i></strong></h4>"
     ),
-    p("MINOTAUR is an R package for the detection and visualisation of outliers in multivariate space."),
+    p("MINOTAUR is an R package for the detection and visualization of outliers in multivariate space."),
 
     p("The package contains a number of stand-alone functions for outlier detection that can be run in R.
       Naturally, however, the infamous MINOTAUR is most at home within the labyrinth.
@@ -86,13 +86,12 @@ output$description <- renderUI({
     hr(),
     p(strong("Navigation:")),
     #br(),
-    p("To find your way through the labyrinth, use the drop-down menus at the top of the page for navigation."),
+    p("To find your way through the labyrinth, use the tabbed menus on the left side of the page for navigation."),
     p("Begin by clicking on the", strong("Data"), "tab to
       select an example dataset or input your own data on the", em("Input Data"), "page.
-      You can then subset your data on the ", em("Clean-up Data"), "page, if desired,
-      but please note that you should ", em("not"), "attempt to remove outliers at this stage."),
-    p("Outlier detection will be performed alongside visualisation within the ", strong("Produce Plots"),
-      "tab which currently implements ", em("Scatter, Manhattan, "), "and ", em("Circle Plots.")),
+      You can then subset your data on the ", em("Format Data"), "page, if desired."),
+    p("MINOTAUR implements four multivariate measures - Mahalanobis, harmonic mean distance, nearest neighbord distance, and kernel density deviance - on the ", strong("Outlier Detection"), "page. Users may wish to skip this page if they have already generated multivariate measures using the standalone MINOTAUR functions or functions available from other packages in R. Outlier detection is performed alongside visualization within the ", strong("Produce Plots"),
+      "tab which currently implements ", em("Histogram, Scatter, Manhattan "), "and ", em("Circle"), "plots."),
 
     br(),
     hr(),
@@ -122,16 +121,16 @@ output$description <- renderUI({
                function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
                names(URL_Bug),href=URL_Bug),
                tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
-      ),
-      column(1,
-             HTML("<h4 style='padding: 0px 0px;'>
-                  &#9899;</h4>")),
-      column(2,
-             Reduce(tagAppendChild,Map(
-               function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
-               names(URL_Contact),href=URL_Contact),
-               tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
       )
+ #     column(1,
+ #            HTML("<h4 style='padding: 0px 0px;'>
+ #                 &#9899;</h4>")),
+ #     column(2,
+ #            Reduce(tagAppendChild,Map(
+ #              function(...)tags$li(tags$a(...,target="_blank"),tabindex="-1"),
+ #              names(URL_Contact),href=URL_Contact),
+ #              tags$ul(class="nav nav-list",role="menu",`aria-labelledby`="dropdownMenu"))
+ #     )
              ) # close fluidRow
       ) # close wellPanel
 })
