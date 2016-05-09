@@ -28,7 +28,7 @@ output$headerBox_produce_compound <- renderUI({
 # box containing controls for distance-based measure plots
 output$tabBox_produce_compound <- renderUI({
   tabBox(title=NULL, width=12,
-         
+
          tabPanel('Summary','',
                   h3('Summary of current measures'),
                   p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point in multivariate space.'),
@@ -48,7 +48,7 @@ output$tabBox_produce_compound <- renderUI({
                            )
                   )
          ),
-         
+
          tabPanel('Distance-Based','',
                   h3('Distance-based methods'),
                   p('These methods are all based on the distance between points in multivariate space. See help for further details of the individual methods.'),
@@ -89,7 +89,7 @@ output$tabBox_produce_compound <- renderUI({
                                    div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
                                    )
          ),
-         
+
          tabPanel('Density-Based','',
                   h3('Density-based methods'),
                   p('Kernel density based methods provide a flexible way of describing complex distributions. Points in areas of low density can then be identified as outliers.'),
@@ -161,12 +161,12 @@ output$tabBox_produce_compound <- renderUI({
                   conditionalPanel(condition='output.outliers_density_error1 == "error"',
                                    div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
                   )
-         ),
-         tabPanel('Use Existing','',
-                  h3('Use existing variables'),
-                  p('Use variables in the data directly as distance measures.'),
-                  actionButton('button3',label='Here is a button')
          )
+#          tabPanel('Use Existing','',
+#                   h3('Use existing variables'),
+#                   p('Use variables in the data directly as distance measures.'),
+#                   actionButton('button3',label='Here is a button')
+#          )
   )
 })
 
@@ -388,22 +388,22 @@ output$histogram_compound <- renderPlot({
 ######################################
 
 #
-output$box_choose_threshold <- renderUI({
-  box(title="Choose Threshold", status="primary", solidHeader=TRUE, collapsible=FALSE, width=12,
-      h2('Choose Threshold'),
-      p('Define a threshold (ie. a quantile) past which points are considered outliers.'),
-      p('Plot this threshold on the density plot above, and use it to define the observations that make it into the table to the right.')
-  )
-})
-
-######################################
-## Box: Density of Compound Measure ##
-######################################
-
+# output$box_choose_threshold <- renderUI({
+#   box(title="Choose Threshold", status="primary", solidHeader=TRUE, collapsible=FALSE, width=12,
+#       h2('Choose Threshold'),
+#       p('Define a threshold (ie. a quantile) past which points are considered outliers.'),
+#       p('Plot this threshold on the density plot above, and use it to define the observations that make it into the table to the right.')
+#   )
+# })
 #
-output$box_list_outliers <- renderUI({
-  box(title="Outliers", status="warning", solidHeader=TRUE, collapsible=FALSE, width=12,
-      h3('(table listing outliers)'),
-      h3('NOTE - perhaps this second set of boxes would be better on a seperate page?')
-  )
-})
+# ######################################
+# ## Box: Density of Compound Measure ##
+# ######################################
+#
+# #
+# output$box_list_outliers <- renderUI({
+#   box(title="Outliers", status="warning", solidHeader=TRUE, collapsible=FALSE, width=12,
+#       h3('(table listing outliers)'),
+#       h3('NOTE - perhaps this second set of boxes would be better on a seperate page?')
+#   )
+# })

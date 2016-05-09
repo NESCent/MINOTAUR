@@ -9,8 +9,7 @@ URL_list <- list("MINOTAUR" = "https://github.com/NESCent/MINOTAUR",
                  k.lotterhos@neu.edu,
                  dcard@uta.edu,
                  schaal.s@husky.neu.edu,
-                 wallacewly@gmail.com,
-                 grunwaln@science.oregonstate.edu")
+                 wallacewly@gmail.com")
 
 URL_MINOTAUR <- list('MINOTAUR' = "https://github.com/NESCent/MINOTAUR")
 URL_NESCent <- list("NESCent" = "http://nescent.org/")
@@ -21,8 +20,7 @@ URL_Contact <- list("Contact Us" =
                     k.lotterhos@neu.edu,
                     dcard@uta.edu,
                     schaal.s@husky.neu.edu,
-                    wallacewly@gmail.com,
-                    grunwaln@science.oregonstate.edu")
+                    wallacewly@gmail.com")
 
 # ---------------------------------------------------------------------------------------------------------------
 
