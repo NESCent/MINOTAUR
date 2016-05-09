@@ -10,9 +10,9 @@ vignette: >
 ---
 
 ## Introduction
-MINOTAUR is a R package for identifying and visualizing multivariate outliers in general, but is tailored towards researchers seeking to identify genetic loci that are under natural selection or that are putative underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including population genetic statistics, genotype by environment statistics, and genome-wide association statistics. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background.
+MINOTAUR is a R package for identifying and visualizing multivariate outliers in general, but is tailored towards researchers seeking to identify genetic loci that are under natural selection or putative loci underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including statistics for population genetic analyses, genetic-environment associations, and genome-wide associations. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background. 
 
-Studies are increasingly generating several statistics across one or more broad inferential classes, and a common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values for several statistics. The largely ad hoc nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R Shiny interface, proving an intuitve, interactive GUI environment to explore univariate and multivariate data.
+Studies are generating an increasing number of statistics across one or more broad inferential classes, and a common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values found under several statistics. The largely ad hoc nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R Shiny interface, proving an intuitve, interactive graphical user interface (GUI) environment to explore univariate and multivariate data.
 
 ## Getting Started
 MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=XXX) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
@@ -33,17 +33,17 @@ The MINOTAUR package is broken into two parts:
 
 1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions that infer outliers in multidimensional space.
 
-2. An R Shiny GUI that can be used to visualize the distributions of individual statictistics separately and together, and to help produce publiation-quality figures.
+2. An R Shiny GUI that can be used to visualize the distributions of individual statistics separately and together, and to help produce publication-quality figures.
 
 An expanded example with code is included below, but a basic workflow leveraging MINOTAUR is as follows:
 
-1. Data is loaded into the MINOTAUR GUI from an external data format (i.e., tab-delimited or comma-delimited files) or as Rdata.
+1. Loading Data: Data is loaded into the MINOTAUR GUI from an external data format (i.e., tab-delimited or comma-delimited files) or as Rdata. Users can upload their own data or explore the GUI using one of the three sample datasets provided in the MINOTAUR package (i.e. Human GWAS, Non-Parametric Data, and Expansion from Two Refugia)
 
-2. Users can format data by indicating the positional and grouping (e.g., chromosome) variables, by removing unimportant variables (e.g., metadata), and by removing missing data.
+2. Formatting Data: Users can format data by indicating the positional and grouping (e.g., chromosome) variables, by removing unimportant variables (e.g., metadata), and by removing missing data.
 
-3. Multivariate outliers can be inferred both within the MINOTAUR GUI and using stand-alone R functions provided as part of the MINOTAUR package or from other, existing packages.
+3. Outlier Calculation: Multivariate outliers can be inferred both within the MINOTAUR GUI and using stand-alone R functions provided as part of the MINOTAUR package or from other, existing packages.
 
-4. The filtered dataset with only multivariate outliers can be visualized using the MINOTAUR GUI, which enables further investigation and the production of publication-quality figures.
+4. Plotting: The plotting functions in the MINOTAUR GUI enables the user to further investigate their data and produce publication-quality figures. Plots can be produced on either the entire data set before outlier calcuation, a subset of the original dataframe, and/or once the dataset has been filtered to only multivariate outliers. 
 
 ## Multivariate Statistics Available in MINOTAUR
 The MINOTAUR package includes four functions for inferring multivariate distances and densities:
@@ -100,7 +100,7 @@ hist(Md, bins=100, xlab="Mahalanobis distance", main="Histogram of Mahalanobis d
 hist(Hd, bins=100, xlab="Harmonic mean distance", main="Histogram of Harmonic mean distance")
 hist(Nd, bins=100, xlab="Nearest neighbor distance", main="Histogram of Nearest neighbor distance")
 hist(Kd, bins=100, xlab="Kernel density", main="Histogram of Kernel density")
-# users can identifier outliers using these distributions
+# users can identify outliers using these distributions
 ```
 
 ### Calculating and Visualizing Multivariate Distributions using the MINOTAUR GUI
@@ -164,9 +164,9 @@ Between each, the user will notice that the summary table reporting multivariate
 
 ##### Visualizing Multivariate Distributions & Outliers
 
-Finally, now that multivariate measures have been calculated, the user can proceed to generating plots and visually exploring the data. The submenus beneath **Produce Plots** include the plot type available in MINOTAUR. To demonstrate the general options available to the user when plotting, we will create a Manhattan plot of our multivariate measures using the *Linear Manhattan Plot* submenu.
+Finally, now that multivariate measures have been calculated, the user can proceed to generating plots and visually exploring the data (NOTE: the user can also visualize their data BEFORE outlier calculation. It is not necessary to calculate outliers first.). The submenus beneath **Produce Plots** include the plot type available in MINOTAUR. To demonstrate the general options available to the user when plotting, we will create a Manhattan plot of our multivariate measures using the *Linear Manhattan Plot* submenu.
 
-Each plotting submenu contains two options menus and the resulting plot. The 'Select Variables' menu is used to manipulate what data are being plotted on each axis, plus intuitive, general attributes about the axes themselves. Under 'Select y-axis' we will select the output of our Nearest Neighbord Distance calculation (called 'Nd') to display a Manhattan plot of this distance across all loci in the dataset.
+Each plotting submenu contains two options menus and the resulting plot. The 'Select Variables' menu is used to manipulate what data are being plotted on each axis, plus intuitive, general attributes about the axes themselves. Under 'Select y-axis' we will select the output of our Nearest Neighbor Distance calculation (called 'Nd') to display a Manhattan plot of this distance across all loci in the dataset.
 
 ![Axes Variable Options](11_AxisOptions.jpg)
 
@@ -174,7 +174,7 @@ The 'Select outlier variable' gives us the ability to color points based on thei
 
 ![Outlier Highlighting Options](12_OutlierOptions.jpg)
 
-The 'Adjust Plot Aesthetics' menu provides numerous, intutive aesthetic options for the resulting plot. Here is a menu configuration that provides an intuitive Manhattan plot with outliers obviously indicated.
+The 'Adjust Plot Aesthetics' menu provides numerous, intutive aesthetic options for the resulting plot. Here is a menu configuration that provides an intuitive Manhattan plot with outliers indicated by red dots.
 
 ![Plot Aesthetics Menu](13_AesthOptions.jpg)
 
