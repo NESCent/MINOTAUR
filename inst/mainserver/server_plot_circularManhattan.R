@@ -228,7 +228,7 @@ observe({
     k <- k[1]+1
     ## if input button updates, set new panel of initial input values
 
-    dat <- cleanData()
+    dat <- data_outliers()
 
     ## if K updates:
     if(!is.null(dat)){
@@ -280,7 +280,7 @@ output$box_circularManhattan <- renderUI({
         title.k <- paste("Circular Manhattan Plot #", i, sep = " ")
 
         ## get data
-        dat <- cleanData()
+        dat <- data_outliers()
 
         ## get box of boxes
         if(!is.null(dat)){
@@ -782,11 +782,11 @@ output$box_circularManhattan_button <- renderUI({
 
 
   ## Get data and plot output
-  if(!is.null(cleanData())){
+  if(!is.null(data_outliers())){
     if(!is.null(xSelection) & !is.null(ySelection)){
 
       ## Get data
-      dat <- cleanData()
+      dat <- data_outliers()
 
       if(logx=="none"){logx=NULL}else{
         if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
@@ -1461,7 +1461,7 @@ output$box_circularManhattan_button <- renderUI({
 #
 #
 #   # print(str(Chr))
-#   dat <- cleanData()
+#   dat <- data_outliers()
 #   mynewtoy <- split(dat, "chrom")# "Chr")# # split(mydata, mydata[,Chr])
 #   chrs.max <- lapply(sapply(mynewtoy,'[',"pos"),max) # lapply(sapply(mynewtoy,'[',BP),max)
 #   x.total <- cumsum(as.numeric(unlist(chrs.max)))
@@ -1532,7 +1532,7 @@ output$box_circularManhattan_button <- renderUI({
 #                selectInput('restrict_chrom',
 #                            label='Restrict chromosome',
 #                            choices=as.list(c('(all)',
-#                                              cleanData()$chromLevels)),
+#                                              data_outliers()$chromLevels)),
 #                            selected=navigationPolygons()$chromChosen, width=200)
 #         )
 #       ),
@@ -1556,9 +1556,9 @@ output$box_circularManhattan_button <- renderUI({
 # # function evaluates when apply_navigate_button is pressed
 # apply_navigate <- eventReactive(input$apply_navigate_button,{})
 #
-# # subset cleanData() ready for Manhattan plot based on selectize_circularManhattan_variables
+# # subset data_outliers() ready for Manhattan plot based on selectize_circularManhattan_variables
 # ManhattanData <- reactive({
-#   data <- cleanData()
+#   data <- data_outliers()
 #   if (is.null(input$selectize_circularManhattan_variables)) {
 #     output <- list(pos=data$pos,
 #                    pos_modifier=data$pos_modifier,

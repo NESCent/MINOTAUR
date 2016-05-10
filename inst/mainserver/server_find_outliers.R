@@ -642,27 +642,21 @@ output$histogram_compound <- renderPlot({
 })
 
 
-######################################
-## Box: Density of Compound Measure ##
-######################################
+################################################
+## Output Data and Compound Distance Measures ##
+################################################
 
-#
-# output$box_choose_threshold <- renderUI({
-#   box(title="Choose Threshold", status="primary", solidHeader=TRUE, collapsible=FALSE, width=12,
-#       h2('Choose Threshold'),
-#       p('Define a threshold (ie. a quantile) past which points are considered outliers.'),
-#       p('Plot this threshold on the density plot above, and use it to define the observations that make it into the table to the right.')
-#   )
-# })
-#
-# ######################################
-# ## Box: Density of Compound Measure ##
-# ######################################
-#
-# #
-# output$box_list_outliers <- renderUI({
-#   box(title="Outliers", status="warning", solidHeader=TRUE, collapsible=FALSE, width=12,
-#       h3('(table listing outliers)'),
-#       h3('NOTE - perhaps this second set of boxes would be better on a seperate page?')
-#   )
-# })
+data_outliers <- reactive({
+  
+  data <- cleanData()
+  df_values <- rv_outliers$df_values
+  if (!is.null(df_values)) {
+    df_values <- as.data.frame(df_values)
+    names(df_values) <- rv_outliers$df_summary$name
+    data$y <- cbind(data$y, df_values)
+  }
+  
+  return(data)
+})
+
+

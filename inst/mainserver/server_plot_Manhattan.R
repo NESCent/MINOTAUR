@@ -172,7 +172,7 @@ observe({
     k <- k[1]+1
     ## if input button updates, set new panel of initial input values
 
-    dat <- cleanData()
+    dat <- data_outliers()
 
     ## if K updates:
     if(!is.null(dat)){
@@ -224,7 +224,7 @@ output$box_linearManhattan <- renderUI({
         title.k <- paste("Linear Manhattan Plot #", i, sep = " ")
 
         ## get data
-        dat <- cleanData()
+        dat <- data_outliers()
 
         ## get box of boxes
         if(!is.null(dat)){
@@ -709,11 +709,11 @@ output$box_linearManhattan_button <- renderUI({
 
 
   ## Get data and plot output
-  if(!is.null(cleanData())){
+  if(!is.null(data_outliers())){
     if(!is.null(ySelection)){
 
       ## Get data
-      dat <- cleanData()
+      dat <- data_outliers()
 
       xSelection <- dat$pos
 
@@ -926,7 +926,7 @@ output$box_linearManhattan_button <- renderUI({
   y.axis.max <- ylim_up
 
 
-  dat <- cleanData()
+  dat <- data_outliers()
   mynewtoy <- split(dat, "chrom") # split(mydata, mydata[,Chr])
   chrs.max <- lapply(sapply(mynewtoy,'[',"pos"),max) # lapply(sapply(mynewtoy,'[',BP),max)
   x.total <- cumsum(as.numeric(unlist(chrs.max)))
@@ -979,7 +979,7 @@ output$box_linearManhattan_button <- renderUI({
 #                selectInput('restrict_chrom',
 #                            label='Restrict chromosome',
 #                            choices=as.list(c('(all)',
-#                                              cleanData()$chromLevels)),
+#                                              data_outliers()$chromLevels)),
 #                            selected=navigationPolygons()$chromChosen, width=200)
 #         )
 #       ),
@@ -1003,9 +1003,9 @@ output$box_linearManhattan_button <- renderUI({
 # # function evaluates when apply_navigate_button is pressed
 # apply_navigate <- eventReactive(input$apply_navigate_button,{})
 #
-# # subset cleanData() ready for Manhattan plot based on selectize_linearManhattan_variables
+# # subset data_outliers() ready for Manhattan plot based on selectize_linearManhattan_variables
 # ManhattanData <- reactive({
-#   data <- cleanData()
+#   data <- data_outliers()
 #   if (is.null(input$selectize_linearManhattan_variables)) {
 #     output <- list(pos=data$pos,
 #                    pos_modifier=data$pos_modifier,

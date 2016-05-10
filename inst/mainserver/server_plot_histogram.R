@@ -102,7 +102,7 @@ observe({
     k <- k[1]+1
     ## if input button updates, set new panel of initial input values
 
-    dat <- cleanData()
+    dat <- data_outliers()
 
     ## if K updates:
     if(!is.null(dat)){
@@ -153,7 +153,7 @@ output$box_hist_1D <- renderUI({
         title.k <- paste("Histogram #", i, sep = " ")
 
         ## get data
-        dat <- cleanData()
+        dat <- data_outliers()
 
         ## get box of boxes
         if(!is.null(dat)){
@@ -394,11 +394,11 @@ output$box_hist_1D_button <- renderUI({
   xSelection <- eval(parse(text=paste("input$hist_1D_var", k, sep="_")))
 
   ## Get data and plot output
-  if(!is.null(cleanData())){
+  if(!is.null(data_outliers())){
     if(!is.null(xSelection)){
 
       ## Get data
-      dat <- cleanData()
+      dat <- data_outliers()
 
       ## Get x-variable data
       if(!is.null(xSelection)){
