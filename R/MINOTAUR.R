@@ -10,7 +10,7 @@
 
 # install.packages("devtools", dependencies=TRUE)
 # library(devtools)
-# install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+# install_github("Bioconductor-mirror/OmicCircos", ref="5d2b5b2") # ref="5d2b5b2" # OLD: # ref="b772950"
 # install_github("rstudio/DT", ref="24d71f2")
 # install_github("NESCent/MINOTAUR")
 # library(MINOTAUR)
@@ -19,6 +19,14 @@
 # ERROR: dependencies 'DT', 'OmicCircos', 'shinydashboard', 'shinyjs' are not available for package 'MINOTAUR'
 
 #library(devtools); devtools::check()
+
+
+
+#####
+
+## vignette?
+# vignette("MINOTAUR")
+# devtools::install(build_vignettes = TRUE)
 
 ########################################################################
 
@@ -186,7 +194,7 @@ MINOTAUR <- function(){
                            ", quietly=TRUE)")))) return(TRUE)
 
   .dynamic_require("devtools")
-  install_github("Bioconductor-mirror/OmicCircos", ref="b772950")
+  install_github("Bioconductor-mirror/OmicCircos", ref="5d2b5b2")
   return(eval(parse(text=paste("require(",
                                package,
                                ", quietly=TRUE)"))))

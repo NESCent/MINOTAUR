@@ -1,11 +1,16 @@
+
+<!-- devtools::install(build_vignettes = TRUE) -->
+
+## MINOTAUR Workflow Vignette
+<!-- NOTE TO DAREN: IT SEEMS LIKE THE TITLE, AUTHOR, ETC. CONTENT BELOW IS NOT RENDERING PROPERLY.... --> 
 ---
-  title: "MINOTAUR Workflow Vignette"
+title: "MINOTAUR Workflow Vignette"
 author: "Daren C. Card"
 date: "May 4, 2016"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MINOTAUR Workflow Vignette}
-  %\VignetteEngine{rmarkdown::render} %knitr::rmarkdown
+  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
 
