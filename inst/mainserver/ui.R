@@ -138,7 +138,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                   ),
                                   column(5,
                                          # density plot of compound measure
-                                         uiOutput('box_density_compound')
+                                         uiOutput('box_histogram_compound')
                                   )
                                 ),
                                 fluidRow(
