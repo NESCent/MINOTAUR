@@ -43,8 +43,8 @@ ui <- dashboardPage(title= "MINOTAUR",
 
                         # Outlier Detection menu
                         menuItem("Outlier Detection", tabName="outlier", icon=icon("search"),
-                                 menuSubItem("Find Outliers", tabName="outlier_find"),
-                                 menuSubItem("Compare Outliers", tabName="outlier_compare")
+                                 menuSubItem("Find Outliers", tabName="outlier_find")
+                                 # menuSubItem("Compare Outliers", tabName="outlier_compare")
                         ),
 
                         # Produce Plots menu
@@ -53,10 +53,10 @@ ui <- dashboardPage(title= "MINOTAUR",
                                  menuSubItem("2D Scatterplot", tabName="plots_2D_scatterplot"),
                                  menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
                                  menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
-                        ),
+                        )
 
                         # Help menu
-                        menuItem("Help", tabName="help", icon=icon("question"))
+#                         menuItem("Help", tabName="help", icon=icon("question"))
 
                       ) # end of sidebarMenu
                     ), # end of dashboardSidebar

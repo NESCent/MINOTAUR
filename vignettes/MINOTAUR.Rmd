@@ -23,7 +23,7 @@ Studies are generating an increasing number of statistics across one or more bro
 ## Getting Started
 MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=XXX) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
   
-  ```{r eval=FALSE}
+```{r eval=FALSE}
 install.packages('MINOTAUR')
 #' to install the development version, run:
 #' require(devtools)
@@ -37,7 +37,7 @@ Robert Verity\*, Caitlin Collins\*, Daren C. Card, Sara M. Schaal, Liuyang Wang,
 ## Workflow Overview
 The MINOTAUR package is broken into two parts:
   
-  1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions that infer outliers in multidimensional space.
+1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions that infer outliers in multidimensional space.
 
 2. An R Shiny GUI that can be used to visualize the distributions of individual statistics separately and together, and to help produce publication-quality figures.
 
@@ -54,7 +54,7 @@ An expanded example with code is included below, but a basic workflow leveraging
 ## Multivariate Statistics Available in MINOTAUR
 The MINOTAUR package includes four functions for inferring multivariate distances and densities:
   
-  1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution.
+1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution.
 
 2. `harmonicDist()`: The harmonic mean distance of an observation refers to the harmonic mean of the distance from this observation to all other observations.
 
