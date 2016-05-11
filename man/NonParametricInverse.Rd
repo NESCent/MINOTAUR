@@ -3,17 +3,17 @@
 \docType{data}
 \name{NonParametricInverse}
 \alias{NonParametricInverse}
-\title{Example Dataset: Non-Parametric Inverse}
+\title{Example Dataset: Nonparametric Inverse}
 \format{A data frame with 1,002 observations in the rows
  and 2 variables in the columns.}
 \source{
-Simulated non-parametric dataset.
+Simulated nonparametric dataset.
 }
 \usage{
 NonParametricInverse
 }
 \description{
-This is a simple non-parametric two-variable dataset
+This is a simple Nonparametric two-variable dataset
 with an inverse relationship between variables.
 }
 \author{

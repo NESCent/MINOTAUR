@@ -3,17 +3,17 @@
 \docType{data}
 \name{NonParametricMultimodal}
 \alias{NonParametricMultimodal}
-\title{Example Dataset: Non-Parametric Multimodal}
+\title{Example Dataset: Nonparametric Multimodal}
 \format{A data frame with 1,000 observations in the rows
  and 2 variables in the columns.}
 \source{
-Simulated non-parametric dataset; unpublished.
+Simulated nonparametric dataset; unpublished.
 }
 \usage{
 NonParametricMultimodal
 }
 \description{
-This is a simple non-parametric two-variable dataset
+This is a simple nonparametric two-variable dataset
 that is multimodal.
 }
 \author{

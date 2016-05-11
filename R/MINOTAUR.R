@@ -12,7 +12,7 @@
 # library(devtools)
 # install_github("Bioconductor-mirror/OmicCircos", ref="5d2b5b2") # ref="5d2b5b2" # OLD: # ref="b772950"
 # install_github("rstudio/DT", ref="24d71f2")
-# install_github("NESCent/MINOTAUR")
+# install_github("NESCent/MINOTAUR", build_vignettes=TRUE)
 # library(MINOTAUR)
 # MINOTAUR()
 

@@ -93,9 +93,9 @@
 ## DOCUMENTATION ##
 ###################
 
-#' Example Dataset: Non-Parametric Inverse
+#' Example Dataset: Nonparametric Inverse
 #'
-#' This is a simple non-parametric two-variable dataset
+#' This is a simple Nonparametric two-variable dataset
 #' with an inverse relationship between variables.
 #'
 #'
@@ -106,7 +106,7 @@
 #' @author Robert Verity \email{r.verity@@imperial.ac.uk}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
 #'
-#' @source Simulated non-parametric dataset.
+#' @source Simulated nonparametric dataset.
 #'
 #' @references Robert Verity*, Caitlin Collins*,
 #' Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos.
@@ -134,9 +134,9 @@
 ## DOCUMENTATION ##
 ###################
 
-#' Example Dataset: Non-Parametric Multimodal
+#' Example Dataset: Nonparametric Multimodal
 #'
-#' This is a simple non-parametric two-variable dataset
+#' This is a simple nonparametric two-variable dataset
 #' that is multimodal.
 #'
 #'
@@ -146,7 +146,7 @@
 #' @author Robert Verity \email{r.verity@@imperial.ac.uk}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
 #'
-#' @source Simulated non-parametric dataset; unpublished.
+#' @source Simulated nonparametric dataset; unpublished.
 #'
 #' @references Robert Verity*, Caitlin Collins*,
 #' Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos.
