@@ -170,7 +170,7 @@ observe({
     k <- k[1]+1
     ## if input button updates, set new panel of initial input values
 
-    dat <- cleanData()
+    dat <- data_outliers()
 
     ## if K updates:
     if(!is.null(dat)){
@@ -222,7 +222,7 @@ output$box_scatterPlot <- renderUI({
         title.k <- paste("Scatter Plot #", i, sep = " ")
 
         ## get data
-        dat <- cleanData()
+        dat <- data_outliers()
 
         ## get box of boxes
         if(!is.null(dat)){
@@ -644,11 +644,11 @@ output$box_scatterPlot_button <- renderUI({
 
 
    ## Get data and plot output
-  if(!is.null(cleanData())){
+  if(!is.null(data_outliers())){
     if(!is.null(xSelection) && !is.null(ySelection)){
 
       ## Get data
-      dat <- cleanData()
+      dat <- data_outliers()
 
   if(logx=="none"){logx=NULL}else{
     if(sum(xSelection<0)>0){print("Error: You are trying to log-transform

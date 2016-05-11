@@ -193,6 +193,13 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
     return(distances)
 } # end harmonicDist
 
+# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
+
 
 ############# nearest neighbor distance #############################################
 
@@ -285,6 +292,13 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   
   return(distances)
 } # end neighborDist
+
+# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.neighborDist_partial <- function(dfv, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_neighborDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
 
 ############# kernel density distance #############################################
 
@@ -397,8 +411,14 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
     return(distances)
 } # end kernelDist
 
+# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDist_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_kernelDist_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
 
-############# kernel density deviabce #############################################
+############# kernel density deviance #############################################
 
 #' Kernel Density Deviance
 #'
@@ -513,4 +533,10 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1
     return(output)
 } # end kernelDeviance
 
+# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDeviance_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    deviance <- C_kernelDeviance_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$deviance
+    return(deviance)
+}
 

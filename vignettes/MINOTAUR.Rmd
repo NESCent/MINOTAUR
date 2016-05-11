@@ -1,8 +1,3 @@
-
-<!-- devtools::install(build_vignettes = TRUE) -->
-
-## MINOTAUR Workflow Vignette
-<!-- NOTE TO DAREN: IT SEEMS LIKE THE TITLE, AUTHOR, ETC. CONTENT BELOW IS NOT RENDERING PROPERLY.... --> 
 ---
 title: "MINOTAUR Workflow Vignette"
 author: "Daren C. Card"

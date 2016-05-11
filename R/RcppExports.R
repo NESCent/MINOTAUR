@@ -5,15 +5,31 @@ C_harmonicDist <- function(data, S_inv) {
     .Call('MINOTAUR_C_harmonicDist', PACKAGE = 'MINOTAUR', data, S_inv)
 }
 
+C_harmonicDist_partial <- function(data, S_inv, i_start, i_end) {
+    .Call('MINOTAUR_C_harmonicDist_partial', PACKAGE = 'MINOTAUR', data, S_inv, i_start, i_end)
+}
+
 C_kernelDeviance <- function(data, sigma2, S_inv) {
     .Call('MINOTAUR_C_kernelDeviance', PACKAGE = 'MINOTAUR', data, sigma2, S_inv)
+}
+
+C_kernelDeviance_partial <- function(data, sigma2, S_inv, i_start, i_end) {
+    .Call('MINOTAUR_C_kernelDeviance_partial', PACKAGE = 'MINOTAUR', data, sigma2, S_inv, i_start, i_end)
 }
 
 C_kernelDist <- function(data, sigma2, S_inv) {
     .Call('MINOTAUR_C_kernelDist', PACKAGE = 'MINOTAUR', data, sigma2, S_inv)
 }
 
+C_kernelDist_partial <- function(data, sigma2, S_inv, i_start, i_end) {
+    .Call('MINOTAUR_C_kernelDist_partial', PACKAGE = 'MINOTAUR', data, sigma2, S_inv, i_start, i_end)
+}
+
 C_neighborDist <- function(data, S_inv) {
     .Call('MINOTAUR_C_neighborDist', PACKAGE = 'MINOTAUR', data, S_inv)
+}
+
+C_neighborDist_partial <- function(data, S_inv, i_start, i_end) {
+    .Call('MINOTAUR_C_neighborDist_partial', PACKAGE = 'MINOTAUR', data, S_inv, i_start, i_end)
 }
 

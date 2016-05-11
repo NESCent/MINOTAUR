@@ -239,7 +239,7 @@ rawData <- reactive({
         output <- list(data=NonParametricMultimodal,
                        name='Example: Non-Parametric Multimodal',
                        description='This is a simple two-variable dataset
-                       that is multimodal.',
+                       that has a multimodal distribution.',
                        rows=nrow(NonParametricMultimodal),
                        cols=ncol(NonParametricMultimodal))
       }
