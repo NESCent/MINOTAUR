@@ -16,6 +16,19 @@ HumanGWAS
 This dataset contains an example of output returned
 from a human Genome-Wide Association Study (GWAS).
 }
+\details{
+\itemize{
+\item \code{Chr} \itemize{\item A factor containing the chromosome on which each SNP locus is located.}
+\item \code{SNP} \itemize{\item A ...}
+\item \code{BP} \itemize{\item A ...}
+\item \code{Trait1_Beta} \itemize{\item A ...}
+\item \code{Trait1_P} \itemize{\item A ...}
+\item \code{Trait2_Beta} \itemize{\item A ...}
+\item \code{Trait2_P} \itemize{\item A ...}
+\item \code{Trait3_Beta} \itemize{\item A ...}
+\item \code{Trait3_P} \itemize{\item A ...}
+}
+}
 \author{
 Liuyang Wang \email{wallacewly@gmail.com}
 

@@ -16,6 +16,25 @@ TwoRefSim
 This dataset contains population genetic data simulated
 under a model of expansion from two refugia.
 }
+\details{
+\itemize{
+\item \code{SNPnames} \itemize{\item A factor containing the unique names of each SNP locus.}
+\item \code{Corr.all} \itemize{\item A ...}
+\item \code{FST.All} \itemize{\item A ...}
+\item \code{s_high} \itemize{\item A ...}
+\item \code{SNPIncluded} \itemize{\item A ...}
+\item \code{He.LS} \itemize{\item A ...}
+\item \code{He_samp} \itemize{\item A ...}
+\item \code{log.bf} \itemize{\item A ...}
+\item \code{rho} \itemize{\item A ...}
+\item \code{xtx} \itemize{\item A ...}
+\item \code{TW.Zscore} \itemize{\item A ...}
+\item \code{Md} \itemize{\item A ...}
+\item \code{Hd} \itemize{\item A ...}
+\item \code{Kd} \itemize{\item A ...}
+\item \code{Nd} \itemize{\item A ...}
+}
+}
 \author{
 Kathleen Lotterhos \email{k.lotterhos@neu.edu}
 

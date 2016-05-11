@@ -15,6 +15,18 @@
 #' @format A data frame with 17,624 Single-Nucleotide Polymorphisms (SNPs)
 #'  in the rows and 9 variables in the columns.
 #'
+#' @details \itemize{
+#' \item \code{Chr} \itemize{\item A factor containing the chromosome on which each SNP locus is located.}
+#' \item \code{SNP} \itemize{\item A ...}
+#' \item \code{BP} \itemize{\item A ...}
+#' \item \code{Trait1_Beta} \itemize{\item A ...}
+#' \item \code{Trait1_P} \itemize{\item A ...}
+#' \item \code{Trait2_Beta} \itemize{\item A ...}
+#' \item \code{Trait2_P} \itemize{\item A ...}
+#' \item \code{Trait3_Beta} \itemize{\item A ...}
+#' \item \code{Trait3_P} \itemize{\item A ...}
+#' }
+#'
 #'
 #' @author Liuyang Wang \email{wallacewly@@gmail.com}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
@@ -57,6 +69,24 @@
 #' @format A data frame with 10,000 Single-Nucleotide Polymorphisms (SNPs)
 #' in the rows and 15 variables in the columns.
 #'
+#' @details \itemize{
+#' \item \code{SNPnames} \itemize{\item A factor containing the unique names of each SNP locus.}
+#' \item \code{Corr.all} \itemize{\item A ...}
+#' \item \code{FST.All} \itemize{\item A ...}
+#' \item \code{s_high} \itemize{\item A ...}
+#' \item \code{SNPIncluded} \itemize{\item A ...}
+#' \item \code{He.LS} \itemize{\item A ...}
+#' \item \code{He_samp} \itemize{\item A ...}
+#' \item \code{log.bf} \itemize{\item A ...}
+#' \item \code{rho} \itemize{\item A ...}
+#' \item \code{xtx} \itemize{\item A ...}
+#' \item \code{TW.Zscore} \itemize{\item A ...}
+#' \item \code{Md} \itemize{\item A ...}
+#' \item \code{Hd} \itemize{\item A ...}
+#' \item \code{Kd} \itemize{\item A ...}
+#' \item \code{Nd} \itemize{\item A ...}
+#' }
+#'
 #'
 #' @author Kathleen Lotterhos \email{k.lotterhos@@neu.edu}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
@@ -81,10 +111,7 @@
 
 ########################################################################
 
-# f
-# #' @value{
-# #'  \item{SNPnames}{A factor containing the names of each SNP site.}
-# #' }
+
 
 
 ########################################################################
@@ -102,6 +129,11 @@
 #' @format A data frame with 1,002 observations in the rows
 #'  and 2 variables in the columns.
 #'
+#'
+#' @details \itemize{
+#' \item \code{x} \itemize{\item A simulated numeric variable.}
+#' \item \code{y} \itemize{\item A simulated numeric variable.}
+#' }
 #'
 #' @author Robert Verity \email{r.verity@@imperial.ac.uk}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
@@ -121,11 +153,6 @@
 
 ########################################################################
 
-# f
-# #' @value{
-# #'  \item{x}{A numeric variable.}
-# #'  \item{y}{A numeric variable.}
-# #' }
 
 
 ########################################################################
@@ -142,6 +169,11 @@
 #'
 #' @format A data frame with 1,000 observations in the rows
 #'  and 2 variables in the columns.
+#'
+#' @details \itemize{
+#' \item \code{x} \itemize{\item A simulated numeric variable.}
+#' \item \code{y} \itemize{\item A simulated numeric variable.}
+#' }
 #'
 #' @author Robert Verity \email{r.verity@@imperial.ac.uk}
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}

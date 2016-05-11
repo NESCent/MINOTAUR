@@ -16,6 +16,12 @@ NonParametricMultimodal
 This is a simple nonparametric two-variable dataset
 that is multimodal.
 }
+\details{
+\itemize{
+\item \code{x} \itemize{\item A simulated numeric variable.}
+\item \code{y} \itemize{\item A simulated numeric variable.}
+}
+}
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}
 

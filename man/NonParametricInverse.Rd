@@ -16,6 +16,12 @@ NonParametricInverse
 This is a simple Nonparametric two-variable dataset
 with an inverse relationship between variables.
 }
+\details{
+\itemize{
+\item \code{x} \itemize{\item A simulated numeric variable.}
+\item \code{y} \itemize{\item A simulated numeric variable.}
+}
+}
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}
 
