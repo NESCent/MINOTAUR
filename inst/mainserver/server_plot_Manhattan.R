@@ -11,9 +11,9 @@ rv_linearManhattan_button <- reactiveValues()
 rv_linearManhattan_button <- 1 # 0
 # rv_linearManhattan_xaxis <- reactiveValues()
 rv_linearManhattan_yaxis <- reactiveValues()
-rv_linearManhattan_logx <- reactiveValues()
+# rv_linearManhattan_logx <- reactiveValues()
 rv_linearManhattan_logy <- reactiveValues()
-rv_linearManhattan_flipx <- reactiveValues()
+# rv_linearManhattan_flipx <- reactiveValues()
 rv_linearManhattan_flipy <- reactiveValues()
 
 rv_linearManhattan_outlier.var <- reactiveValues()
@@ -70,9 +70,9 @@ rv_linearManhattan_outlier.cex <- reactiveValues()
     ## set intial values
     # rv_linearManhattan_xaxis[[k]] <- x.var.sel
     rv_linearManhattan_yaxis[[k]] <- y.var.sel
-    rv_linearManhattan_logx[[k]] <- "none"
+    # rv_linearManhattan_logx[[k]] <- "none"
     rv_linearManhattan_logy[[k]] <- "none"
-    rv_linearManhattan_flipx[[k]] <- "No"
+    # rv_linearManhattan_flipx[[k]] <- "No"
     rv_linearManhattan_flipy[[k]] <- "No"
     rv_linearManhattan_outlier.var[[k]] <- o.var.sel
     rv_linearManhattan_outlier.cutoff[[k]] <- 0.05
@@ -114,9 +114,9 @@ rv_linearManhattan_outlier.cex <- reactiveValues()
     # xSelection <- eval(parse(text=paste("input$linearManhattan_xaxis", k, sep="_")))
     ySelection <- eval(parse(text=paste("input$linearManhattan_yaxis", k, sep="_")))
 
-    logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
+    # logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
     logy <- eval(parse(text=paste("input$linearManhattan_logy", k, sep="_")))
-    flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
+    # flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
     flipY <- eval(parse(text=paste("input$linearManhattan_flipy", k, sep="_")))
 
     ## Get plot aesthetics
@@ -140,9 +140,9 @@ rv_linearManhattan_outlier.cex <- reactiveValues()
     ## update "intial" values to current values
     # rv_linearManhattan_xaxis[[k]] <- xSelection
     rv_linearManhattan_yaxis[[k]] <- ySelection
-    rv_linearManhattan_logx[[k]] <- logx
+    # rv_linearManhattan_logx[[k]] <- logx
     rv_linearManhattan_logy[[k]] <- logy
-    rv_linearManhattan_flipx[[k]] <- flipX
+    # rv_linearManhattan_flipx[[k]] <- flipX
     rv_linearManhattan_flipy[[k]] <- flipY
     rv_linearManhattan_outlier.var[[k]] <- outlier.var
     rv_linearManhattan_outlier.cutoff[[k]] <- cutoff
@@ -289,8 +289,8 @@ output$box_linearManhattan <- renderUI({
   ## get id's | k
   # k <- 1
   # id_linearManhattan_xaxis <- paste("linearManhattan_xaxis", k, sep="_")
-  id_linearManhattan_logx <- paste("linearManhattan_logx", k, sep="_")
-  id_linearManhattan_flipx <- paste("linearManhattan_flipx", k, sep="_")
+  # id_linearManhattan_logx <- paste("linearManhattan_logx", k, sep="_")
+  # id_linearManhattan_flipx <- paste("linearManhattan_flipx", k, sep="_")
   id_linearManhattan_yaxis <- paste("linearManhattan_yaxis", k, sep="_")
   id_linearManhattan_logy <- paste("linearManhattan_logy", k, sep="_")
   id_linearManhattan_flipy <- paste("linearManhattan_flipy", k, sep="_")
@@ -311,23 +311,23 @@ output$box_linearManhattan <- renderUI({
         ## Choose x-axis ##
         ###################
 
-        box(title="Adjust x-axis:", # "Univariate Distributions"
-            # status="info",
-            status = "warning",
-            # status="primary",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
-
-
-            ## NOTE: Would like to be able to pull the Chromosome and Position variables
-            ## selected/generated in the Format Data tab to be available as options
-            ## and autoatically selected below...
-
-            ## Choose x-axis variable
-            h5(strong("X-axis:")),
-            helpText("Note: The x-axis used in this Manhattan plot is the 'Position' variable
-              selected in the 'Format Data' tab on the 'Data' page."),
+        #         box(title="Adjust x-axis:", # "Univariate Distributions"
+        #             # status="info",
+        #             status = "warning",
+        #             # status="primary",
+        #             solidHeader=TRUE,
+        #             collapsible=TRUE,
+        #             width=12,
+        #
+        #
+        #             ## NOTE: Would like to be able to pull the Chromosome and Position variables
+        #             ## selected/generated in the Format Data tab to be available as options
+        #             ## and autoatically selected below...
+        #
+        #             ## Choose x-axis variable
+        #             h5(strong("X-axis:")),
+            #             helpText("Note: The x-axis used in this Manhattan plot is the 'Position' variable
+            #               selected in the 'Format Data' tab on the 'Data' page."),
 
             #             selectizeInput(id_linearManhattan_xaxis,
             #                            label = 'X-axis:',
@@ -336,23 +336,23 @@ output$box_linearManhattan <- renderUI({
             #                            multiple = FALSE),
 
             ## log(x-axis) ?
-            radioButtons(id_linearManhattan_logx,
-                         label = "Log x-axis?",
-                         choices = list("log2", "log10", "none"),
-                         selected= rv_linearManhattan_logx[[k]], # "none",
-                         inline=TRUE),
+            #             radioButtons(id_linearManhattan_logx,
+            #                          label = "Log x-axis?",
+            #                          choices = list("log2", "log10", "none"),
+            #                          selected= rv_linearManhattan_logx[[k]], # "none",
+            #                          inline=TRUE),
 
-            ## Flip x-axis ?
-            radioButtons(id_linearManhattan_flipx,
-                         label = "Invert x-axis?",
-                         choices = list("Yes", "No"),
-                         selected= rv_linearManhattan_flipx[[k]], # "No",
-                         inline=TRUE),
-
-            style = list('background-color: #FFECB3') # pale amber
-            # style = list('background-color: #B2EBF2') # pale cyan
-            # style = list('background-color: #B3E5FC') # pale light blue
-        ),
+            #             ## Flip x-axis ?
+            #             radioButtons(id_linearManhattan_flipx,
+            #                          label = "Invert x-axis?",
+            #                          choices = list("Yes", "No"),
+            #                          selected= rv_linearManhattan_flipx[[k]], # "No",
+            #                          inline=TRUE),
+            #
+            #             style = list('background-color: #FFECB3') # pale amber
+            #             # style = list('background-color: #B2EBF2') # pale cyan
+            #             # style = list('background-color: #B3E5FC') # pale light blue
+            #         ),
 
         ###################
         ## Choose y-axis ##
@@ -702,9 +702,9 @@ output$box_linearManhattan_button <- renderUI({
   ## Get x-axis & y-axis
   ySelection <- eval(parse(text=paste("input$linearManhattan_yaxis", k, sep="_")))
 
-  logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
+  # logx <- eval(parse(text=paste("input$linearManhattan_logx", k, sep="_")))
   logy <- eval(parse(text=paste("input$linearManhattan_logy", k, sep="_")))
-  flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
+  # flipX <- eval(parse(text=paste("input$linearManhattan_flipx", k, sep="_")))
   flipY <- eval(parse(text=paste("input$linearManhattan_flipy", k, sep="_")))
 
 
@@ -716,14 +716,16 @@ output$box_linearManhattan_button <- renderUI({
       dat <- data_outliers()
 
       xSelection <- dat$pos
+      #
+      #       if(logx=="none"){logx=NULL}else{
+      #         if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
+      #                                       negative values in the X variable.
+      #                                       These values will not be plotted.")}
+      #         if(logx=="log2"){logx=2}
+      #         if(logx=="log10"){logx=10}
+      #         }
 
-      if(logx=="none"){logx=NULL}else{
-        if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
-                                      negative values in the X variable.
-                                      These values will not be plotted.")}
-        if(logx=="log2"){logx=2}
-        if(logx=="log10"){logx=10}
-        }
+      logx <- NULL
 
       ## Log y-axis?
       if(logy=="none"){logy=NULL}else{
@@ -735,8 +737,10 @@ output$box_linearManhattan_button <- renderUI({
         }
 
       ## Invert x-axis?
-      if(flipX=="No"){flipX=1}else{
-        if(flipX=="Yes"){flipX=-1}}
+      #       if(flipX=="No"){flipX=1}else{
+      #         if(flipX=="Yes"){flipX=-1}}
+
+      flipX <- 1
 
       ## Invert y-axis?
       if(flipY=="No"){flipY=1}else{
