@@ -43,21 +43,17 @@ output$prettyPlots <- renderUI({
       column(2
              , fluidRow(
                column(12,
-                      div(img(src="scatter.jpg", width=300, height=125), align = "right", height="300px")
-                      #,style = "background-color:red;")
-               )
-             )
-             , fluidRow(
-               column(12,
-                      div(img(src="manhattan.jpg", width=300, height=125), align = "right", height="300px")
-                      #,style = "background-color:red;")
+                      div(img(src="minotaur_plots.jpg", width=600, height=200), align = "right", height="300px")
                )
              )
       )
-      , column(2,
-               div(img(src="circleplot.jpg", width=250, height=250), align = "left", height="600px")
-               #,style = "background-color:blue;")
-      )
+#       column(2
+#              , fluidRow(
+#                column(12,
+#                       div(img(src="manhattan.jpg", width=300, height=200), align = "left", height="300px", offset=2)
+#                )
+#              )
+#       )
     )
   )
 })
@@ -89,10 +85,17 @@ output$description <- renderUI({
     p("To find your way through the labyrinth, use the tabbed menus on the left side of the page for navigation."),
     p("Begin by clicking on the", strong("Data"), "tab to
       select an example dataset or input your own data on the", em("Input Data"), "page.
-      You can then subset your data on the ", em("Format Data"), "page, if desired."),
-    p("MINOTAUR implements four multivariate measures - Mahalanobis, harmonic mean distance, nearest neighbord distance, and kernel density deviance - on the ", strong("Outlier Detection"), "page. Users may wish to skip this page if they have already generated multivariate measures using the standalone MINOTAUR functions or functions available from other packages in R. Outlier detection is performed alongside visualization within the ", strong("Produce Plots"),
-      "tab which currently implements ", em("Histogram, Scatter, Manhattan "), "and ", em("Circle"), "plots."),
+      You can then filter your data on the ", em("Format Data"), "page, if desired."),
+    p("MINOTAUR implements four multivariate measures - Mahalanobis, harmonic mean distance, nearest neighbord distance, and kernel density deviance - on the ", strong("Outlier Detection"), "page. Users may wish to skip this page if they have already generated multivariate measures using the standalone MINOTAUR functions or functions available from other packages in R. Multivariate measures calculated outside the MINOTAUR GUI can be loaded as part of a dataframe in the", strong("Data"), "tab. Outlier detection is performed alongside visualization within the ", strong("Produce Plots"),
+      "tab which currently implements ", em("Histogram, Scatter, "), "and ", em("Manhattan"), "plots."),
 
+    hr(),
+    p(strong("More Information:")),
+    #br(),
+    p("A detailed introduction and tutorial on MINOTAUR can be viewed by issuing the following command in R:"),
+    p("vignette('MINOTAUR')"),
+    p("MINOTAUR users should also consult the MINOTAUR publication for more detailed information on the package and its application."),
+    p("Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang , Katie E. Lotterhos. MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. In Review."),
     br(),
     hr(),
     p(strong("Useful Links:")),

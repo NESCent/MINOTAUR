@@ -42,8 +42,8 @@ ui <- dashboardPage(title= "MINOTAUR",
                         ),
 
                         # Outlier Detection menu
-                        menuItem("Outlier Detection", tabName="outlier", icon=icon("search"),
-                                 menuSubItem("Find Outliers", tabName="outlier_find")
+                        menuItem("Multivariate Measures", tabName="multivariate", icon=icon("calculator"),
+                                 menuSubItem("Calculate", tabName="calc_multi")
                                  # menuSubItem("Compare Outliers", tabName="outlier_compare")
                         ),
 
@@ -51,8 +51,8 @@ ui <- dashboardPage(title= "MINOTAUR",
                         menuItem("Produce Plots", tabName="plots", icon=icon("area-chart"),
                                  menuSubItem("1D Histogram", tabName="plots_histogram_1D"),
                                  menuSubItem("2D Scatterplot", tabName="plots_2D_scatterplot"),
-                                 menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan"),
-                                 menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
+                                 menuSubItem("Linear Manhattan Plot", tabName="plots_linear_Manhattan")
+#                                 menuSubItem("Circular Manhattan Plot", tabName="plots_circular_Manhattan")
                         )
 
                         # Help menu
@@ -130,7 +130,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                         ), # end of Format Data page tabItem
 
                         #### Find Outliers page
-                        tabItem(tabName="outlier_find",
+                        tabItem(tabName="calc_multi",
                                 fluidRow(
                                   column(7,
                                          # controls for producing compound measures
@@ -140,32 +140,32 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          # density plot of compound measure
                                          uiOutput('box_histogram_compound')
                                   )
-                                ),
-                                fluidRow(
-                                  column(4,
-                                         #
-                                         uiOutput('box_choose_threshold')
-                                  ),
-                                  column(8,
-                                         #
-                                         uiOutput('box_list_outliers')
-                                  )
                                 )
-                        ), # end of Find Outliers page tabItem
+#                                 fluidRow(
+#                                   column(4,
+#                                          #
+#                                          uiOutput('box_choose_threshold')
+#                                   ),
+#                                   column(8,
+#                                          #
+#                                          uiOutput('box_list_outliers')
+#                                   )
+#                                 )
+#                         ), # end of Find Outliers page tabItem
 
                         #### Compare Outliers page
-                        tabItem(tabName="outlier_compare",
-                                fluidRow(
-                                  column(4,
-                                         #
-                                         uiOutput('box_compare1')
-                                  ),
-                                  column(8,
-                                         #
-                                         uiOutput('box_compare2')
-                                  )
-                                )
-                        ), # end of Compare Outliers page tabItem
+#                         tabItem(tabName="outlier_compare",
+#                                 fluidRow(
+#                                   column(4,
+#                                          #
+#                                          uiOutput('box_compare1')
+#                                   ),
+#                                   column(8,
+#                                          #
+#                                          uiOutput('box_compare2')
+#                                   )
+#                                 )
+                         ), # end of Compare Outliers page tabItem
 
                         ###################
                         ## PRODUCE PLOTS ##
@@ -206,19 +206,19 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput("box_linearManhattan_button")
                                   )
                                 )
-                        ), # end of Linear Manhattan Plot page tabItem
+                        ) # end of Linear Manhattan Plot page tabItem
 
-                        #### Circular Manhattan Plot page
-                        tabItem(tabName="plots_circular_Manhattan",
-                                fluidRow(
-                                  column(12,
-                                         uiOutput("box_circularManhattan")
-                                  ),
-                                  column(4,
-                                         uiOutput("box_circularManhattan_button")
-                                  )
-                                )
-                        ) # end of Circular Manhattan Plot page tabItem
+#                         #### Circular Manhattan Plot page
+#                         tabItem(tabName="plots_circular_Manhattan",
+#                                 fluidRow(
+#                                   column(12,
+#                                          uiOutput("box_circularManhattan")
+#                                   ),
+#                                   column(4,
+#                                          uiOutput("box_circularManhattan_button")
+#                                   )
+#                                 )
+#                         ) # end of Circular Manhattan Plot page tabItem
 
 
                       ) # end of tabItems

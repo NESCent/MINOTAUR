@@ -19,7 +19,7 @@ output$box_formatData <- renderUI({
       h3('Identify Genomic Variables'),
 
       p('Here you can identify which variables (if any)
-        define genomic position and grouping (e.g. chromosome).'),
+        define genomic position (e.g., base pair) and grouping (e.g., chromosome).'),
 
       fluidRow(
         column(6,

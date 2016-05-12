@@ -36,7 +36,7 @@ server <- function(input, output) {
   source("server_format_data.R", local=T)
 
   # find outliers page
-  source("server_find_outliers.R", local=T)
+  source("server_calc_multivariate.R", local=T)
 
   # compare outliers page
   source("server_compare_outliers.R", local=T)
@@ -50,8 +50,8 @@ server <- function(input, output) {
   # linear Manhattan plot page
   source("server_plot_Manhattan.R", local=T)
 
-  # circular Manhattan plot page
-  source("server_plot_circularManhattan.R", local=T)
+#   # circular Manhattan plot page
+#   source("server_plot_circularManhattan.R", local=T)
 
   # error messages
   source("server_message.R", local=T)

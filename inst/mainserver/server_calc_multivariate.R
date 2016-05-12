@@ -29,7 +29,7 @@ output$headerBox_produce_compound <- renderUI({
 # box containing controls for distance-based measure plots
 output$tabBox_produce_compound <- renderUI({
   tabBox(title=NULL, width=12,
-         
+
          tabPanel('Summary','',
                   h3('Summary of current measures'),
                   p('Use the tabs in this window to calculate compound distance measures. These measures take multiple columns (variables) from your original data set and calculate a single distance measure for each point in multivariate space.'),
@@ -49,10 +49,10 @@ output$tabBox_produce_compound <- renderUI({
                     )
                   )
          ),
-         
+
          tabPanel('Distance-Based','',
                   h3('Distance-based methods'),
-                  p('These methods are all based on the distance between points in multivariate space. See help for further details of the individual methods.'),
+                  p('These methods are all based on the distance between points in multivariate space. See the MINOTAUR manuscript for further details of the individual methods.'),
                   hr(),
                   selectizeInput('outliers_distance_selectize_variables',
                                  label='Select univariate statistics',
@@ -90,7 +90,7 @@ output$tabBox_produce_compound <- renderUI({
                                    div("Warning: this variable name is already being used. Delete existing variable to free up this variable name", style="color:red")
                   )
          ),
-         
+
          tabPanel('Density-Based','',
                   h3('Density-based methods'),
                   p('Kernel density based methods provide a flexible way of describing complex distributions. Points in areas of low density are potential outliers.'),
@@ -259,18 +259,18 @@ calculate_distance <- observe({
         if (!is.null(radioChoice)) {
           if (radioChoice=='Mahalanobis') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # calculate Mahalanobis distance
               withProgress(message="Calculating Mahalanobis", value=0, {
                 rv_outliers$dist <- Mahalanobis(dfv)
                 incProgress(1)
               })
-              
-              
+
+
             }
           } else if (radioChoice=='harmonic') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # calculate harmonic mean distance
               withProgress(message="Calculating harmonic mean", value=0, {
                 S <- cov(dfv)
@@ -285,11 +285,11 @@ calculate_distance <- observe({
                 }
                 rv_outliers$dist <- distances
               })
-              
+
             }
           } else if (radioChoice=='nearestNeighbor') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # calculate nearest neighbour distance
               withProgress(message="Calculating nearest neighbor", value=0, {
                 S <- cov(dfv)
@@ -304,7 +304,7 @@ calculate_distance <- observe({
                 }
                 rv_outliers$dist <- distances
               })
-              
+
             }
           }
         }
@@ -377,7 +377,7 @@ outliers_density_howToChooseBandwidth <- observe({
     rv_outliers$dist <- NULL
     rv_outliers$bandwidth <- NULL
     if (input$outliers_density_howToChooseBandwidth=="default") {
-      
+
       # defualt bandwidth
       selectedVars <- input$outliers_density_selectize_variables
       if (!is.null(selectedVars)) {
@@ -387,17 +387,17 @@ outliers_density_howToChooseBandwidth <- observe({
         bandwidth <- (4/(d+2))^(1/(d+4))*n^(-1/(d+4))
         rv_outliers$bandwidth <- max(round(bandwidth,3), 0.001)
       }
-      
+
     } else if (input$outliers_density_howToChooseBandwidth=="manual") {
-      
+
       # manual bandwidth
       bandwidth <- isolate(input$outliers_density_manual_bandwidth)
       if (!is.null(bandwidth)) {
         rv_outliers$bandwidth <- max(round(bandwidth,3), 0.001)
       }
-      
+
     } else if (input$outliers_density_howToChooseBandwidth=="ML") {
-      
+
       # ML bandwidth
       deviance <- isolate(rv_outliers$deviance)
       MLvec <- isolate(rv_outliers$MLvec)
@@ -405,7 +405,7 @@ outliers_density_howToChooseBandwidth <- observe({
         bandwidth <- MLvec[which.min(deviance)]
         rv_outliers$bandwidth <- max(round(bandwidth,3), 0.001)
       }
-      
+
     }
   }
 })
@@ -436,7 +436,7 @@ outliers_density_MLgo <- observe({
         if (!is.null(selectedVars)) {
           dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
           if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-            
+
             # get ML bandwidth
             S <- cov(dfv)
             S_inv <- solve(S)
@@ -459,7 +459,7 @@ outliers_density_MLgo <- observe({
                 rv_outliers$bandwidth <- max(round(MLvec[which.min(deviance)],3), 0.001)
               }
             })
-            
+
           }
         }
       }
@@ -501,10 +501,10 @@ calculate_density <- observe({
         dfv <- isolate(cleanData()$y[,selectedVars,drop=FALSE])
         radioChoice <- isolate(input$outliers_density_howToChooseBandwidth)
         if (!is.null(radioChoice)) {
-          
+
           if (radioChoice=='default') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # calculate kernel density distance using default bandwidth
               withProgress(message="Calculating kernel distance", value=0, {
                 S <- cov(dfv)
@@ -519,11 +519,11 @@ calculate_density <- observe({
                 }
                 rv_outliers$dist <- distances
               })
-              
+
             }
           } else if (radioChoice=='manual') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # calculate kernel density distance using manual bandwidth
               withProgress(message="Calculating kernel distance", value=0, {
                 S <- cov(dfv)
@@ -538,17 +538,17 @@ calculate_density <- observe({
                 }
                 rv_outliers$dist <- distances
               })
-              
+
             }
           } else if (radioChoice=='ML') {
             if (!any(mapply(function(x){any(is.na(x))}, dfv)) & all(mapply(is.numeric,dfv))) {
-              
+
               # get ML bandwidth
               deviance <- isolate(rv_outliers$deviance)
               MLvec <- isolate(rv_outliers$MLvec)
               if (!is.null(deviance)) {
                 bandwidth <- isolate(MLvec[which.min(deviance)])
-                
+
                 # calculate kernel density distance using ML bandwidth
                 bandwidth <- isolate(input$outliers_density_manual_bandwidth)
                 withProgress(message="Calculating kernel distance", value=0, {
@@ -564,9 +564,9 @@ calculate_density <- observe({
                   }
                   rv_outliers$dist <- distances
                 })
-                
+
               }
-              
+
             }
           }
         }
@@ -647,7 +647,7 @@ output$histogram_compound <- renderPlot({
 ################################################
 
 data_outliers <- reactive({
-  
+
   data <- cleanData()
   df_values <- rv_outliers$df_values
   if (!is.null(df_values)) {
@@ -655,7 +655,7 @@ data_outliers <- reactive({
     names(df_values) <- rv_outliers$df_summary$name
     data$y <- cbind(data$y, df_values)
   }
-  
+
   return(data)
 })
 
