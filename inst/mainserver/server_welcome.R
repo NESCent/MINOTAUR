@@ -86,7 +86,7 @@ output$description <- renderUI({
     p("Begin by clicking on the", strong("Data"), "tab to
       select an example dataset or input your own data on the", em("Input Data"), "page.
       You can then filter your data on the ", em("Format Data"), "page, if desired."),
-    p("MINOTAUR implements four multivariate measures - Mahalanobis, harmonic mean distance, nearest neighbord distance, and kernel density deviance - on the ", strong("Outlier Detection"), "page. Users may wish to skip this page if they have already generated multivariate measures using the standalone MINOTAUR functions or functions available from other packages in R. Multivariate measures calculated outside the MINOTAUR GUI can be loaded as part of a dataframe in the", strong("Data"), "tab. Outlier detection is performed alongside visualization within the ", strong("Produce Plots"),
+    p("MINOTAUR implements four multivariate measures - Mahalanobis, harmonic mean distance, nearest neighbord distance, and kernel density deviance - on the ", strong("Multivariant Measures"), "page. Users may wish to skip this page if they have already generated multivariate measures using the standalone MINOTAUR functions or functions available from other packages in R. Multivariate measures calculated outside the MINOTAUR GUI can be loaded as part of a dataframe in the", strong("Data"), "tab. Outlier detection is performed alongside visualization within the ", strong("Produce Plots"),
       "tab which currently implements ", em("Histogram, Scatter, "), "and ", em("Manhattan"), "plots."),
 
     hr(),
