@@ -7,11 +7,32 @@
 ## Functions for Loading Bars ##
 ################################
 
-# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+# version of harmonicDist for GUI that calculates in chunks, allowing progress bar to be updated in between steps
 .harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
   d <- ncol(dfv)
   distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
   return(distances)
+}
+
+# version of neighborDist for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.neighborDist_partial <- function(dfv, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_neighborDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
+
+# version of kernelDist for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDist_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_kernelDist_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
+
+# version of kernelDeviance for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDeviance_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    deviance <- C_kernelDeviance_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$deviance
+    return(deviance)
 }
 
 ############################
