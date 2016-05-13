@@ -11,18 +11,18 @@ vignette: >
 
 
 ## Introduction
-MINOTAUR is a R package for identifying and visualizing multivariate outliers in general, but is tailored towards researchers seeking to identify genetic loci that are under natural selection or putative loci underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including statistics for population genetic analyses, genetic-environment associations, and genome-wide associations. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background. 
+MINOTAUR is an R package for identifying and visualizing multivariate outliers. It is tailored towards researchers seeking to identify genetic loci that are under natural selection or loci putative underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including statistics for population genetic analyses, genetic-environment associations, and genome-wide associations. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background. 
 
-Studies are generating an increasing number of statistics across one or more broad inferential classes, and a common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values found under several statistics. The largely ad hoc nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R Shiny interface, proving an intuitve, interactive graphical user interface (GUI) environment to explore univariate and multivariate data.
+Studies are generating an increasing number of statistics across one or more broad inferential classes. A common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values found under several statistics. The largely ad hoc nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R Shiny interface, proving an intuitve, interactive graphical user interface (GUI) environment to explore univariate and multivariate data.
 
 ## Getting Started
-MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=XXX) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
+MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=MINOTAUR) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
   
 ```{r eval=FALSE}
 install.packages('MINOTAUR')
 #' to install the development version, run:
 #' require(devtools)
-#' install_github('NESCent/MINOTAUR')
+#' install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
 ```
 
 Please use the following citation when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
@@ -32,13 +32,13 @@ Robert Verity\*, Caitlin Collins\*, Daren C. Card, Sara M. Schaal, Liuyang Wang,
 ## Workflow Overview
 The MINOTAUR package is broken into two parts:
   
-1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions that infer outliers in multidimensional space.
+1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions from other packages that infer outliers in multidimensional space.
 
 2. An R Shiny GUI that can be used to visualize the distributions of individual statistics separately and together, and to help produce publication-quality figures.
 
 An expanded example with code is included below, but a basic workflow leveraging MINOTAUR is as follows:
 
-1. Loading Data: Data is loaded into the MINOTAUR GUI from an external data format (i.e., tab-delimited or comma-delimited files) or as Rdata. Users can upload their own data or explore the GUI using one of the three sample datasets provided in the MINOTAUR package (i.e. Human GWAS, Non-Parametric Data, and Expansion from Two Refugia)
+1. Loading Data: Data is loaded into the MINOTAUR GUI from an external data format (i.e., tab-delimited or comma-delimited files). Users can upload their own data or explore the GUI using one of the three sample datasets provided in the MINOTAUR package (see below).
 
 2. Formatting Data: Users can format data by indicating the positional and grouping (e.g., chromosome) variables, by removing unimportant variables (e.g., metadata), and by removing missing data.
 
@@ -56,6 +56,25 @@ The MINOTAUR package includes four functions for inferring multivariate distance
 3. `kernelDist()`: The kernel density refers to the density of observations within one bandwidth distance of each observation in a dataset. A second function, `kernelDeviance()`, can be used to determine the optimal bandwidth given the data using maximum likelihood.
 
 4. `neighborDist()`: The nearest neighbor distance of an observation is the minimum distance between this observation and any other observation.
+
+## Sample Data Available from MINOTAUR
+Four example datasets have been included with the MINOTAUR package:
+
+1. `HumanGWAS`: An example of output returned from a human Genome-Wide Association Study (GWAS).
+
+2. `TwoRefSim`: A dataset contains population genetic data simulated under a model of expansion from two refugia.
+
+3. `NonParametricInverse`: A simple, nonparametric two-variable dataset with an inverse relationship between variables.
+
+4. `NonParametricMultimodal`: A simple, nonparametric two-variable dataset that is highly multimodal.
+
+More information about these datasets can be obtained from the MINOTAUR mauscript and by issuing the following command in R:
+
+```{r eval=FALSE}
+# format = ?<dataset>
+# example with 'HumanGWAS':
+?HumanGWAS
+```
 
 ## Specific Examples
 ### Calculating Mulitvariate Statistics using Stand-alone Functions
