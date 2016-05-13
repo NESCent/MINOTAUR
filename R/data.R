@@ -122,7 +122,7 @@
 
 #' Example Dataset: Nonparametric Inverse
 #'
-#' This is a simple Nonparametric two-variable dataset
+#' This is a simple, nonparametric two-variable dataset
 #' with an inverse relationship between variables.
 #'
 #'
@@ -163,8 +163,8 @@
 
 #' Example Dataset: Nonparametric Multimodal
 #'
-#' This is a simple nonparametric two-variable dataset
-#' that is multimodal.
+#' This is a simple, nonparametric two-variable dataset
+#' that is highly multimodal.
 #'
 #'
 #' @format A data frame with 1,000 observations in the rows
