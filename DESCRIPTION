@@ -11,14 +11,12 @@ Imports: adegenet,
 	DT, 
 	fields, 
 	ggplot2, 	 	
-	OmicCircos,
 	RColorBrewer, 
 	Rcpp,
 	shiny,
 	shinydashboard,
 	shinyjs
-Remotes: Bioconductor-mirror/OmicCircos@5d2b5b2,
-	rstudio/DT@24d71f2
+Remotes: rstudio/DT@24d71f2
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true

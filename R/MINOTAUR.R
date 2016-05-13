@@ -52,7 +52,7 @@
 #' @import shiny shinydashboard shinyjs DT
 #'  adegenet  RColorBrewer
 #'  ggplot2 data.table ash fields Rcpp
-#'  OmicCircos
+#'
 #'
 #' @export
 
@@ -132,7 +132,7 @@ MINOTAUR <- function(){
   }
   ## require/install_GITHUB/load DT, OmicCircos:
   .dynamic_require_DT("DT")
-  .dynamic_require_OmicCircos("OmicCircos")
+  # .dynamic_require_OmicCircos("OmicCircos")
 
   #   requireNamespace("shiny")
   #   requireNamespace("shinydashboard")
@@ -169,16 +169,6 @@ MINOTAUR <- function(){
 
   syst.file <- base::system.file
 
-  #   ## temporarily (?!) sourcing .R files here ##
-  #   source(syst.file("mainserver/data.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_cleanupData.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_Manhattanplot.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/server_circleplot.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/uiFunctions.R",package="MINOTAUR"))
-  #   source(syst.file("mainserver/utils.R",package="MINOTAUR"))
-
-  #   syst.file("mainserver/data.R",package="MINOTAUR")
-  #   source(syst.file("data.R",package="MINOTAUR"))
 
   ## get path to App
   filename <- syst.file("mainserver",package="MINOTAUR")
@@ -189,17 +179,17 @@ MINOTAUR <- function(){
 #################################
 ## .dynamic_require_OmicCircos ##
 #################################
-.dynamic_require_OmicCircos <- function(package="OmicCircos"){
-  if(eval(parse(text=paste("require(",
-                           package,
-                           ", quietly=TRUE)")))) return(TRUE)
-
-  .dynamic_require("devtools")
-  install_github("Bioconductor-mirror/OmicCircos", ref="5d2b5b2")
-  return(eval(parse(text=paste("require(",
-                               package,
-                               ", quietly=TRUE)"))))
-} # .dynamic_require_OmicCircos
+# .dynamic_require_OmicCircos <- function(package="OmicCircos"){
+#   if(eval(parse(text=paste("require(",
+#                            package,
+#                            ", quietly=TRUE)")))) return(TRUE)
+#
+#   .dynamic_require("devtools")
+#   install_github("Bioconductor-mirror/OmicCircos", ref="5d2b5b2")
+#   return(eval(parse(text=paste("require(",
+#                                package,
+#                                ", quietly=TRUE)"))))
+# } # .dynamic_require_OmicCircos
 
 #########################
 ## .dynamic_require_DT ##
