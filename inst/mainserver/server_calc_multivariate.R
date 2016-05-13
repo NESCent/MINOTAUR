@@ -3,6 +3,21 @@
 ## FIND OUTLIERS PAGE ##  ------------------------------------------------------------------------------------
 ########################
 
+################################
+## Functions for Loading Bars ##
+################################
+
+# version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
+  d <- ncol(dfv)
+  distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+  return(distances)
+}
+
+############################
+## Define Reactive Values ##
+############################
+
 ## generate reactiveValues object for all compound distance metric related quantities
 rv_outliers <- reactiveValues()
 rv_outliers$df_summary <- data.frame(name=NA, method=NA, parameters=NA, notes=NA)[-1,]
