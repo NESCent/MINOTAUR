@@ -13,7 +13,7 @@ Simulated nonparametric dataset.
 NonParametricInverse
 }
 \description{
-This is a simple Nonparametric two-variable dataset
+This is a simple, nonparametric two-variable dataset
 with an inverse relationship between variables.
 }
 \details{

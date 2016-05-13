@@ -69,13 +69,13 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   	stop("dfv must contain at least two rows")
 
   # if S is NULL replace with covariance matrix
-  if (is.null(S)) 
+  if (is.null(S))
     S <- cov(df.vars, use="pairwise.complete.obs")
-  
+
   # check that S is a matrix
   if (!is.matrix(S))
     stop("S must be a matrix")
-  
+
   # check that S has the same number of rows and cols as variables in df.vars
   if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
     stop("S must contain the same number of rows and columns as there are selected variables in dfv")
@@ -136,60 +136,60 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 ########################################################################
 
 harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
-    
+
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
     if (!is.matrix(dfv) & !is.data.frame(dfv))
     stop("dfv must be a matrix or data frame")
-    
+
     # check that column.nums can be used to index dfv without error
     if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
     stop("column.nums must contain valid indexes for choosing columns in dfv")
-    
+
     # extract variables from dfv
     df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
     n <- nrow(df.vars)
     d <- ncol(df.vars)
-    
+
     # check that all selected columns are numeric
     if (any(!apply(df.vars,2,is.numeric)))
     stop("all selected columns of dfv must be numeric")
-    
+
     # check that no NA values
     if (any(is.na(df.vars)))
     stop("dfv cannot contain NA values")
-    
+
     # check that at least two rows in df.vars
     nlocs <- nrow(df.vars)
     if (nlocs<2)
     stop("dfv must contain at least two rows")
-    
+
     # if S is NULL replace with covariance matrix
-    if (is.null(S)) 
+    if (is.null(S))
       S <- cov(df.vars)
-    
+
     # check that S is a matrix
     if (!is.matrix(S))
       stop("S must be a matrix")
-    
+
     # check that S has the same number of rows and cols as variables in df.vars
     if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
       stop('S must contain the same number of rows and columns as there are selected variables in dfv')
-    
+
     # check that S contains no NA values
     if (any(is.na(S)))
       stop("covariance matrix S contains NA values")
-    
+
     # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
     if (class(try(solve(S),silent=TRUE))=='try-error')
       stop("covariance matrix S is exactly singular")
-    
+
     # calculate inverse covariance matrix
     S_inv <- solve(S)
-    
+
     #### calculate harmonic mean distances using C++ function
     distances <- C_harmonicDist(split(t(df.vars),1:d), split(S_inv,1:d))$distance
-    
+
     return(distances)
 } # end harmonicDist
 
@@ -237,59 +237,59 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 ########################################################################
 
 neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
-  
+
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
   if (!is.matrix(dfv) & !is.data.frame(dfv))
     stop("dfv must be a matrix or data frame")
-  
+
   # check that column.nums can be used to index dfv without error
   if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
     stop("column.nums must contain valid indexes for choosing columns in dfv")
-  
+
   # extract variables from dfv
   df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
   n <- nrow(df.vars)
   d <- ncol(df.vars)
-  
+
   # check that all selected columns are numeric
   if (any(!apply(df.vars,2,is.numeric)))
     stop("all selected columns of dfv must be numeric")
-  
+
   # check that no NA values
   if (any(is.na(df.vars)))
     stop("dfv cannot contain NA values")
-  
+
   # check that at least two rows in df.vars
   if (n<2)
     stop("dfv must contain at least two rows")
-  
+
   # if S is NULL replace with covariance matrix
-  if (is.null(S)) 
+  if (is.null(S))
     S <- cov(df.vars)
-  
+
   # check that S is a matrix
   if (!is.matrix(S))
     stop("S must be a matrix")
-  
+
   # check that S has the same number of rows and cols as variables in df.vars
   if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
     stop('S must contain the same number of rows and columns as there are selected variables in dfv')
-  
+
   # check that S contains no NA values
   if (any(is.na(S)))
     stop("covariance matrix S contains NA values")
-  
+
   # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
   if (class(try(solve(S),silent=TRUE))=='try-error')
     stop("covariance matrix S is exactly singular")
-  
+
   # calculate inverse covariance matrix
   S_inv <- solve(S)
-  
+
   #### calculate nearest neighbor distances using C++ function
   distances <- C_neighborDist(split(t(df.vars), 1:d), split(S_inv,1:d))$distance
-  
+
   return(distances)
 } # end neighborDist
 
@@ -339,56 +339,56 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 ########################################################################
 
 kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL){
-    
+
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
     if (!is.matrix(dfv) & !is.data.frame(dfv))
     stop("dfv must be a matrix or data frame")
-    
+
     # check that column.nums can be used to index dfv without error
     if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
     stop("column.nums must contain valid indexes for choosing columns in dfv")
-    
+
     # extract variables from dfv
     df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
     n <- nrow(df.vars)
     d <- ncol(df.vars)
-    
+
     # check that all selected columns are numeric
     if (any(!apply(df.vars,2,is.numeric)))
     stop("all selected columns of dfv must be numeric")
-    
+
     # check that no NA values
     if (any(is.na(df.vars)))
     stop("dfv cannot contain NA values")
-    
+
     # check that at least two rows in df.vars
     if (n<2)
     stop("dfv must contain at least two rows")
-    
+
     # if S is NULL replace with covariance matrix
-    if (is.null(S)) 
+    if (is.null(S))
       S <- cov(df.vars)
-    
+
     # check that S is a matrix
     if (!is.matrix(S))
       stop("S must be a matrix")
-    
+
     # check that S has the same number of rows and cols as variables in df.vars
     if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
       stop('S must contain the same number of rows and columns as there are selected variables in dfv')
-    
+
     # check that S contains no NA values
     if (any(is.na(S)))
       stop("covariance matrix S contains NA values")
-    
+
     # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
     if (class(try(solve(S),silent=TRUE))=='try-error')
       stop("covariance matrix S is exactly singular")
-    
+
     # calculate inverse covariance matrix
     S_inv <- solve(S)
-    
+
     # check that bandwidth is either "default" or numeric. If default then apply Silverman's rule.
     if (is.numeric(bandwidth)) {
         if (bandwidth<=0 | !is.finite(bandwidth))
@@ -404,10 +404,10 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
             }
         }
     }
-    
+
     #### calculate kernel density distances using C++ function
     distances <- C_kernelDist(split(t(df.vars), 1:d), bandwidth^2, split(S_inv,1:d))$distance
-    
+
     return(distances)
 } # end kernelDist
 
@@ -463,63 +463,63 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
 ########################################################################
 
 kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), S=NULL, reportProgress=FALSE){
-    
+
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
     if (!is.matrix(dfv) & !is.data.frame(dfv))
     stop("dfv must be a matrix or data frame")
-    
+
     # check that column.nums can be used to index dfv without error
     if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
     stop("column.nums must contain valid indexes for choosing columns in dfv")
-    
+
     # extract variables from dfv
     df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
     n <- nrow(df.vars)
     d <- ncol(df.vars)
-    
+
     # check that all selected columns are numeric
     if (any(!apply(df.vars,2,is.numeric)))
     stop("all selected columns of dfv must be numeric")
-    
+
     # check that no NA values
     if (any(is.na(df.vars)))
     stop("dfv cannot contain NA values")
-    
+
     # check that at least two rows in df.vars
     if (n<2)
     stop("dfv must contain at least two rows")
-    
+
     # if S is NULL replace with covariance matrix
-    if (is.null(S)) 
+    if (is.null(S))
       S <- cov(df.vars)
-    
+
     # check that S is a matrix
     if (!is.matrix(S))
       stop("S must be a matrix")
-    
+
     # check that S has the same number of rows and cols as variables in df.vars
     if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
       stop('S must contain the same number of rows and columns as there are selected variables in dfv')
-    
+
     # check that S contains no NA values
     if (any(is.na(S)))
       stop("covariance matrix S contains NA values")
-    
+
     # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
     if (class(try(solve(S),silent=TRUE))=='try-error')
       stop("covariance matrix S is exactly singular")
-    
+
     # calculate inverse covariance matrix
     S_inv <- solve(S)
-    
+
     # check that all elements of bandwidth are numeric and between 0 and infinity
     bandwidth <- as.vector(unlist(bandwidth))
     if (any(!is.numeric(bandwidth)))
       stop("bandwidth must be a numeric vector")
     if (any(bandwidth<=0) | any(!is.finite(bandwidth)))
       stop("bandwidth must contain values greater than 0 and less than infinity")
-    
+
     #### calculate deviance for all bandwidths
     output <- rep(NA,length(bandwidth))
     for (i in 1:length(bandwidth)) {
@@ -529,7 +529,7 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1
         }
         output[i] <- C_kernelDeviance(split(t(df.vars), 1:d), bandwidth[i]^2, split(S_inv,1:d))$deviance
     }
-    
+
     return(output)
 } # end kernelDeviance
 

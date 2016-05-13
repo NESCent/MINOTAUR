@@ -13,8 +13,8 @@ Simulated nonparametric dataset; unpublished.
 NonParametricMultimodal
 }
 \description{
-This is a simple nonparametric two-variable dataset
-that is multimodal.
+This is a simple, nonparametric two-variable dataset
+that is highly multimodal.
 }
 \details{
 \itemize{
