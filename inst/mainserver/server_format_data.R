@@ -116,7 +116,7 @@ output$tabBox_plotGenomic <- renderUI({
         if (length(unique(stripPositionChromosome()$chrom))>100) {
           p('(Grouping variable contains too many unique levels to plot)')
         } else {
-          p('UNDER CONSTRUCTION')
+          p('UNDER CONSTRUCTION - Bob working on this now')
           #plotOutput('formatData_plot_genomic_observations',height=220)
         }
       }
