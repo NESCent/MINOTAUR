@@ -70,6 +70,10 @@ ui <- dashboardPage(title= "MINOTAUR",
 
                       tabItems(
 
+                        #############
+                        ## WELCOME ##
+                        #############
+                        
                         #### Welcome page
                         tabItem(tabName="welcome",
 
@@ -84,6 +88,10 @@ ui <- dashboardPage(title= "MINOTAUR",
 
                         ),# end of Welcome page tabItem
 
+                        ##########
+                        ## DATA ##
+                        ##########
+                        
                         #### Input Data page
                         tabItem(tabName="data_input",
                                 fluidRow(
@@ -100,7 +108,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput('tabBox_rawDataSummary')
                                   )
                                 )
-                        ), # end of Input Data page tabItem
+                        ), # end of Input Data page
 
                         #### Format Data page
                         tabItem(tabName="data_format",
@@ -127,13 +135,18 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput('box_finalData')
                                   )
                                 )
-                        ), # end of Format Data page tabItem
+                        ), # end of Format Data page
 
-                        #### Find Outliers page
+                        ###########################
+                        ## MULTIVARIATE MEASURES ##
+                        ###########################
+                        
+                        #### Calculate page
                         tabItem(tabName="calc_multi",
                                 fluidRow(
                                   column(7,
                                          # controls for producing compound measures
+                                         uiOutput('headerBox_produce_compound'),
                                          uiOutput('tabBox_produce_compound')
                                   ),
                                   column(5,
@@ -141,31 +154,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput('box_histogram_compound')
                                   )
                                 )
-#                                 fluidRow(
-#                                   column(4,
-#                                          #
-#                                          uiOutput('box_choose_threshold')
-#                                   ),
-#                                   column(8,
-#                                          #
-#                                          uiOutput('box_list_outliers')
-#                                   )
-#                                 )
-#                         ), # end of Find Outliers page tabItem
-
-                        #### Compare Outliers page
-#                         tabItem(tabName="outlier_compare",
-#                                 fluidRow(
-#                                   column(4,
-#                                          #
-#                                          uiOutput('box_compare1')
-#                                   ),
-#                                   column(8,
-#                                          #
-#                                          uiOutput('box_compare2')
-#                                   )
-#                                 )
-                         ), # end of Compare Outliers page tabItem
+                         ), # end of Calculate page
 
                         ###################
                         ## PRODUCE PLOTS ##
@@ -181,7 +170,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput("box_hist_1D_button")
                                   )
                                 )
-                        ), # end of 1D Histogram/Density page tabItem
+                        ), # end of 1D Histogram/Density page
 
                         #### Scatter Plot page
                         tabItem(tabName="plots_2D_scatterplot",
@@ -194,7 +183,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                   )
                                 )
 
-                        ), # end of Scatter lot page tabItem
+                        ), # end of Scatter lot page
 
                         #### Linear Manhattan Plot page
                         tabItem(tabName="plots_linear_Manhattan",
@@ -206,7 +195,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                          uiOutput("box_linearManhattan_button")
                                   )
                                 )
-                        ) # end of Linear Manhattan Plot page tabItem
+                        ) # end of Linear Manhattan
 
 #                         #### Circular Manhattan Plot page
 #                         tabItem(tabName="plots_circular_Manhattan",
@@ -218,7 +207,7 @@ ui <- dashboardPage(title= "MINOTAUR",
 #                                          uiOutput("box_circularManhattan_button")
 #                                   )
 #                                 )
-#                         ) # end of Circular Manhattan Plot page tabItem
+#                         ) # end of Circular Manhattan Plot
 
 
                       ) # end of tabItems
