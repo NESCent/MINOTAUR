@@ -24,9 +24,10 @@
 #' the selected variables.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that contain the statistics used to
+#' @param column.nums indexes the columns of the data frame that will be used to
 #' calculate Mahalanobis distance (all other columns are ignored).
-#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.
+#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[,column.nums],use="pairwise.complete.obs").
+#' @param M the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of the data.
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -45,7 +46,7 @@
 
 ########################################################################
 
-Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
+Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
 
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -88,10 +89,21 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   if (class(try(solve(S),silent=TRUE))=='try-error')
     stop("covariance matrix S is exactly singular")
 
+  # if M is NULL replace with mean over variables
+  if (is.null(M))
+    M <- colMeans(df.vars,na.rm=TRUE)
+  
+  # force M to be vector
+  M <- as.vector(unlist(M))
+  
+  # check that M has one element per column of df.vars
+  if (length(M)!=ncol(df.vars))
+    stop("M must contain one value per selected column of dfv")
+
   # calculate Mahalanobis distance
   diff <- df.vars
   for (i in 1:ncol(df.vars)) {
-    diff[,i] <- diff[,i] - mean(diff[,i], na.rm=TRUE)
+    diff[,i] <- diff[,i] - M[i]
   }
   distance <- sqrt( rowSums((diff %*% solve(S))*diff) )
 

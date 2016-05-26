@@ -188,8 +188,7 @@ rawData <- reactive({
       data(HumanGWAS, package="MINOTAUR", envir=environment())
       output <- list(data=HumanGWAS,
                      name='Example: Human GWAS',
-                     description='This data set contains an example of
-                     output returned from a human GWAS analysis.',
+                     description="This data set contains an example of output returned from a human GWAS analysis. The 'Chr' variable gives the chromosome and 'BP' the genomic position.",
                      rows=nrow(HumanGWAS),
                      cols=ncol(HumanGWAS))
     }
@@ -205,8 +204,7 @@ rawData <- reactive({
         HumanGWAS <- as.data.frame(HumanGWAS)
         output <- list(data=HumanGWAS,
                        name='Example: Human GWAS',
-                       description='This data set contains an example of
-                       output returned from a human GWAS analysis.',
+                       description="This data set contains an example of output returned from a human GWAS analysis. The 'Chr' variable gives the chromosome and 'BP' the genomic position.",
                        rows=nrow(HumanGWAS),
                        cols=ncol(HumanGWAS))
       }
@@ -216,8 +214,7 @@ rawData <- reactive({
         TwoRefSim <- as.data.frame(TwoRefSim)
         output <- list(data=TwoRefSim,
                        name='Example: Simulated Expansion from Two Refugia',
-                       description='This data set contains population genetic data
-                       simulating expansion from two refugia.',
+                       description="This data set contains population genetic data simulating expansion from two refugia.",
                        rows=nrow(TwoRefSim),
                        cols=ncol(TwoRefSim))
       }
@@ -227,8 +224,7 @@ rawData <- reactive({
         NonParametricInverse <- as.data.frame(NonParametricInverse)
         output <- list(data=NonParametricInverse,
                        name='Example: Non-Parametric Inverse',
-                       description='This is a simple two-variable dataset
-                       with an inverse relationship between variables.',
+                       description="This is a simulated two-variable dataset. The two variables follow an inverse relationship, with some additional noise.",
                        rows=nrow(NonParametricInverse),
                        cols=ncol(NonParametricInverse))
       }
@@ -238,8 +234,7 @@ rawData <- reactive({
         NonParametricMultimodal <- as.data.frame(NonParametricMultimodal)
         output <- list(data=NonParametricMultimodal,
                        name='Example: Non-Parametric Multimodal',
-                       description='This is a simple two-variable dataset
-                       that has a multimodal distribution.',
+                       description="This is a simulated two-variable dataset. The data were drawn from a bivariate normal mixture model, resulting in multiple distinct peaks in the distribution.",
                        rows=nrow(NonParametricMultimodal),
                        cols=ncol(NonParametricMultimodal))
       }
