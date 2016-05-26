@@ -144,7 +144,8 @@ output$tabBox_produce_compound <- renderUI({
                                                      'manual'='manual',
                                                      'maximum likelihood'='ML')),
                            wellPanel(
-                             htmlOutput("outliers_density_currentBandwidth")
+                             htmlOutput("outliers_density_currentBandwidth"),
+                             style="padding: 10px"
                            ),
                            actionButton('calculate_density',label='Calculate!')
                     ),
@@ -430,7 +431,7 @@ outliers_density_howToChooseBandwidth <- observe({
     } else if (input$outliers_density_howToChooseBandwidth=="manual") {
 
       # manual bandwidth
-      bandwidth <- isolate(input$outliers_density_manual_bandwidth)
+      bandwidth <- input$outliers_density_manual_bandwidth
       if (!is.null(bandwidth)) {
         rv_outliers$bandwidth <- max(round(bandwidth,3), 0.001)
       }
@@ -451,7 +452,7 @@ outliers_density_howToChooseBandwidth <- observe({
 
 # output current bandwidth
 output$outliers_density_currentBandwidth <- reactive({
-  return(HTML("foobar"))
+  return(HTML(paste("current chosen bandwidth: <b>",rv_outliers$bandwidth,"</b>",sep="")))
 })
 
 # description of Silverman's rule

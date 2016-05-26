@@ -188,7 +188,7 @@ rawData <- reactive({
       data(HumanGWAS, package="MINOTAUR", envir=environment())
       output <- list(data=HumanGWAS,
                      name='Example: Human GWAS',
-                     description="This data set contains an example of output returned from a human GWAS analysis. The 'Chr' variable gives the chromosome and 'BP' the genomic position.",
+                     description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
                      rows=nrow(HumanGWAS),
                      cols=ncol(HumanGWAS))
     }
@@ -204,7 +204,7 @@ rawData <- reactive({
         HumanGWAS <- as.data.frame(HumanGWAS)
         output <- list(data=HumanGWAS,
                        name='Example: Human GWAS',
-                       description="This data set contains an example of output returned from a human GWAS analysis. The 'Chr' variable gives the chromosome and 'BP' the genomic position.",
+                       description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
                        rows=nrow(HumanGWAS),
                        cols=ncol(HumanGWAS))
       }
