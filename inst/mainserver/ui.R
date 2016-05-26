@@ -146,7 +146,7 @@ ui <- dashboardPage(title= "MINOTAUR",
                                 fluidRow(
                                   column(7,
                                          # controls for producing compound measures
-                                         uiOutput('headerBox_produce_compound'),
+                                         #uiOutput('headerBox_produce_compound'),
                                          uiOutput('tabBox_produce_compound')
                                   ),
                                   column(5,

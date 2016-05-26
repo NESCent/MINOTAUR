@@ -143,6 +143,9 @@ output$tabBox_produce_compound <- renderUI({
                                         choices=list('default'='default',
                                                      'manual'='manual',
                                                      'maximum likelihood'='ML')),
+                           wellPanel(
+                             htmlOutput("outliers_density_currentBandwidth")
+                           ),
                            actionButton('calculate_density',label='Calculate!')
                     ),
                     column(8,
@@ -363,14 +366,6 @@ output$outliers_distance_error2 <- reactive({
 })
 outputOptions(output, 'outliers_distance_error2', suspendWhenHidden=FALSE)
 
-# # version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
-# .harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
-#   d <- ncol(dfv)
-#   distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
-#   return(distances)
-# }
-
-
 # error if name already being used (activates conditional panel)
 output$outliers_distance_error1 <- reactive({
   if (!is.null(input$outliers_distance_name)) {
@@ -452,6 +447,11 @@ outliers_density_howToChooseBandwidth <- observe({
 
     }
   }
+})
+
+# output current bandwidth
+output$outliers_density_currentBandwidth <- reactive({
+  return(HTML("foobar"))
 })
 
 # description of Silverman's rule
