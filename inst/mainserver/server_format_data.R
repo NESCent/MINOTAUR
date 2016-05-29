@@ -4,12 +4,14 @@
 ## FORMAT DATA PAGE ##  ------------------------------------------------------------------------------------
 ######################
 
+
 ######################
 ## Box: Format Data ##
 ######################
 
 # box for choosing genomic variables
 output$box_formatData <- renderUI({
+
   box(title="Identify Variables",
       status="primary",
       solidHeader=TRUE,
@@ -40,7 +42,9 @@ output$box_formatData <- renderUI({
         )
       )
       )
+
 })
+
 
 ## Strip out pos and chrom columns from other variables.
 ## Return list(posVar,chromVar,otherVar,pos,chrom,y)
@@ -90,6 +94,7 @@ stripPositionChromosome <- reactive({
                      pos=pos,
                      chrom=chrom,
                      y=y)
+
     }
   }
   return(output)
@@ -110,29 +115,39 @@ output$tabBox_plotGenomic <- renderUI({
 
       if (is.null(stripPositionChromosome()$chrom)) {
         p('Choose a ',strong('Grouping variable'),'
-          (for example grouping by chromosome) to produce a plot showing the breakdown of observations by group')
+          (for example grouping by chromosome) from the menu in the panel at left
+          to produce a plot showing the breakdown of observations by group.')
       } else {
         # if too many unique groups then give warning message
         if (length(unique(stripPositionChromosome()$chrom))>100) {
-          p('(Grouping variable contains too many unique levels to plot)')
+          p('(Grouping variable contains too many unique levels to plot.)')
         } else {
-          p('UNDER CONSTRUCTION')
-          #plotOutput('formatData_plot_genomic_observations',height=220)
+          # p('UNDER CONSTRUCTION')
+          plotOutput('formatData_plot_genomic_observations',
+                     height=220)
         }
       }
   )
   })
 
 # barplot showing number of observations for each chromosome
-#output$formatData_plot_genomic_observations <- renderPlot({
-#  groupingVar <- stripPositionChromosome()$chrom
-#  uniques <- length(unique(groupingVar))
-#
-#  barplot(table(groupingVar),
-#          col=grey(0.2),
-#          xlab='Chromosome', ylab='#Observations',
-#          main='(this will be improved in final version)')
-#})
+output$formatData_plot_genomic_observations <- renderPlot({
+ groupingVar <- stripPositionChromosome()$chrom
+ uniques <- length(unique(groupingVar))
+
+ grp.var <- "Grouping variable"
+ grp.var <- input$formatData_select_chromosome
+ if(grp.var == "none") grp.var <- "Grouping variable"
+
+ if(!is.null(groupingVar)){
+ barplot(table(groupingVar),
+         col=grey(0.2),
+         xlab = grp.var,
+         # xlab='Chromosome',
+         ylab='#Observations',
+         main=NULL) # (this will be improved in final version)
+ }
+})
 
 ######################
 ## Box: Subset Data ##
