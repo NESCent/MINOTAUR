@@ -29,7 +29,8 @@
 # # devtools::install(build_vignettes = TRUE)
 # devtools::install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
 # vignette("MINOTAUR")
-########################################################################
+# MINOTAUR()
+#######################################################################
 
 ###################
 ## DOCUMENTATION ##
