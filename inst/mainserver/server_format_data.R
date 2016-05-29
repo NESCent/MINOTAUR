@@ -12,6 +12,11 @@
 # box for choosing genomic variables
 output$box_formatData <- renderUI({
 
+  chromVarSel <- posVarSel <- NULL
+  chromVarSel <- stripPositionChromosome()$chromVar
+  posVarSel <- stripPositionChromosome()$posVar
+
+
   box(title="Identify Variables",
       status="primary",
       solidHeader=TRUE,
@@ -29,7 +34,7 @@ output$box_formatData <- renderUI({
                            label='Position variable',
                            choices=as.list(c('(none)',
                                              names(rawData()$data))),
-                           selected=stripPositionChromosome()$posVar,
+                           selected=posVarSel,
                            multiple=FALSE)
         ),
         column(6,
@@ -37,7 +42,7 @@ output$box_formatData <- renderUI({
                            label='Grouping variable',
                            choices=as.list(c('(none)',
                                              names(rawData()$data))),
-                           selected=stripPositionChromosome()$chromVar,
+                           selected=chromVarSel,
                            multiple=FALSE)
         )
       )
@@ -64,7 +69,12 @@ stripPositionChromosome <- reactive({
       if (posVar=='(none)') {
         pos <- NULL
       } else {
+        ## Reset selected position variable (if dataset has changed)
+        if(!posVar %in% names(rawData()$data)){
+          pos <- NULL
+        }else{
         pos <- rawData()$data[,posVar]
+        }
       }
 
       # extract grouping variable
@@ -74,7 +84,12 @@ stripPositionChromosome <- reactive({
       if (chromVar=='(none)') {
         chrom <- NULL
       } else {
+        ## Reset selected chromosome variable (if dataset has changed)
+        if(!chromVar %in% names(rawData()$data)){
+          chrom <- NULL
+        }else{
         chrom <- rawData()$data[,chromVar]
+        }
         #if (length(unique(chrom))>100) { #### REPLACE WITH ERROR IN CONDITIONAL PANEL
         #  errorOn('too_many_chroms')
         #  chrom <- NULL
