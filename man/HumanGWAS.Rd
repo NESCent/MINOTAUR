@@ -19,14 +19,14 @@ from a human Genome-Wide Association Study (GWAS).
 \details{
 \itemize{
 \item \code{Chr} \itemize{\item A factor containing the chromosome on which each SNP locus is located.}
-\item \code{SNP} \itemize{\item A ...}
-\item \code{BP} \itemize{\item A ...}
-\item \code{Trait1_Beta} \itemize{\item A ...}
-\item \code{Trait1_P} \itemize{\item A ...}
-\item \code{Trait2_Beta} \itemize{\item A ...}
-\item \code{Trait2_P} \itemize{\item A ...}
-\item \code{Trait3_Beta} \itemize{\item A ...}
-\item \code{Trait3_P} \itemize{\item A ...}
+\item \code{SNP} \itemize{\item SNP (single nucleotide polymorphism) ID}
+\item \code{BP} \itemize{\item Base Pair (location on the chromosome)}
+\item \code{Trait1_Beta} \itemize{\item Slope from a GWAS analysis with Trait 1}
+\item \code{Trait1_P} \itemize{\item P-value from a GWAS analysis with Trait 1}
+\item \code{Trait2_Beta} \itemize{\item Slope from a GWAS analysis with Trait 2}
+\item \code{Trait2_P} \itemize{\item P-value from a GWAS analysis with Trait 2}
+\item \code{Trait3_Beta} \itemize{\item Slope from a GWAS analysis with Trait 3}
+\item \code{Trait3_P} \itemize{\item P-value from a GWAS analysis with Trait 3}
 }
 }
 \author{

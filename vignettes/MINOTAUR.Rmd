@@ -13,7 +13,7 @@ vignette: >
 ## Introduction
 MINOTAUR is an R package for identifying and visualizing multivariate outliers. It is tailored towards researchers seeking to identify genetic loci that are under natural selection or loci putative underlying phenotypic traits. Methodologies targeting these answers typically use whole-genome sequencing or reduced marker datasets from population-level sampling and infer one or more meaningful statistics, including statistics for population genetic analyses, genetic-environment associations, and genome-wide associations. In effect, generating these statistics from loci spread throughout a genome allows a geneticist to scan for loci or regions of the genome where a statistic behaves aberantly in comparison with the genome-wide background. 
 
-Studies are generating an increasing number of statistics across one or more broad inferential classes. A common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values found under several statistics. The largely ad hoc nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R Shiny interface, proving an intuitve, interactive graphical user interface (GUI) environment to explore univariate and multivariate data.
+Studies are generating an increasing number of statistics across one or more broad inferential classes. A common practice thus far has been to look across statistics to identify candidate genes for further investigation, essentially enriching for loci with outlier values found under several statistics. The largely *ad hoc* nature of this decision making process and the fact that certain statistics enjoy more power under particular evolutionary scenarios or sampling designs collectively indicate that these methods can be biased and can suffer from high error rates. MINOTAUR was designed to help identify candidate genomic loci or regions by leveraging values from several statistics to identify outliers in multi-dimensional space. The core goal of this package is to introduce multivariate distance measures that can be used in conjunction with genomic scan data. Moreover, MINOTAUR aids in outlier visualization using the R ShinyDashboard interface, proving an intuitve, interactive graphical user interface (GUI) environment to explore univariate and multivariate data.
 
 ## Getting Started
 MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=MINOTAUR) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
@@ -27,7 +27,7 @@ install.packages('MINOTAUR')
 
 Please use the following citation when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
   
-Robert Verity\*, Caitlin Collins\*, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. In Review.
+Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. In Review.
 
 ## Workflow Overview
 The MINOTAUR package is broken into two parts:
@@ -76,13 +76,27 @@ More information about these datasets can be obtained from the MINOTAUR mauscrip
 ?HumanGWAS
 ```
 
+## Plotting Options in MINOTAUR
+MINOTAUR includes three plotting options for visualizing univariate and multivariate measures.
+
+1. `1D Histogram`
+
+2. `2D Scatterplot`
+
+3. `Linear Manhattan Plot`
+
+The latter two plots utilize a novel plotting function that produces binned data plots, which are useful for plotting large datasets, with user-defined outlier measurements overlaid as individual points. The MINOTAUR developers are also working to implement additional visualization tools, which will be released periodically.
+
 ## Specific Examples
+
 ### Calculating Mulitvariate Statistics using Stand-alone Functions
 While the four MINOTAUR multivariate statistics can be calculated within the MINOTAUR GUI, users may sometimes wish to calculate them outside of the GUI. Users would normally load their own dataframe from an CSV/TSV or Rdata file. Here data will be created using the `rnorm` function.
 
 ```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
 # load MINOTAUR
 library(MINOTAUR)
+
+# CREATE DATASET
 # set the number of observations (e.g., loci)
 observations <- 1000
 # set arbitrary observation IDs using seq
@@ -96,6 +110,8 @@ var4 <- rnorm(observations)
 var5 <- rnorm(observations)
 # bind variables into a data frame
 allVar <- cbind(obsID, var1, var2, var3, var4, var5)
+
+# CALCULATE MULTIVARIATE MEASURES
 # set the columns to use for multivariate inference
 columns <- 2:6
 # run each multivariate function
@@ -115,6 +131,8 @@ Kd.ML <- kernelDeviance(allVar, columns, bandwidth=bw)
 bw.best <- bw[which(Kd.ML==max(Kd.ML))[1]]
 # calculate the kernel density
 Kd <- kernelDist(allVar, columns, bandwidth=bw.best)
+
+# VIEW RESULTS
 # plot a histogram of the multivariate statistics
 hist(Md, bins=100, xlab="Mahalanobis distance", main="Histogram of Mahalanobis distance")
 hist(Hd, bins=100, xlab="Harmonic mean distance", main="Histogram of Harmonic mean distance")
@@ -133,79 +151,95 @@ library('MINOTAUR')
 MINOTAUR()
 ```
 
-The MINOTAUR GUI will then open in your default internet browser. This may take a minute, since dependencies need to be checked and possibly installed.
+The MINOTAUR GUI will then open in your default internet browser.
 
 ##### Overview
 The **Welcome** page will greet you and includes a brief overview on the package and some basic navigation instructions.
 
 ![Welcome Page](1_WelcomePage.jpg)
 
-Along the left-hand side of the window is a series of tabs allowing the user to move through the MINOTAUR menus. The **Data** tab is used to load and format data. The **Outlier Detection** tab is used to calculate multivariate measures using the data. Finally, the **Produce Plots** tab provides a series of useful plots for visualizing both univariate and multivariate distributions and outliers. Throughout this example, these menus will appear in **bold** and any submenus will appear in *italics*.
+
+Along the left-hand side of the window is a series of tabs allowing the user to move through the MINOTAUR menus. The **Data** tab is used to load and format data. The **Multivariate Measures** tab is used to calculate multivariate measures using the data. Finally, the **Produce Plots** tab provides a series of useful plots for visualizing both univariate and multivariate distributions and outliers. Throughout this example, these menus will appear in **bold** and any submenus will appear in *italics*.
 
 ![MINOTAUR Overall Menu](2_Menu.jpg)
 
+
 ##### Inputing and Filtering Data
 
-To get started, data must first be leaded into the GUI. Clicking on **Data** and *Input Data* will take the user to a menu for this. Users can select between using example data or uploading their own data from text files or an Rdata object. For this example, we will be using the 'Human GWAS' example dataset, which is simulated data that mimics what would be produced during a GWAS study (much like the simulated data we generated above).
+To get started, data must first be leaded into the GUI. Clicking on **Data** and *Input Data* will take the user to a menu for this. Users can select between using example data or uploading their own data from text files or an Rdata object. For this example, we will be using the 'Human GWAS' example dataset that is described above.
 
 ![Load Data Menu](3_LoadDataMenu.jpg)
 
-When any dataset is selected or uploaded, the number of rows and columns will be reported to the right, above an interactive raw data table or a summary table.
+
+When any dataset is selected or uploaded, the number of rows and columns will be reported to the right, above interactive data and summary tables.
 
 ![Input Data Summary](4_DataSummary.jpg)
+
 
 Before proceeding to outlier detection, we will first do some data formatting in the *Format Data* submenu. This allows the user to first set position (i.e., bp) and grouping (i.e., chromosome) variables, which is useful for later plotting. For this dataset, the position variable is 'BP' and the grouping variable is 'Chr'.
 
 ![Identifying Location Variables](5_IdentifyPositions.jpg)
 
-Users can also subset data a number of ways. First, one can decide which data variables (columns) to carry forward in the GUI by unselecting the 'Use all remaining variables' checkbox. The user can add variables and decide whether to retain or remove them from the dataset. Users also have the option of removing missing data in the form of 'NA', 'NaN', and '+/-Inf'. Missing data is prohibited in any MINOTAUR multivariate functions, so care should be taken to use these options and any other means to eliminate missing data. In this example, we will keep only the beta-distributed trait measurements ('TraitN_Beta') and will remove any forms of missing data (check all boxes).
+
+Users can also subset data a number of ways. First, one can decide which data variables (columns) to carry forward in the GUI by unselecting the 'Use all remaining variables' checkbox. The user can add variables and decide whether to retain or remove them from the dataset. Users also have the option of removing missing data in the form of 'NA', 'NaN', and '+/-Inf'. Missing data is prohibited in all MINOTAUR multivariate functions, so care should be taken to use these options and any other means to eliminate missing data. In this example, we will keep only the beta-distributed trait measurements ('TraitN_Beta') and will remove any forms of missing data (check all boxes).
 
 ![Data Filtering Options](6_FilterDataOptions.jpg)
 
-To the right, some useful information is displayed. Along the top is a plot of the breakdown of data across grouping variables (e.g., the number of SNPs on each chromosome). Along the bottom is a view of the final data table with variables and missing data excluded.
+
+To the right, some useful information is displayed. Along the top is a plot of the breakdown of data across grouping variables (e.g., the number of SNPs on each chromosome; currently under construction). Along the bottom is a view of the final data table with variables and missing data excluded.
 
 ![Filtered Data Summary](7_FilterDataSummaries.jpg)
 
+
 ##### Calculating Multivariate Measurements
 
-The next major step in the MINOTAUR workflow is to calculate multivariate composite measures. By clicking on **Outlier Detection** and *Find Outliers* the user is brought to a series of menus to do this. Along the left side is a tabbed menu for generating and summarizing any multivariate measures. The summary table will appear blank at first, and multivariate measures can be added using either the 'Distance-Based' or 'Density-Based' tabs, which reflect the general manner multivariate measurements are made.
+The next major step in the MINOTAUR workflow is to calculate multivariate composite measures. By clicking on **Multivariate Measures** and *Calculate* the user is brought to a series of menus. Along the left side is a tabbed menu for generating and summarizing any multivariate measures. The summary table will appear blank at first, and multivariate measures can be added using either the 'Distance-Based' or 'Density-Based' tabs, which reflect the general manner multivariate measurements are made.
 
 Under the 'Distance-Based' tab, the user has the ability to use the Mahalanobis, Harmonic Mean, and Nearest Neighbor distances. For each, the user should select the three retained variables ('TraitN_Beta') and the desired distance measurement. Upon clicking the 'Calculate!' button, the distance measure is calculated and a histogram of the measure across all loci is displayed to the right. Below, users can input a name for the measure, which becomes the variable name for the data generated, and a brief description. The user should, one at a time, calculate distance based measures for all three distances using the three traits and appropriate names and descriptions.
 
-
 ![Distance-Based Methods Options](8_DistanceOptions.jpg)
+
 
 The same general options also appear under the 'Density-Based' tab, which is used to generate Kernel Density measurements. The user must also select a the 'Bandwidth estimation method' used to calculate the kernel size. Options include using an appropriate bandwidth for the data based on Silverman's rule (default), setting a custom bandwidth, and using maximum likelihood to determine the optimal bandwidth to use (much more time consuming). For this dataset the maximum likelihood estimate of the best bandwidth is 0.01, so we will set a custom bandwidth with that value.
 
 ![Density-Based Methods Options](9_DensityOptions.jpg)
 
+
 Between each, the user will notice that the summary table reporting multivariate measures will be populated. Users can use the menu near the bottom of the 'Summary' tab to both replot histograms and delete any generated multivariate measurements.
 
 ![Multivariate Measures Table](10_MultivariateTable.jpg)
 
+
 ##### Visualizing Multivariate Distributions & Outliers
 
-Finally, now that multivariate measures have been calculated, the user can proceed to generating plots and visually exploring the data (NOTE: the user can also visualize their data BEFORE outlier calculation. It is not necessary to calculate outliers first.). The submenus beneath **Produce Plots** include the plot type available in MINOTAUR. To demonstrate the general options available to the user when plotting, we will create a Manhattan plot of our multivariate measures using the *Linear Manhattan Plot* submenu.
+Finally, now that multivariate measures have been calculated, the user can proceed to generating plots and visually exploring the data. NOTE: The user can also visualize their data before calculating multivariate measures. If a user has calculated multivariate measures outside of the GUI, he or she can pass them directly to the plotting pages by loading a dataset with the multivariate measures as columns (i.e., calculated multivariate measures appended to the end of the raw dataframe).
+
+The submenus beneath **Produce Plots** include the plot type available in MINOTAUR. To demonstrate the general options available to the user when plotting, we will create a Manhattan plot of our multivariate measures using the *Linear Manhattan Plot* submenu.
 
 Each plotting submenu contains two options menus and the resulting plot. The 'Select Variables' menu is used to manipulate what data are being plotted on each axis, plus intuitive, general attributes about the axes themselves. Under 'Select y-axis' we will select the output of our Nearest Neighbor Distance calculation (called 'Nd') to display a Manhattan plot of this distance across all loci in the dataset.
 
 ![Axes Variable Options](11_AxisOptions.jpg)
 
+
 The 'Select outlier variable' gives us the ability to color points based on their position in the variable distribution (i.e., color outliers). In this circumstance, it makes the most sense to color the highest (upper) 1% tail of the Nearest Neighbor Distance, which represents those loci whose multivariate nearest neighbor distance distance is the greatest.
 
 ![Outlier Highlighting Options](12_OutlierOptions.jpg)
+
 
 The 'Adjust Plot Aesthetics' menu provides numerous, intutive aesthetic options for the resulting plot. Here is a menu configuration that provides an intuitive Manhattan plot with outliers indicated by red dots.
 
 ![Plot Aesthetics Menu](13_AesthOptions.jpg)
 
+
 And here is the resulting plot based on these options.
 
 ![Resulting Manhattan Plot](14_NdPlot.jpg)
 
+
 Part of the beauty of the MINOTAUR GUI is that multiple, stacked plots can be made, and when the plotting menus are collapsed, it provides the user with the ability to visually compare how various univariate and multivariate measures performed with the data, resulting in a figure like the following.
 
 ![Stacked Manhattan Plots](15_StackedPlots.jpg)
+
 
 Users will see these general plotting options on the other plotting submenus and can use them to generate an array of plots that are useful for exploring their data.
 

@@ -172,7 +172,8 @@ output$box_subsetData <- renderUI({
                          label=NULL,
                          choices=list('Remove NA'='NA',
                                       'Remove NaN'='NaN',
-                                      'Remove non-finite\n(Inf and -Inf)'='non-finite'))
+                                      'Remove non-finite\n(Inf and -Inf)'='non-finite'),
+                          selected=c('NA','NaN','non-finite'))
       )
 })
 

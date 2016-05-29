@@ -3,6 +3,42 @@
 ## FIND OUTLIERS PAGE ##  ------------------------------------------------------------------------------------
 ########################
 
+################################
+## Functions for Loading Bars ##
+################################
+
+# version of harmonicDist written specifically for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
+  d <- ncol(dfv)
+  distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+  return(distances)
+}
+
+# version of neighborDist written specifically  for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.neighborDist_partial <- function(dfv, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_neighborDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
+
+# version of kernelDist written specifically  for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDist_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    distances <- C_kernelDist_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$distance
+    return(distances)
+}
+
+# version of kernelDeviance written specifically  for GUI that calculates in chunks, allowing progress bar to be updated in between steps
+.kernelDeviance_partial <- function(dfv, bandwidth, S_inv, i_start, i_end){
+    d <- ncol(dfv)
+    deviance <- C_kernelDeviance_partial(split(t(dfv),1:d), bandwidth^2, split(S_inv,1:d), i_start, i_end)$deviance
+    return(deviance)
+}
+
+############################
+## Define Reactive Values ##
+############################
+
 ## generate reactiveValues object for all compound distance metric related quantities
 rv_outliers <- reactiveValues()
 rv_outliers$df_summary <- data.frame(name=NA, method=NA, parameters=NA, notes=NA)[-1,]
@@ -107,6 +143,10 @@ output$tabBox_produce_compound <- renderUI({
                                         choices=list('default'='default',
                                                      'manual'='manual',
                                                      'maximum likelihood'='ML')),
+                           wellPanel(
+                             htmlOutput("outliers_density_currentBandwidth"),
+                             style="padding: 10px"
+                           ),
                            actionButton('calculate_density',label='Calculate!')
                     ),
                     column(8,
@@ -327,14 +367,6 @@ output$outliers_distance_error2 <- reactive({
 })
 outputOptions(output, 'outliers_distance_error2', suspendWhenHidden=FALSE)
 
-# # version for GUI that calculates in chunks, allowing progress bar to be updated in between steps
-# .harmonicDist_partial <- function(dfv, S_inv, i_start, i_end){
-#   d <- ncol(dfv)
-#   distances <- C_harmonicDist_partial(split(t(dfv),1:d), split(S_inv,1:d), i_start, i_end)$distance
-#   return(distances)
-# }
-
-
 # error if name already being used (activates conditional panel)
 output$outliers_distance_error1 <- reactive({
   if (!is.null(input$outliers_distance_name)) {
@@ -399,7 +431,7 @@ outliers_density_howToChooseBandwidth <- observe({
     } else if (input$outliers_density_howToChooseBandwidth=="manual") {
 
       # manual bandwidth
-      bandwidth <- isolate(input$outliers_density_manual_bandwidth)
+      bandwidth <- input$outliers_density_manual_bandwidth
       if (!is.null(bandwidth)) {
         rv_outliers$bandwidth <- max(round(bandwidth,3), 0.001)
       }
@@ -416,6 +448,11 @@ outliers_density_howToChooseBandwidth <- observe({
 
     }
   }
+})
+
+# output current bandwidth
+output$outliers_density_currentBandwidth <- reactive({
+  return(HTML(paste("current chosen bandwidth: <b>",rv_outliers$bandwidth,"</b>",sep="")))
 })
 
 # description of Silverman's rule

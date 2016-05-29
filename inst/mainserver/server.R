@@ -60,25 +60,5 @@ server <- function(input, output) {
   source("utils.R", local=T)
 
   #----------------------------------------------------------------
-  # CRAP THAT I'M KEEPING FOR NOW JUST IN CASE IT BECOMES USEFUL
-  # html load data button (bit nicer than shiny default)
-  output$loadDataButton <- renderUI({
-    fluidRow(
-      column(12,
-             div(style="display:inline-block",
-                 tags$button(id='loadDataButton', type="button",
-                             class="btn action-button btn-primary",
-                             style='font-size:15px; text-align:center',
-                             HTML('<i class="icon-star"></i>Load Data')),
-                 HTML(paste('<input type="text" value="',rv$data_name,'" readonly="readonly">',sep=''))
-             ),
-             align='center')
-    )
-  })
-  observeEvent(input$loadDataButton, {
-    print("foobar")
-  })
-
-  #----------------------------------------------------------------
 
 }
