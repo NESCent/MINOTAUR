@@ -119,16 +119,16 @@ ui <- dashboardPage(title= "MINOTAUR",
                                   ),
                                   column(8,
                                          # Plot Genomic box
-                                         uiOutput('tabBox_plotGenomic')
+                                         uiOutput('box_plotBreakdown')
                                   )
                                 ),
                                 fluidRow(
                                   column(4,
                                          # Subset Data box
-                                         uiOutput('box_subsetData')
+                                         uiOutput('box_subsetData'),
 
                                          # summary of missing data removed
-                                         #uiOutput('valueBox_missingDataRemoved')
+                                         uiOutput('valueBox_missingDataRemoved')
                                   ),
                                   column(8,
                                          # Final Data box

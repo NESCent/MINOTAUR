@@ -42,7 +42,7 @@ output$box_formatData <- renderUI({
       )
 })
 
-## Strip out pos and chrom columns from other variables.
+## Strip out pos and chrom columns from other variables. pos is coerced to numeric and chrom is coerced to character.
 ## Return list(posVar,chromVar,otherVar,pos,chrom,y)
 stripPositionChromosome <- reactive({
 
@@ -50,8 +50,6 @@ stripPositionChromosome <- reactive({
 
   if(!is.null(rawData())){
     if(!is.null(rawData()$data)){
-
-      #### NOTE - PERFORM CHECKS THAT POS AND GROUP VARIABLES ARE SENSIBLE AT THIS STAGE. ERROR MESSAGE IF NOT.
 
       # extract position variable
       posVar <- input$formatData_select_position
@@ -61,6 +59,8 @@ stripPositionChromosome <- reactive({
         pos <- NULL
       } else {
         pos <- rawData()$data[,posVar]
+        if (!is.numeric(pos))
+          pos <- as.numeric(as.factor(pos))
       }
 
       # extract grouping variable
@@ -70,13 +70,7 @@ stripPositionChromosome <- reactive({
       if (chromVar=='(none)') {
         chrom <- NULL
       } else {
-        chrom <- rawData()$data[,chromVar]
-        #if (length(unique(chrom))>100) { #### REPLACE WITH ERROR IN CONDITIONAL PANEL
-        #  errorOn('too_many_chroms')
-        #  chrom <- NULL
-        #} else {
-        #  errorOff('too_many_chroms')
-        #}
+        chrom <- as.character(rawData()$data[,chromVar])
       }
 
       # all other variables make up y
@@ -92,21 +86,22 @@ stripPositionChromosome <- reactive({
                      y=y)
     }
   }
+  
   return(output)
 })
 
-#######################
-## Box: Plot Genomic ##
-#######################
+#########################
+## Box: Plot Breakdown ##
+#########################
 
-# tabBox for producing genomic summary plots
-output$tabBox_plotGenomic <- renderUI({
+# box for plotting breakdown by grouping variable
+output$box_plotBreakdown <- renderUI({
   box(title='Breakdown By Group',
       status="warning",
       solidHeader=TRUE,
       collapsible=TRUE,
       width=12,
-      height=300,
+      #height=300,
 
       if (is.null(stripPositionChromosome()$chrom)) {
         p('Choose a ',strong('Grouping variable'),'
@@ -116,23 +111,78 @@ output$tabBox_plotGenomic <- renderUI({
         if (length(unique(stripPositionChromosome()$chrom))>100) {
           p('(Grouping variable contains too many unique levels to plot)')
         } else {
-          p('UNDER CONSTRUCTION - Bob working on this now')
-          #plotOutput('formatData_plot_genomic_observations',height=220)
+          plotOutput('formatData_plot_genomic_observations',height=300)
         }
       }
   )
-  })
+})
 
 # barplot showing number of observations for each chromosome
-#output$formatData_plot_genomic_observations <- renderPlot({
-#  groupingVar <- stripPositionChromosome()$chrom
-#  uniques <- length(unique(groupingVar))
-#
-#  barplot(table(groupingVar),
-#          col=grey(0.2),
-#          xlab='Chromosome', ylab='#Observations',
-#          main='(this will be improved in final version)')
-#})
+output$formatData_plot_genomic_observations <- renderPlot({
+  posVar <- stripPositionChromosome()$pos # this is NULL or a numeric vector
+  groupingVar <- stripPositionChromosome()$chrom  # this is NULL or a character vector
+
+  if (!is.null(groupingVar)) {
+    uniques <- unique(groupingVar)
+    if (length(uniques)<100) {
+      if(!is.null(posVar)){
+        
+        # split pos by group
+        pos_list <- split(posVar, groupingVar)
+        pos_range <- matrix(as.numeric(unlist(lapply(pos_list, FUN=function(x){range(x,na.rm=TRUE)}))), ncol=2, byrow=T)
+        minVal <- min(pos_range)
+        maxVal <- max(pos_range)
+        
+        # print empty plot
+        par(fig=c(0,1,0.85,1),mar=c(0,0,0,0))
+        plot(0,type='n',xlim=c(-1,1),ylim=c(-1,1),axes=FALSE,ann=FALSE)
+        text(0,0,'genomic coverage broken down by group',cex=1.2,font=2)
+        
+        par(fig=c(0.1,0.9,0.1,0.85),mar=c(0,0,0,0),new=TRUE)
+        y_pretty <- pretty(pos_range)
+        plot(0,type='n', xlim=c(0,length(uniques)), ylim=range(y_pretty), xaxs='i', yaxs='i', axes=F)
+        axis(1,at=1:length(uniques)-0.5,labels=1:length(uniques))
+        axis(2,at=y_pretty)
+        
+        # loop through all groups
+        myPal <- colorRampPalette(c('white','red'))
+        for (i in 1:length(uniques)) {
+          x_range <- c((i-1+0.1)/length(uniques), (i-0.1)/length(uniques))
+          x_range <- x_range*(1-0.1-0.1) + 0.1
+          y_range <- c((pos_range[i,1]-minVal)/(maxVal-minVal), (pos_range[i,2]-minVal)/(maxVal-minVal))
+          y_range <- y_range*(1-0.1-0.15) + 0.1
+          if (y_range[1]!=y_range[2]) {
+            
+            # add image plot based on sampling density
+            m <- matrix(table(findInterval(pos_list[[i]],seq(pos_range[i,1],pos_range[i,2],l=101), rightmost.closed=T)),1)
+            par(fig=c(x_range[1], x_range[2], y_range[1], y_range[2]),mar=c(0,0,0,0),new=T)
+            image(m,axes=F,col=myPal(10))
+            
+            # add border
+            par(fig=c(0,1,0,1),mar=c(0,0,0,0),new=T)
+            plot(0,type='n', xlim=c(0,1), ylim=c(0,1), xaxs='i', yaxs='i', axes=F, ann=F)
+            polygon(c(x_range[1],x_range[2],x_range[2],x_range[1]), c(y_range[1],y_range[1],y_range[2],y_range[2]))
+          }
+        }
+      } else {
+        
+        # extract number of times each unique group is represented
+        tab <- data.frame(table(groupingVar))
+        uniques <- unique(groupingVar)
+        counts <- tab[match(uniques,tab[,1]),2]
+        
+        # produce plot
+        barplot(counts, names=1:length(uniques), col='black', main='number of observations in each group')
+      }
+    }
+  }
+  
+  
+  #barplot(table(groupingVar),
+  #        col=grey(0.2),
+  #        xlab='Chromosome', ylab='#Observations',
+  #        main='(this will be improved in final version)')
+})
 
 ######################
 ## Box: Subset Data ##
@@ -182,13 +232,15 @@ output$box_subsetData <- renderUI({
 # list(posVar=posVar, <- which variable defines the position
 #      chromVar=chromVar,  <- which variable defines the group (chromosome)
 #      otherVar=otherVar,  <- which variables define all other chosen columns
-#      pos,  <- vector of positions
+#      pos,  <- vector of positions. Coerced to numeric
 #      pos_modifier,  <- modifier to make positions increasing over chromosomes (for plotting)
-#      chrom,  <- vector of raw groupings, could be factors
-#      chromLevels, <- vector of unique levels of grouping variable
+#      chrom,  <- vector of raw groupings. Could be factors
+#      chromLevels, <- vector of unique levels of chrom
 #      chromIndex,  <- same as chrom but converted to integer that indexes value in chromlevels
 #      chromMidpoint,  <- midpoint of all pos in each group (for plotting)
-#      y,  <- data
+#      y,  <- data    <- the actual data
+#      numRemoved,    <- number of rows removed due to missing data
+#      percentRemoved,    <- percentage rows removed due to missing data
 #      pos_userDefined, <- whether pos is user-defined or default
 #      chrom_userDefined) <- whether chrom is user-defined or default
 cleanData <- reactive({
@@ -205,6 +257,8 @@ cleanData <- reactive({
                      chromIndex=NULL,
                      chromMidpoint=NULL,
                      y=NULL,
+                     numRemoved=NULL,
+                     percentRemoved=NULL,
                      pos_userDefined=NULL,
                      chrom_userDefined=NULL)
 
@@ -239,7 +293,7 @@ cleanData <- reactive({
     ## otherwise temporarily set to 1 everywhere
     if (is.null(data$chrom)) {
       output$chrom_userDefined <- FALSE
-      output$chrom <- rep(1,nrow(output$y))
+      output$chrom <- as.character(rep(1,nrow(output$y)))
     } else {
       output$chrom_userDefined <- TRUE
       output$chrom <- data$chrom
@@ -257,7 +311,8 @@ cleanData <- reactive({
 
     # subset rows
     if (!is.null(input$formatData_check_removeMissing)) {
-      df <- cbind(output$pos, output$chrom, output$y)
+      df <- data.frame(output$pos, output$chrom, output$y)
+      df[,2] <- as.character(df[,2])
       keepVec <- rep(1,nrow(output$y))
 
       # remove NA
@@ -280,11 +335,13 @@ cleanData <- reactive({
       output$y <- output$y[which(keepVec==1),,drop=FALSE]
       if (!any(keepVec==1))  # if all rows removed
         output <- nullOutput
+      output$numRemoved <- sum(keepVec!=1)
+      output$percentRemoved <- round(output$numRemoved/length(keepVec)*100,2)
     }
 
     # finalise chromosome variable
     if (output$chrom_userDefined) {
-      output$chromLevels <- unique(as.character(output$chrom))
+      output$chromLevels <- unique(output$chrom)
       output$chromIndex <- match(output$chrom, output$chromLevels)
     } else {
       output$chromLevels <- NULL
@@ -294,26 +351,22 @@ cleanData <- reactive({
     # finalise position variable - if not user defined increase linearly over chromosomes
     if (output$pos_userDefined==FALSE) {
       if (output$chrom_userDefined) {
-        chromCounts <- data.frame(table(output$chrom))
-        chromCounts <- chromCounts[match(chromCounts[,1], output$chromLevels),2]
+        chromCounts <- data.frame(table(output$chromIndex))$Freq
       } else {
         chromCounts <- nrow(output$y)
       }
       output$pos <- sequence(chromCounts)
     }
 
-    # calculate position modifier
+    # calculate position modifier. pos+pos_modifier gives a sequence that increases over the entire genome
     pos_list <- split(output$pos, output$chrom)
     pos_maxPerChromosome <- as.numeric(unlist(lapply(pos_list,FUN=function(x){max(x,na.rm=TRUE)})))
     pos_maxIncreasing <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome
     output$chromMidpoint <- cumsum(pos_maxPerChromosome) - pos_maxPerChromosome/2
     output$pos_modifier <- pos_maxIncreasing[output$chromIndex]
-
   }
 
-  # print("str output"); print(str(output))
   return(output)
-
 }) # end cleanData
 
 #################################
@@ -321,15 +374,15 @@ cleanData <- reactive({
 #################################
 
 # valueBox for % missing data removed
-#output$valueBox_missingDataRemoved <- renderUI({
-#  valueBox(value=HTML(paste('<font size=5>rows removed:  </font> <font size=6>',
-#                            finalData()$numRemoved,
-#                            ' (',
-#                            finalData()$percentRemoved,
-#                            '%)</font>'
-#                            ,sep='')
-#  ), subtitle='', color='yellow', width=12)
-#})
+output$valueBox_missingDataRemoved <- renderUI({
+  valueBox(value=HTML(paste('<font size=5>rows removed:  </font> <font size=6>',
+                            cleanData()$numRemoved,
+                            ' (',
+                            cleanData()$percentRemoved,
+                            '%)</font>'
+                            ,sep='')
+  ), subtitle='', color='yellow', width=12)
+})
 
 ########################
 ## Box: Filtered Data ##
@@ -354,10 +407,10 @@ output$table_finalData <- renderDataTable({
   if (is.null(cleanData()$y))
     return(NULL)
 
+  # otherwise return data frame
   df <- data.frame(Position_variable=cleanData()$pos,
                    Grouping_variable=cleanData()$chrom)
   df <- cbind(df,cleanData()$y)
-  # df <- data.frame(x=1:5,y=1:5)
   return(df)
 },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
 )
