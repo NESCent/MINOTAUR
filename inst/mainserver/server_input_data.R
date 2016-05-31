@@ -170,19 +170,16 @@ output$userInputCSV <- reactive({
 outputOptions(output, "userInputCSV", suspendWhenHidden=FALSE)
 
 
-
 ## reactive conductor for reading data from file, or using example data.
 ## Returns list(data,name,description,rows,cols)
 rawData <- reactive({
 
-  # output <- list(data=NULL, name=NULL, description=NULL, rows=NULL, cols=NULL)
   output <- NULL
-
 
   if(is.null(input$tabSet_loadData)){
     ## if no tab panel yet created (ie. on start-up),
     ## (and no input of example data has been selected -- if this is even possible),
-    ## automatically load the TwoRefSim example dataset:
+    ## automatically load the HumanGWAS example dataset:
     if (is.null(input$inputFile) & is.null(input$exampleData)){
       ## HumanGWAS ##
       data(HumanGWAS, package="MINOTAUR", envir=environment())
@@ -260,7 +257,7 @@ rawData <- reactive({
           if (input$inputFile$type %in% "application/x-r-data") {
             userData <- try(get(load(input$inputFile$datapath)), silent=TRUE)
             if (class(userData)=='try-error') {
-              print(userData)
+              print(head(userData))
               output <- list(data=NULL,
                              name=input$inputFile$name,
                              description='Error: failed to import data. Check that data is formatted correctly.',
@@ -277,7 +274,6 @@ rawData <- reactive({
             #######################
             ## load if CSV-type: ##
             #######################
-            # if (input$inputFile$type%in%c('text/csv','text/plain')) {
             userData <- try(data.frame(fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
             if (class(userData)=='try-error') {
               print(userData)
@@ -305,8 +301,9 @@ rawData <- reactive({
       } # end check for inputFile
     } # end user input selected
   } # end check for tabSet loaded
+  
   return(output)
-      })
+})
 
 #######################
 ## Box: Data Summary ##
@@ -314,7 +311,7 @@ rawData <- reactive({
 
 # box for data name (title)
 output$box_dataName <- renderUI({
-  box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=TRUE, width=12,
+  box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=FALSE, width=12,
       h2(rawData()$name),
       HTML(paste('<i><font size=3>',rawData()$description,'</font></i>',sep=''))
   )
@@ -349,57 +346,82 @@ output$tabBox_rawDataSummary <- renderUI({
   )
 })
 
-
-# ## Example: Colour cells
-
-#############
-# # raw data table (original)
-# output$rawDataTable <- renderDataTable({
-#   rawData()$data
-# },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
-# )
-#############
-
 # raw data table
-options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
-
-## output as table (example) ##
-## example: coloured cells
-
-## REQUIRES THE GITHUB VERSION OF DT!!!!!!!
-## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
-# devtools::install_github("rstudio/DT", ref="24d71f2")
-
 output$rawDataTable <- DT::renderDataTable({
 
   out <- NULL
 
-  ## Get data:
+  # get data
   dat <- rawData()$data
-
-  ## Get data table (DT)
   if(!is.null(dat)){
     out <- datatable(dat)
-  } # end null check
+  }
 
   return(out)
-}) #, rownames=FALSE
-
-# raw data table
-options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
+})
 
 
-# output$rawDataTable2 <- renderDataTable({
-#   rawData()$data
-# })
+# raw data summary table
+output$rawDataSummary <- DT::renderDataTable({
+  
+  # if rawData$data is NULL, return NULL (no table)
+  if (is.null(rawData()$data))
+    return(NULL)
+  
+  # count number of NAs
+  num.NA <- mapply(FUN=function(x){sum(is.na(x))},rawData()$data)
+  
+  # produce data frame of summary variables
+  output <- data.frame('Variable_Name'=names(rawData()$data),
+                       'Variable_Class'=mapply(class,rawData()$data),
+                       'Number_NAs'=num.NA,
+                       'Percent_NAs'=paste(round(num.NA/rawData()$rows*100,1),'%',sep=''),
+                       'Min'=mapply(FUN=function(x){
+                         if (is.numeric(x)) {
+                           return(signif(min(x,na.rm=TRUE),3))
+                         } else {
+                           return(NA)
+                         }
+                       },rawData()$data),
+                       'Median'=mapply(FUN=function(x){
+                         if (is.numeric(x)) {
+                           return(signif(median(x,na.rm=TRUE),3))
+                         } else {
+                           return(NA)
+                         }
+                       },rawData()$data),
+                       'Mean'=mapply(FUN=function(x){
+                         if (is.numeric(x)) {
+                           return(signif(mean(x,na.rm=TRUE),3))
+                         } else {
+                           return(NA)
+                         }
+                       },rawData()$data),
+                       'Max'=mapply(FUN=function(x){
+                         if (is.numeric(x)) {
+                           return(signif(max(x,na.rm=TRUE),3))
+                         } else {
+                           return(NA)
+                         }
+                       },rawData()$data)
+  )
+  
+  # output as table
+  DT::datatable(output,
+                class='compact',
+                rownames=FALSE,
+                colnames=c('Variable Name', 'Variable Class',
+                           'Number NAs', 'Proportion NAs',
+                           'Min', 'Median', 'Mean', 'Max'),
+                options=list(dom='ltpr')
+  )
+  
+  
+})
 
-# raw data table (original)
-# output$rawDataTable <- renderDataTable({
-#   rawData()$data
-# },options=list(scrollX=TRUE, scrollY='400px') #, rownames=FALSE
-# )
 
-# ## Example: Colour cells - ARCHIVED FOR NOW DUE TO DIFFICULTIES WORKING WITH LARGE TABLES
+
+############## Example: Colour cells - ARCHIVED FOR NOW DUE TO DIFFICULTIES WORKING WITH LARGE TABLES
 
 # # raw data table
 # options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
@@ -410,7 +432,6 @@ options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
 # ## REQUIRES THE GITHUB VERSION OF DT!!!!!!!
 # ## NEED To MAKE SURE WE CAN RELEASE/REQUIRE THIS VERSION WITH/IN THE PACKAGE!!!!
 # #devtools::install_github('rstudio/DT')
-#
 #
 # output$rawDataTable <- DT::renderDataTable({
 #
@@ -568,66 +589,5 @@ options(DT.options = list(scrollX=TRUE, scrollY='400px'))#, rownames=FALSE
 #
 # } # end .get.colorTable.style
 
-
 #############
-
-# raw data summary table
-output$rawDataSummary <- DT::renderDataTable({
-  rawData <- rawData()
-
-  # if rawData$data is NULL, return NULL (no table)
-  if (is.null(rawData$data))
-    return(NULL)
-
-  # count number of NAs
-  num.NA <- mapply(FUN=function(x){sum(is.na(x))},rawData$data)
-
-  # produce data frame of summary variables
-  output <- data.frame('Variable_Name'=names(rawData$data),
-                       'Variable_Class'=mapply(class,rawData$data),
-                       'Number_NAs'=num.NA,
-                       'Percent_NAs'=paste(round(num.NA/rawData$rows*100,1),'%',sep=''),
-                       'Min'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(min(x,na.rm=TRUE))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData$data),
-                       'Median'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(median(x,na.rm=TRUE))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData$data),
-                       'Mean'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(mean(x,na.rm=TRUE))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData$data),
-                       'Max'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(max(x,na.rm=TRUE))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData$data)
-  )
-
-  ## output as table ##
-
-  DT::datatable(output,
-                class='compact',
-                # rownames=FALSE,
-                colnames=c('Variable Name', 'Variable Class',
-                           'Number NAs', 'Proportion NAs',
-                           'Min', 'Median', 'Mean', 'Max'),
-                options=list(dom='ltpr')
-  )
-
-
-})
 
