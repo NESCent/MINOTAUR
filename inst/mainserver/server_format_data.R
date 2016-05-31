@@ -4,12 +4,19 @@
 ## FORMAT DATA PAGE ##  ------------------------------------------------------------------------------------
 ######################
 
+
 ######################
 ## Box: Format Data ##
 ######################
 
 # box for choosing genomic variables
 output$box_formatData <- renderUI({
+
+  chromVarSel <- posVarSel <- NULL
+  chromVarSel <- stripPositionChromosome()$chromVar
+  posVarSel <- stripPositionChromosome()$posVar
+
+
   box(title="Identify Variables",
       status="primary",
       solidHeader=TRUE,
@@ -27,7 +34,7 @@ output$box_formatData <- renderUI({
                            label='Position variable',
                            choices=as.list(c('(none)',
                                              names(rawData()$data))),
-                           selected=stripPositionChromosome()$posVar,
+                           selected=posVarSel,
                            multiple=FALSE)
         ),
         column(6,
@@ -35,11 +42,12 @@ output$box_formatData <- renderUI({
                            label='Grouping variable',
                            choices=as.list(c('(none)',
                                              names(rawData()$data))),
-                           selected=stripPositionChromosome()$chromVar,
+                           selected=chromVarSel,
                            multiple=FALSE)
         )
       )
       )
+
 })
 
 ## Strip out pos and chrom columns from other variables. pos is coerced to numeric and chrom is coerced to character.
@@ -58,9 +66,14 @@ stripPositionChromosome <- reactive({
       if (posVar=='(none)') {
         pos <- NULL
       } else {
+        ## Reset selected position variable (if dataset has changed)
+        if(!posVar %in% names(rawData()$data)){
+          pos <- NULL
+        }else{
         pos <- rawData()$data[,posVar]
         if (!is.numeric(pos))
           pos <- as.numeric(as.factor(pos))
+        }
       }
 
       # extract grouping variable
@@ -70,7 +83,12 @@ stripPositionChromosome <- reactive({
       if (chromVar=='(none)') {
         chrom <- NULL
       } else {
-        chrom <- as.character(rawData()$data[,chromVar])
+        ## Reset selected chromosome variable (if dataset has changed)
+        if(!chromVar %in% names(rawData()$data)){
+          chrom <- NULL
+        }else{
+            chrom <- as.character(rawData()$data[,chromVar])
+        }
       }
 
       # all other variables make up y
@@ -84,6 +102,7 @@ stripPositionChromosome <- reactive({
                      pos=pos,
                      chrom=chrom,
                      y=y)
+
     }
   }
   
@@ -105,11 +124,12 @@ output$box_plotBreakdown <- renderUI({
 
       if (is.null(stripPositionChromosome()$chrom)) {
         p('Choose a ',strong('Grouping variable'),'
-          (for example grouping by chromosome) to produce a plot showing the breakdown of observations by group')
+          (for example grouping by chromosome) from the menu in the panel at left
+          to produce a plot showing the breakdown of observations by group.')
       } else {
         # if too many unique groups then give warning message
         if (length(unique(stripPositionChromosome()$chrom))>100) {
-          p('(Grouping variable contains too many unique levels to plot)')
+          p('(Grouping variable contains too many unique levels to plot.)')
         } else {
           plotOutput('formatData_plot_genomic_observations',height=300)
         }
@@ -176,12 +196,6 @@ output$formatData_plot_genomic_observations <- renderPlot({
       }
     }
   }
-  
-  
-  #barplot(table(groupingVar),
-  #        col=grey(0.2),
-  #        xlab='Chromosome', ylab='#Observations',
-  #        main='(this will be improved in final version)')
 })
 
 ######################
