@@ -4,7 +4,8 @@
 \alias{Mahalanobis}
 \title{Mahalanobis}
 \usage{
-Mahalanobis(dfv, column.nums = 1:ncol(dfv), S = NULL, M = NULL)
+Mahalanobis(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
+  S = NULL, M = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
@@ -12,14 +13,17 @@ Mahalanobis(dfv, column.nums = 1:ncol(dfv), S = NULL, M = NULL)
 \item{column.nums}{indexes the columns of the data frame that will be used to
 calculate Mahalanobis distance (all other columns are ignored).}
 
-\item{S}{the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[,column.nums],use="pairwise.complete.obs").}
+\item{subset}{index the rows of the data frame that will be used to calculate the mean and covariance of the distribution (unless specified manually).}
 
-\item{M}{the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of the data.}
+\item{S}{the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").}
+
+\item{M}{the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of dfv[subset,column.nums].}
 }
 \description{
-Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. The input
-data frame can handle some missing data, as long as a covariance matrix can still be computed from
-the selected variables.
+Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+}
+\details{
+Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
 }
 \examples{
 

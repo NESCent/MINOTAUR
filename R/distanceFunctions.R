@@ -19,15 +19,16 @@
 
 #' Mahalanobis
 #'
-#' Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. The input
-#' data frame can handle some missing data, as long as a covariance matrix can still be computed from
-#' the selected variables.
+#' Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+#' 
+#' Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
 #' calculate Mahalanobis distance (all other columns are ignored).
-#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[,column.nums],use="pairwise.complete.obs").
-#' @param M the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of the data.
+#' @param subset index the rows of the data frame that will be used to calculate the mean and covariance of the distribution (unless specified manually).
+#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").
+#' @param M the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of dfv[subset,column.nums].
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -46,7 +47,7 @@
 
 ########################################################################
 
-Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
+Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, M=NULL){
 
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -69,9 +70,20 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
   if (nlocs<2)
   	stop("dfv must contain at least two rows")
 
+  # check that subset can be used to index df.vars without error
+  if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
+    stop("subset must contain valid indexes for choosing rows in dfv")
+
+  # subset rows in df.vars
+  df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+  
+  # check that at least two rows in df.vars_subset
+  if (nrow(df.vars_subset)<2)
+    stop("subset must index at least two rows in dfv")
+  
   # if S is NULL replace with covariance matrix
   if (is.null(S))
-    S <- cov(df.vars, use="pairwise.complete.obs")
+    S <- cov(df.vars_subset, use="pairwise.complete.obs")
 
   # check that S is a matrix
   if (!is.matrix(S))
@@ -91,7 +103,7 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
 
   # if M is NULL replace with mean over variables
   if (is.null(M))
-    M <- colMeans(df.vars,na.rm=TRUE)
+    M <- colMeans(df.vars_subset,na.rm=TRUE)
   
   # force M to be vector
   M <- as.vector(unlist(M))
@@ -115,19 +127,19 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
 
 #' Harmonic Mean Distance
 #'
-#' Calculates harmonic mean
-#' distance of all points from all others.
+#' Calculates harmonic mean distance between points. Data are subset prior to calculating distances (see details).
 #'
-#' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-#' Values are first normalized in each dimension by subtracting from the
-#' mean and multiplying by the inverse covariance matrix before calculating harmonic mean distances.
+#' Takes a matrix or data frame as input, with observations in rows and statistics in columns. The parameter "column.nums" is used to select which columns to use in the analysis, all other columns are ignored.
+#' The covariance is then calculated on a subset of this data, specified using the parameter "subset" (which defaults to all observations). All distances in the calculation are normalised by multiplying by the inverse of this covariance matrix. Alternatively, this matrix can be specified manually as an additional argument.
+#' The harmonic mean distance of a point is calculated as the harmonic mean of the distance between this point and all points in the chosen subset.
 #'
-#' Note that this method cannot handle NA values.
+#' Note that this method cannot handle any NA values.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate harmonic distance (all other columns are ignored).
-#' @param S the covariance matrix used to normalise the data in the harmonic mean calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate harmonic mean distances (all other columns are ignored).
+#' @param subset index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).
+#' @param S the covariance matrix used to normalise the data in the harmonic mean calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -144,19 +156,18 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), S=NULL, M=NULL){
 #'
 #' @export
 
-
 ########################################################################
 
-harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
+harmonicDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL){
 
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
     if (!is.matrix(dfv) & !is.data.frame(dfv))
-    stop("dfv must be a matrix or data frame")
+      stop("dfv must be a matrix or data frame")
 
     # check that column.nums can be used to index dfv without error
     if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
-    stop("column.nums must contain valid indexes for choosing columns in dfv")
+      stop("column.nums must contain valid indexes for choosing columns in dfv")
 
     # extract variables from dfv
     df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
@@ -165,20 +176,31 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 
     # check that all selected columns are numeric
     if (any(!apply(df.vars,2,is.numeric)))
-    stop("all selected columns of dfv must be numeric")
+      stop("all selected columns of dfv must be numeric")
 
     # check that no NA values
     if (any(is.na(df.vars)))
-    stop("dfv cannot contain NA values")
+      stop("dfv cannot contain NA values")
 
     # check that at least two rows in df.vars
     nlocs <- nrow(df.vars)
     if (nlocs<2)
-    stop("dfv must contain at least two rows")
+      stop("dfv must contain at least two rows")
 
+    # check that subset can be used to index df.vars without error
+    if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
+      stop("subset must contain valid indexes for choosing rows in dfv")
+    
+    # subset rows in df.vars
+    df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+    
+    # check that at least two rows in df.vars_subset
+    if (nrow(df.vars_subset)<2)
+      stop("subset must index at least two rows in dfv")
+    
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars)
+      S <- cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -200,7 +222,7 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
     S_inv <- solve(S)
 
     #### calculate harmonic mean distances using C++ function
-    distances <- C_harmonicDist(split(t(df.vars),1:d), split(S_inv,1:d))$distance
+    distances <- C_harmonicDist(split(t(df.vars),1:d), subset-1, split(S_inv,1:d))$distance
 
     return(distances)
 } # end harmonicDist
@@ -210,18 +232,19 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 
 #' Nearest Neighbor Distance
 #'
-#' Calculates euclidean distance to nearest neighbor for all points.
+#' Calculates nearest neighbor distance between points. Data are subset prior to calculating distances (see details).
 #'
-#' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-#' Values are first normalized in each dimension by subtracting from the
-#' mean and dividing by the standard deviation before calculating nearest neighbor distance.
+#' Takes a matrix or data frame as input, with observations in rows and statistics in columns. The parameter "column.nums" is used to select which columns to use in the analysis, all other columns are ignored.
+#' The covariance is then calculated on a subset of this data, specified using the parameter "subset" (which defaults to all observations). All distances in the calculation are normalised by multiplying by the inverse of this covariance matrix. Alternatively, this matrix can be specified manually as an additional argument.
+#' The nearest neighbor distance of a point is calculated as the closest distance between this point and all points in the chosen subset.
 #'
 #' Note that this method cannot handle NA values.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate nearest neighbor distance (all other columns are ignored).
-#' @param S the covariance matrix used to normalise the data in the nearest neighbor calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate nearest neighbor distances (all other columns are ignored).
+#' @param subset index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).
+#' @param S the covariance matrix used to normalise the data in the nearest neighbor calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -238,10 +261,9 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 #'
 #' @export
 
-
 ########################################################################
 
-neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
+neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL){
 
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -269,9 +291,20 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   if (n<2)
     stop("dfv must contain at least two rows")
 
+  # check that subset can be used to index df.vars without error
+  if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
+    stop("subset must contain valid indexes for choosing rows in dfv")
+  
+  # subset rows in df.vars
+  df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+  
+  # check that at least two rows in df.vars_subset
+  if (nrow(df.vars_subset)<2)
+    stop("subset must index at least two rows in dfv")
+  
   # if S is NULL replace with covariance matrix
   if (is.null(S))
-    S <- cov(df.vars)
+    S <- cov(df.vars_subset)
 
   # check that S is a matrix
   if (!is.matrix(S))
@@ -293,7 +326,7 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
   S_inv <- solve(S)
 
   #### calculate nearest neighbor distances using C++ function
-  distances <- C_neighborDist(split(t(df.vars), 1:d), split(S_inv,1:d))$distance
+  distances <- C_neighborDist(split(t(df.vars), 1:d), subset-1, split(S_inv,1:d))$distance
 
   return(distances)
 } # end neighborDist
@@ -304,20 +337,21 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 #' Kernel Density Distance
 #'
 #' Calculates kernel density of all points from all others in multivariate space. Returns -2*log(density)
-#' as a distance measure.
+#' as a distance measure. Data are subset prior to calculating distances (see details).
 #'
-#' Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-#' Values are first normalized in each dimension by subtracting from the
-#' mean and dividing by the standard deviation before calculating kernel density distance. Assumes a
-#' multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
+#' Takes a matrix or data frame as input, with observations in rows and statistics in columns. The parameter "column.nums" is used to select which columns to use in the analysis, all other columns are ignored.
+#' The covariance is then calculated on a subset of this data, specified using the parameter "subset" (which defaults to all observations). The kernel bandwidth is multiplied by this covariance matrix. Alternatively, this matrix can be specified manually as an additional argument.
+#' The kernel density deviance of a point is calculated as -2*log(density) of this point from all other points in the chosen subset.
+#' Assumes a multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
 #'
 #' Note that this method cannot handle NA values.
-#'
+#' 
 #' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that contain the statistics used to
-#' calculate kernel distance (all other columns are ignored).
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate kernel density distances (all other columns are ignored).
+#' @param subset index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).
 #' @param bandwidth standard deviation of the normal kernel in each dimension. Can be a numerical value, or can be set to 'default', in which case Silverman's rule is used to select the bandwidth.
-#' @param S the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.
+#' @param S the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
@@ -337,16 +371,16 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), S=NULL){
 
 ########################################################################
 
-kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL){
+kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwidth="default", S=NULL){
 
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
     if (!is.matrix(dfv) & !is.data.frame(dfv))
-    stop("dfv must be a matrix or data frame")
+      stop("dfv must be a matrix or data frame")
 
     # check that column.nums can be used to index dfv without error
     if (class(try(dfv[,column.nums],silent=TRUE))=='try-error')
-    stop("column.nums must contain valid indexes for choosing columns in dfv")
+      stop("column.nums must contain valid indexes for choosing columns in dfv")
 
     # extract variables from dfv
     df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
@@ -355,19 +389,30 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
 
     # check that all selected columns are numeric
     if (any(!apply(df.vars,2,is.numeric)))
-    stop("all selected columns of dfv must be numeric")
+      stop("all selected columns of dfv must be numeric")
 
     # check that no NA values
     if (any(is.na(df.vars)))
-    stop("dfv cannot contain NA values")
+      stop("dfv cannot contain NA values")
 
     # check that at least two rows in df.vars
     if (n<2)
-    stop("dfv must contain at least two rows")
+      stop("dfv must contain at least two rows")
 
+    # check that subset can be used to index df.vars without error
+    if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
+      stop("subset must contain valid indexes for choosing rows in dfv")
+    
+    # subset rows in df.vars
+    df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+    
+    # check that at least two rows in df.vars_subset
+    if (nrow(df.vars_subset)<2)
+      stop("subset must index at least two rows in dfv")
+    
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars)
+      S <- cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -405,7 +450,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
     }
 
     #### calculate kernel density distances using C++ function
-    distances <- C_kernelDist(split(t(df.vars), 1:d), bandwidth^2, split(S_inv,1:d))$distance
+    distances <- C_kernelDist(split(t(df.vars), 1:d), subset-1, bandwidth^2, split(S_inv,1:d))$distance
 
     return(distances)
 } # end kernelDist
@@ -417,19 +462,18 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
 #'
 #' Calculates the Bayesian deviance (-2*log-likelihood) under the same kernel density model used
 #' by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
-#' (maximum likelihood) bandwith to use in the kernelDist() function (see example).
+#' (maximum likelihood) bandwith to use in the kernelDist() function (see example). Data are subset prior to calculating distances (see details).
 #'
 #' Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
-#' leave-one-out method, wherein the likelihood of each point is equal to its kernel
-#' density calculated from every *other* point. This avoids the issue of obtaining infinite likelihood
-#' at zero bandwidth, which would be the case under an ordinary kernel density model.
-#'
+#' leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i.
+#' This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that contain the statistics used to
+#' @param column.nums indexes the columns of the data frame that will be used to
 #' calculate kernel log-likelihood (all other columns are ignored).
+#' @param subset index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).
 #' @param bandwidth a vector containing the range of bandwidths to be explored.
-#' @param S the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.
+#' @param S the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).
 #' @param reportProgress whether to report current progress of the algorithm to the console (TRUE/FALSE).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
@@ -455,7 +499,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), bandwidth="default", S=NULL
 
 ########################################################################
 
-kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1), S=NULL, reportProgress=FALSE){
+kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwidth=seq(0.1,1,0.1), S=NULL, reportProgress=FALSE){
 
     #### perform simple checks on data
     # check that dfv is a matrix or data frame
@@ -483,9 +527,20 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1
     if (n<2)
     stop("dfv must contain at least two rows")
 
+    # check that subset can be used to index df.vars without error
+    if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
+      stop("subset must contain valid indexes for choosing rows in dfv")
+    
+    # subset rows in df.vars
+    df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+    
+    # check that at least two rows in df.vars_subset
+    if (nrow(df.vars_subset)<2)
+      stop("subset must index at least two rows in dfv")
+    
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars)
+      S <- cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -520,7 +575,7 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), bandwidth=seq(0.1,1,0.1
             message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
             flush.console()
         }
-        output[i] <- C_kernelDeviance(split(t(df.vars), 1:d), bandwidth[i]^2, split(S_inv,1:d))$deviance
+        output[i] <- C_kernelDeviance(split(t(df.vars), 1:d), subset-1, bandwidth[i]^2, split(S_inv,1:d))$deviance
     }
 
     return(output)

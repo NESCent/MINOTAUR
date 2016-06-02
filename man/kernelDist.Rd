@@ -4,28 +4,30 @@
 \alias{kernelDist}
 \title{Kernel Density Distance}
 \usage{
-kernelDist(dfv, column.nums = 1:ncol(dfv), bandwidth = "default",
-  S = NULL)
+kernelDist(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
+  bandwidth = "default", S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
-\item{column.nums}{indexes the columns of the data frame that contain the statistics used to
-calculate kernel distance (all other columns are ignored).}
+\item{column.nums}{indexes the columns of the data frame that will be used to
+calculate kernel density distances (all other columns are ignored).}
+
+\item{subset}{index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).}
 
 \item{bandwidth}{standard deviation of the normal kernel in each dimension. Can be a numerical value, or can be set to 'default', in which case Silverman's rule is used to select the bandwidth.}
 
-\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
+\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).}
 }
 \description{
 Calculates kernel density of all points from all others in multivariate space. Returns -2*log(density)
-as a distance measure.
+as a distance measure. Data are subset prior to calculating distances (see details).
 }
 \details{
-Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-Values are first normalized in each dimension by subtracting from the
-mean and dividing by the standard deviation before calculating kernel density distance. Assumes a
-multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
+Takes a matrix or data frame as input, with observations in rows and statistics in columns. The parameter "column.nums" is used to select which columns to use in the analysis, all other columns are ignored.
+The covariance is then calculated on a subset of this data, specified using the parameter "subset" (which defaults to all observations). The kernel bandwidth is multiplied by this covariance matrix. Alternatively, this matrix can be specified manually as an additional argument.
+The kernel density deviance of a point is calculated as -2*log(density) of this point from all other points in the chosen subset.
+Assumes a multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
 
 Note that this method cannot handle NA values.
 }
