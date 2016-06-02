@@ -5,27 +5,30 @@
 using namespace std;
 
 //------------------------------------------------
-// calculates kernel density of all points from all others.
+// calculates kernel density of all points from a subset of points.
 // [[Rcpp::export]]
-Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv) {
+Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, std::vector<int> subset, double sigma2, std::vector< std::vector<double> > S_inv) {
     
     int dims = int(data.size());
-    int n = data[0].size();
+    int n = int(data[0].size());
+    int sub_size = int(subset.size());
     double C1 = 0.5/sigma2;
-    double C2 = 2*log(double(n-1)) + dims*log(6.283185*sigma2);
+    int tmp;
     
     double x, y, z;
     vector<double> distance(n);
     
     for (int i=0; i<n; i++) {
         z = log(0.0);
-        for (int j=0; j<n; j++) {
-            if (i==j)
+        tmp = 0;
+        for (int j=0; j<sub_size; j++) {
+            if (i==subset[j])
                 continue;
+            tmp++;
             x = 0;
             for (int k1=0; k1<dims; k1++) {
                 for (int k2=k1; k2<dims; k2++) {
-                    y = (data[k1][i]-data[k1][j])*S_inv[k1][k2]*(data[k2][i]-data[k2][j]);
+                    y = (data[k1][i]-data[k1][subset[j]])*S_inv[k1][k2]*(data[k2][i]-data[k2][subset[j]]);
                     if (k1==k2) {
                         x += y;
                     } else {
@@ -39,8 +42,9 @@ Rcpp::List C_kernelDist(std::vector< std::vector<double> > data, double sigma2, 
             } else {
                 z = z + log(1 + exp(-x*C1 - z));
             }
+            
         }
-        distance[i] = C2 - 2*z;
+        distance[i] = -2*(-log(double(tmp-1)) - 0.5*dims*log(6.283185*sigma2) + z);
     }
     
     // return values

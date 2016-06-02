@@ -4,23 +4,26 @@
 \alias{neighborDist}
 \title{Nearest Neighbor Distance}
 \usage{
-neighborDist(dfv, column.nums = 1:ncol(dfv), S = NULL)
+neighborDist(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
+  S = NULL)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
-\item{column.nums}{indexes the columns of the data frame that contain the statistics used to
-calculate nearest neighbor distance (all other columns are ignored).}
+\item{column.nums}{indexes the columns of the data frame that will be used to
+calculate nearest neighbor distances (all other columns are ignored).}
 
-\item{S}{the covariance matrix used to normalise the data in the nearest neighbor calculation. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
+\item{subset}{index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).}
+
+\item{S}{the covariance matrix used to normalise the data in the nearest neighbor calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).}
 }
 \description{
-Calculates euclidean distance to nearest neighbor for all points.
+Calculates nearest neighbor distance between points. Data are subset prior to calculating distances (see details).
 }
 \details{
-Takes a matrix or data frame as input, with observations in rows and statistics in columns.
-Values are first normalized in each dimension by subtracting from the
-mean and dividing by the standard deviation before calculating nearest neighbor distance.
+Takes a matrix or data frame as input, with observations in rows and statistics in columns. The parameter "column.nums" is used to select which columns to use in the analysis, all other columns are ignored.
+The covariance is then calculated on a subset of this data, specified using the parameter "subset" (which defaults to all observations). All distances in the calculation are normalised by multiplying by the inverse of this covariance matrix. Alternatively, this matrix can be specified manually as an additional argument.
+The nearest neighbor distance of a point is calculated as the closest distance between this point and all points in the chosen subset.
 
 Note that this method cannot handle NA values.
 }

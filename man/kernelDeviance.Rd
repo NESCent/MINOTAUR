@@ -4,31 +4,32 @@
 \alias{kernelDeviance}
 \title{Kernel Density Deviance}
 \usage{
-kernelDeviance(dfv, column.nums = 1:ncol(dfv), bandwidth = seq(0.1, 1, 0.1),
-  S = NULL, reportProgress = FALSE)
+kernelDeviance(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
+  bandwidth = seq(0.1, 1, 0.1), S = NULL, reportProgress = FALSE)
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
 
-\item{column.nums}{indexes the columns of the data frame that contain the statistics used to
+\item{column.nums}{indexes the columns of the data frame that will be used to
 calculate kernel log-likelihood (all other columns are ignored).}
+
+\item{subset}{index the rows of the data frame that will be used to calculate the covariance matrix (unless specified manually).}
 
 \item{bandwidth}{a vector containing the range of bandwidths to be explored.}
 
-\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated on the data.}
+\item{S}{the covariance matrix that the bandwidth is multiplied by. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums]).}
 
 \item{reportProgress}{whether to report current progress of the algorithm to the console (TRUE/FALSE).}
 }
 \description{
 Calculates the Bayesian deviance (-2*log-likelihood) under the same kernel density model used
 by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
-(maximum likelihood) bandwith to use in the kernelDist() function (see example).
+(maximum likelihood) bandwith to use in the kernelDist() function (see example). Data are subset prior to calculating distances (see details).
 }
 \details{
 Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
-leave-one-out method, wherein the likelihood of each point is equal to its kernel
-density calculated from every *other* point. This avoids the issue of obtaining infinite likelihood
-at zero bandwidth, which would be the case under an ordinary kernel density model.
+leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i.
+This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
 }
 \examples{
 

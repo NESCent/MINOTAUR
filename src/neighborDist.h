@@ -3,8 +3,8 @@
 #define __RgeoProfile__neighborDist__
 
 //------------------------------------------------
-// calculates distance to nearest neighbor for all points
-Rcpp::List C_neighborDist(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv);
+// calculates nearest neighbor distance between all points and a subset of points
+Rcpp::List C_neighborDist(std::vector< std::vector<double> > data, std::vector<int> subset, std::vector< std::vector<double> > S_inv);
 
 //------------------------------------------------
 // calculates distance to nearest neighbor for all points
