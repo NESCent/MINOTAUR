@@ -35,7 +35,7 @@ ui <- shinydashboard::dashboardPage(title= "MINOTAUR",
                                     #########################
                                     ## TITLE AND SIDE MENU ##  ------------------------------------------------------------------------------------
                                     #########################
-                                    shinydashboard::dashboardHeader(title='MINOTAUR', dropdownMenuOutput('messageMenu')),
+                                    shinydashboard::dashboardHeader(title='MINOTAUR', shinydashboard::dropdownMenuOutput('messageMenu')),
 
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
@@ -74,7 +74,7 @@ ui <- shinydashboard::dashboardPage(title= "MINOTAUR",
                                     ## MAIN PAGES ##  ------------------------------------------------------------------------------------
                                     ################
 
-                                    dashboardBody(
+                                    shinydashboard:: dashboardBody(
 
                                       shinydashboard::tabItems(
 
