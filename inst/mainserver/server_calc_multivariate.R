@@ -54,7 +54,7 @@ rv_outliers$bandwidth <- NULL
 # header box
 output$headerBox_produce_compound <- renderUI({
   #tags$head(tags$style(HTML(".small-box {height: 50px}")))
-  valueBox(
+  shinydashboard::valueBox(
     subtitle = HTML(paste('<font size=5>Produce Compound Measures</font>')),
     color = "light-blue",
     value = NULL,

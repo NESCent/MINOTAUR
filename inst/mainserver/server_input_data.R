@@ -77,13 +77,18 @@
 #' @importFrom DT renderDataTable
 #' @importFrom DT dataTableOutput
 #' @importFrom DT datatable
+#' @importFrom graphics box
+#' @importFrom shiny renderUI
+#' @importFrom shiny tabPanel
+#' @importFrom shinydashboard tabBox
+#' @importFrom shinydashboard valueBox
 ####################
 ## Box: Load Data ##
 ####################
 
 # header box
-output$headerBox_loadData <- renderUI({
-  valueBox(
+output$headerBox_loadData <- shiny::renderUI({
+  shinydashboard::valueBox(
     subtitle = HTML(paste('<font size=5>Load Data</font>')),
     color = "light-blue",
     value = NULL,
@@ -92,16 +97,16 @@ output$headerBox_loadData <- renderUI({
 })
 
 # box for loading data
-output$tabBox_loadData <- renderUI({
+output$tabBox_loadData <- shiny::renderUI({
 
-  tabBox(id = "tabSet_loadData",
+  shinydashboard::tabBox(id = "tabSet_loadData",
          width=12,
          status='warning',
 
          ##################
          ## LOAD EXAMPLE ##
          ##################
-         tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
+         shiny::tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
                   h3('Work with example data'),
                   selectInput('exampleData', label='Select example',
                               choices=list("(use own data)" = "use_own",
@@ -116,7 +121,7 @@ output$tabBox_loadData <- renderUI({
          #########################
          ## LOAD DATA FROM FILE ##
          #########################
-         tabPanel(value = "user",
+         shiny::tabPanel(value = "user",
                   title = HTML('<font size=4>Upload Data</font>'),
                   icon = icon("upload"),
 
@@ -313,37 +318,37 @@ rawData <- reactive({
 #######################
 
 # box for data name (title)
-output$box_dataName <- renderUI({
-  box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=FALSE, width=12,
+output$box_dataName <- shiny::renderUI({
+  graphics::box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=FALSE, width=12,
       h2(rawData()$name),
       HTML(paste('<i><font size=3>',rawData()$description,'</font></i>',sep=''))
   )
 })
 
 # valueBox for data rows
-output$valueBox_rows <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>rows:  </font> <font size=6>',
+output$valueBox_rows <- shiny::renderUI({
+  shinydashboard::valueBox(value=HTML(paste('<font size=5>rows:  </font> <font size=6>',
                             rawData()$rows,'</font>',sep='')),
            subtitle='', color='yellow', width=6)
 })
 
 # valueBox for data cols
-output$valueBox_cols <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>columns:  </font> <font size=6>',
+output$valueBox_cols <- shiny::renderUI({
+  shinydashboard::valueBox(value=HTML(paste('<font size=5>columns:  </font> <font size=6>',
                             rawData()$cols,'</font>',sep='')),
            subtitle='', color='yellow', width=6)
 })
 
 # tabBox for displaying raw data and data summary
-output$tabBox_rawDataSummary <- renderUI({
+output$tabBox_rawDataSummary <- shiny::renderUI({
 
-  tabBox(title=NULL, status='warning', width=12,
-         tabPanel(title=HTML('<font size=4>Raw data table</font>'),
+  shinydashboard::tabBox(title=NULL, status='warning', width=12,
+         shiny::tabPanel(title=HTML('<font size=4>Raw data table</font>'),
                   #dataTableOutput("rawDataTable")
                   DT::dataTableOutput("rawDataTable")
                   # tableOutput("rawDataTable2")
          ),
-         tabPanel(title=HTML('<font size=4>Summary table</font>'),
+         shiny::tabPanel(title=HTML('<font size=4>Summary table</font>'),
                   DT::dataTableOutput("rawDataSummary")
          )
   )

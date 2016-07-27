@@ -105,7 +105,7 @@ stripPositionChromosome <- reactive({
 
     }
   }
-  
+
   return(output)
 })
 
@@ -146,24 +146,24 @@ output$formatData_plot_genomic_observations <- renderPlot({
     uniques <- unique(groupingVar)
     if (length(uniques)<100) {
       if(!is.null(posVar)){
-        
+
         # split pos by group
         pos_list <- split(posVar, groupingVar)
         pos_range <- matrix(as.numeric(unlist(lapply(pos_list, FUN=function(x){range(x,na.rm=TRUE)}))), ncol=2, byrow=T)
         minVal <- min(pos_range)
         maxVal <- max(pos_range)
-        
+
         # print empty plot
         par(fig=c(0,1,0.85,1),mar=c(0,0,0,0))
         plot(0,type='n',xlim=c(-1,1),ylim=c(-1,1),axes=FALSE,ann=FALSE)
         text(0,0,'genomic coverage broken down by group',cex=1.2,font=2)
-        
+
         par(fig=c(0.1,0.9,0.1,0.85),mar=c(0,0,0,0),new=TRUE)
         y_pretty <- pretty(pos_range)
         plot(0,type='n', xlim=c(0,length(uniques)), ylim=range(y_pretty), xaxs='i', yaxs='i', axes=F)
         axis(1,at=1:length(uniques)-0.5,labels=1:length(uniques))
         axis(2,at=y_pretty)
-        
+
         # loop through all groups
         myPal <- colorRampPalette(c('white','red'))
         for (i in 1:length(uniques)) {
@@ -172,12 +172,12 @@ output$formatData_plot_genomic_observations <- renderPlot({
           y_range <- c((pos_range[i,1]-minVal)/(maxVal-minVal), (pos_range[i,2]-minVal)/(maxVal-minVal))
           y_range <- y_range*(1-0.1-0.15) + 0.1
           if (y_range[1]!=y_range[2]) {
-            
+
             # add image plot based on sampling density
             m <- matrix(table(findInterval(pos_list[[i]],seq(pos_range[i,1],pos_range[i,2],l=101), rightmost.closed=T)),1)
             par(fig=c(x_range[1], x_range[2], y_range[1], y_range[2]),mar=c(0,0,0,0),new=T)
             image(m,axes=F,col=myPal(10))
-            
+
             # add border
             par(fig=c(0,1,0,1),mar=c(0,0,0,0),new=T)
             plot(0,type='n', xlim=c(0,1), ylim=c(0,1), xaxs='i', yaxs='i', axes=F, ann=F)
@@ -185,12 +185,12 @@ output$formatData_plot_genomic_observations <- renderPlot({
           }
         }
       } else {
-        
+
         # extract number of times each unique group is represented
         tab <- data.frame(table(groupingVar))
         uniques <- unique(groupingVar)
         counts <- tab[match(uniques,tab[,1]),2]
-        
+
         # produce plot
         barplot(counts, names=1:length(uniques), col='black', main='number of observations in each group')
       }
@@ -389,7 +389,7 @@ cleanData <- reactive({
 
 # valueBox for % missing data removed
 output$valueBox_missingDataRemoved <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>rows removed:  </font> <font size=6>',
+  shinydashboard::valueBox(value=HTML(paste('<font size=5>rows removed:  </font> <font size=6>',
                             cleanData()$numRemoved,
                             ' (',
                             cleanData()$percentRemoved,
