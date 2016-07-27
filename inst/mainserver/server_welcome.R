@@ -8,7 +8,7 @@
 #####################
 
 # banner panel
-output$MinotaurBanner <- renderUI({
+output$MinotaurBanner <- shiny::renderUI({
   wellPanel(
     fluidRow(
       column(3,
@@ -37,7 +37,7 @@ output$MinotaurBanner <- renderUI({
 ##################
 
 # example plots
-output$prettyPlots <- renderUI({
+output$prettyPlots <- shiny::renderUI({
   wellPanel(
     fluidRow(
       column(2
@@ -63,7 +63,7 @@ output$prettyPlots <- renderUI({
 #################
 
 # example plots
-output$description <- renderUI({
+output$description <- shiny::renderUI({
   wellPanel(
 
     HTML(

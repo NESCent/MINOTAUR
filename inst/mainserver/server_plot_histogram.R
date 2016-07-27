@@ -5,15 +5,15 @@
 
 
 ## generate reactiveValues lists for all initial values
-rv_hist_1D_button <- reactiveValues()
+rv_hist_1D_button <- shiny::reactiveValues()
 rv_hist_1D_button <- 1 # 0
-rv_hist_1D_var <- reactiveValues()
+rv_hist_1D_var <- shiny::reactiveValues()
 
 ## aesthetics
-rv_hist_1D_col <- reactiveValues()
-rv_hist_1D_transp <- reactiveValues()
-rv_hist_1D_n.bins <- reactiveValues()
-rv_hist_1D_grid <- reactiveValues()
+rv_hist_1D_col <- shiny::reactiveValues()
+rv_hist_1D_transp <- shiny::reactiveValues()
+rv_hist_1D_n.bins <- shiny::reactiveValues()
+rv_hist_1D_grid <- shiny::reactiveValues()
 
 
 

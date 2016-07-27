@@ -8,29 +8,29 @@
 ## generate reactiveValues lists for all initial values
 
 ## variables
-rv_scatterPlot_button <- reactiveValues()
+rv_scatterPlot_button <- shiny::reactiveValues()
 rv_scatterPlot_button <- 1 # 0
-rv_scatterPlot_xaxis <- reactiveValues()
-rv_scatterPlot_yaxis <- reactiveValues()
-rv_scatterPlot_logx <- reactiveValues()
-rv_scatterPlot_logy <- reactiveValues()
-rv_scatterPlot_flipx <- reactiveValues()
-rv_scatterPlot_flipy <- reactiveValues()
+rv_scatterPlot_xaxis <- shiny::reactiveValues()
+rv_scatterPlot_yaxis <- shiny::reactiveValues()
+rv_scatterPlot_logx <- shiny::reactiveValues()
+rv_scatterPlot_logy <- shiny::reactiveValues()
+rv_scatterPlot_flipx <- shiny::reactiveValues()
+rv_scatterPlot_flipy <- shiny::reactiveValues()
 
-rv_scatterPlot_outlier.var <- reactiveValues()
-rv_scatterPlot_outlier.cutoff <- reactiveValues()
-rv_scatterPlot_outlier.tail <- reactiveValues()
+rv_scatterPlot_outlier.var <- shiny::reactiveValues()
+rv_scatterPlot_outlier.cutoff <- shiny::reactiveValues()
+rv_scatterPlot_outlier.tail <- shiny::reactiveValues()
 
 ## aesthetics
-rv_scatterPlot_col.pal <- reactiveValues()
-rv_scatterPlot_n.bins <- reactiveValues()
-rv_scatterPlot_grid <- reactiveValues()
+rv_scatterPlot_col.pal <- shiny::reactiveValues()
+rv_scatterPlot_n.bins <- shiny::reactiveValues()
+rv_scatterPlot_grid <- shiny::reactiveValues()
 
-rv_scatterPlot_outlier.col.bg <- reactiveValues()
-rv_scatterPlot_outlier.col <- reactiveValues()
-rv_scatterPlot_outlier.pch <- reactiveValues()
-rv_scatterPlot_outlier.transp <- reactiveValues()
-rv_scatterPlot_outlier.cex <- reactiveValues()
+rv_scatterPlot_outlier.col.bg <- shiny::reactiveValues()
+rv_scatterPlot_outlier.col <- shiny::reactiveValues()
+rv_scatterPlot_outlier.pch <- shiny::reactiveValues()
+rv_scatterPlot_outlier.transp <- shiny::reactiveValues()
+rv_scatterPlot_outlier.cex <- shiny::reactiveValues()
 
 
 

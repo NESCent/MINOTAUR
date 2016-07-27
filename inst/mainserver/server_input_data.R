@@ -74,6 +74,9 @@
 
 ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
 
+#' @importFrom DT renderDataTable
+#' @importFrom DT dataTableOutput
+#' @importFrom DT datatable
 ####################
 ## Box: Load Data ##
 ####################
@@ -301,7 +304,7 @@ rawData <- reactive({
       } # end check for inputFile
     } # end user input selected
   } # end check for tabSet loaded
-  
+
   return(output)
 })
 
@@ -363,14 +366,14 @@ output$rawDataTable <- DT::renderDataTable({
 
 # raw data summary table
 output$rawDataSummary <- DT::renderDataTable({
-  
+
   # if rawData$data is NULL, return NULL (no table)
   if (is.null(rawData()$data))
     return(NULL)
-  
+
   # count number of NAs
   num.NA <- mapply(FUN=function(x){sum(is.na(x))},rawData()$data)
-  
+
   # produce data frame of summary variables
   output <- data.frame('Variable_Name'=names(rawData()$data),
                        'Variable_Class'=mapply(class,rawData()$data),
@@ -405,7 +408,7 @@ output$rawDataSummary <- DT::renderDataTable({
                          }
                        },rawData()$data)
   )
-  
+
   # output as table
   DT::datatable(output,
                 class='compact',
@@ -415,8 +418,8 @@ output$rawDataSummary <- DT::renderDataTable({
                            'Min', 'Median', 'Mean', 'Max'),
                 options=list(dom='ltpr')
   )
-  
-  
+
+
 })
 
 

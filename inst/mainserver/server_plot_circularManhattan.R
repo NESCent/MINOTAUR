@@ -1129,7 +1129,7 @@ output$box_circularManhattan_button <- renderUI({
   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
   ## get outer-most lines indicating chromosomes:
-  circos(R=400,type="chr", cir=db,
+  OmicCircos::circos(R=400,type="chr", cir=db,
          col=rep(alpha(colors,0.6), length.out=seg.number),
          print.chr.lab=T,
          W=40, scale=T); #scale=T
@@ -1140,14 +1140,14 @@ output$box_circularManhattan_button <- renderUI({
     # outlier.link = outlier.link
     outlier.link = o.l[[i]]
     ## get dots:
-    circos(R= 120 + (i-1) * 100, cir=db,
+    OmicCircos::circos(R= 120 + (i-1) * 100, cir=db,
            W= 180, mapping=seg.value,
            col.v=traitidxlist[i],type="s",
            B=F, col=tmpcolor,
            cex=outlier.cex[i],
            lwd=0.15, scale=T) #scale=T
     ## get lines indicating links:
-    circos(R=100, cir=db, W=100,
+    OmicCircos::circos(R=100, cir=db, W=100,
            mapping=outlier.link,
            type="link",lwd=0.2,
            col= tmpcolor)
@@ -1288,7 +1288,7 @@ output$box_circularManhattan_button <- renderUI({
 #   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
 #   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
 #   ## get outer-most lines indicating chromosomes:
-#   circos(R=400,type="chr", cir=db,
+#   OmicCircos::circos(R=400,type="chr", cir=db,
 #          col=rep(alpha(colors,0.6), length.out=seg.number),
 #          print.chr.lab=T,
 #          W=40, scale=T); #scale=T
@@ -1298,12 +1298,12 @@ output$box_circularManhattan_button <- renderUI({
 #     outlier.link = outlier.link
 #     # outlier.link = outlier.LINK[[i]];
 #     ## get dots:
-#     circos(R= 120 + (i-1) * 100, cir=db,
+#     OmicCircos::circos(R= 120 + (i-1) * 100, cir=db,
 #            W= 180, mapping=seg.value,
 #            col.v=traitidxlist[i],type="s",
 #            B=F, col=tmpcolor,lwd=0.15, scale=T) #scale=T
 #     ## get lines indicating links:
-#     circos(R=100, cir=db, W=100,
+#     OmicCircos::circos(R=100, cir=db, W=100,
 #            mapping=outlier.link,
 #            type="link",lwd=0.2,col= tmpcolor)
 #   }
