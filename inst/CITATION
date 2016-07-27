@@ -1,0 +1,13 @@
+citHeader("To cite MINOTAUR in publications use:")
+
+citEntry(
+entry="Manual",
+title = "MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny",
+year = "2016",
+author = personList(as.person("Robert Veritty"), as.person("Caitlin Collins"), as.person("Daren Card"), as.person("Sara Schaal"), as.person("Liuyang Wang"), as.person("Katie Lotterhos")),
+url = "https://github.com/NESCent/MINOTAUR",
+doi = "complete",
+textVersion = paste("Robert Veritty, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, Katie E. Lotterhos, (2016). MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny. R package version 0.0.9000. https://github.com/NESCent/MINOTAUR. doi : to_complete")
+)
+
+
