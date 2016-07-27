@@ -44,7 +44,7 @@ Caitlin Collins \email{caitlin.collins12@imperial.ac.uk}
 Lotterhos KE, Whitlock MC (2015)
 The relative power of genome scans to detect local adaptation
 depends on sampling design and statistical method.
-Molecular Ecology, 24, 1031–1046.
+Molecular Ecology, 24, 1031-1046.
 
 Robert Verity*, Caitlin Collins*,
 Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos.
