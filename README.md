@@ -1,6 +1,7 @@
 # MINOTAUR
 
-[![Travis-CI Build Status](https://travis-ci.org/NESCent/MINOTAUR.svg?branch=master)](https://travis-ci.org/NESCent/MINOTAUR)
+[![Travis-CI Build Status](https://travis-ci.org/thierrygosselin/MINOTAUR.svg?branch=master)](https://travis-ci.org/thierrygosselin/MINOTAUR)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/thierrygosselin/MINOTAUR?branch=master&svg=true)](https://ci.appveyor.com/project/thierrygosselin/MINOTAUR)
 
 ## INSTALL
 ```
