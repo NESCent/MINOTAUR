@@ -32,7 +32,7 @@ leave-one-out method, wherein the likelihood of point i is equal to its kernel d
 This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
 }
 \examples{
-
+\dontrun{
 # create a data frame of observations
 df <- data.frame(x=rnorm(100),y=rnorm(100))
 
@@ -47,7 +47,7 @@ lambda_ML <- lambda[which.min(deviance)]
 
 # use this value when calculating kernel density distances
 distances <- kernelDist(df,bandwidth=lambda_ML)
-
+}
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}

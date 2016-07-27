@@ -5,14 +5,17 @@
 using namespace std;
 
 //------------------------------------------------
-// calculates distance between observations as the harmomic mean distance of every point from a selected subset of points (subset defaults to all points).
+//' @name C_harmonicDist
+//' @title Harmomic mean distance
+//' @description Calculates distance between observations as the harmomic mean distance of every point from a selected subset of points (subset defaults to all points).
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List C_harmonicDist(std::vector< std::vector<double> > data, std::vector<int> subset, std::vector< std::vector<double> > S_inv) {
-    
+
     int dims = int(data.size());
     int n = int(data[0].size());
     int sub_size = int(subset.size());
-    
+
     double x, y, z;
     vector<double> distance(n);
 
@@ -42,16 +45,21 @@ Rcpp::List C_harmonicDist(std::vector< std::vector<double> > data, std::vector<i
 }
 
 //------------------------------------------------
-// equivalent to C_harmonicDist, but only performs calculation on chunk of data, allowing calculation to be broken into sections and thus tracked by a progress bar
+//' @name C_harmonicDist_partial
+//' @title Harmomic mean distance using chunk of data to enable the use of a progress bar for large datasets
+//' @description Equivalent to C_harmonicDist, but only performs calculation on chunk of data, allowing calculation to be broken into sections and thus tracked by a progress bar.
+//' @keywords internal
 // [[Rcpp::export]]
+
+
 Rcpp::List C_harmonicDist_partial(std::vector< std::vector<double> > data, std::vector< std::vector<double> > S_inv, int i_start, int i_end) {
-    
+
     int dims = int(data.size());
     int n = data[0].size();
-    
+
     double x, y, z;
     vector<double> distance(i_end-i_start+1);
-    
+
     for (int i=(i_start-1); i<i_end; i++) {
         z = 0;
         for (int j=0; j<n; j++) {
@@ -72,7 +80,7 @@ Rcpp::List C_harmonicDist_partial(std::vector< std::vector<double> > data, std::
         }
         distance[i-i_start+1] = double(n)/z;
     }
-    
+
     // return values
     return Rcpp::List::create(Rcpp::Named("distance")=distance);
 }

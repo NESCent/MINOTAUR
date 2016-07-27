@@ -20,7 +20,7 @@
 #' Mahalanobis
 #'
 #' Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
-#' 
+#'
 #' Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
@@ -32,8 +32,8 @@
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
-#'
-#' # create a matrix of observations
+#' \dontrun{
+#' #' # create a matrix of observations
 #' df <- data.frame(x=rnorm(100),y=rnorm(100))
 #'
 #' # calculate Mahalanobis distances
@@ -42,7 +42,8 @@
 #' # use this distance to look for outliers
 #' Q95 <- quantile(distances, 0.95)
 #' which(distances>Q95)
-#'
+#' }
+#' @importFrom stats cov
 #' @export
 
 ########################################################################
@@ -76,14 +77,14 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL
 
   # subset rows in df.vars
   df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
-  
+
   # check that at least two rows in df.vars_subset
   if (nrow(df.vars_subset)<2)
     stop("subset must index at least two rows in dfv")
-  
+
   # if S is NULL replace with covariance matrix
   if (is.null(S))
-    S <- cov(df.vars_subset, use="pairwise.complete.obs")
+    S <- stats::cov(df.vars_subset, use="pairwise.complete.obs")
 
   # check that S is a matrix
   if (!is.matrix(S))
@@ -104,10 +105,10 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL
   # if M is NULL replace with mean over variables
   if (is.null(M))
     M <- colMeans(df.vars_subset,na.rm=TRUE)
-  
+
   # force M to be vector
   M <- as.vector(unlist(M))
-  
+
   # check that M has one element per column of df.vars
   if (length(M)!=ncol(df.vars))
     stop("M must contain one value per selected column of dfv")
@@ -143,7 +144,7 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
-#'
+#' \dontrun{
 #' # create a data frame of observations
 #' df <- data.frame(x=rnorm(100),y=rnorm(100))
 #'
@@ -153,7 +154,8 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL
 #' # use this distance to look for outliers
 #' Q95 <- quantile(distances, 0.95)
 #' which(distances>Q95)
-#'
+#' }
+#' @importFrom stats cov
 #' @export
 
 ########################################################################
@@ -190,17 +192,17 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
     # check that subset can be used to index df.vars without error
     if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
       stop("subset must contain valid indexes for choosing rows in dfv")
-    
+
     # subset rows in df.vars
     df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
-    
+
     # check that at least two rows in df.vars_subset
     if (nrow(df.vars_subset)<2)
       stop("subset must index at least two rows in dfv")
-    
+
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars_subset)
+      S <- stats::cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -248,7 +250,7 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
-#'
+#' \dontrun{
 #' # create a data frame of observations
 #' df <- data.frame(x=rnorm(100),y=rnorm(100))
 #'
@@ -258,7 +260,8 @@ harmonicDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #' # use this distance to look for outliers
 #' Q95 <- quantile(distances, 0.95)
 #' which(distances>Q95)
-#'
+#' }
+#' @importFrom stats cov
 #' @export
 
 ########################################################################
@@ -294,17 +297,17 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
   # check that subset can be used to index df.vars without error
   if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
     stop("subset must contain valid indexes for choosing rows in dfv")
-  
+
   # subset rows in df.vars
   df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
-  
+
   # check that at least two rows in df.vars_subset
   if (nrow(df.vars_subset)<2)
     stop("subset must index at least two rows in dfv")
-  
+
   # if S is NULL replace with covariance matrix
   if (is.null(S))
-    S <- cov(df.vars_subset)
+    S <- stats::cov(df.vars_subset)
 
   # check that S is a matrix
   if (!is.matrix(S))
@@ -345,7 +348,7 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #' Assumes a multivariate normal kernel with the same user-defined bandwidth in all dimensions (after normalization).
 #'
 #' Note that this method cannot handle NA values.
-#' 
+#'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
 #' calculate kernel density distances (all other columns are ignored).
@@ -355,7 +358,7 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
-#'
+#' \dontrun{
 #' # create a data frame of observations
 #' df <- data.frame(x=rnorm(100),y=rnorm(100))
 #'
@@ -365,7 +368,8 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #' # use this distance to look for outliers
 #' Q95 <- quantile(distances, 0.95)
 #' which(distances>Q95)
-#'
+#' }
+#' @importFrom stats cov
 #' @export
 
 
@@ -402,17 +406,17 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwid
     # check that subset can be used to index df.vars without error
     if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
       stop("subset must contain valid indexes for choosing rows in dfv")
-    
+
     # subset rows in df.vars
     df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
-    
+
     # check that at least two rows in df.vars_subset
     if (nrow(df.vars_subset)<2)
       stop("subset must index at least two rows in dfv")
-    
+
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars_subset)
+      S <- stats::cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -478,7 +482,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwid
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @examples
-#'
+#' \dontrun{
 #' # create a data frame of observations
 #' df <- data.frame(x=rnorm(100),y=rnorm(100))
 #'
@@ -493,7 +497,9 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwid
 #'
 #' # use this value when calculating kernel density distances
 #' distances <- kernelDist(df,bandwidth=lambda_ML)
-#'
+#' }
+#' @importFrom stats cov
+#' @importFrom utils flush.console
 #' @export
 
 
@@ -530,17 +536,17 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
     # check that subset can be used to index df.vars without error
     if (class(try(df.vars[subset,],silent=TRUE))=='try-error')
       stop("subset must contain valid indexes for choosing rows in dfv")
-    
+
     # subset rows in df.vars
     df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
-    
+
     # check that at least two rows in df.vars_subset
     if (nrow(df.vars_subset)<2)
       stop("subset must index at least two rows in dfv")
-    
+
     # if S is NULL replace with covariance matrix
     if (is.null(S))
-      S <- cov(df.vars_subset)
+      S <- stats::cov(df.vars_subset)
 
     # check that S is a matrix
     if (!is.matrix(S))
@@ -573,7 +579,7 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
     for (i in 1:length(bandwidth)) {
         if (reportProgress) {
             message(paste("bandwidth ",i," of ",length(bandwidth),sep=""))
-            flush.console()
+            utils::flush.console()
         }
         output[i] <- C_kernelDeviance(split(t(df.vars), 1:d), subset-1, bandwidth[i]^2, split(S_inv,1:d))$deviance
     }
