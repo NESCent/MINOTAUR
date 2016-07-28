@@ -28,6 +28,7 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
+    github::Bioconductor-mirror/BiocInstaller
     github::Bioconductor-mirror/OmicCircos
     github::rstudio/DT
 LinkingTo: Rcpp
