@@ -8,9 +8,7 @@
 ```
 install.packages("devtools", dependencies = TRUE)
 
-library(devtools)
-
-install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
+devtools::install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
 
 library(MINOTAUR)
 
