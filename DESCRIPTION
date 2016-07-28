@@ -1,7 +1,7 @@
 Package: MINOTAUR
 Type: Package
 Title: MultIvariate visualisatioN and OuTlier Analysis Using R
-Version: 0.1.0
+Version: 0.0.1
 Date: 2016-07-27
 Authors@R: c(
   person("Caitlin", "Collins", email = "caitiecollins@gmail.com", role = c("cre", "aut")),
