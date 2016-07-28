@@ -50,8 +50,8 @@ server <- function(input, output) {
   # linear Manhattan plot page
   source("server_plot_Manhattan.R", local = TRUE)
 
-#   # circular Manhattan plot page
-#   source("server_plot_circularManhattan.R", local = TRUE)
+  #   # circular Manhattan plot page
+  #   source("server_plot_circularManhattan.R", local = TRUE)
 
   # error messages
   source("server_message.R", local = TRUE)

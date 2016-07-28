@@ -52,15 +52,17 @@
 
 ########################################################################
 
-plot_2D<- function(x, y,
-                   xlab=NULL, ylab=NULL,
-                   xlim=NULL, ylim=NULL,
-                   n.bins=100,
-                   col.pal="heat.colors", grid=FALSE,
-                   outlier.x=NULL, outlier.y=NULL,
-                   outlier.col="blue", outlier.col.bg="purple",
-                   outlier.transp=0.25,
-                   outlier.pch=24, outlier.cex=1.5){
+plot_2D<- function(
+  x, y,
+  xlab=NULL, ylab=NULL,
+  xlim=NULL, ylim=NULL,
+  n.bins=100,
+  col.pal="heat.colors", grid=FALSE,
+  outlier.x=NULL, outlier.y=NULL,
+  outlier.col="blue", outlier.col.bg="purple",
+  outlier.transp=0.25,
+  outlier.pch=24, outlier.cex=1.5
+){
 
   # require(ash) # this should
   # require(fields)
@@ -87,16 +89,20 @@ plot_2D<- function(x, y,
     ylim_lower <- min(y, na.rm=TRUE)
   }
 
-  binned <- ash::bin2(data1b,
-                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
-                 nbin=c(n.bins,n.bins))
-  binned$nc[binned$nc==0]=NA
+  binned <- ash::bin2(
+    data1b,
+    matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
+    nbin=c(n.bins,n.bins)
+  )
+  binned$nc[binned$nc==0] = NA
 
   ## SCATTER PLOT
-  fields::image.plot(seq(xlim_lower,xlim_up,length.out = n.bins),
-             seq(ylim_lower,ylim_up, length.out=n.bins),
-             binned$nc,
-             xlab=xlab, ylab=ylab, add=FALSE, col=col.pal)
+  fields::image.plot(
+    seq(xlim_lower,xlim_up,length.out = n.bins),
+    seq(ylim_lower,ylim_up, length.out=n.bins),
+    binned$nc,
+    xlab=xlab, ylab=ylab, add=FALSE, col=col.pal
+  )
 
   ## ADD OUTLIER POINTS
   graphics::points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)

@@ -82,6 +82,21 @@
 #' @importFrom shiny tabPanel
 #' @importFrom shinydashboard tabBox
 #' @importFrom shinydashboard valueBox
+#' @importFrom shiny selectInput
+#' @importFrom shiny conditionalPanel
+#' @importFrom shiny fileInput
+#' @importFrom shiny fluidRow
+#' @importFrom shiny p
+#' @importFrom shiny radioButtons
+#' @importFrom shiny h3
+#' @importFrom shiny hr
+#' @importFrom shiny wellPanel
+#' @importFrom shiny checkboxInput
+#' @importFrom shiny reactive
+#' @importFrom shiny h2
+#' @importFrom shiny HTML
+#' @importFrom stats median
+#' @importFrom data.table fread
 ####################
 ## Box: Load Data ##
 ####################
@@ -98,73 +113,84 @@ output$headerBox_loadData <- shiny::renderUI({
 
 # box for loading data
 output$tabBox_loadData <- shiny::renderUI({
+  shinydashboard::tabBox(
+    id = "tabSet_loadData",
+    width=12,
+    status='warning',
 
-  shinydashboard::tabBox(id = "tabSet_loadData",
-         width=12,
-         status='warning',
+    ##################
+    ## LOAD EXAMPLE ##
+    ##################
+    shiny::tabPanel(
+      value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
+      h3('Work with example data'),
+      shiny::selectInput(
+        'exampleData', label='Select example',
+        choices=list(
+          "(use own data)" = "use_own",
+          "Human GWAS" = "HumanGWAS",
+          "Expansion from Two Refugia" = "TwoRefSim",
+          "Non-Parametric Inverse" = "NonParametricInverse",
+          "Non-Parametric Multimodal" = "NonParametricMultimodal"
+        ),
+        selected="HumanGWAS")
+    ),
 
-         ##################
-         ## LOAD EXAMPLE ##
-         ##################
-         shiny::tabPanel(value = "eg", title = HTML('<font size=4>Example Data</font>'), icon = icon("bar-chart"),
-                  h3('Work with example data'),
-                  selectInput('exampleData', label='Select example',
-                              choices=list("(use own data)" = "use_own",
-                                           "Human GWAS" = "HumanGWAS",
-                                           "Expansion from Two Refugia" = "TwoRefSim",
-                                           "Non-Parametric Inverse" = "NonParametricInverse",
-                                           "Non-Parametric Multimodal" = "NonParametricMultimodal"),
-                              selected="HumanGWAS")
-         ),
 
+    #########################
+    ## LOAD DATA FROM FILE ##
+    #########################
+    shiny::tabPanel(
+      value = "user",
+      title = HTML('<font size=4>Upload Data</font>'),
+      icon = icon("upload"),
 
-         #########################
-         ## LOAD DATA FROM FILE ##
-         #########################
-         shiny::tabPanel(value = "user",
-                  title = HTML('<font size=4>Upload Data</font>'),
-                  icon = icon("upload"),
-
-                  h3('Upload data from file'),
-                  p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt).
+      shiny::h3('Upload data from file'),
+      shiny::p('Data must be formated as a comma separated file (.csv) or a plain text file (.txt).
                     Headers and delimiters can be specified below'),
 
-                  fileInput('inputFile', label='Load data from file', accept=NULL),
-                  # fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
-                  # "application/x-r-data"
-                  #, "RData","Rdata","Rda","RDA", "rdata", "rda"
-                  hr(),
+      shiny::fileInput('inputFile', label='Load data from file', accept=NULL),
+      # fileInput('inputFile',label='Load data from file',accept=c('text/csv','text/plain')),
+      # "application/x-r-data"
+      #, "RData","Rdata","Rda","RDA", "rdata", "rda"
+      shiny::hr(),
 
-                  ## make CSV-related options a conditional panel, to appear only if file type is NOT Rdata:
-                  conditionalPanel("output.userInputCSV == true",
-                                   #input$inputFile$type %in% "application/x-r-data"
-                                   wellPanel(
-                                     fluidRow(
-                                       column(6,
-                                              p(strong('Headers')),
-                                              checkboxInput('headerOnCheckBox',
-                                                            label='Use headers',
-                                                            value=TRUE)
-                                       ),
-                                       column(6,
-                                              p(strong('Delimiters')),
-                                              radioButtons('delimiters',
-                                                           label=NULL,
-                                                           choices=list('comma-separated'=',',
-                                                                        'tab-separated'='\t',
-                                                                        'space-separated'=' '))
-                                       )
-                                     ), style='padding: 10px;'
-                                   )
-                  )
-                  )
+      ## make CSV-related options a conditional panel, to appear only if file type is NOT Rdata:
+      shiny::conditionalPanel(
+        "output.userInputCSV == true",
+        #input$inputFile$type %in% "application/x-r-data"
+        shiny::wellPanel(
+          shiny::fluidRow(
+            column(6,
+                   shiny::p(strong('Headers')),
+                   shiny::checkboxInput(
+                     'headerOnCheckBox',
+                     label='Use headers',
+                     value=TRUE
+                   )
+            ),
+            column(6,
+                   shiny::p(strong('Delimiters')),
+                   shiny::radioButtons(
+                     'delimiters',
+                     label=NULL,
+                     choices=list(
+                       'comma-separated'=',',
+                       'tab-separated'='\t',
+                       'space-separated'=' ')
+                   )
+            )
+          ), style='padding: 10px;'
+        )
+      )
+    )
 
   )
 })
 
 
 ## Dummy output to tell conditionalPanel whether data uploaded is Rdata (ie. is NOT CSV)
-output$userInputCSV <- reactive({
+output$userInputCSV <- shiny::reactive({
   out <- FALSE
   if(!is.null(input$inputFile)){
     if(!is.null(input$inputFile$type)){
@@ -180,7 +206,7 @@ outputOptions(output, "userInputCSV", suspendWhenHidden=FALSE)
 
 ## reactive conductor for reading data from file, or using example data.
 ## Returns list(data,name,description,rows,cols)
-rawData <- reactive({
+rawData <- shiny::reactive({
 
   output <- NULL
 
@@ -191,11 +217,13 @@ rawData <- reactive({
     if (is.null(input$inputFile) & is.null(input$exampleData)){
       ## HumanGWAS ##
       data(HumanGWAS, package="MINOTAUR", envir=environment())
-      output <- list(data=HumanGWAS,
-                     name='Example: Human GWAS',
-                     description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
-                     rows=nrow(HumanGWAS),
-                     cols=ncol(HumanGWAS))
+      output <- list(
+        data=HumanGWAS,
+        name='Example: Human GWAS',
+        description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
+        rows=nrow(HumanGWAS),
+        cols=ncol(HumanGWAS)
+      )
     }
 
   }else{
@@ -207,41 +235,48 @@ rawData <- reactive({
       if (input$exampleData=='HumanGWAS') {
         data(HumanGWAS, package="MINOTAUR", envir=environment())
         HumanGWAS <- as.data.frame(HumanGWAS)
-        output <- list(data=HumanGWAS,
-                       name='Example: Human GWAS',
-                       description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
-                       rows=nrow(HumanGWAS),
-                       cols=ncol(HumanGWAS))
+        output <- list(
+          data=HumanGWAS,
+          name='Example: Human GWAS',
+          description="This data set contains an example of output returned from a human GWAS analysis (unpublished). The 'Chr' variable gives the chromosome and 'BP' the genomic position. Beta values come from a regression of phenotype against genotype, p-values come from a separate analysis and do not correspond directly to Beta values.",
+          rows=nrow(HumanGWAS),
+          cols=ncol(HumanGWAS)
+        )
       }
       ## TwoRefSim ##
       if (input$exampleData=='TwoRefSim') {
         data(TwoRefSim, package="MINOTAUR", envir=environment())
         TwoRefSim <- as.data.frame(TwoRefSim)
-        output <- list(data=TwoRefSim,
-                       name='Example: Simulated Expansion from Two Refugia',
-                       description="This data set contains population genetic data simulating expansion from two refugia.",
-                       rows=nrow(TwoRefSim),
-                       cols=ncol(TwoRefSim))
+        output <- list(
+          data=TwoRefSim,
+          name='Example: Simulated Expansion from Two Refugia',
+          description="This data set contains population genetic data simulating expansion from two refugia.",
+          rows=nrow(TwoRefSim),
+          cols=ncol(TwoRefSim)
+        )
       }
       ## NonParametricInverse ##
       if (input$exampleData=='NonParametricInverse') {
         data(NonParametricInverse, package="MINOTAUR", envir=environment())
         NonParametricInverse <- as.data.frame(NonParametricInverse)
-        output <- list(data=NonParametricInverse,
-                       name='Example: Non-Parametric Inverse',
-                       description="This is a simulated two-variable dataset. The two variables follow an inverse relationship, with some additional noise.",
-                       rows=nrow(NonParametricInverse),
-                       cols=ncol(NonParametricInverse))
+        output <- list(
+          data=NonParametricInverse,
+          name='Example: Non-Parametric Inverse',
+          description="This is a simulated two-variable dataset. The two variables follow an inverse relationship, with some additional noise.",
+          rows=nrow(NonParametricInverse),
+          cols=ncol(NonParametricInverse)
+        )
       }
       ## NonParametricMultimodal ##
       if (input$exampleData=='NonParametricMultimodal') {
         data(NonParametricMultimodal, package="MINOTAUR", envir=environment())
         NonParametricMultimodal <- as.data.frame(NonParametricMultimodal)
-        output <- list(data=NonParametricMultimodal,
-                       name='Example: Non-Parametric Multimodal',
-                       description="This is a simulated two-variable dataset. The data were drawn from a bivariate normal mixture model, resulting in multiple distinct peaks in the distribution.",
-                       rows=nrow(NonParametricMultimodal),
-                       cols=ncol(NonParametricMultimodal))
+        output <- list(
+          data=NonParametricMultimodal,
+          name='Example: Non-Parametric Multimodal',
+          description="This is a simulated two-variable dataset. The data were drawn from a bivariate normal mixture model, resulting in multiple distinct peaks in the distribution.",
+          rows=nrow(NonParametricMultimodal),
+          cols=ncol(NonParametricMultimodal))
       }
     } # end eg input selected
 
@@ -251,11 +286,13 @@ rawData <- reactive({
     if(input$tabSet_loadData == "user"){
 
       ## If no data yet loaded, print initial message:
-      output <- list(data=NULL,
-                     name=NULL,
-                     description="To upload your own data, click on the 'Choose file' button located in the panel at left.",
-                     rows=NULL,
-                     cols=NULL)
+      output <- list(
+        data=NULL,
+        name=NULL,
+        description="To upload your own data, click on the 'Choose file' button located in the panel at left.",
+        rows=NULL,
+        cols=NULL
+      )
 
       if(!is.null(input$inputFile)){
         if(!is.null(input$inputFile$type)){
@@ -266,45 +303,55 @@ rawData <- reactive({
             userData <- try(get(load(input$inputFile$datapath)), silent=TRUE)
             if (class(userData)=='try-error') {
               print(head(userData))
-              output <- list(data=NULL,
-                             name=input$inputFile$name,
-                             description='Error: failed to import data. Check that data is formatted correctly.',
-                             rows=NULL,
-                             cols=NULL)
+              output <- list(
+                data=NULL,
+                name=input$inputFile$name,
+                description='Error: failed to import data. Check that data is formatted correctly.',
+                rows=NULL,
+                cols=NULL
+              )
             } else {
-              output <- list(data=userData,
-                             name=input$inputFile$name,
-                             description=NULL,
-                             rows=nrow(userData),
-                             cols=ncol(userData))
+              output <- list(
+                data=userData,
+                name=input$inputFile$name,
+                description=NULL,
+                rows=nrow(userData),
+                cols=ncol(userData)
+              )
             }
           }else{
             #######################
             ## load if CSV-type: ##
             #######################
-            userData <- try(data.frame(fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
+            userData <- try(data.frame(data.table::fread(input$inputFile$datapath, header=input$headerOnCheckBox, sep=input$delimiters)), silent=TRUE)
             if (class(userData)=='try-error') {
               print(userData)
-              output <- list(data=NULL,
-                             name=input$inputFile$name,
-                             description='Error: failed to import data. Check that data is formatted correctly.',
-                             rows=NULL,
-                             cols=NULL)
+              output <- list(
+                data=NULL,
+                name=input$inputFile$name,
+                description='Error: failed to import data. Check that data is formatted correctly.',
+                rows=NULL,
+                cols=NULL
+              )
             }else {
-              output <- list(data=userData,
-                             name=input$inputFile$name,
-                             description=NULL,
-                             rows=nrow(userData),
-                             cols=ncol(userData))
+              output <- list(
+                data=userData,
+                name=input$inputFile$name,
+                description=NULL,
+                rows=nrow(userData),
+                cols=ncol(userData)
+              )
             }
           }
 
         }else{
-          output <- list(data=NULL,
-                         name=input$inputFile$name,
-                         description='Error: failed to import data. Check that file type is one of: CSV, plain text, or Rdata.',
-                         rows=NULL,
-                         cols=NULL)
+          output <- list(
+            data=NULL,
+            name=input$inputFile$name,
+            description='Error: failed to import data. Check that file type is one of: CSV, plain text, or Rdata.',
+            rows=NULL,
+            cols=NULL
+          )
         }
       } # end check for inputFile
     } # end user input selected
@@ -319,38 +366,46 @@ rawData <- reactive({
 
 # box for data name (title)
 output$box_dataName <- shiny::renderUI({
-  graphics::box(title='Data Summary', status='warning', solidHeader=TRUE, collapsible=FALSE, width=12,
-      h2(rawData()$name),
-      HTML(paste('<i><font size=3>',rawData()$description,'</font></i>',sep=''))
+  shinydashboard::box(
+    title='Data Summary', status='warning', solidHeader=TRUE, collapsible=FALSE, width=12,
+    shiny::h2(rawData()$name),
+    shiny::HTML(paste('<i><font size=3>',rawData()$description,'</font></i>',sep=''))
   )
 })
 
 # valueBox for data rows
 output$valueBox_rows <- shiny::renderUI({
-  shinydashboard::valueBox(value=HTML(paste('<font size=5>rows:  </font> <font size=6>',
-                            rawData()$rows,'</font>',sep='')),
-           subtitle='', color='yellow', width=6)
+  shinydashboard::valueBox(
+    value = HTML(
+      paste('<font size=5>rows:  </font> <font size=6>',
+            rawData()$rows,'</font>',sep='')),
+    subtitle='', color='yellow', width=6)
 })
 
 # valueBox for data cols
 output$valueBox_cols <- shiny::renderUI({
-  shinydashboard::valueBox(value=HTML(paste('<font size=5>columns:  </font> <font size=6>',
-                            rawData()$cols,'</font>',sep='')),
-           subtitle='', color='yellow', width=6)
+  shinydashboard::valueBox(
+    value=HTML(
+      paste('<font size=5>columns:  </font> <font size=6>',
+            rawData()$cols,'</font>',sep='')),
+    subtitle='', color='yellow', width=6)
 })
 
 # tabBox for displaying raw data and data summary
 output$tabBox_rawDataSummary <- shiny::renderUI({
 
-  shinydashboard::tabBox(title=NULL, status='warning', width=12,
-         shiny::tabPanel(title=HTML('<font size=4>Raw data table</font>'),
-                  #dataTableOutput("rawDataTable")
-                  DT::dataTableOutput("rawDataTable")
-                  # tableOutput("rawDataTable2")
-         ),
-         shiny::tabPanel(title=HTML('<font size=4>Summary table</font>'),
-                  DT::dataTableOutput("rawDataSummary")
-         )
+  shinydashboard::tabBox(
+    title=NULL, status='warning', width=12,
+    shiny::tabPanel(
+      title=HTML('<font size=4>Raw data table</font>'),
+      #dataTableOutput("rawDataTable")
+      DT::dataTableOutput("rawDataTable")
+      # tableOutput("rawDataTable2")
+    ),
+    shiny::tabPanel(
+      title=HTML('<font size=4>Summary table</font>'),
+      DT::dataTableOutput("rawDataSummary")
+    )
   )
 })
 
@@ -362,7 +417,7 @@ output$rawDataTable <- DT::renderDataTable({
   # get data
   dat <- rawData()$data
   if(!is.null(dat)){
-    out <- datatable(dat)
+    out <- DT::datatable(dat)
   }
 
   return(out)
@@ -380,48 +435,50 @@ output$rawDataSummary <- DT::renderDataTable({
   num.NA <- mapply(FUN=function(x){sum(is.na(x))},rawData()$data)
 
   # produce data frame of summary variables
-  output <- data.frame('Variable_Name'=names(rawData()$data),
-                       'Variable_Class'=mapply(class,rawData()$data),
-                       'Number_NAs'=num.NA,
-                       'Percent_NAs'=paste(round(num.NA/rawData()$rows*100,1),'%',sep=''),
-                       'Min'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(signif(min(x,na.rm=TRUE),3))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData()$data),
-                       'Median'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(signif(median(x,na.rm=TRUE),3))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData()$data),
-                       'Mean'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(signif(mean(x,na.rm=TRUE),3))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData()$data),
-                       'Max'=mapply(FUN=function(x){
-                         if (is.numeric(x)) {
-                           return(signif(max(x,na.rm=TRUE),3))
-                         } else {
-                           return(NA)
-                         }
-                       },rawData()$data)
+  output <- data.frame(
+    'Variable_Name'=names(rawData()$data),
+    'Variable_Class'=mapply(class,rawData()$data),
+    'Number_NAs'=num.NA,
+    'Percent_NAs'=paste(round(num.NA/rawData()$rows*100,1),'%',sep=''),
+    'Min'=mapply(FUN=function(x){
+      if (is.numeric(x)) {
+        return(signif(min(x,na.rm=TRUE),3))
+      } else {
+        return(NA)
+      }
+    },rawData()$data),
+    'Median'=mapply(FUN=function(x){
+      if (is.numeric(x)) {
+        return(signif(stats::median(x,na.rm=TRUE),3))
+      } else {
+        return(NA)
+      }
+    },rawData()$data),
+    'Mean'=mapply(FUN=function(x){
+      if (is.numeric(x)) {
+        return(signif(mean(x,na.rm=TRUE),3))
+      } else {
+        return(NA)
+      }
+    },rawData()$data),
+    'Max'=mapply(FUN=function(x){
+      if (is.numeric(x)) {
+        return(signif(max(x,na.rm=TRUE),3))
+      } else {
+        return(NA)
+      }
+    },rawData()$data)
   )
 
   # output as table
-  DT::datatable(output,
-                class='compact',
-                rownames=FALSE,
-                colnames=c('Variable Name', 'Variable Class',
-                           'Number NAs', 'Proportion NAs',
-                           'Min', 'Median', 'Mean', 'Max'),
-                options=list(dom='ltpr')
+  DT::datatable(
+    output,
+    class='compact',
+    rownames=FALSE,
+    colnames=c('Variable Name', 'Variable Class',
+               'Number NAs', 'Proportion NAs',
+               'Min', 'Median', 'Mean', 'Max'),
+    options=list(dom='ltpr')
   )
 
 

@@ -3,43 +3,56 @@
 ## CIRCULAR MANHATTAN PLOT PAGE ##  ------------------------------------------------------------------------------------
 ##################################
 
-
+#' @importFrom shiny fluidRow
+#' @importFrom shinydashboard box
+#' @importFrom shiny p
+#' @importFrom shiny h5
+#' @importFrom shiny reactiveValues
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny radioButtons
+#' @importFrom shiny textInput
+#' @importFrom shiny sliderInput
+#' @importFrom shiny actionButton
+#' @importFrom OmicCircos segAnglePo
+#' @importFrom OmicCircos circos
+#' @importFrom RColorBrewer brewer.pal
+#'
 ## generate reactiveValues lists for all initial values
 
 ## variables
-rv_circularManhattan_button <- reactiveValues()
+rv_circularManhattan_button <- shiny::reactiveValues()
 rv_circularManhattan_button <- 1 # 0
-rv_circularManhattan_xaxis <- reactiveValues()
-rv_circularManhattan_yaxis <- reactiveValues()
-rv_circularManhattan_logx <- reactiveValues()
-rv_circularManhattan_logy <- reactiveValues()
-# rv_circularManhattan_flipx <- reactiveValues()
-# rv_circularManhattan_flipy <- reactiveValues()
+rv_circularManhattan_xaxis <- shiny::reactiveValues()
+rv_circularManhattan_yaxis <- shiny::reactiveValues()
+rv_circularManhattan_logx <- shiny::reactiveValues()
+rv_circularManhattan_logy <- shiny::reactiveValues()
+# rv_circularManhattan_flipx <- shiny::reactiveValues()
+# rv_circularManhattan_flipy <- shiny::reactiveValues()
 
-rv_circularManhattan_outlier.var1 <- reactiveValues()
-rv_circularManhattan_outlier.cutoff1 <- reactiveValues()
-rv_circularManhattan_outlier.tail1 <- reactiveValues()
+rv_circularManhattan_outlier.var1 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.cutoff1 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.tail1 <- shiny::reactiveValues()
 
-rv_circularManhattan_outlier.var2 <- reactiveValues()
-rv_circularManhattan_outlier.cutoff2 <- reactiveValues()
-rv_circularManhattan_outlier.tail2 <- reactiveValues()
+rv_circularManhattan_outlier.var2 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.cutoff2 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.tail2 <- shiny::reactiveValues()
 
 ## aesthetics
-# rv_circularManhattan_col.pal <- reactiveValues()
-# rv_circularManhattan_n.bins <- reactiveValues()
-# rv_circularManhattan_grid <- reactiveValues()
+# rv_circularManhattan_col.pal <- shiny::reactiveValues()
+# rv_circularManhattan_n.bins <- shiny::reactiveValues()
+# rv_circularManhattan_grid <- shiny::reactiveValues()
 
-rv_circularManhattan_outlier.col.bg1 <- reactiveValues()
-# rv_circularManhattan_outlier.col1 <- reactiveValues()
-# rv_circularManhattan_outlier.pch1 <- reactiveValues()
-rv_circularManhattan_outlier.transp1 <- reactiveValues()
-rv_circularManhattan_outlier.cex1 <- reactiveValues()
+rv_circularManhattan_outlier.col.bg1 <- shiny::reactiveValues()
+# rv_circularManhattan_outlier.col1 <- shiny::reactiveValues()
+# rv_circularManhattan_outlier.pch1 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.transp1 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.cex1 <- shiny::reactiveValues()
 
-rv_circularManhattan_outlier.col.bg2 <- reactiveValues()
-# rv_circularManhattan_outlier.col2 <- reactiveValues()
-# rv_circularManhattan_outlier.pch2 <- reactiveValues()
-rv_circularManhattan_outlier.transp2 <- reactiveValues()
-rv_circularManhattan_outlier.cex2 <- reactiveValues()
+rv_circularManhattan_outlier.col.bg2 <- shiny::reactiveValues()
+# rv_circularManhattan_outlier.col2 <- shiny::reactiveValues()
+# rv_circularManhattan_outlier.pch2 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.transp2 <- shiny::reactiveValues()
+rv_circularManhattan_outlier.cex2 <- shiny::reactiveValues()
 
 
 
@@ -284,23 +297,24 @@ output$box_circularManhattan <- renderUI({
 
         ## get box of boxes
         if(!is.null(dat)){
-          box(title=title.k,
-              status="warning",
-              solidHeader=TRUE,
-              collapsible=TRUE,
-              width=12,
+          shinydashboard::box(
+            title=title.k,
+            status="warning",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
 
-              fluidRow(
-                column(4,
-                       .get.circularManhattan.controls(dat, i)
-                ),
-
-                column(8,
-                       .get.circularManhattan.plot(dat, i),
-                       .get.circularManhattan.controls.aes(dat, i)
-                )
+            shiny::fluidRow(
+              column(4,
+                     .get.circularManhattan.controls(dat, i)
               ),
-              style = list('background-color: #B6B6B6') # dark gray (amber)
+
+              column(8,
+                     .get.circularManhattan.plot(dat, i),
+                     .get.circularManhattan.controls.aes(dat, i)
+              )
+            ),
+            style = list('background-color: #B6B6B6') # dark gray (amber)
           )
         }
       })
@@ -354,170 +368,180 @@ output$box_circularManhattan <- renderUI({
   id_circularManhattan_outlier.tail2 <- paste("circularManhattan_outlier.tail2", k, sep="_")
 
   out <-
-    box(title="Select Variables:", # "Univariate Distributions"
-        # status="primary",
+    shinydashboard::box(
+      title="Select Variables:", # "Univariate Distributions"
+      # status="primary",
+      status="warning",
+      solidHeader=FALSE,
+      collapsible=TRUE,
+      width=12,
+
+      ###################
+      ## Choose x-axis ##
+      ###################
+
+      shinydashboard::box(
+        title="Select inner circle:", # "Univariate Distributions"
+        # status="info",
+        # status = "primary",
         status="warning",
-        solidHeader=FALSE,
+        solidHeader=TRUE,
         collapsible=TRUE,
         width=12,
 
-        ###################
-        ## Choose x-axis ##
-        ###################
+        ## NOTE: Would like to be able to pull the Chromosome and Position variables
+        ## selected/generated in the Format Data tab to be available as options
+        ## and autoatically selected below...
 
-        box(title="Select inner circle:", # "Univariate Distributions"
-            # status="info",
-            # status = "primary",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+        ## Choose x-axis variable
+        shiny::selectizeInput(id_circularManhattan_xaxis,
+                              label = 'Inner circle:',
+                              choices = x.var.choices,
+                              selected = rv_circularManhattan_xaxis[[k]], # x.var.sel,
+                              multiple = FALSE),
 
-            ## NOTE: Would like to be able to pull the Chromosome and Position variables
-            ## selected/generated in the Format Data tab to be available as options
-            ## and autoatically selected below...
+        ## log(x-axis) ?
+        shiny::radioButtons(id_circularManhattan_logx,
+                            label = "Log inner axis?",
+                            choices = list("log2", "log10", "none"),
+                            selected= rv_circularManhattan_logx[[k]], # "none",
+                            inline=TRUE),
 
-            ## Choose x-axis variable
-            selectizeInput(id_circularManhattan_xaxis,
-                           label = 'Inner circle:',
-                           choices = x.var.choices,
-                           selected = rv_circularManhattan_xaxis[[k]], # x.var.sel,
-                           multiple = FALSE),
+        #             ## Flip x-axis ?
+        #             radioButtons(id_circularManhattan_flipx,
+        #                          label = "Invert inner axis?",
+        #                          choices = list("Yes", "No"),
+        #                          selected= rv_circularManhattan_flipx[[k]], # "No",
+        #                          inline=TRUE),
 
-            ## log(x-axis) ?
-            radioButtons(id_circularManhattan_logx,
-                         label = "Log inner axis?",
-                         choices = list("log2", "log10", "none"),
-                         selected= rv_circularManhattan_logx[[k]], # "none",
-                         inline=TRUE),
+        style = list('background-color: #FFECB3') # pale amber
+      ),
 
-            #             ## Flip x-axis ?
-            #             radioButtons(id_circularManhattan_flipx,
-            #                          label = "Invert inner axis?",
-            #                          choices = list("Yes", "No"),
-            #                          selected= rv_circularManhattan_flipx[[k]], # "No",
-            #                          inline=TRUE),
+      ###################
+      ## Choose y-axis ##
+      ###################
 
-            style = list('background-color: #FFECB3') # pale amber
-            ),
+      shinydashboard::box(
+        title="Select outer circle:",
+        # status="info",
+        # status = "primary",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
-        ###################
-        ## Choose y-axis ##
-        ###################
+        ## Choose y-axis variable
+        shiny::selectizeInput(id_circularManhattan_yaxis,
+                              label = 'Outer circle:',
+                              choices = y.var.choices,
+                              selected =  rv_circularManhattan_yaxis[[k]], # y.var.sel,
+                              multiple = FALSE),
 
-        box(title="Select outer circle:",
-            # status="info",
-            # status = "primary",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+        ## log(y-axis) ?
+        shiny::radioButtons(id_circularManhattan_logy,
+                            label = "Log outer axis?",
+                            choices = list("log2", "log10", "none"),
+                            selected= rv_circularManhattan_logy[[k]], # "none",
+                            inline=TRUE),
 
-            ## Choose y-axis variable
-            selectizeInput(id_circularManhattan_yaxis,
-                           label = 'Outer circle:',
-                           choices = y.var.choices,
-                           selected =  rv_circularManhattan_yaxis[[k]], # y.var.sel,
-                           multiple = FALSE),
+        #             ## Flip y-axis ?
+        #             radioButtons(id_circularManhattan_flipy,
+        #                          label = "Invert outer axis?",
+        #                          choices = list("Yes", "No"),
+        #                          selected= rv_circularManhattan_flipy[[k]], # "No",
+        #                          inline=TRUE),
 
-            ## log(y-axis) ?
-            radioButtons(id_circularManhattan_logy,
-                         label = "Log outer axis?",
-                         choices = list("log2", "log10", "none"),
-                         selected= rv_circularManhattan_logy[[k]], # "none",
-                         inline=TRUE),
+        style = list('background-color: #FFECB3') # pale amber
 
-            #             ## Flip y-axis ?
-            #             radioButtons(id_circularManhattan_flipy,
-            #                          label = "Invert outer axis?",
-            #                          choices = list("Yes", "No"),
-            #                          selected= rv_circularManhattan_flipy[[k]], # "No",
-            #                          inline=TRUE),
+      ),
 
-            style = list('background-color: #FFECB3') # pale amber
 
+      ###############################################
+      ## Choose outlier variable (usually p-value) ##
+      ###############################################
+
+      ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
+      ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
+
+      shinydashboard::box(
+        title="Select outlier variable #1:",
+        # status="info",
+        # status = "primary",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
+
+        ## Mark outliers by second variable (usually p-value)
+        shiny::h5(strong('Highlight outliers by this variable:')),
+        shiny::p("For example, you may wish to identify outliers according to a p-value
+              that is recorded in another column of the data table."),
+        shiny::selectizeInput(
+          id_circularManhattan_outlier.var1,
+          label = NULL,
+          choices = o.var.choices,
+          selected = rv_circularManhattan_outlier.var1[[k]], # o.var.sel,
+          multiple = FALSE
         ),
 
+        ## Cut-off for outliers to overlay
+        # eg 0.01
+        shiny::textInput(id_circularManhattan_outlier.cutoff1,
+                         label = "Cut-off for outliers to overlay",
+                         value =  rv_circularManhattan_outlier.cutoff1[[k]] # 0.05
+        ),
 
-        ###############################################
-        ## Choose outlier variable (usually p-value) ##
-        ###############################################
+        shiny::radioButtons(id_circularManhattan_outlier.tail1,
+                            label = "Tail",
+                            choices = c("Lower", "Upper", "Two-tailed"),
+                            selected =  rv_circularManhattan_outlier.tail1[[k]], # "Lower",
+                            inline=TRUE),
 
-        ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
-        ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
-
-        box(title="Select outlier variable #1:",
-            # status="info",
-            # status = "primary",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
-
-            ## Mark outliers by second variable (usually p-value)
-            h5(strong('Highlight outliers by this variable:')),
-            p("For example, you may wish to identify outliers according to a p-value
-              that is recorded in another column of the data table."),
-            selectizeInput(id_circularManhattan_outlier.var1,
-                           label = NULL,
-                           choices = o.var.choices,
-                           selected = rv_circularManhattan_outlier.var1[[k]], # o.var.sel,
-                           multiple = FALSE),
-
-            ## Cut-off for outliers to overlay
-            # eg 0.01
-            textInput(id_circularManhattan_outlier.cutoff1,
-                      label = "Cut-off for outliers to overlay",
-                      value =  rv_circularManhattan_outlier.cutoff1[[k]] # 0.05
-            ),
-
-            radioButtons(id_circularManhattan_outlier.tail1,
-                         label = "Tail",
-                         choices = c("Lower", "Upper", "Two-tailed"),
-                         selected =  rv_circularManhattan_outlier.tail1[[k]], # "Lower",
-                         inline=TRUE),
-
-            style = list('background-color: #FFECB3') # pale amber
-            ),
+        style = list('background-color: #FFECB3') # pale amber
+      ),
 
 
 
-        box(title="Select outlier variable #2:",
-            # status="info",
-            # status = "primary",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+      shinydashboard::box(
+        title="Select outlier variable #2:",
+        # status="info",
+        # status = "primary",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
-            ## Mark outliers by second variable (usually p-value)
-            h5(strong('Highlight outliers by this variable:')),
-            # p("For example, you may wish to identify outliers according to a p-value
-              # that is recorded in another column of the data table."),
-            selectizeInput(id_circularManhattan_outlier.var2,
-                           label = NULL,
-                           choices = o.var.choices,
-                           selected = rv_circularManhattan_outlier.var2[[k]], # o.var.sel,
-                           multiple = FALSE),
+        ## Mark outliers by second variable (usually p-value)
+        shiny::h5(strong('Highlight outliers by this variable:')),
+        # p("For example, you may wish to identify outliers according to a p-value
+        # that is recorded in another column of the data table."),
+        shiny::selectizeInput(id_circularManhattan_outlier.var2,
+                              label = NULL,
+                              choices = o.var.choices,
+                              selected = rv_circularManhattan_outlier.var2[[k]], # o.var.sel,
+                              multiple = FALSE),
 
-            ## Cut-off for outliers to overlay
-            # eg 0.01
-            textInput(id_circularManhattan_outlier.cutoff2,
-                      label = "Cut-off for outliers to overlay",
-                      value =  rv_circularManhattan_outlier.cutoff2[[k]] # 0.05
-            ),
+        ## Cut-off for outliers to overlay
+        # eg 0.01
+        shiny::textInput(
+          id_circularManhattan_outlier.cutoff2,
+          label = "Cut-off for outliers to overlay",
+          value =  rv_circularManhattan_outlier.cutoff2[[k]] # 0.05
+        ),
 
-            radioButtons(id_circularManhattan_outlier.tail2,
-                         label = "Tail",
-                         choices = c("Lower", "Upper", "Two-tailed"),
-                         selected =  rv_circularManhattan_outlier.tail2[[k]], # "Lower",
-                         inline=TRUE),
+        shiny::radioButtons(
+          id_circularManhattan_outlier.tail2,
+          label = "Tail",
+          choices = c("Lower", "Upper", "Two-tailed"),
+          selected =  rv_circularManhattan_outlier.tail2[[k]], # "Lower",
+          inline=TRUE
+        ),
 
-            style = list('background-color: #FFECB3') # pale amber
-        )
+        style = list('background-color: #FFECB3') # pale amber
+      )
 
 
-        )
+    )
 
   return(out)
 } # end .get.circularManhattan.controls
@@ -555,142 +579,164 @@ output$box_circularManhattan <- renderUI({
   out <- NULL
 
   out <-
-    box(title="Adjust Plot Aesthetics:",
+    shinydashboard::box(
+      title="Adjust Plot Aesthetics:",
+      status="warning",
+      solidHeader=FALSE,
+      collapsible=TRUE,
+      width=12,
+
+      shinydashboard::box(
+        title="Outlier #1 aesthetics:",
         status="warning",
-        solidHeader=FALSE,
+        solidHeader=TRUE,
         collapsible=TRUE,
         width=12,
 
-        box(title="Outlier #1 aesthetics:",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+        shiny::fluidRow(
+          column(4,
+                 shiny::selectizeInput(
+                   id_circularManhattan_outlier.col.bg1,
+                   label = "Outlier colour (fill):",
+                   choices = list("Red" = "red",
+                                  "Orange" = "orange",
+                                  "Yellow" = "yellow",
+                                  "Green" = "green",
+                                  "Blue" = "blue",
+                                  "Purple" = "purple"),
+                   selected =  rv_circularManhattan_outlier.col.bg1[[k]], # "blue",
+                   multiple=FALSE
+                 )
+          ),
 
-            fluidRow(
-              column(4,
-            selectizeInput(id_circularManhattan_outlier.col.bg1,
-                           label = "Outlier colour (fill):",
-                           choices = list("Red" = "red",
-                                          "Orange" = "orange",
-                                          "Yellow" = "yellow",
-                                          "Green" = "green",
-                                          "Blue" = "blue",
-                                          "Purple" = "purple"),
-                           selected =  rv_circularManhattan_outlier.col.bg1[[k]], # "blue",
-                           multiple=FALSE)),
+          column(4,
+                 shiny::sliderInput(
+                   id_circularManhattan_outlier.transp1,
+                   label = "Outlier transparency:",
+                   min = 0, max = 1,
+                   value =  rv_circularManhattan_outlier.transp1[[k]], # 0.25,
+                   step = 0.05
+                 )
+          ),
 
-            column(4,
-                   sliderInput(id_circularManhattan_outlier.transp1,
-                               label = "Outlier transparency:",
-                               min = 0, max = 1,
-                               value =  rv_circularManhattan_outlier.transp1[[k]], # 0.25,
-                               step = 0.05)),
-
-            column(4,
-                   sliderInput(id_circularManhattan_outlier.cex1,
-                               label = "Outlier size:",
-                               min = 0, max = 3,
-                               value =  rv_circularManhattan_outlier.cex1[[k]], # 1.5,
-                               step = 0.1))
-            ),
-
-            #             hr(),
-            #
-            #             fluidRow(
-            #               column(6,
-            #                      selectizeInput(id_circularManhattan_outlier.pch1,
-            #                                     label = "Outlier shape:",
-            #                                     choices = list("Circle" = "21",
-            #                                                    "Square" = "22",
-            #                                                    "Diamond" = "23",
-            #                                                    "Triangle, point-up" = "24",
-            #                                                    "Triangle, point-down" = "25"
-            #                                     ),
-            #                                     selected =  rv_circularManhattan_outlier.pch1[[k]], # "24",
-            #                                     multiple=FALSE)),
-            #
-            #             column(6,
-            #                    selectizeInput(id_circularManhattan_outlier.col1,
-            #                                   label = "Outlier colour (outline):",
-            #                                   choices = list("Red" = "red",
-            #                                                  "Orange" = "orange",
-            #                                                  "Yellow" = "yellow",
-            #                                                  "Green" = "green",
-            #                                                  "Blue" = "blue",
-            #                                                  "Purple" = "purple"),
-            #                                   selected =  rv_circularManhattan_outlier.col1[[k]], # NULL,
-            #                                   multiple=FALSE))
-            #             ),
-
-            style = list('background-color: #FFECB3') # pale amber
+          column(4,
+                 shiny::sliderInput(
+                   id_circularManhattan_outlier.cex1,
+                   label = "Outlier size:",
+                   min = 0, max = 3,
+                   value =  rv_circularManhattan_outlier.cex1[[k]], # 1.5,
+                   step = 0.1
+                 )
+          )
         ),
 
+        #             hr(),
+        #
+        #             shiny::fluidRow(
+        #               column(6,
+        #                      selectizeInput(id_circularManhattan_outlier.pch1,
+        #                                     label = "Outlier shape:",
+        #                                     choices = list("Circle" = "21",
+        #                                                    "Square" = "22",
+        #                                                    "Diamond" = "23",
+        #                                                    "Triangle, point-up" = "24",
+        #                                                    "Triangle, point-down" = "25"
+        #                                     ),
+        #                                     selected =  rv_circularManhattan_outlier.pch1[[k]], # "24",
+        #                                     multiple=FALSE)),
+        #
+        #             column(6,
+        #                    selectizeInput(id_circularManhattan_outlier.col1,
+        #                                   label = "Outlier colour (outline):",
+        #                                   choices = list("Red" = "red",
+        #                                                  "Orange" = "orange",
+        #                                                  "Yellow" = "yellow",
+        #                                                  "Green" = "green",
+        #                                                  "Blue" = "blue",
+        #                                                  "Purple" = "purple"),
+        #                                   selected =  rv_circularManhattan_outlier.col1[[k]], # NULL,
+        #                                   multiple=FALSE))
+        #             ),
 
-        box(title="Outlier #2 aesthetics:",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+        style = list('background-color: #FFECB3') # pale amber
+      ),
 
-            fluidRow(
-              column(4,
-                     selectizeInput(id_circularManhattan_outlier.col.bg2,
-                                    label = "Outlier colour (fill):",
-                                    choices = list("Red" = "red",
-                                                   "Orange" = "orange",
-                                                   "Yellow" = "yellow",
-                                                   "Green" = "green",
-                                                   "Blue" = "blue",
-                                                   "Purple" = "purple"),
-                                    selected =  rv_circularManhattan_outlier.col.bg2[[k]], # "orange",
-                                    multiple=FALSE)),
 
-              column(4,
-                     sliderInput(id_circularManhattan_outlier.cex2,
-                                 label = "Outlier size:",
-                                 min = 0, max = 3,
-                                 value =  rv_circularManhattan_outlier.cex2[[k]], # 1.5,
-                                 step = 0.1)),
+      shinydashboard::box(
+        title="Outlier #2 aesthetics:",
+        status="warning",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
-              column(4,
-                     sliderInput(id_circularManhattan_outlier.transp2,
-                                 label = "Outlier transparency:",
-                                 min = 0, max = 1,
-                                 value =  rv_circularManhattan_outlier.transp2[[k]], # 0.25,
-                                 step = 0.05))
-            ),
+        shiny::fluidRow(
+          column(4,
+                 shiny::selectizeInput(
+                   id_circularManhattan_outlier.col.bg2,
+                   label = "Outlier colour (fill):",
+                   choices = list(
+                     "Red" = "red",
+                     "Orange" = "orange",
+                     "Yellow" = "yellow",
+                     "Green" = "green",
+                     "Blue" = "blue",
+                     "Purple" = "purple"
+                   ),
+                   selected =  rv_circularManhattan_outlier.col.bg2[[k]], # "orange",
+                   multiple=FALSE
+                 )
+          ),
 
-            #             hr(),
-            #
-            #             fluidRow(
-            #               column(6,
-            #                      selectizeInput(id_circularManhattan_outlier.pch2,
-            #                                     label = "Outlier shape:",
-            #                                     choices = list("Circle" = "21",
-            #                                                    "Square" = "22",
-            #                                                    "Diamond" = "23",
-            #                                                    "Triangle, point-up" = "24",
-            #                                                    "Triangle, point-down" = "25"
-            #                                     ),
-            #                                     selected =  rv_circularManhattan_outlier.pch2[[k]], # "24",
-            #                                     multiple=FALSE)),
-            #
-            #               column(6,
-            #                      selectizeInput(id_circularManhattan_outlier.col2,
-            #                                     label = "Outlier colour (outline):",
-            #                                     choices = list("Red" = "red",
-            #                                                    "Orange" = "orange",
-            #                                                    "Yellow" = "yellow",
-            #                                                    "Green" = "green",
-            #                                                    "Blue" = "blue",
-            #                                                    "Purple" = "purple"),
-            #                                     selected =  rv_circularManhattan_outlier.col2[[k]], # NULL,
-            #                                     multiple=FALSE))
-            #             ),
+          column(4,
+                 shiny::sliderInput(
+                   id_circularManhattan_outlier.cex2,
+                   label = "Outlier size:",
+                   min = 0, max = 3,
+                   value =  rv_circularManhattan_outlier.cex2[[k]], # 1.5,
+                   step = 0.1)
+          ),
 
-            style = list('background-color: #FFECB3') # pale amber
-        )
+          column(4,
+                 shiny::sliderInput(
+                   id_circularManhattan_outlier.transp2,
+                   label = "Outlier transparency:",
+                   min = 0, max = 1,
+                   value =  rv_circularManhattan_outlier.transp2[[k]], # 0.25,
+                   step = 0.05
+                 )
+          )
+        ),
+
+        #             hr(),
+        #
+        #             shiny::fluidRow(
+        #               column(6,
+        #                      selectizeInput(id_circularManhattan_outlier.pch2,
+        #                                     label = "Outlier shape:",
+        #                                     choices = list("Circle" = "21",
+        #                                                    "Square" = "22",
+        #                                                    "Diamond" = "23",
+        #                                                    "Triangle, point-up" = "24",
+        #                                                    "Triangle, point-down" = "25"
+        #                                     ),
+        #                                     selected =  rv_circularManhattan_outlier.pch2[[k]], # "24",
+        #                                     multiple=FALSE)),
+        #
+        #               column(6,
+        #                      selectizeInput(id_circularManhattan_outlier.col2,
+        #                                     label = "Outlier colour (outline):",
+        #                                     choices = list("Red" = "red",
+        #                                                    "Orange" = "orange",
+        #                                                    "Yellow" = "yellow",
+        #                                                    "Green" = "green",
+        #                                                    "Blue" = "blue",
+        #                                                    "Purple" = "purple"),
+        #                                     selected =  rv_circularManhattan_outlier.col2[[k]], # NULL,
+        #                                     multiple=FALSE))
+        #             ),
+
+        style = list('background-color: #FFECB3') # pale amber
+      )
 
     ) # end box
 
@@ -704,7 +750,7 @@ output$box_circularManhattan <- renderUI({
 ## BUTTON: Generate another plot? ##
 ####################################
 output$box_circularManhattan_button <- renderUI({
-  box(
+  shinydashboard::box(
     title = "Generate another plot?",
     solidHeader = TRUE,
     status = "primary",
@@ -712,9 +758,11 @@ output$box_circularManhattan_button <- renderUI({
     width=12,
 
     ## button
-    actionButton(inputId = "new_circularManhattan_button",
-                 label = "Yes, please!",
-                 icon = icon("cog"))
+    shiny::actionButton(
+      inputId = "new_circularManhattan_button",
+      label = "Yes, please!",
+      icon = icon("cog")
+    )
   )
 })
 
@@ -734,15 +782,17 @@ output$box_circularManhattan_button <- renderUI({
     id_circularManhattan <- paste("id_circularManhattan", k, sep="_")
 
     out <-
-      box(title=NULL,
-          status="warning",
-          solidHeader=FALSE,
-          collapsible=TRUE,
-          width=12,
-          # plotOutput("plot_circularManhattan_plot")
-          renderPlot(plotOutput(
-            outputId = id_circularManhattan,
-            .get.circularManhattan(input, k=k)))
+      shinydashboard::box(
+        title=NULL,
+        status="warning",
+        solidHeader=FALSE,
+        collapsible=TRUE,
+        width=12,
+        # plotOutput("plot_circularManhattan_plot")
+        renderPlot(plotOutput(
+          outputId = id_circularManhattan,
+          .get.circularManhattan(input, k=k))
+        )
       )
   }
   return(out)
@@ -788,13 +838,17 @@ output$box_circularManhattan_button <- renderUI({
       ## Get data
       dat <- data_outliers()
 
-      if(logx=="none"){logx=NULL}else{
-        if(sum(xSelection<0)>0){print("Error: You are trying to log-transform
+      if (logx == "none") {
+        logx=NULL
+      } else {
+        if(sum(xSelection < 0) > 0){
+          print("Error: You are trying to log-transform
                                       negative values in the X variable.
-                                      These values will not be plotted.")}
-        if(logx=="log2"){logx=2}
-        if(logx=="log10"){logx=10}
+                                      These values will not be plotted.")
         }
+        if(logx=="log2") logx = 2
+        if(logx=="log10") logx = 10
+      }
 
       ## Log y-axis?
       if(logy=="none"){logy=NULL}else{
@@ -803,7 +857,7 @@ output$box_circularManhattan_button <- renderUI({
                                       These values will not be plotted.")}
         if(logy=="log2"){logy=2}
         if(logy=="log10"){logy=10}
-        }
+      }
 
       ## Invert x-axis?
       #       if(flipX=="No"){flipX=1}else{
@@ -959,18 +1013,20 @@ output$box_circularManhattan_button <- renderUI({
 
 
       ## PRODUCE PLOT
-      circularManhattan <- .circosmht(mydata=dat,
-                                      traitsname = c(xSelection, ySelection),
-                                      logV1 = logx, logV2 = logy,
-                                      trait.pvalnam = c(outlier.var1, outlier.var2), # c("Trait1_P","Trait2_P"), # c(xSelection, ySelection), ## ????
-                                      pcut.outlier= c(cutoff1, cutoff2),
-                                      outlier.col = c(outlier.col.bg1, outlier.col.bg2),
-                                      outlier.transp = c(outlier.transp1, outlier.transp2),
-                                      outlier.cex = c(outlier.cex1, outlier.cex2))
+      circularManhattan <- .circosmht(
+        mydata=dat,
+        traitsname = c(xSelection, ySelection),
+        logV1 = logx, logV2 = logy,
+        trait.pvalnam = c(outlier.var1, outlier.var2), # c("Trait1_P","Trait2_P"), # c(xSelection, ySelection), ## ????
+        pcut.outlier= c(cutoff1, cutoff2),
+        outlier.col = c(outlier.col.bg1, outlier.col.bg2),
+        outlier.transp = c(outlier.transp1, outlier.transp2),
+        outlier.cex = c(outlier.cex1, outlier.cex2)
+      )
 
 
-      }
     }
+  }
 
   #   circularManhattan <-   .circosmht(mydata=HumanGWAS,
   #                                     traitsname = c("Trait1_Beta","Trait2_Beta"),
@@ -981,7 +1037,7 @@ output$box_circularManhattan_button <- renderUI({
   # circularManhattan
   return(circularManhattan)
 
-  } # end .get.circularManhattan
+} # end .get.circularManhattan
 
 
 
@@ -993,8 +1049,10 @@ output$box_circularManhattan_button <- renderUI({
 ################
 ## .linkcreat ##
 ################
-.linkcreat <- function(dat = seg.value, traitid = NULL,
-                       pvalid = NULL, pcut.outlier=0.002){
+.linkcreat <- function(
+  dat = seg.value, traitid = NULL,
+  pvalid = NULL, pcut.outlier=0.002
+){
   ## a function for create link line for each trait
   #dat = seg.value; traitid = 3; pvalid = 4;pcut.outlier=0.001
   dat.outlier = dat[which(dat[, pvalid] < pcut.outlier),c("seg.name","seg.no")]
@@ -1027,14 +1085,16 @@ output$box_circularManhattan_button <- renderUI({
 ################
 ## .circosmht ##
 ################
-.circosmht <- function(mydata=mytoys,
-                       traitsname = c("Trait1_Beta","Trait2_Beta"),
-                       logV1 = NULL, logV2 = NULL,
-                       trait.pvalnam = c("Trait1_P","Trait2_P"),
-                       pcut.outlier=c(0.002, 0.002),
-                       outlier.col = c("red", "blue"),
-                       outlier.transp = c(0.5, 0.5),
-                       outlier.cex = c(1,1)){
+.circosmht <- function(
+  mydata=mytoys,
+  traitsname = c("Trait1_Beta","Trait2_Beta"),
+  logV1 = NULL, logV2 = NULL,
+  trait.pvalnam = c("Trait1_P","Trait2_P"),
+  pcut.outlier=c(0.002, 0.002),
+  outlier.col = c("red", "blue"),
+  outlier.transp = c(0.5, 0.5),
+  outlier.cex = c(1,1)
+){
 
   seg.file <- data.frame(seg.name=mydata$chrom,
                          seg.Start=mydata$pos,
@@ -1107,20 +1167,20 @@ output$box_circularManhattan_button <- renderUI({
   seg.number <- length(unique(mydata$Chromosome))
   seg.name <- as.character(sort(unique(mydata$Chromosome))) # paste("chr", , sep=)
 
-  db <- segAnglePo(seg.file, seg=seg.name);
+  db <- OmicCircos::segAnglePo(seg.file, seg=seg.name);
 
-  colors <- brewer.pal(9, "Set1")
+  colors <- RColorBrewer::brewer.pal(9, "Set1")
   # barplot(rep(10, length(colors)), col=colors) ## temp: check out colors
 
   # print("traitidxlist"); print(str(traitidxlist))
 
   o.l <- list()
   for(i in 1:length(traitidxlist)){
-  o.l[[i]] = .linkcreat(dat=seg.value,
-                        traitid=traitidxlist[i],
-                        pvalid=trait.pidxlist[i],
-                        pcut.outlier=pcut.outlier[i])
-  # print("OUTLIER.LINK"); print(str(o.l[[i]]))
+    o.l[[i]] = .linkcreat(dat=seg.value,
+                          traitid=traitidxlist[i],
+                          pvalid=trait.pidxlist[i],
+                          pcut.outlier=pcut.outlier[i])
+    # print("OUTLIER.LINK"); print(str(o.l[[i]]))
   }
 
   # outlier.link <- o.l[[1]]
@@ -1129,10 +1189,12 @@ output$box_circularManhattan_button <- renderUI({
   par(cex.axis=1, cex.lab=1, cex.main=1.2, cex.sub=1);
   plot(c(1,800),c(1,800),type="n",axes=F,xlab="",ylab="",main="");
   ## get outer-most lines indicating chromosomes:
-  OmicCircos::circos(R=400,type="chr", cir=db,
-         col=rep(alpha(colors,0.6), length.out=seg.number),
-         print.chr.lab=T,
-         W=40, scale=T); #scale=T
+  OmicCircos::circos(
+    R=400,type="chr", cir=db,
+    col=rep(alpha(colors,0.6), length.out=seg.number),
+    print.chr.lab=T,
+    W=40, scale=T
+  ); #scale=T
 
   for (i in 1:length(traitidxlist)){
     # tmpcolor = alpha(colors[i], 0.3)
@@ -1140,17 +1202,21 @@ output$box_circularManhattan_button <- renderUI({
     # outlier.link = outlier.link
     outlier.link = o.l[[i]]
     ## get dots:
-    OmicCircos::circos(R= 120 + (i-1) * 100, cir=db,
-           W= 180, mapping=seg.value,
-           col.v=traitidxlist[i],type="s",
-           B=F, col=tmpcolor,
-           cex=outlier.cex[i],
-           lwd=0.15, scale=T) #scale=T
+    OmicCircos::circos(
+      R= 120 + (i-1) * 100, cir=db,
+      W= 180, mapping=seg.value,
+      col.v=traitidxlist[i],type="s",
+      B=F, col=tmpcolor,
+      cex=outlier.cex[i],
+      lwd=0.15, scale=T
+    ) #scale=T
     ## get lines indicating links:
-    OmicCircos::circos(R=100, cir=db, W=100,
-           mapping=outlier.link,
-           type="link",lwd=0.2,
-           col= tmpcolor)
+    OmicCircos::circos(
+      R=100, cir=db, W=100,
+      mapping=outlier.link,
+      type="link",lwd=0.2,
+      col= tmpcolor
+    )
   }
 
 } # end .circosmht
@@ -1267,9 +1333,9 @@ output$box_circularManhattan_button <- renderUI({
 #   seg.number <- length(unique(mydata$Chromosome))
 #   seg.name <- as.character(sort(unique(mydata$Chromosome))) # paste("chr", , sep=)
 #
-#   db <- segAnglePo(seg.file, seg=seg.name);
+#   db <- OmicCircos::segAnglePo(seg.file, seg=seg.name);
 #
-#   colors <- brewer.pal(9, "Set1")
+#   colors <- RColorBrewer::brewer.pal(9, "Set1")
 #
 #   print("traitidxlist"); print(str(traitidxlist))
 #
@@ -1354,7 +1420,7 @@ output$box_circularManhattan_button <- renderUI({
 #
 #   ## select segments
 #   seg.name <- paste("chr", 1:seg.num, sep="");
-#   db       <- segAnglePo(seg.f, seg=seg.name);
+#   db       <- OmicCircos::segAnglePo(seg.f, seg=seg.name);
 #
 #   colors   <- rainbow(seg.num, alpha=0.5);
 #
@@ -1527,7 +1593,7 @@ output$box_circularManhattan_button <- renderUI({
 #       solidHeader=TRUE,
 #       collapsible=TRUE,
 #       width=12,
-#       fluidRow(
+#       shiny::fluidRow(
 #         column(6,
 #                selectInput('restrict_chrom',
 #                            label='Restrict chromosome',
