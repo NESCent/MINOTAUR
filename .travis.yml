@@ -3,3 +3,17 @@
 language: R
 sudo: false
 cache: packages
+
+warnings_are_errors: true
+
+env:
+ global:
+   - CRAN: http://cran.rstudio.com
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
+r_github_packages:
+  - thierrygosselin/stackr
