@@ -16,4 +16,5 @@ notifications:
     on_failure: change
 
 r_github_packages:
-  - thierrygosselin/stackr
+  - Bioconductor-mirror/OmicCircos
+  - rstudio/DT
