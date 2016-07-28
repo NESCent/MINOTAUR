@@ -1,14 +1,13 @@
-# MINOTAUR
+# MINOTAUR: an R package for the detection and visualization of outliers in multivariate space.
 
-[![Travis-CI Build Status](https://travis-ci.org/NESCent/MINOTAUR.svg?branch=master)](https://travis-ci.org/NESCent/MINOTAUR)
+
+[![Travis-CI Build Status](https://travis-ci.org/thierrygosselin/MINOTAUR.svg?branch=master)](https://travis-ci.org/thierrygosselin/MINOTAUR)
 
 ## INSTALL
 ```
 install.packages("devtools", dependencies = TRUE)
 
-library(devtools)
-
-install_github("NESCent/MINOTAUR", build_vignettes=TRUE)
+devtools::install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
 
 library(MINOTAUR)
 

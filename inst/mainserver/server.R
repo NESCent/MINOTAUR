@@ -27,37 +27,37 @@ URL_Contact <- list("Contact Us" =
 server <- function(input, output) {
 
   # welcome page
-  source("server_welcome.R", local=T)
+  source("server_welcome.R", local = TRUE)
 
   # input data page
-  source("server_input_data.R", local=T)
+  source("server_input_data.R", local = TRUE)
 
   # format data page
-  source("server_format_data.R", local=T)
+  source("server_format_data.R", local = TRUE)
 
   # find outliers page
-  source("server_calc_multivariate.R", local=T)
+  source("server_calc_multivariate.R", local = TRUE)
 
   # compare outliers page
-  source("server_compare_outliers.R", local=T)
+  source("server_compare_outliers.R", local = TRUE)
 
   # plot 1D histogram/kernel density page
-  source("server_plot_histogram.R", local=T)
+  source("server_plot_histogram.R", local = TRUE)
 
   # scatter plot page
-  source("server_plot_scatterPlot.R", local=T)
+  source("server_plot_scatterPlot.R", local = TRUE)
 
   # linear Manhattan plot page
-  source("server_plot_Manhattan.R", local=T)
+  source("server_plot_Manhattan.R", local = TRUE)
 
-#   # circular Manhattan plot page
-#   source("server_plot_circularManhattan.R", local=T)
+  #   # circular Manhattan plot page
+  #   source("server_plot_circularManhattan.R", local = TRUE)
 
   # error messages
-  source("server_message.R", local=T)
+  source("server_message.R", local = TRUE)
 
   ## utils
-  source("utils.R", local=T)
+  source("utils.R", local = TRUE)
 
   #----------------------------------------------------------------
 

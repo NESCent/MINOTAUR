@@ -1,27 +1,41 @@
 Package: MINOTAUR
+Type: Package
 Title: MultIvariate visualisatioN and OuTlier Analysis Using R
-Version: 0.0.0.9000
-Authors@R: person("Caitlin", "Collins", , "caitiecollins@gmail.com", role = "cre")
-Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space. 
-Depends: 
+Version: 0.0.1
+Date: 2016-07-27
+Authors@R: c(
+  person("Caitlin", "Collins", email = "caitiecollins@gmail.com", role = c("cre", "aut")),
+  person("Robert", "Verity", email = "r.verity@imperial.ac.uk", role = "aut"),
+  person("Daren", "Card", email = "dcard@uta.edu", role = "aut"),
+  person("Sara", "Schaal", email = "schaal.s@husky.neu.edu", role = "aut"),
+  person("Liuyang", "Wang", email = "wallacewly@gmail.com", role = "aut"),
+  person("Katie", "Lotterhos", email = "k.lotterhos@neu.edu", role = "aut"))
+Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space.
+Depends:
     R (>= 3.2.3)
-Imports: adegenet, 
-	ash,
-	data.table, 
-	DT, 
-	fields, 
-	ggplot2, 	 	
-	RColorBrewer, 
-	Rcpp,
-	shiny,
-	shinydashboard,
-	shinyjs
-Remotes: rstudio/DT@24d71f2
+Imports:
+    adegenet,
+    ash,
+    data.table,
+    fields,
+    ggplot2,
+    RColorBrewer,
+    Rcpp,
+    shiny,
+    shinydashboard,
+    shinyjs
+Suggests:
+    knitr,
+    rmarkdown
+Remotes:
+    github::Bioconductor-mirror/BiocInstaller,
+    github::Bioconductor-mirror/OmicCircos,
+    github::rstudio/DT
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true
-Suggests: 
-    knitr,
-    rmarkdown
+LazyLoad: yes
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
+URL: https://github.com/NESCent/MINOTAUR
+BugReports: https://github.com/NESCent/MINOTAUR/issues

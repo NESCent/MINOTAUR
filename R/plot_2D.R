@@ -40,38 +40,44 @@
 #' @author Caitlin Collins \email{caitlin.collins12@@imperial.ac.uk}
 #' @author Kathleen Lotterhos \email{k.lotterhos@@neu.edu}
 #'
-#' @import ash fields
-#'
+#' @importFrom ash bin2
+#' @importFrom fields image.plot
+#' @importFrom graphics points
+#' @importFrom graphics title
+#' @importFrom stats complete.cases
+#' @importFrom adegenet transp
 #' @export
 
 ## TO DO: Add @examples content
 
 ########################################################################
 
-plot_2D<- function(x, y,
-                   xlab=NULL, ylab=NULL,
-                   xlim=NULL, ylim=NULL,
-                   n.bins=100,
-                   col.pal="heat.colors", grid=FALSE,
-                   outlier.x=NULL, outlier.y=NULL,
-                   outlier.col="blue", outlier.col.bg="purple",
-                   outlier.transp=0.25,
-                   outlier.pch=24, outlier.cex=1.5){
+plot_2D<- function(
+  x, y,
+  xlab=NULL, ylab=NULL,
+  xlim=NULL, ylim=NULL,
+  n.bins=100,
+  col.pal="heat.colors", grid=FALSE,
+  outlier.x=NULL, outlier.y=NULL,
+  outlier.col="blue", outlier.col.bg="purple",
+  outlier.transp=0.25,
+  outlier.pch=24, outlier.cex=1.5
+){
 
-  require(ash)
-  require(fields)
+  # require(ash) # this should
+  # require(fields)
 
   x_sub <- outlier.x
   y_sub <- outlier.y
 
   if(outlier.transp != 0){
     outlier.transp <- 1 - outlier.transp
-    outlier.col <- transp(outlier.col, alpha = outlier.transp)
-    outlier.col.bg <- transp(outlier.col.bg, alpha = outlier.transp)
+    outlier.col <- adegenet::transp(outlier.col, alpha = outlier.transp)
+    outlier.col.bg <- adegenet::transp(outlier.col.bg, alpha = outlier.transp)
   }
 
   data1 <- cbind(x, y)
-  data1b <- data1[complete.cases(data1),]
+  data1b <- data1[stats::complete.cases(data1),]
 
   if(length(xlim)==0){
     xlim_up <- max(x, na.rm=TRUE)
@@ -83,26 +89,30 @@ plot_2D<- function(x, y,
     ylim_lower <- min(y, na.rm=TRUE)
   }
 
-  binned <- bin2(data1b,
-                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
-                 nbin=c(n.bins,n.bins))
-  binned$nc[binned$nc==0]=NA
+  binned <- ash::bin2(
+    data1b,
+    matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
+    nbin=c(n.bins,n.bins)
+  )
+  binned$nc[binned$nc==0] = NA
 
   ## SCATTER PLOT
-  image.plot(seq(xlim_lower,xlim_up,length.out = n.bins),
-             seq(ylim_lower,ylim_up, length.out=n.bins),
-             binned$nc,
-             xlab=xlab, ylab=ylab, add=FALSE, col=col.pal)
+  fields::image.plot(
+    seq(xlim_lower,xlim_up,length.out = n.bins),
+    seq(ylim_lower,ylim_up, length.out=n.bins),
+    binned$nc,
+    xlab=xlab, ylab=ylab, add=FALSE, col=col.pal
+  )
 
   ## ADD OUTLIER POINTS
-  points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
+  graphics::points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
 
   ## ADD GRID
   if(grid) grid()
 
   ## SET TITLE TO VALUE BEING PLOTTED
   ## NOTE: to be changed to textInput( w x- and ySelection selected)!!!!!!
-  if(!is.null(xlab) & !is.null(ylab)) title(paste(xlab, "vs.", ylab, sep=" "))
+  if(!is.null(xlab) & !is.null(ylab)) graphics::title(paste(xlab, "vs.", ylab, sep=" "))
 } # end plot_2D
 
 
