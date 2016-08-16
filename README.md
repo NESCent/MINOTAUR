@@ -2,6 +2,7 @@
 
 
 [![Travis-CI Build Status](https://travis-ci.org/thierrygosselin/MINOTAUR.svg?branch=master)](https://travis-ci.org/thierrygosselin/MINOTAUR)
+[![DOI](https://zenodo.org/badge/23897/NESCent/MINOTAUR.svg)](https://zenodo.org/badge/latestdoi/23897/NESCent/MINOTAUR)
 
 ## INSTALL
 ```
