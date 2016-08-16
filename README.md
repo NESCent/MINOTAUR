@@ -7,6 +7,8 @@
 ```
 install.packages("devtools", dependencies = TRUE)
 
+devtools::install_github("rstudio/DT", ref="24d71f2") # temporary fix (required for some datatables)
+
 devtools::install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
 
 library(MINOTAUR)
@@ -14,10 +16,12 @@ library(MINOTAUR)
 MINOTAUR()
 ```
 
-## ADDITIONAL NOTES FOR WINDOWS USERS
-Windows users must also install the appropriate version of Rtools in order to properly build and install packages. See the following link for download options: [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/).
+## ADDITIONAL NOTES
+Users may need to install additional development tools for their operating system to properly compile MINOTAUR. See here for details: [https://www.rstudio.com/products/rpackages/devtools/](https://www.rstudio.com/products/rpackages/devtools/).
 
-Additional dependencies also do not appear to be installing properly in Windows, leading to MINOTAUR installation errors (a problem we are currently addressing). Installing these dependencies by issuing the following command prior to installing MINOTAUR should alleviate this issue.
+Windows users should install the appropriate version of Rtools in order to properly build and install packages. See the following link for download options: [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/). Mac users should install Xcode command line tools. And Linux users should install r-devel or r-base-dev. 
+
+In case additional dependencies fail to install properly in Windows, and installation errors arise (a problem we are currently addressing), installing these dependencies by issuing the following command prior to installing MINOTAUR should alleviate this issue:
 ```
 install.packages(c("ade4", "ape", "dplyr", "seqinr", "httpuv", "spdep", "vegan", "chron", "spam", "maps", "miniUI"), dependencies = TRUE)
 ```

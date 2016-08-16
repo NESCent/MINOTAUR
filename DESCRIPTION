@@ -30,7 +30,7 @@ Suggests:
 Remotes:
     github::Bioconductor-mirror/BiocInstaller,
     github::Bioconductor-mirror/OmicCircos,
-    github::rstudio/DT
+    github::rstudio/DT@24d71f2
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true

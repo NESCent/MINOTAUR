@@ -21,7 +21,7 @@
 #' @importFrom shiny selectizeInput
 #' @importFrom shiny radioButtons
 #' @importFrom shiny checkboxGroupInput
-#' @importFrom DT dataTableOutput
+#' @importFrom shiny dataTableOutput
 #' @importFrom shiny renderDataTable
 #' @importFrom shiny h3
 #' @importFrom shiny fluidRow
@@ -449,7 +449,8 @@ output$box_finalData <- shiny::renderUI({
     collapsible=TRUE,
     width=12,
 
-    DT::dataTableOutput("table_finalData")
+    # DT::dataTableOutput("table_finalData")
+    shiny::dataTableOutput("table_finalData")
   )
 })
 
