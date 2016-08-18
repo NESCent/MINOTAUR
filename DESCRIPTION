@@ -17,9 +17,12 @@ Depends:
 Imports:
     adegenet,
     ash,
+    BiocInstaller,
     data.table,
+    DT,
     fields,
     ggplot2,
+    OmicCircos,
     RColorBrewer,
     Rcpp,
     shiny,
