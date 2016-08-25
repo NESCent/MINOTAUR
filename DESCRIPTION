@@ -9,16 +9,20 @@ Authors@R: c(
   person("Daren", "Card", email = "dcard@uta.edu", role = "aut"),
   person("Sara", "Schaal", email = "schaal.s@husky.neu.edu", role = "aut"),
   person("Liuyang", "Wang", email = "wallacewly@gmail.com", role = "aut"),
-  person("Katie", "Lotterhos", email = "k.lotterhos@neu.edu", role = "aut"))
+  person("Katie", "Lotterhos", email = "k.lotterhos@neu.edu", role = "aut"),
+  person("Thierry", "Gosselin", email = "thierrygosselin@icloud.com", role = "ctb"))
 Description: MINOTAUR provides stand-alone functions and an interactive user-interface for the exploration, visualisation, and analysis of multivariate genetic data, and provides users with a variety of accessible tools for the identification of outliers in both univariate and multivariate space.
 Depends:
     R (>= 3.2.3)
 Imports:
     adegenet,
     ash,
+    BiocInstaller,
     data.table,
+    DT,
     fields,
     ggplot2,
+    OmicCircos,
     RColorBrewer,
     Rcpp,
     shiny,
@@ -30,7 +34,7 @@ Suggests:
 Remotes:
     github::Bioconductor-mirror/BiocInstaller,
     github::Bioconductor-mirror/OmicCircos,
-    github::rstudio/DT@24d71f2
+    github::rstudio/DT
 LinkingTo: Rcpp
 License: GPL (>=2)
 LazyData: true

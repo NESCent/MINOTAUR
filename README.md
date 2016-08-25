@@ -8,8 +8,6 @@
 ```
 install.packages("devtools", dependencies = TRUE)
 
-devtools::install_github("rstudio/DT", ref="24d71f2") # temporary fix (required for some datatables)
-
 devtools::install_github("NESCent/MINOTAUR", build_vignettes = TRUE)
 
 library(MINOTAUR)
