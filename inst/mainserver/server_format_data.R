@@ -9,50 +9,74 @@
 ## Box: Format Data ##
 ######################
 
+#' @importFrom shinydashboard box
+#' @importFrom graphics barplot
+#' @importFrom graphics plot
+#' @importFrom graphics par
+#' @importFrom graphics polygon
+#' @importFrom shiny renderUI
+#' @importFrom shiny reactive
+#' @importFrom shiny checkboxInput
+#' @importFrom shiny conditionalPanel
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny radioButtons
+#' @importFrom shiny checkboxGroupInput
+#' @importFrom shiny dataTableOutput
+#' @importFrom shiny renderDataTable
+#' @importFrom shiny h3
+#' @importFrom shiny fluidRow
+#' @importFrom shiny p
+#' @importFrom shiny selectInput
+
 # box for choosing genomic variables
-output$box_formatData <- renderUI({
+output$box_formatData <- shiny::renderUI({
 
   chromVarSel <- posVarSel <- NULL
   chromVarSel <- stripPositionChromosome()$chromVar
   posVarSel <- stripPositionChromosome()$posVar
 
 
-  box(title="Identify Variables",
-      status="primary",
-      solidHeader=TRUE,
-      collapsible=TRUE,
-      width=12,
+  shinydashboard::box(
+    title="Identify Variables",
+    status="primary",
+    solidHeader=TRUE,
+    collapsible=TRUE,
+    width=12,
 
-      h3('Identify Genomic Variables'),
+    shiny::h3('Identify Genomic Variables'),
 
-      p('Here you can identify which variables (if any)
+    shiny::p('Here you can identify which variables (if any)
         define genomic position (e.g., base pair) and grouping (e.g., chromosome).'),
 
-      fluidRow(
-        column(6,
-               selectInput('formatData_select_position',
-                           label='Position variable',
-                           choices=as.list(c('(none)',
-                                             names(rawData()$data))),
-                           selected=posVarSel,
-                           multiple=FALSE)
-        ),
-        column(6,
-               selectInput('formatData_select_chromosome',
-                           label='Grouping variable',
-                           choices=as.list(c('(none)',
-                                             names(rawData()$data))),
-                           selected=chromVarSel,
-                           multiple=FALSE)
-        )
+    shiny::fluidRow(
+      column(6,
+             shiny::selectInput(
+               'formatData_select_position',
+               label='Position variable',
+               choices=as.list(c('(none)',
+                                 names(rawData()$data))),
+               selected=posVarSel,
+               multiple=FALSE
+             )
+      ),
+      column(6,
+             shiny::selectInput(
+               'formatData_select_chromosome',
+               label='Grouping variable',
+               choices=as.list(c('(none)',
+                                 names(rawData()$data))),
+               selected=chromVarSel,
+               multiple=FALSE
+             )
       )
-      )
+    )
+  )
 
 })
 
 ## Strip out pos and chrom columns from other variables. pos is coerced to numeric and chrom is coerced to character.
 ## Return list(posVar,chromVar,otherVar,pos,chrom,y)
-stripPositionChromosome <- reactive({
+stripPositionChromosome <- shiny::reactive({
 
   output <- NULL
 
@@ -70,9 +94,9 @@ stripPositionChromosome <- reactive({
         if(!posVar %in% names(rawData()$data)){
           pos <- NULL
         }else{
-        pos <- rawData()$data[,posVar]
-        if (!is.numeric(pos))
-          pos <- as.numeric(as.factor(pos))
+          pos <- rawData()$data[,posVar]
+          if (!is.numeric(pos))
+            pos <- as.numeric(as.factor(pos))
         }
       }
 
@@ -87,7 +111,7 @@ stripPositionChromosome <- reactive({
         if(!chromVar %in% names(rawData()$data)){
           chrom <- NULL
         }else{
-            chrom <- as.character(rawData()$data[,chromVar])
+          chrom <- as.character(rawData()$data[,chromVar])
         }
       }
 
@@ -105,7 +129,7 @@ stripPositionChromosome <- reactive({
 
     }
   }
-  
+
   return(output)
 })
 
@@ -114,26 +138,27 @@ stripPositionChromosome <- reactive({
 #########################
 
 # box for plotting breakdown by grouping variable
-output$box_plotBreakdown <- renderUI({
-  box(title='Breakdown By Group',
-      status="warning",
-      solidHeader=TRUE,
-      collapsible=TRUE,
-      width=12,
-      #height=300,
+output$box_plotBreakdown <- shiny::renderUI({
+  shinydashboard::box(
+    title='Breakdown By Group',
+    status="warning",
+    solidHeader=TRUE,
+    collapsible=TRUE,
+    width=12,
+    #height=300,
 
-      if (is.null(stripPositionChromosome()$chrom)) {
-        p('Choose a ',strong('Grouping variable'),'
+    if (is.null(stripPositionChromosome()$chrom)) {
+      shiny::p('Choose a ',strong('Grouping variable'),'
           (for example grouping by chromosome) from the menu in the panel at left
           to produce a plot showing the breakdown of observations by group.')
+    } else {
+      # if too many unique groups then give warning message
+      if (length(unique(stripPositionChromosome()$chrom))>100) {
+        shiny::p('(Grouping variable contains too many unique levels to plot.)')
       } else {
-        # if too many unique groups then give warning message
-        if (length(unique(stripPositionChromosome()$chrom))>100) {
-          p('(Grouping variable contains too many unique levels to plot.)')
-        } else {
-          plotOutput('formatData_plot_genomic_observations',height=300)
-        }
+        shiny::plotOutput('formatData_plot_genomic_observations',height=300)
       }
+    }
   )
 })
 
@@ -146,24 +171,24 @@ output$formatData_plot_genomic_observations <- renderPlot({
     uniques <- unique(groupingVar)
     if (length(uniques)<100) {
       if(!is.null(posVar)){
-        
+
         # split pos by group
         pos_list <- split(posVar, groupingVar)
         pos_range <- matrix(as.numeric(unlist(lapply(pos_list, FUN=function(x){range(x,na.rm=TRUE)}))), ncol=2, byrow=T)
         minVal <- min(pos_range)
         maxVal <- max(pos_range)
-        
+
         # print empty plot
-        par(fig=c(0,1,0.85,1),mar=c(0,0,0,0))
-        plot(0,type='n',xlim=c(-1,1),ylim=c(-1,1),axes=FALSE,ann=FALSE)
+        graphics::par(fig=c(0,1,0.85,1),mar=c(0,0,0,0))
+        graphics::plot(0,type='n',xlim=c(-1,1),ylim=c(-1,1),axes=FALSE,ann=FALSE)
         text(0,0,'genomic coverage broken down by group',cex=1.2,font=2)
-        
-        par(fig=c(0.1,0.9,0.1,0.85),mar=c(0,0,0,0),new=TRUE)
+
+        graphics::par(fig=c(0.1,0.9,0.1,0.85),mar=c(0,0,0,0),new=TRUE)
         y_pretty <- pretty(pos_range)
-        plot(0,type='n', xlim=c(0,length(uniques)), ylim=range(y_pretty), xaxs='i', yaxs='i', axes=F)
+        graphics::plot(0,type='n', xlim=c(0,length(uniques)), ylim=range(y_pretty), xaxs='i', yaxs='i', axes=F)
         axis(1,at=1:length(uniques)-0.5,labels=1:length(uniques))
         axis(2,at=y_pretty)
-        
+
         # loop through all groups
         myPal <- colorRampPalette(c('white','red'))
         for (i in 1:length(uniques)) {
@@ -172,27 +197,27 @@ output$formatData_plot_genomic_observations <- renderPlot({
           y_range <- c((pos_range[i,1]-minVal)/(maxVal-minVal), (pos_range[i,2]-minVal)/(maxVal-minVal))
           y_range <- y_range*(1-0.1-0.15) + 0.1
           if (y_range[1]!=y_range[2]) {
-            
+
             # add image plot based on sampling density
             m <- matrix(table(findInterval(pos_list[[i]],seq(pos_range[i,1],pos_range[i,2],l=101), rightmost.closed=T)),1)
-            par(fig=c(x_range[1], x_range[2], y_range[1], y_range[2]),mar=c(0,0,0,0),new=T)
+            graphics::par(fig=c(x_range[1], x_range[2], y_range[1], y_range[2]),mar=c(0,0,0,0),new=T)
             image(m,axes=F,col=myPal(10))
-            
+
             # add border
-            par(fig=c(0,1,0,1),mar=c(0,0,0,0),new=T)
-            plot(0,type='n', xlim=c(0,1), ylim=c(0,1), xaxs='i', yaxs='i', axes=F, ann=F)
-            polygon(c(x_range[1],x_range[2],x_range[2],x_range[1]), c(y_range[1],y_range[1],y_range[2],y_range[2]))
+            graphics::par(fig=c(0,1,0,1),mar=c(0,0,0,0),new=T)
+            graphics::plot(0,type='n', xlim=c(0,1), ylim=c(0,1), xaxs='i', yaxs='i', axes=F, ann=F)
+            graphics::polygon(c(x_range[1],x_range[2],x_range[2],x_range[1]), c(y_range[1],y_range[1],y_range[2],y_range[2]))
           }
         }
       } else {
-        
+
         # extract number of times each unique group is represented
         tab <- data.frame(table(groupingVar))
         uniques <- unique(groupingVar)
         counts <- tab[match(uniques,tab[,1]),2]
-        
+
         # produce plot
-        barplot(counts, names=1:length(uniques), col='black', main='number of observations in each group')
+        graphics::barplot(counts, names=1:length(uniques), col='black', main='number of observations in each group')
       }
     }
   }
@@ -203,42 +228,48 @@ output$formatData_plot_genomic_observations <- renderPlot({
 ######################
 
 # box for choosing genomic variables
-output$box_subsetData <- renderUI({
-  box(title="Subset Data",
-      status="primary",
-      solidHeader=TRUE,
-      collapsible=TRUE,
-      width=12,
+output$box_subsetData <- shiny::renderUI({
+  shinydashboard::box(
+    title="Subset Data",
+    status="primary",
+    solidHeader=TRUE,
+    collapsible=TRUE,
+    width=12,
 
-      h3('Subset Rows and Columns'),
+    shiny::h3('Subset Rows and Columns'),
 
-      p('Here you can limit the variables that you will
+    shiny::p('Here you can limit the variables that you will
         take forward to the outlier detection stage,
         and remove rows containing missing or problematic data.'),
 
-      checkboxInput('formatData_check_takeAllForward',
-                    label='Use all remaining variables',
-                    value=TRUE),
+    shiny::checkboxInput('formatData_check_takeAllForward',
+                         label='Use all remaining variables',
+                         value=TRUE),
 
-      conditionalPanel(condition='input.formatData_check_takeAllForward == false',
-                       selectizeInput('formatData_selectize_variables',
-                                      label='Select specific variables',
-                                      choices=stripPositionChromosome()$otherVar,
-                                      multiple=TRUE),
+    shiny::conditionalPanel(
+      condition='input.formatData_check_takeAllForward == false',
+      shiny::selectizeInput('formatData_selectize_variables',
+                            label='Select specific variables',
+                            choices=stripPositionChromosome()$otherVar,
+                            multiple=TRUE),
 
-                       radioButtons('formatData_radio_removeOrRetain',
-                                    label=NULL,
-                                    choices=list('remove chosen columns'='remove',
-                                                 'retain chosen columns'='retain'))
-      ),
-      p(strong('Remove Missing Data')),
-      checkboxGroupInput('formatData_check_removeMissing',
-                         label=NULL,
-                         choices=list('Remove NA'='NA',
-                                      'Remove NaN'='NaN',
-                                      'Remove non-finite\n(Inf and -Inf)'='non-finite'),
-                          selected=c('NA','NaN','non-finite'))
+      shiny::radioButtons(
+        'formatData_radio_removeOrRetain',
+        label=NULL,
+        choices=list('remove chosen columns'='remove',
+                     'retain chosen columns'='retain')
       )
+    ),
+    p(strong('Remove Missing Data')),
+    shiny::checkboxGroupInput(
+      'formatData_check_removeMissing',
+      label=NULL,
+      choices=list('Remove NA'='NA',
+                   'Remove NaN'='NaN',
+                   'Remove non-finite\n(Inf and -Inf)'='non-finite'),
+      selected=c('NA','NaN','non-finite')
+    )
+  )
 })
 
 ## Reactive conductor for producing final 'clean' data object after removing rows and columns.
@@ -257,24 +288,26 @@ output$box_subsetData <- renderUI({
 #      percentRemoved,    <- percentage rows removed due to missing data
 #      pos_userDefined, <- whether pos is user-defined or default
 #      chrom_userDefined) <- whether chrom is user-defined or default
-cleanData <- reactive({
+cleanData <- shiny::reactive({
 
   ## define null output to return if some sort of error.
   ## Ensures that output format is maintained even in event of an error.
-  nullOutput <- list(posVar=NULL,
-                     chromVar=NULL,
-                     otherVar=NULL,
-                     pos=NULL,
-                     pos_modifier=NULL,
-                     chrom=NULL,
-                     chromLevels=NULL,
-                     chromIndex=NULL,
-                     chromMidpoint=NULL,
-                     y=NULL,
-                     numRemoved=NULL,
-                     percentRemoved=NULL,
-                     pos_userDefined=NULL,
-                     chrom_userDefined=NULL)
+  nullOutput <- list(
+    posVar=NULL,
+    chromVar=NULL,
+    otherVar=NULL,
+    pos=NULL,
+    pos_modifier=NULL,
+    chrom=NULL,
+    chromLevels=NULL,
+    chromIndex=NULL,
+    chromMidpoint=NULL,
+    y=NULL,
+    numRemoved=NULL,
+    percentRemoved=NULL,
+    pos_userDefined=NULL,
+    chrom_userDefined=NULL
+  )
 
   # initialise output as null, then fill in elements one at a time
   output <- nullOutput
@@ -388,14 +421,19 @@ cleanData <- reactive({
 #################################
 
 # valueBox for % missing data removed
-output$valueBox_missingDataRemoved <- renderUI({
-  valueBox(value=HTML(paste('<font size=5>rows removed:  </font> <font size=6>',
-                            cleanData()$numRemoved,
-                            ' (',
-                            cleanData()$percentRemoved,
-                            '%)</font>'
-                            ,sep='')
-  ), subtitle='', color='yellow', width=12)
+output$valueBox_missingDataRemoved <- shiny::renderUI({
+  shinydashboard::valueBox(
+    value=HTML(
+      paste('<font size=4>rows removed:  </font> <font size=3>',
+            cleanData()$numRemoved,
+            ' (',
+            cleanData()$percentRemoved,
+            '%)</font>'
+            , sep = ''
+      )
+    ),
+    subtitle = '', color = 'yellow', width = 12
+  )
 })
 
 ########################
@@ -403,19 +441,21 @@ output$valueBox_missingDataRemoved <- renderUI({
 ########################
 
 # box for showing filtered data
-output$box_finalData <- renderUI({
-  box(title="Final Data",
-      status="warning",
-      solidHeader=TRUE,
-      collapsible=TRUE,
-      width=12,
+output$box_finalData <- shiny::renderUI({
+  shinydashboard::box(
+    title="Final Data",
+    status="warning",
+    solidHeader=TRUE,
+    collapsible=TRUE,
+    width=12,
 
-      dataTableOutput("table_finalData")
+    # DT::dataTableOutput("table_finalData")
+    shiny::dataTableOutput("table_finalData")
   )
 })
 
 # filtered data table
-output$table_finalData <- renderDataTable({
+output$table_finalData <- shiny::renderDataTable({
 
   # if cleanData()$y is NULL, return NULL
   if (is.null(cleanData()$y))

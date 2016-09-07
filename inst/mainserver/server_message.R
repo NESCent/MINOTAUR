@@ -10,7 +10,7 @@
 # 4) If there is at least one error the style of the menu will change (the icon will start spinning!) to remind the user that something needs sorting
 
 # set up a list of possible errors
-errorMenu <- reactiveValues()
+errorMenu <- shiny::reactiveValues()
 errorMenu$message <- list('too_many_chroms'=list(text='Long messages like this dont seem to print in their entirity. Ive posted a question on StackOverflow to try and get this working!',
                                                  icon='search',
                                                  on=FALSE),
@@ -29,7 +29,7 @@ errorOff <- function(error_id) {
 }
 
 # create menu containing error messages
-output$messageMenu <- renderMenu({
+output$messageMenu <- shinydashboard::renderMenu({
 
   # make list of shiny error elements
   msgs <- list()
@@ -41,10 +41,10 @@ output$messageMenu <- renderMenu({
 
   # make notification menu (format depends on number of error messages)
   if (length(msgs)==0) {
-      #dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-times-circle fa-2x"></i>'), badgeStatus='success')
-      dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-smile-o"></i>'))
+      #shinydashboard::dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-times-circle fa-2x"></i>'), badgeStatus='success')
+      shinydashboard::dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-smile-o"></i>'))
   } else {
-      dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-times-circle fa-spin fa-2x"></i>'), badgeStatus='danger')
-      #dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-warning fa-spin"></i>'), badgeStatus='danger')
+      shinydashboard::dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-times-circle fa-spin fa-2x"></i>'), badgeStatus='danger')
+      #shinydashboard::dropdownMenu(type='notifications',.list=msgs, icon=HTML('<i class="fa fa-warning fa-spin"></i>'), badgeStatus='danger')
   }
 })

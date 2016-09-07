@@ -5,20 +5,23 @@
 using namespace std;
 
 //------------------------------------------------
-// calculates overall deviance (-2*log-likelihood) for given kernel bandwidth. Likelihood of point i is equal
-// to kernel density from all other points in subset, and likelihood of overall data is product over i.
+//' @name C_kernelDeviance
+//' @title Overall deviance for given kernel bandwidth
+//' @description Calculates overall deviance (-2*log-likelihood) for given kernel bandwidth. Likelihood of point i is equal to kernel density from all other points in subset, and likelihood of overall data is product over i.
+//' @keywords internal
 // [[Rcpp::export]]
+
 Rcpp::List C_kernelDeviance(std::vector< std::vector<double> > data, std::vector<int> subset, double sigma2, std::vector< std::vector<double> > S_inv) {
-    
+
     int dims = int(data.size());
     int n = int(data[0].size());
     int sub_size = int(subset.size());
     double C1 = 0.5/sigma2;
     int tmp;
-    
+
     double x, y, z;
     double deviance = 0;
-    
+
     for (int i=0; i<n; i++) {
         z = log(0.0);
         tmp = 0;
@@ -46,24 +49,28 @@ Rcpp::List C_kernelDeviance(std::vector< std::vector<double> > data, std::vector
         }
         deviance += -2*(-log(double(tmp-1)) - 0.5*dims*log(6.283185*sigma2) + z);
     }
-    
+
     // return logLike
     return Rcpp::List::create(Rcpp::Named("deviance")=deviance);
 }
 
 //------------------------------------------------
-// equivalent to C_kernelDeviance, but only performs calculation on chunk of data, allowing calculation to be broken into sections and thus tracked by a progress bar
+//' @name C_kernelDeviance_partial
+//' @title overall deviance for given kernel bandwidth using chunk of data to enable the use of a progress bar for large datasets
+//' @description Equivalent to C_kernelDeviance, but only performs calculation on chunk of data, allowing calculation to be broken into sections and thus tracked by a progress bar.
+//' @keywords internal
 // [[Rcpp::export]]
+
 Rcpp::List C_kernelDeviance_partial(std::vector< std::vector<double> > data, double sigma2, std::vector< std::vector<double> > S_inv, int i_start, int i_end) {
-    
+
     int dims = int(data.size());
     int n = data[0].size();
     double C1 = 0.5/sigma2;
     double C2 = 2*log(double(n-1)) + dims*log(6.283185*sigma2);
-    
+
     double x, y, z;
     double deviance = 0;
-    
+
     for (int i=(i_start-1); i<i_end; i++) {
         z = log(0.0);
         for (int j=0; j<n; j++) {
@@ -89,7 +96,7 @@ Rcpp::List C_kernelDeviance_partial(std::vector< std::vector<double> > data, dou
         }
         deviance += C2 - 2*z;
     }
-    
+
     // return logLike
     return Rcpp::List::create(Rcpp::Named("deviance")=deviance);
 }

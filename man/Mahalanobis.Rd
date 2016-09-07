@@ -26,8 +26,8 @@ Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame.
 Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
 }
 \examples{
-
-# create a matrix of observations
+\dontrun{
+#' # create a matrix of observations
 df <- data.frame(x=rnorm(100),y=rnorm(100))
 
 # calculate Mahalanobis distances
@@ -36,7 +36,7 @@ distances <- Mahalanobis(df)
 # use this distance to look for outliers
 Q95 <- quantile(distances, 0.95)
 which(distances>Q95)
-
+}
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}

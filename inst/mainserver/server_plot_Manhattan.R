@@ -3,33 +3,53 @@
 ## LINEAR MANHATTAN PLOT PAGE ##  ------------------------------------------------------------------------------------
 ################################
 
+#' @importFrom shiny reactiveValues
+#' @importFrom shiny actionButton
+#' @importFrom shinydashboard box
+#' @importFrom shiny renderUI
+#' @importFrom shiny fluidRow
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny sliderInput
+#' @importFrom shiny radioButtons
+#' @importFrom shiny hr
+#' @importFrom shiny actionButton
+#' @importFrom shiny renderPlot
+#' @importFrom shiny plotOutput
+#' @importFrom ash::bin2
+#' @importFrom shiny h5
+#' @importFrom shiny p
+#' @importFrom shiny textInput
+#' @importFrom adegenet transp
+#' @importFrom fields image.plot
 
+#'
+#'
 ## generate reactiveValues lists for all initial values
 
 ## variables
-rv_linearManhattan_button <- reactiveValues()
+rv_linearManhattan_button <- shiny::reactiveValues()
 rv_linearManhattan_button <- 1 # 0
-# rv_linearManhattan_xaxis <- reactiveValues()
-rv_linearManhattan_yaxis <- reactiveValues()
-# rv_linearManhattan_logx <- reactiveValues()
-rv_linearManhattan_logy <- reactiveValues()
-# rv_linearManhattan_flipx <- reactiveValues()
-rv_linearManhattan_flipy <- reactiveValues()
+# rv_linearManhattan_xaxis <- shiny::reactiveValues()
+rv_linearManhattan_yaxis <- shiny::reactiveValues()
+# rv_linearManhattan_logx <- shiny::reactiveValues()
+rv_linearManhattan_logy <- shiny::reactiveValues()
+# rv_linearManhattan_flipx <- shiny::reactiveValues()
+rv_linearManhattan_flipy <- shiny::reactiveValues()
 
-rv_linearManhattan_outlier.var <- reactiveValues()
-rv_linearManhattan_outlier.cutoff <- reactiveValues()
-rv_linearManhattan_outlier.tail <- reactiveValues()
+rv_linearManhattan_outlier.var <- shiny::reactiveValues()
+rv_linearManhattan_outlier.cutoff <- shiny::reactiveValues()
+rv_linearManhattan_outlier.tail <- shiny::reactiveValues()
 
 ## aesthetics
-rv_linearManhattan_col.pal <- reactiveValues()
-rv_linearManhattan_n.bins <- reactiveValues()
-rv_linearManhattan_grid <- reactiveValues()
+rv_linearManhattan_col.pal <- shiny::reactiveValues()
+rv_linearManhattan_n.bins <- shiny::reactiveValues()
+rv_linearManhattan_grid <- shiny::reactiveValues()
 
-rv_linearManhattan_outlier.col.bg <- reactiveValues()
-rv_linearManhattan_outlier.col <- reactiveValues()
-rv_linearManhattan_outlier.pch <- reactiveValues()
-rv_linearManhattan_outlier.transp <- reactiveValues()
-rv_linearManhattan_outlier.cex <- reactiveValues()
+rv_linearManhattan_outlier.col.bg <- shiny::reactiveValues()
+rv_linearManhattan_outlier.col <- shiny::reactiveValues()
+rv_linearManhattan_outlier.pch <- shiny::reactiveValues()
+rv_linearManhattan_outlier.transp <- shiny::reactiveValues()
+rv_linearManhattan_outlier.cex <- shiny::reactiveValues()
 
 
 
@@ -209,7 +229,7 @@ observe({
 
 ## Generate K individual BOXES for each univariate plot,
 ## produced using lapply method, K taken from actionButton:
-output$box_linearManhattan <- renderUI({
+output$box_linearManhattan <- shiny::renderUI({
 
   k <- 1
   k <- input$new_linearManhattan_button[1] + 1
@@ -229,27 +249,28 @@ output$box_linearManhattan <- renderUI({
         ## get box of boxes
         if(!is.null(dat)){
 
-          box(title=title.k,
-              status="warning",
-              # status="danger",
-              solidHeader=TRUE,
-              collapsible=TRUE,
-              width=12,
-              # background="teal",
+          shinydashboard::box(
+            title=title.k,
+            status="warning",
+            # status="danger",
+            solidHeader=TRUE,
+            collapsible=TRUE,
+            width=12,
+            # background="teal",
 
-              fluidRow(
-                column(4,
-                       .get.linearManhattan.controls(dat, i)
-                ),
+            shiny::fluidRow(
+              column(4,
+                     .get.linearManhattan.controls(dat, i)
+              ),
 
               # fluidRow(
-                column(8,
-                       .get.linearManhattan.plot(dat, i),
-                       .get.linearManhattan.controls.aes(dat, i)
-                )
-              ),
-              style = list('background-color: #B6B6B6') # dark gray (amber)
-              # style = list('background-color: #727272') # dark gray (light blue)
+              column(8,
+                     .get.linearManhattan.plot(dat, i),
+                     .get.linearManhattan.controls.aes(dat, i)
+              )
+            ),
+            style = list('background-color: #B6B6B6') # dark gray (amber)
+            # style = list('background-color: #727272') # dark gray (light blue)
 
           )
         }
@@ -299,148 +320,162 @@ output$box_linearManhattan <- renderUI({
   id_linearManhattan_outlier.tail <- paste("linearManhattan_outlier.tail", k, sep="_")
 
   out <-
-    box(title="Select Variables:", # "Univariate Distributions"
-        status="warning",
+    shinydashboard::box(
+      title="Select Variables:", # "Univariate Distributions"
+      status="warning",
+      # status="primary",
+      solidHeader=FALSE,
+      collapsible=TRUE,
+      width=12,
+      # background="teal",
+
+      ###################
+      ## Choose x-axis ##
+      ###################
+
+      #         shinydashboard::box(title="Adjust x-axis:", # "Univariate Distributions"
+      #             # status="info",
+      #             status = "warning",
+      #             # status="primary",
+      #             solidHeader=TRUE,
+      #             collapsible=TRUE,
+      #             width=12,
+      #
+      #
+      #             ## NOTE: Would like to be able to pull the Chromosome and Position variables
+      #             ## selected/generated in the Format Data tab to be available as options
+      #             ## and autoatically selected below...
+      #
+      #             ## Choose x-axis variable
+      #             h5(strong("X-axis:")),
+      #             helpText("Note: The x-axis used in this Manhattan plot is the 'Position' variable
+      #               selected in the 'Format Data' tab on the 'Data' page."),
+
+      #             selectizeInput(id_linearManhattan_xaxis,
+      #                            label = 'X-axis:',
+      #                            choices = x.var.choices,
+      #                            selected = rv_linearManhattan_xaxis[[k]], # x.var.sel,
+      #                            multiple = FALSE),
+
+      ## log(x-axis) ?
+      #             radioButtons(id_linearManhattan_logx,
+      #                          label = "Log x-axis?",
+      #                          choices = list("log2", "log10", "none"),
+      #                          selected= rv_linearManhattan_logx[[k]], # "none",
+      #                          inline=TRUE),
+
+      #             ## Flip x-axis ?
+      #             radioButtons(id_linearManhattan_flipx,
+      #                          label = "Invert x-axis?",
+      #                          choices = list("Yes", "No"),
+      #                          selected= rv_linearManhattan_flipx[[k]], # "No",
+      #                          inline=TRUE),
+      #
+      #             style = list('background-color: #FFECB3') # pale amber
+      #             # style = list('background-color: #B2EBF2') # pale cyan
+      #             # style = list('background-color: #B3E5FC') # pale light blue
+      #         ),
+
+      ###################
+      ## Choose y-axis ##
+      ###################
+
+      shinydashboard::box(
+        title="Select y-axis:",
+        # status="info",
+        status = "warning",
         # status="primary",
-        solidHeader=FALSE,
+        solidHeader=TRUE,
         collapsible=TRUE,
         width=12,
-        # background="teal",
 
-        ###################
-        ## Choose x-axis ##
-        ###################
-
-        #         box(title="Adjust x-axis:", # "Univariate Distributions"
-        #             # status="info",
-        #             status = "warning",
-        #             # status="primary",
-        #             solidHeader=TRUE,
-        #             collapsible=TRUE,
-        #             width=12,
-        #
-        #
-        #             ## NOTE: Would like to be able to pull the Chromosome and Position variables
-        #             ## selected/generated in the Format Data tab to be available as options
-        #             ## and autoatically selected below...
-        #
-        #             ## Choose x-axis variable
-        #             h5(strong("X-axis:")),
-            #             helpText("Note: The x-axis used in this Manhattan plot is the 'Position' variable
-            #               selected in the 'Format Data' tab on the 'Data' page."),
-
-            #             selectizeInput(id_linearManhattan_xaxis,
-            #                            label = 'X-axis:',
-            #                            choices = x.var.choices,
-            #                            selected = rv_linearManhattan_xaxis[[k]], # x.var.sel,
-            #                            multiple = FALSE),
-
-            ## log(x-axis) ?
-            #             radioButtons(id_linearManhattan_logx,
-            #                          label = "Log x-axis?",
-            #                          choices = list("log2", "log10", "none"),
-            #                          selected= rv_linearManhattan_logx[[k]], # "none",
-            #                          inline=TRUE),
-
-            #             ## Flip x-axis ?
-            #             radioButtons(id_linearManhattan_flipx,
-            #                          label = "Invert x-axis?",
-            #                          choices = list("Yes", "No"),
-            #                          selected= rv_linearManhattan_flipx[[k]], # "No",
-            #                          inline=TRUE),
-            #
-            #             style = list('background-color: #FFECB3') # pale amber
-            #             # style = list('background-color: #B2EBF2') # pale cyan
-            #             # style = list('background-color: #B3E5FC') # pale light blue
-            #         ),
-
-        ###################
-        ## Choose y-axis ##
-        ###################
-
-        box(title="Select y-axis:",
-            # status="info",
-            status = "warning",
-            # status="primary",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
-
-            ## Choose y-axis variable
-            selectizeInput(id_linearManhattan_yaxis,
-                           label = 'Y-axis:',
-                           choices = y.var.choices,
-                           selected =  rv_linearManhattan_yaxis[[k]], # y.var.sel,
-                           multiple = FALSE),
-
-            ## log(y-axis) ?
-            radioButtons(id_linearManhattan_logy,
-                         label = "Log y-axis?",
-                         choices = list("log2", "log10", "none"),
-                         selected= rv_linearManhattan_logy[[k]], # "none",
-                         inline=TRUE),
-
-            ## Flip y-axis ?
-            radioButtons(id_linearManhattan_flipy,
-                         label = "Invert y-axis?",
-                         choices = list("Yes", "No"),
-                         selected= rv_linearManhattan_flipy[[k]], # "No",
-                         inline=TRUE),
-
-            style = list('background-color: #FFECB3') # pale amber
-            # style = list('background-color: #B2EBF2') # pale cyan
-            # style = list('background-color: #B3E5FC') # pale light blue
-
+        ## Choose y-axis variable
+        shiny::selectizeInput(
+          id_linearManhattan_yaxis,
+          label = 'Y-axis:',
+          choices = y.var.choices,
+          selected =  rv_linearManhattan_yaxis[[k]], # y.var.sel,
+          multiple = FALSE
         ),
 
+        ## log(y-axis) ?
+        shiny::radioButtons(
+          id_linearManhattan_logy,
+          label = "Log y-axis?",
+          choices = list("log2", "log10", "none"),
+          selected= rv_linearManhattan_logy[[k]], # "none",
+          inline=TRUE
+        ),
 
-        ###############################################
-        ## Choose outlier variable (usually p-value) ##
-        ###############################################
+        ## Flip y-axis ?
+        shiny::radioButtons(
+          id_linearManhattan_flipy,
+          label = "Invert y-axis?",
+          choices = list("Yes", "No"),
+          selected= rv_linearManhattan_flipy[[k]], # "No",
+          inline=TRUE
+        ),
 
-        ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
-        ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
+        style = list('background-color: #FFECB3') # pale amber
+        # style = list('background-color: #B2EBF2') # pale cyan
+        # style = list('background-color: #B3E5FC') # pale light blue
 
-        box(title="Select outlier variable:",
-            # status="info",
-            status = "warning",
-            # status="primary",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+      ),
 
-            ## Mark outliers by second variable (usually p-value)
-            h5(strong('Highlight outliers by this variable:')),
-            p("For example, you may wish to identify outliers according to a p-value
+
+      ###############################################
+      ## Choose outlier variable (usually p-value) ##
+      ###############################################
+
+      ## NOTE: I'm not 100% sure what the best way to refer to this variable is...
+      ## ie. "Second variable" or "Outlier detection variable" or "Univariate outlier detection variable"??
+
+      shinydashboard::box(
+        title="Select outlier variable:",
+        # status="info",
+        status = "warning",
+        # status="primary",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
+
+        ## Mark outliers by second variable (usually p-value)
+        shiny::h5(strong('Highlight outliers by this variable:')),
+        shiny::p("For example, you may wish to identify outliers according to a p-value
               that is recorded in another column of the data table."),
-            selectizeInput(id_linearManhattan_outlier.var,
-                           label = NULL,
-                           choices = o.var.choices,
-                           selected = rv_linearManhattan_outlier.var[[k]], # o.var.sel,
-                           multiple = FALSE),
+        shiny::selectizeInput(
+          id_linearManhattan_outlier.var,
+          label = NULL,
+          choices = o.var.choices,
+          selected = rv_linearManhattan_outlier.var[[k]], # o.var.sel,
+          multiple = FALSE
+        ),
 
-            ## Cut-off for outliers to overlay
-            # eg 0.01
-            textInput(id_linearManhattan_outlier.cutoff,
-                      label = "Cut-off for outliers to overlay",
-                      value =  rv_linearManhattan_outlier.cutoff[[k]] # 0.05
-            ),
+        ## Cut-off for outliers to overlay
+        # eg 0.01
+        shiny::textInput(
+          id_linearManhattan_outlier.cutoff,
+          label = "Cut-off for outliers to overlay",
+          value =  rv_linearManhattan_outlier.cutoff[[k]] # 0.05
+        ),
 
-            radioButtons(id_linearManhattan_outlier.tail,
-                         label = "Tail",
-                         choices = c("Lower", "Upper", "Two-tailed"),
-                         selected =  rv_linearManhattan_outlier.tail[[k]], # "Lower",
-                         inline=TRUE),
+        shiny::radioButtons(
+          id_linearManhattan_outlier.tail,
+          label = "Tail",
+          choices = c("Lower", "Upper", "Two-tailed"),
+          selected =  rv_linearManhattan_outlier.tail[[k]], # "Lower",
+          inline=TRUE
+        ),
 
-            style = list('background-color: #FFECB3') # pale amber
-            # style = list('background-color: #B2EBF2') # pale cyan
-            # style = list('background-color: #B3E5FC') # pale light blue
-            )
+        style = list('background-color: #FFECB3') # pale amber
+        # style = list('background-color: #B2EBF2') # pale cyan
+        # style = list('background-color: #B3E5FC') # pale light blue
+      )
 
-        # style = list('background-color: #FFECB3')
-        # style = list('background-color: #FFFFFF') # pale gray (light blue)
+      # style = list('background-color: #FFECB3')
+      # style = list('background-color: #FFFFFF') # pale gray (light blue)
 
-        )
+    )
 
   return(out)
 } # end .get.linearManhattan.controls
@@ -471,128 +506,143 @@ output$box_linearManhattan <- renderUI({
   out <- NULL
 
   out <-
-    box(title="Adjust Plot Aesthetics:",
+    shinydashboard::box(
+      title="Adjust Plot Aesthetics:",
+      status="warning",
+      # status="primary",
+      solidHeader=FALSE,
+      collapsible=TRUE,
+      width=12,
+      # background="yellow",
+
+      # h4("Scatter aesthetics:"),
+      shinydashboard::box(
+        title="Scatter aesthetics:",
         status="warning",
         # status="primary",
-        solidHeader=FALSE,
+        solidHeader=TRUE,
         collapsible=TRUE,
         width=12,
-        # background="yellow",
-
-        # h4("Scatter aesthetics:"),
-        box(title="Scatter aesthetics:",
-            status="warning",
-            # status="primary",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
 
 
-            fluidRow(
-              column(4,
-            ## selectInput w col.pals
-            selectizeInput(id_linearManhattan_col.pal,
-                           label="Colour palette:",
-                           choices = list("Heat colours" = "heat.colors",
-                                          "Terrain colours" = "terrain.colors",
-                                          "Topo colours" = "topo.colors",
-                                          "CM colours" = "cm.colors",
-                                          "Gray colours" = "gray.colors"),
-                           selected =  rv_linearManhattan_col.pal[[k]], # "heat.colors",
-                           multiple=FALSE)),
+        shiny::fluidRow(
+          column(4,
+                 ## selectInput w col.pals
+                 shiny::selectizeInput(
+                   id_linearManhattan_col.pal,
+                   label="Colour palette:",
+                   choices = list("Heat colours" = "heat.colors",
+                                  "Terrain colours" = "terrain.colors",
+                                  "Topo colours" = "topo.colors",
+                                  "CM colours" = "cm.colors",
+                                  "Gray colours" = "gray.colors"),
+                   selected =  rv_linearManhattan_col.pal[[k]], # "heat.colors",
+                   multiple=FALSE)),
 
-            column(4,
-            sliderInput(id_linearManhattan_n.bins,
-                        label = "Number of bins:",
-                        min = 2, max = 1000,
-                        value =  rv_linearManhattan_n.bins[[k]], # 100,
-                        step = 1)),
+          column(4,
+                 shiny::sliderInput(
+                   id_linearManhattan_n.bins,
+                   label = "Number of bins:",
+                   min = 2, max = 1000,
+                   value =  rv_linearManhattan_n.bins[[k]], # 100,
+                   step = 1
+                 )
+          ),
 
-            column(4,
-            radioButtons(id_linearManhattan_grid,
-                         label="Overlay grid?",
-                         choices=list("Yes" = TRUE,
-                                      "No" = FALSE),
-                         selected = rv_linearManhattan_grid[[k]],
-                         inline = TRUE))
-            ),
-
-            style = list('background-color: #FFECB3') # pale amber
-            # style = list('background-color: #B2EBF2') # pale cyan
-            # style = list('background-color: #B3E5FC') # pale light blue
+          column(4,
+                 shiny::radioButtons(
+                   id_linearManhattan_grid,
+                   label="Overlay grid?",
+                   choices=list("Yes" = TRUE,
+                                "No" = FALSE),
+                   selected = rv_linearManhattan_grid[[k]],
+                   inline = TRUE
+                 )
+          )
         ),
 
+        style = list('background-color: #FFECB3') # pale amber
+        # style = list('background-color: #B2EBF2') # pale cyan
+        # style = list('background-color: #B3E5FC') # pale light blue
+      ),
 
 
-        box(title="Outlier aesthetics:",
-            status="warning",
-            # status="primary",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
 
-            fluidRow(
-              column(4,
-            selectizeInput(id_linearManhattan_outlier.col.bg,
-                           label = "Outlier colour (fill):",
-                           choices = list("Red" = "red",
-                                          "Orange" = "orange",
-                                          "Yellow" = "yellow",
-                                          "Green" = "green",
-                                          "Blue" = "blue",
-                                          "Purple" = "purple"),
-                           selected =  rv_linearManhattan_outlier.col.bg[[k]], # "purple",
-                           multiple=FALSE)),
+      shinydashboard::box(
+        title="Outlier aesthetics:",
+        status="warning",
+        # status="primary",
+        solidHeader=TRUE,
+        collapsible=TRUE,
+        width=12,
 
-            column(4,
-            selectizeInput(id_linearManhattan_outlier.col,
-                           label = "Outlier colour (outline):",
-                           choices = list("Red" = "red",
-                                          "Orange" = "orange",
-                                          "Yellow" = "yellow",
-                                          "Green" = "green",
-                                          "Blue" = "blue",
-                                          "Purple" = "purple"),
-                           selected =  rv_linearManhattan_outlier.col[[k]], # "blue",
-                           multiple=FALSE)),
+        shiny::fluidRow(
+          column(4,
+                 shiny::selectizeInput(
+                   id_linearManhattan_outlier.col.bg,
+                   label = "Outlier colour (fill):",
+                   choices = list("Red" = "red",
+                                  "Orange" = "orange",
+                                  "Yellow" = "yellow",
+                                  "Green" = "green",
+                                  "Blue" = "blue",
+                                  "Purple" = "purple"),
+                   selected =  rv_linearManhattan_outlier.col.bg[[k]], # "purple",
+                   multiple=FALSE)),
 
-            column(4,
-            selectizeInput(id_linearManhattan_outlier.pch,
-                           label = "Outlier shape:",
-                           choices = list("Circle" = "21",
-                                          "Square" = "22",
-                                          "Diamond" = "23",
-                                          "Triangle, point-up" = "24",
-                                          "Triangle, point-down" = "25"
-                           ),
-                           selected =  rv_linearManhattan_outlier.pch[[k]], # "24",
-                           multiple=FALSE))
-            ),
+          column(4,
+                 shiny::selectizeInput(
+                   id_linearManhattan_outlier.col,
+                   label = "Outlier colour (outline):",
+                   choices = list("Red" = "red",
+                                  "Orange" = "orange",
+                                  "Yellow" = "yellow",
+                                  "Green" = "green",
+                                  "Blue" = "blue",
+                                  "Purple" = "purple"),
+                   selected =  rv_linearManhattan_outlier.col[[k]], # "blue",
+                   multiple=FALSE)),
 
-            hr(),
+          column(4,
+                 shiny::selectizeInput(
+                   id_linearManhattan_outlier.pch,
+                   label = "Outlier shape:",
+                   choices = list("Circle" = "21",
+                                  "Square" = "22",
+                                  "Diamond" = "23",
+                                  "Triangle, point-up" = "24",
+                                  "Triangle, point-down" = "25"
+                   ),
+                   selected =  rv_linearManhattan_outlier.pch[[k]], # "24",
+                   multiple=FALSE))
+        ),
 
-            fluidRow(
-              column(6,
-            sliderInput(id_linearManhattan_outlier.transp,
-                        label = "Outlier transparency:",
-                        min = 0, max = 1,
-                        value =  rv_linearManhattan_outlier.transp[[k]], # 0.25,
-                        step = 0.05)),
+        shiny::hr(),
 
-            column(6,
-            sliderInput(id_linearManhattan_outlier.cex,
-                        label = "Outlier size:",
-                        min = 0, max = 3,
-                        value =  rv_linearManhattan_outlier.cex[[k]], # 1.5,
-                        step = 0.1))
-            ),
+        shiny::fluidRow(
+          column(6,
+                 shiny::sliderInput(
+                   id_linearManhattan_outlier.transp,
+                   label = "Outlier transparency:",
+                   min = 0, max = 1,
+                   value =  rv_linearManhattan_outlier.transp[[k]], # 0.25,
+                   step = 0.05)),
 
-            style = list('background-color: #FFECB3') # pale amber
-            # style = list('background-color: #B2EBF2') # pale cyan
-            # style = list('background-color: #B3E5FC') # pale light blue
-        )
+          column(6,
+                 shiny::sliderInput(
+                   id_linearManhattan_outlier.cex,
+                   label = "Outlier size:",
+                   min = 0, max = 3,
+                   value =  rv_linearManhattan_outlier.cex[[k]], # 1.5,
+                   step = 0.1))
+        ),
 
-        # style = list('background-color: #FFFFFF') # pale gray (light blue)
+        style = list('background-color: #FFECB3') # pale amber
+        # style = list('background-color: #B2EBF2') # pale cyan
+        # style = list('background-color: #B3E5FC') # pale light blue
+      )
+
+      # style = list('background-color: #FFFFFF') # pale gray (light blue)
 
     ) # end box
 
@@ -605,8 +655,8 @@ output$box_linearManhattan <- renderUI({
 ####################################
 ## BUTTON: Generate another plot? ##
 ####################################
-output$box_linearManhattan_button <- renderUI({
-  box(
+output$box_linearManhattan_button <- shiny::renderUI({
+  shinydashboard::box(
     title = "Generate another plot?",
     solidHeader = TRUE,
     status = "primary",
@@ -614,9 +664,11 @@ output$box_linearManhattan_button <- renderUI({
     width=12,
 
     ## button
-    actionButton(inputId = "new_linearManhattan_button",
-                 label = "Yes, please!",
-                 icon = icon("cog"))
+    shiny::actionButton(
+      inputId = "new_linearManhattan_button",
+      label = "Yes, please!",
+      icon = icon("cog")
+    )
   )
 })
 
@@ -636,15 +688,19 @@ output$box_linearManhattan_button <- renderUI({
     id_linearManhattan <- paste("id_linearManhattan", k, sep="_")
 
     out <-
-      box(title=NULL,
-          status="warning",
-          solidHeader=FALSE,
-          collapsible=TRUE,
-          width=12,
-          # plotOutput("plot_linearManhattan_plot")
-          renderPlot(plotOutput(
+      shinydashboard::box(
+        title=NULL,
+        status="warning",
+        solidHeader=FALSE,
+        collapsible=TRUE,
+        width=12,
+        # plotOutput("plot_linearManhattan_plot")
+        shiny::renderPlot(
+          shiny::plotOutput(
             outputId = id_linearManhattan,
-            .get.linearManhattan(input, k=k)))
+            .get.linearManhattan(input, k=k)
+          )
+        )
       )
   }
   return(out)
@@ -729,12 +785,14 @@ output$box_linearManhattan_button <- renderUI({
 
       ## Log y-axis?
       if(logy=="none"){logy=NULL}else{
-        if(sum(ySelection<0)>0){print("Error: You are trying to log-transform
+        if(sum(ySelection<0)>0){
+          print("Error: You are trying to log-transform
                                       negative values in the Y variable.
-                                      These values will not be plotted.")}
+                                      These values will not be plotted.")
+        }
         if(logy=="log2"){logy=2}
         if(logy=="log10"){logy=10}
-        }
+      }
 
       ## Invert x-axis?
       #       if(flipX=="No"){flipX=1}else{
@@ -865,19 +923,21 @@ output$box_linearManhattan_button <- renderUI({
       yData_sub <- yData_sub*flipY
 
       # produce plot
-      linearManhattan <- .mhtplot(x=xData, y=yData,
-                                  xlab="Position", ylab=ySelection,
-                                  n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
-                                  col.pal=col.pal, grid=grid,
-                                  outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
-                                  outlier.transp=outlier.transp,
-                                  outlier.pch=outlier.pch, outlier.cex=outlier.cex)
-      }
+      linearManhattan <- .mhtplot(
+        x=xData, y=yData,
+        xlab="Position", ylab=ySelection,
+        n.bins=n.bins, x_sub=xData_sub, y_sub=yData_sub,
+        col.pal=col.pal, grid=grid,
+        outlier.col=outlier.col, outlier.col.bg=outlier.col.bg,
+        outlier.transp=outlier.transp,
+        outlier.pch=outlier.pch, outlier.cex=outlier.cex
+      )
+    }
   }
 
   return(linearManhattan)
   # linearManhattan
-  } # end .get.linearManhattan
+} # end .get.linearManhattan
 
 
 
@@ -888,20 +948,22 @@ output$box_linearManhattan_button <- renderUI({
 
 ### Plot function, need to move to function area
 
-.mhtplot <- function(x, y,
-                    xlab, ylab,
-                    xlim=NULL, ylim=NULL,
-                    n.bins,
-                    x_sub, y_sub,
-                    col.pal, grid,
-                    outlier.col, outlier.col.bg,
-                    outlier.transp,
-                    outlier.pch, outlier.cex){
+.mhtplot <- function(
+  x, y,
+  xlab, ylab,
+  xlim=NULL, ylim=NULL,
+  n.bins,
+  x_sub, y_sub,
+  col.pal, grid,
+  outlier.col, outlier.col.bg,
+  outlier.transp,
+  outlier.pch, outlier.cex
+){
 
   if(outlier.transp != 0){
     outlier.transp <- 1 - outlier.transp
-    outlier.col <- transp(outlier.col, alpha = outlier.transp)
-    outlier.col.bg <- transp(outlier.col.bg, alpha = outlier.transp)
+    outlier.col <- adegenet::transp(outlier.col, alpha = outlier.transp)
+    outlier.col.bg <- adegenet::transp(outlier.col.bg, alpha = outlier.transp)
   }
 
   data1 <- cbind(x, y)
@@ -919,9 +981,11 @@ output$box_linearManhattan_button <- renderUI({
     ylim_lower <- min(y, na.rm=TRUE)
   }
 
-  binned <- bin2(data1b,
-                 matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
-                 nbin=c(n.bins,n.bins))
+  binned <- ash::bin2(
+    data1b,
+    matrix(c(xlim_lower,xlim_up,ylim_lower,ylim_up), 2,2, byrow=TRUE),
+    nbin=c(n.bins,n.bins)
+  )
   binned$nc[binned$nc==0]=NA
 
   x.axis.min <- xlim_lower
@@ -940,21 +1004,23 @@ output$box_linearManhattan_button <- renderUI({
   # plot(1)
 
   ## LINEAR MANHATTAN PLOT
-  image.plot(seq(x.axis.min,x.axis.max,length.out = n.bins),
-             seq(y.axis.min, y.axis.max, length.out=n.bins),
-             binned$nc,
-             xlab=xlab, ylab=ylab, add=FALSE,
-             col=col.pal, axes=TRUE)
+  fields::image.plot(
+    seq(x.axis.min,x.axis.max,length.out = n.bins),
+    seq(y.axis.min, y.axis.max, length.out=n.bins),
+    binned$nc,
+    xlab=xlab, ylab=ylab, add=FALSE,
+    col=col.pal, axes=TRUE
+  )
 
   ## ADD OUTLIER POINTS
   points(x_sub, y_sub, pch=outlier.pch, cex=outlier.cex, col=outlier.col, bg=outlier.col.bg)
   # points(x=xaxis_all[data.outlier], y=yaxis_all[data.outlier], pch=18, cex=1,col="red")
 
-#   #axis(1, at=axTicks(1), label=T)
-#   axis(1,at=x.axis.scale*x.total2,labels=T)
-#   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,
-#        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
-#   axis(2,at=axTicks(2),label=T)
+  #   #axis(1, at=axTicks(1), label=T)
+  #   axis(1,at=x.axis.scale*x.total2,labels=T)
+  #   axis(1,at=x.axis.scale * x.total2[-1]-diff(x.axis.scale*x.total2)/2,
+  #        labels=c(1:length(x.total)),cex=0.1,tick=F,cex.axis=0.8)
+  #   axis(2,at=axTicks(2),label=T)
 
   ## ADD GRID
   if(grid) grid()
@@ -972,8 +1038,8 @@ output$box_linearManhattan_button <- renderUI({
 # ##########################
 #
 # # box for navigation plot
-# output$box_linearManhattan_navigation <- renderUI({
-#   box(title="Manhattan Plot",
+# output$box_linearManhattan_navigation <- shiny::renderUI({
+#   shinydashboard::box(title="Manhattan Plot",
 #       status="warning",
 #       solidHeader=TRUE,
 #       collapsible=TRUE,
@@ -1131,7 +1197,7 @@ output$box_linearManhattan_button <- renderUI({
 #
 #   # if no polygons, plot placeholder
 #   if (length(polys$polygon)==0) {
-#     par(mar=c(0.2,0.8,0.2,0.8))
+#     graphics::par(mar=c(0.2,0.8,0.2,0.8))
 #     plot(0, type='n',
 #          xlim=c(0,1), ylim=c(0,1),
 #          xaxs='i', yaxs='i', axes=FALSE)
@@ -1142,7 +1208,7 @@ output$box_linearManhattan_button <- renderUI({
 #   }
 #
 #   # produce empty plot
-#   par(mar=c(0.2,0.8,0.2,0.8), xpd=NA)
+#   graphics::par(mar=c(0.2,0.8,0.2,0.8), xpd=NA)
 #   k <- 0.8
 #   ylim <- c(polys$y_min,
 #             polys$y_max*(0.5+k) + polys$y_min*(0.5-k))
@@ -1183,8 +1249,8 @@ output$box_linearManhattan_button <- renderUI({
 # ###########################
 #
 # # box for plotting univariate distributions
-# output$box_plot_linearManhattan <- renderUI({
-#   box(title=NULL, status="warning",
+# output$box_plot_linearManhattan <- shiny::renderUI({
+#   shinydashboard::box(title=NULL, status="warning",
 #       solidHeader=FALSE, collapsible=FALSE, width=12,
 #       h2(input$univariate_main_title, align='center'),
 #       h3(input$univariate_sub_title, align='center'),
@@ -1239,7 +1305,7 @@ output$box_linearManhattan_button <- renderUI({
 #     # calculate figure position
 #     plot_top <- mar_bot + mid*(k-i+1)/k
 #     plot_bot <- mar_bot + mid*(k-i)/k
-#     par(fig=c(0,1,plot_bot,plot_top),
+#     graphics::par(fig=c(0,1,plot_bot,plot_top),
 #         mar=c(0,4.1,0,2.1),
 #         new=i!=1)
 #
@@ -1265,7 +1331,7 @@ output$box_linearManhattan_button <- renderUI({
 #          xaxs='i', xlim=xlim,
 #          xaxt=ifelse(i==k,'l','n'))
 #
-#     #u <- par("usr")
+#     #u <- graphics::par("usr")
 #     #polygon(c(u[1],u[2],u[2],u[1]), c(u[3],u[3],u[4],u[4]), col=grey(1))
 #
 #     # add grid
@@ -1275,7 +1341,7 @@ output$box_linearManhattan_button <- renderUI({
 #
 #     # finally add points and redraw frame
 #     points(x, y, col=colVec, pch=20, cex=1)
-#     box()
+#     shinydashboard::box()
 #   }
 #
 # })

@@ -2,18 +2,28 @@
 #################################
 ## PLOT HISTOGRAM/DENSITY PAGE ##  ------------------------------------------------------------------------------------
 #################################
-
+#' @importFrom shinydashboard box
+#' @importFrom shiny reactiveValues
+#' @importFrom shiny fluidRow
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny sliderInput
+#' @importFrom shiny radioButtons
+#' @importFrom shiny hr
+#' @importFrom shiny actionButton
+#' @importFrom shiny plotOutput
+#' @importFrom shiny renderPlot
+#' @importFrom adegenet transp
 
 ## generate reactiveValues lists for all initial values
-rv_hist_1D_button <- reactiveValues()
+rv_hist_1D_button <- shiny::reactiveValues()
 rv_hist_1D_button <- 1 # 0
-rv_hist_1D_var <- reactiveValues()
+rv_hist_1D_var <- shiny::reactiveValues()
 
 ## aesthetics
-rv_hist_1D_col <- reactiveValues()
-rv_hist_1D_transp <- reactiveValues()
-rv_hist_1D_n.bins <- reactiveValues()
-rv_hist_1D_grid <- reactiveValues()
+rv_hist_1D_col <- shiny::reactiveValues()
+rv_hist_1D_transp <- shiny::reactiveValues()
+rv_hist_1D_n.bins <- shiny::reactiveValues()
+rv_hist_1D_grid <- shiny::reactiveValues()
 
 
 
@@ -76,7 +86,7 @@ rv_hist_1D_grid <- reactiveValues()
     grid <- eval(parse(text=paste("input$hist_1D_grid", k, sep="_")))
 
     col <- eval(parse(text=paste("input$hist_1D_col", k, sep="_")))
-    transp <- eval(parse(text=paste("input$hist_1D_transp", k, sep="_")))
+    transp.alpha <- eval(parse(text=paste("input$hist_1D_transp", k, sep="_")))
 
 
     ## update "intial" values to current values
@@ -86,7 +96,7 @@ rv_hist_1D_grid <- reactiveValues()
     rv_hist_1D_grid[[k]] <- grid
 
     rv_hist_1D_col[[k]] <- col
-    rv_hist_1D_transp[[k]] <- transp
+    rv_hist_1D_transp[[k]] <- transp.alpha
 
   }
 } # end .update.reactiveValues.hist_1D
@@ -157,24 +167,24 @@ output$box_hist_1D <- renderUI({
 
         ## get box of boxes
         if(!is.null(dat)){
-          box(title=title.k,
-              status="warning",
-              solidHeader=TRUE,
-              collapsible=TRUE,
-              width=12,
+          shinydashboard::box(title=title.k,
+                              status="warning",
+                              solidHeader=TRUE,
+                              collapsible=TRUE,
+                              width=12,
 
-              fluidRow(
-                column(4,
-                       .get.hist_1D.controls(dat, i)
-                ),
+                              shiny::fluidRow(
+                                column(4,
+                                       .get.hist_1D.controls(dat, i)
+                                ),
 
-                column(8,
-                       .get.hist_1D.plot(dat, i),
-                       .get.hist_1D.controls.aes(dat, i)
-                )
-              ),
+                                column(8,
+                                       .get.hist_1D.plot(dat, i),
+                                       .get.hist_1D.controls.aes(dat, i)
+                                )
+                              ),
 
-              style = list('background-color: #B6B6B6') # dark gray (amber)
+                              style = list('background-color: #B6B6B6') # dark gray (amber)
           )
         }
       })
@@ -208,41 +218,41 @@ output$box_hist_1D <- renderUI({
     var.choices <- c("Position", "Chromosome", names(dat$y)[numCols])
 
 
-  out <-
-    box(title="Select Variables:", # "Univariate Distributions"
-        # status="primary",
-        status="warning",
-        solidHeader=FALSE,
-        collapsible=TRUE,
-        width=12,
+    out <-
+      shinydashboard::box(title="Select Variables:", # "Univariate Distributions"
+                          # status="primary",
+                          status="warning",
+                          solidHeader=FALSE,
+                          collapsible=TRUE,
+                          width=12,
 
-        ###################
-        ## Choose x-axis ##
-        ###################
+                          ###################
+                          ## Choose x-axis ##
+                          ###################
 
-        box(title="Select a variable to plot:", # "Univariate Distributions"
-            # status="info",
-            #status = "primary",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+                          shinydashboard::box(title="Select a variable to plot:", # "Univariate Distributions"
+                                              # status="info",
+                                              #status = "primary",
+                                              status="warning",
+                                              solidHeader=TRUE,
+                                              collapsible=TRUE,
+                                              width=12,
 
-            ## NOTE: Would like to be able to pull the Chromosome and Position variables
-            ## selected/generated in the Format Data tab to be available as options
-            ## and autoatically selected below...
+                                              ## NOTE: Would like to be able to pull the Chromosome and Position variables
+                                              ## selected/generated in the Format Data tab to be available as options
+                                              ## and autoatically selected below...
 
-            ## Variable to plot
-            selectizeInput(id_hist_1D_var,
-                           label="Variable:",
-                           choices= var.choices,
-                           selected = rv_hist_1D_var[[k]],
-                           multiple=FALSE),
+                                              ## Variable to plot
+                                              shiny::selectizeInput(id_hist_1D_var,
+                                                                    label="Variable:",
+                                                                    choices= var.choices,
+                                                                    selected = rv_hist_1D_var[[k]],
+                                                                    multiple=FALSE),
 
-            style = list('background-color: #FFECB3') # pale amber
-        )
+                                              style = list('background-color: #FFECB3') # pale amber
+                          )
 
-        )
+      )
   }
 
   return(out)
@@ -268,59 +278,59 @@ output$box_hist_1D <- renderUI({
   out <- NULL
 
   out <-
-    box(title="Adjust Plot Aesthetics:",
-        status="warning",
-        solidHeader=FALSE,
-        collapsible=TRUE,
-        width=12,
+    shinydashboard::box(title="Adjust Plot Aesthetics:",
+                        status="warning",
+                        solidHeader=FALSE,
+                        collapsible=TRUE,
+                        width=12,
 
-        box(title="Histogram aesthetics:",
-            status="warning",
-            solidHeader=TRUE,
-            collapsible=TRUE,
-            width=12,
+                        shinydashboard::box(title="Histogram aesthetics:",
+                                            status="warning",
+                                            solidHeader=TRUE,
+                                            collapsible=TRUE,
+                                            width=12,
 
-        fluidRow(
-          column(6,
-        sliderInput(id_hist_1D_n.bins,
-                    label = "Number of bins:",
-                    min = 2, max = 1000,
-                    value = rv_hist_1D_n.bins[[k]],
-                    step = 1)),
+                                            shiny::fluidRow(
+                                              column(6,
+                                                     shiny::sliderInput(id_hist_1D_n.bins,
+                                                                        label = "Number of bins:",
+                                                                        min = 2, max = 1000,
+                                                                        value = rv_hist_1D_n.bins[[k]],
+                                                                        step = 1)),
 
-        column(6,
-        radioButtons(id_hist_1D_grid,
-                     label="Overlay grid?",
-                     choices=list("Yes" = TRUE,
-                                  "No" = FALSE),
-                     selected = rv_hist_1D_grid[[k]],
-                     inline = TRUE))
-        ),
+                                              column(6,
+                                                     shiny::radioButtons(id_hist_1D_grid,
+                                                                         label="Overlay grid?",
+                                                                         choices=list("Yes" = TRUE,
+                                                                                      "No" = FALSE),
+                                                                         selected = rv_hist_1D_grid[[k]],
+                                                                         inline = TRUE))
+                                            ),
 
-        hr(),
+                                            shiny::hr(),
 
-        fluidRow(
-        column(6,
-        selectizeInput(id_hist_1D_col,
-                       label = "Colour:", # (fill)
-                       choices = list("Red" = "red",
-                                      "Orange" = "orange",
-                                      "Yellow" = "yellow",
-                                      "Green" = "green",
-                                      "Blue" = "blue",
-                                      "Purple" = "purple"),
-                       selected =  rv_hist_1D_col[[k]], # "purple",
-                       multiple=FALSE)),
+                                            shiny::fluidRow(
+                                              column(6,
+                                                     shiny::selectizeInput(id_hist_1D_col,
+                                                                           label = "Colour:", # (fill)
+                                                                           choices = list("Red" = "red",
+                                                                                          "Orange" = "orange",
+                                                                                          "Yellow" = "yellow",
+                                                                                          "Green" = "green",
+                                                                                          "Blue" = "blue",
+                                                                                          "Purple" = "purple"),
+                                                                           selected =  rv_hist_1D_col[[k]], # "purple",
+                                                                           multiple=FALSE)),
 
-        column(6,
-        sliderInput(id_hist_1D_transp,
-                    label = "Transparency:",
-                    min = 0, max = 1,
-                    value =  rv_hist_1D_transp[[k]], # 0.25,
-                    step = 0.05))
-        ),
-        style = list('background-color: #FFECB3') # pale amber
-        )
+                                              column(6,
+                                                     shiny::sliderInput(id_hist_1D_transp,
+                                                                        label = "Transparency:",
+                                                                        min = 0, max = 1,
+                                                                        value =  rv_hist_1D_transp[[k]], # 0.25,
+                                                                        step = 0.05))
+                                            ),
+                                            style = list('background-color: #FFECB3') # pale amber
+                        )
     ) # end box
 
   return(out)
@@ -333,7 +343,7 @@ output$box_hist_1D <- renderUI({
 ## BUTTON: Generate another plot? ##
 ####################################
 output$box_hist_1D_button <- renderUI({
-  box(
+  shinydashboard::box(
     title = "Generate another plot?",
     solidHeader = TRUE,
     status = "primary",
@@ -341,9 +351,9 @@ output$box_hist_1D_button <- renderUI({
     width=12,
 
     ## button
-    actionButton(inputId = "new_hist_1D_button",
-                 label = "Yes, please!",
-                 icon = icon("cog"))
+    shiny::actionButton(inputId = "new_hist_1D_button",
+                        label = "Yes, please!",
+                        icon = icon("cog"))
   )
 })
 
@@ -365,15 +375,19 @@ output$box_hist_1D_button <- renderUI({
     id_hist_1D <- paste("id_hist_1D", k, sep="_")
 
     out <-
-      box(title=NULL,
-          status="warning",
-          solidHeader=FALSE,
-          collapsible=TRUE,
-          width=12,
-          # plotOutput("plot_hist_1D_plot")
-          renderPlot(plotOutput(
+      shinydashboard::box(
+        title=NULL,
+        status="warning",
+        solidHeader=FALSE,
+        collapsible=TRUE,
+        width=12,
+        # plotOutput("plot_hist_1D_plot")
+        shiny::renderPlot(
+          shiny::plotOutput(
             outputId = id_hist_1D,
-            .get.hist_1D(input, k=k)))
+            .get.hist_1D(input, k=k)
+          )
+        )
       )
   }
   return(out)
@@ -386,7 +400,7 @@ output$box_hist_1D_button <- renderUI({
 .get.hist_1D <- function(input, k=1){
 
   histplot <- dat <- xData <- xSelection <-
-    col <- transp <- n.bins <- NULL
+    col <- transp.alpha <- n.bins <- NULL
 
   k <- as.character(k)
 
@@ -425,28 +439,28 @@ output$box_hist_1D_button <- renderUI({
       grid <- eval(parse(text=paste("input$hist_1D_grid", k, sep="_")))
 
       col <- eval(parse(text=paste("input$hist_1D_col", k, sep="_")))
-      transp <- eval(parse(text=paste("input$hist_1D_transp", k, sep="_")))
+      transp.alpha <- eval(parse(text=paste("input$hist_1D_transp", k, sep="_")))
 
 
-      transp <- 1-transp
+      transp.alpha <- 1-transp.alpha
 
-      if(transp != 1){
-        col <- transp(col, alpha=transp)
+      if(transp.alpha != 1){
+        col <- adegenet::transp(col, alpha=transp.alpha)
       }
 
       # produce plot
       ## PLOT HISTOGRAM
       if(!is.null(xData)){
         if(!is.null(n.bins)){
-          hist(xData, breaks=n.bins, col=col, main=NULL)
+          graphics::hist(xData, breaks=n.bins, col=col, main=NULL)
           if(grid) grid()
         }
       }
       ## SET TITLE TO VALUE BEING HISTOGRAMIFIED
       title(xSelection) # to be changed to textInput( w var selected)
 
-      }
     }
+  }
   # return(hist_1D)
 } # end .get.hist_1D
 

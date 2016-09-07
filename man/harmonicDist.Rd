@@ -28,7 +28,7 @@ The harmonic mean distance of a point is calculated as the harmonic mean of the 
 Note that this method cannot handle any NA values.
 }
 \examples{
-
+\dontrun{
 # create a data frame of observations
 df <- data.frame(x=rnorm(100),y=rnorm(100))
 
@@ -38,7 +38,7 @@ distances <- harmonicDist(df)
 # use this distance to look for outliers
 Q95 <- quantile(distances, 0.95)
 which(distances>Q95)
-
+}
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}
