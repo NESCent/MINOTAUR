@@ -97,9 +97,10 @@ data_checks <- function(dfv, column.nums, subset, S, M, check.na=TRUE, check.M=F
   }
   
   # return useful output
-  output <- list(S_inv=S_inv, M=M)
+  output <- list(S=S, S_inv=S_inv, M=M)
   
 }
+
 
 ############# Mahalanobis distance #############################################
 
@@ -297,7 +298,6 @@ neighborDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NUL
 #' @importFrom stats cov
 #' @export
 
-
 ########################################################################
 
 kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwidth="default", S=NULL){
@@ -377,7 +377,6 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwid
 #' @importFrom utils flush.console
 #' @export
 
-
 ########################################################################
 
 kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwidth=seq(0.1,1,0.1), S=NULL, reportProgress=FALSE){
@@ -411,4 +410,63 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 } # end kernelDeviance
 
 
+############# DCMS #############################################
+
+#' De-correlated Composite Multiple Signals
+#'
+#' Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+#'
+#' Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
+#'
+#' @param dfv a data frame containing observations in rows and statistics in columns.
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate Mahalanobis distance (all other columns are ignored).
+#' @param subset index the rows of the data frame that will be used to calculate the mean and covariance of the distribution (unless specified manually).
+#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").
+#' @param M the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of dfv[subset,column.nums].
+#'
+#' @author Robert Verity \email{r.verity@imperial.ac.uk}
+#' @examples
+#' \dontrun{
+#' #' # create a matrix of observations
+#' df <- data.frame(x=rnorm(100),y=rnorm(100))
+#'
+#' # calculate Mahalanobis distances
+#' distances <- Mahalanobis(df)
+#'
+#' # use this distance to look for outliers
+#' Q95 <- quantile(distances, 0.95)
+#' which(distances>Q95)
+#' }
+#' @importFrom stats cov
+#' @export
+
+########################################################################
+
+DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL){
+	
+	#### perform simple checks on data
+	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
+	
+	# extract variables from dfv and dfv_check
+	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+	d <- ncol(df.vars)
+	
+	# check that all columns contain p-values (i.e. values between 0 and 1)
+	for (i in 1:d) {
+		if (any(df.vars[,i]<=0) | any(df.vars[,i]>=1))
+			stop('when calculating DCMS all chosen columns must contain valid p-values (i.e. values greater than 0 and less than 1)')
+	}
+	
+	# calculate correlation matrix from covariance matrix
+	S <- dfv_check$S
+	covMat <- S/sqrt(outer(diag(S),diag(S)))
+	
+	DCMS <- 0
+	for (i in 1:d) {
+		DCMS <- DCMS + (log(1-df.vars[,i])-log(df.vars[,i]))/sum(abs(covMat[i,]))
+	}	
+	
+	return(DCMS)
+}
 
