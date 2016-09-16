@@ -19,7 +19,7 @@
 
 # Perform simple checks on input data frame to ensure that it can be used with distance functions.
 
-data_checks <- function(dfv, column.nums, subset, S, M, check.na=TRUE, check.M=FALSE) {
+data_checks <- function(dfv, column.nums, subset, S, M, check.na=TRUE, check.S=TRUE, check.M=FALSE) {
     
   #### perform simple checks on data
   # check that dfv is a matrix or data frame
@@ -56,32 +56,39 @@ data_checks <- function(dfv, column.nums, subset, S, M, check.na=TRUE, check.M=F
   if (nrow(df.vars_subset)<2)
     stop("subset must index at least two rows in dfv")
 
-  # if S is NULL replace with covariance matrix
-  if (is.null(S))
-    S <- stats::cov(df.vars_subset, use="pairwise.complete.obs")
-
-  # check that S is a matrix
-  if (!is.matrix(S))
-    stop("S must be a matrix")
-
-  # check that S has the same number of rows and cols as variables in df.vars
-  if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
-    stop("S must contain the same number of rows and columns as there are selected variables in dfv")
-
-  # check that S contains no NA values
-  if (any(is.na(S)))
-    stop("covariance matrix S contains NA values")
-
-  # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
-  if (class(try(solve(S),silent=TRUE))=='try-error')
-    stop("covariance matrix S is exactly singular")
+  # calculate covariance of variables
+  if (check.S) {
     
-  # calculate inverse covariance matrix
-  S_inv <- solve(S)
+    # if S is NULL replace with covariance matrix
+    if (is.null(S))
+      S <- stats::cov(df.vars_subset, use="pairwise.complete.obs")
+    
+    # check that S is a matrix
+    if (!is.matrix(S))
+      stop("S must be a matrix")
+    
+    # check that S has the same number of rows and cols as variables in df.vars
+    if (nrow(S)!=ncol(df.vars) | ncol(S)!=ncol(df.vars))
+      stop("S must contain the same number of rows and columns as there are selected variables in dfv")
+    
+    # check that S contains no NA values
+    if (any(is.na(S)))
+      stop("covariance matrix S contains NA values")
+    
+    # check that inverse matrix of S can be calculated (not true if, for example, all values are the same)
+    if (class(try(solve(S),silent=TRUE))=='try-error')
+      stop("covariance matrix S is exactly singular")
+        
+    # calculate inverse covariance matrix
+    S_inv <- solve(S)
+  } else {
+  	S <- NULL
+  	S_inv <- NULL
+  }
   
   # calculate mean of variables
   if (check.M) {
-  	
+    
     # if M is NULL replace with mean over variables
     if (is.null(M))
       M <- colMeans(df.vars_subset,na.rm=TRUE)
@@ -410,63 +417,185 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 } # end kernelDeviance
 
 
+############# stat_to_pvalue #############################################
+
+#' Convert raw statistics to p-values using one of a number of possible methods.
+#'
+#' Text
+#'
+#' Detailed text
+#'
+#' @param dfv a data frame containing observations in rows and statistics in columns.
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate p-values (all other columns are ignored).
+#' @param subset index the rows of the data frame that are known contain values from the null distribution. Use all rows if no such information is available.
+#' @param two.tailed whether p-value calculations should be two tailed.
+#' @param right.tailed if using one-tailed test, whether that tail should be in the positive direction.
+#'
+#' @author Robert Verity \email{r.verity@imperial.ac.uk}
+#' @export
+
+########################################################################
+
+stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=TRUE){
+	
+	# perform simple checks on data
+	dfv_check <- data_checks(dfv, column.nums, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
+	
+	# extract variables from dfv
+	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+	n <- nrow(df.vars)
+	d <- ncol(df.vars)
+	df.p <- as.data.frame(matrix(0,n,d))
+	
+	noSubset <- all(sort(subset)==(1:nrow(df)))
+	
+	# if using all values
+	if (noSubset) {
+		
+		for (i in 1:d) {
+			# convert ranking to value between 0 and 1 (inclusive)
+			df.p[,i] <- (rank(df.vars[,i])-1)/(n-1)
+			# convert to two-tailed if needed
+			if (two.tailed) {
+				df.p[,i] <- 1-2*abs(df.p[,i]-0.5)
+			} else {
+				# get correct tail of distribution
+				if (right.tailed)
+					df.p[,i] <- 1-df.p[,i]
+			}
+			# ensure that final value is between 0 and 1 (exclusive)
+			df.p[,i] <- (df.p[,i]*n+1)/(n+2)
+		}
+		
+	}
+	
+	# if comparing against a null distribution
+	if (!noSubset) {
+		
+		# get null points
+		df.vars_subset <- as.matrix(df.vars[subset,,drop=FALSE])
+		n2 <- nrow(df.vars_subset)
+		
+		for (i in 1:d) {
+			# calculate p-value from position in ordered list, yielding a value between 0 and 1 (inclusive)
+			df.p[,i] <- findInterval(df.vars[,i], sort(df.vars_subset[,i]))/n2
+			# convert to two-tailed if needed
+			if (two.tailed) {
+				df.p[,i] <- 1-2*abs(df.p[,i]-0.5)
+			} else {
+				# get correct tail of distribution
+				if (right.tailed)
+					df.p[,i] <- 1-df.p[,i]
+			}
+			# ensure that final value is between 0 and 1 (exclusive)
+			df.p[,i] <- (df.p[,i]*n2+1)/(n2+2)
+		}
+		
+	}
+		
+	return(df.p)
+}
+
+
 ############# DCMS #############################################
 
 #' De-correlated Composite Multiple Signals
 #'
-#' Calculates the Mahalanobis distance for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+#' Calculates the DCMS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 #'
-#' Under default options the standard Mahalanobis calculation is used, based on the mean and covariance matrix of the data. Addition arguments can be used to specify the mean and covariance matrix manually, or to define a subset of points that are used in the calculation. The input data frame can handle some missing data, as long as a covariance matrix can still be computed using the function cov(dfv[subset,column.nums],use="pairwise.complete.obs").
+#' The selected columns of the input data frame (i.e. the columns specified by column.nums) are assumed to contain the raw test statistics, which are then converted into p-values in one of several ways. The following methods are available: 1) calculate p-values directly from the ranking of the statistics, 2) calculate p-values assuming the test statistic follows a normal distribution, 3) calculate p-values using the distribution of robust points as a null distribution. The covariance matrix used in the DCMS calculation can be specified directly through the argument S, or if S=NULL then this matrix is calculated directly from selected rows and columns of dfv.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
-#' calculate Mahalanobis distance (all other columns are ignored).
-#' @param subset index the rows of the data frame that will be used to calculate the mean and covariance of the distribution (unless specified manually).
-#' @param S the covariance matrix used to normalise the data in the Mahalanobis calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").
-#' @param M the point that Mahalanobis distance is measured from. Leave as NULL to measure distance from the mean of dfv[subset,column.nums].
+#' calculate DCMS (all other columns are ignored). Only columns containing raw statistics should be used in the DCMS calculation, and not those containing p-values generated from raw statistics.
+#' @param subset index the rows of the data frame that will be used to calculate the covariance matrix S (unless specified manually).
+#' @param S the covariance matrix used to account for correlation between observations in the DCMS calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").
+#' @param pvalue.method an integer between 1 and 3 giving the method used to calculate p-values based on the description above.
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
-#' @examples
-#' \dontrun{
-#' #' # create a matrix of observations
-#' df <- data.frame(x=rnorm(100),y=rnorm(100))
-#'
-#' # calculate Mahalanobis distances
-#' distances <- Mahalanobis(df)
-#'
-#' # use this distance to look for outliers
-#' Q95 <- quantile(distances, 0.95)
-#' which(distances>Q95)
-#' }
 #' @importFrom stats cov
 #' @export
 
 ########################################################################
 
-DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL){
+DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, column.nums.p=1:ncol(dfp)){
 	
-	#### perform simple checks on data
+	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
+	dfp_check <- data_checks(dfv, column.nums.p, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
 	
-	# extract variables from dfv and dfv_check
+	# extract variables from dfv
 	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+	n <- nrow(df.vars)
 	d <- ncol(df.vars)
-	
-	# check that all columns contain p-values (i.e. values between 0 and 1)
-	for (i in 1:d) {
-		if (any(df.vars[,i]<=0) | any(df.vars[,i]>=1))
-			stop('when calculating DCMS all chosen columns must contain valid p-values (i.e. values greater than 0 and less than 1)')
-	}
+	df.p <- as.matrix(dfp[,column.nums.p,drop=FALSE])
 	
 	# calculate correlation matrix from covariance matrix
 	S <- dfv_check$S
-	covMat <- S/sqrt(outer(diag(S),diag(S)))
+	corrMat <- S/sqrt(outer(diag(S),diag(S)))
 	
+	# calculate DCMS
 	DCMS <- 0
 	for (i in 1:d) {
-		DCMS <- DCMS + (log(1-df.vars[,i])-log(df.vars[,i]))/sum(abs(covMat[i,]))
+		DCMS <- DCMS + (log(1-df.p[,i])-log(df.p[,i]))/sum(abs(corrMat[i,]))
 	}	
 	
 	return(DCMS)
 }
 
+
+############# CSS #############################################
+
+#' Composite Selection Signal
+#'
+#' Calculates the CSS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+#'
+#' Detailed text
+#'
+#' @param dfv a data frame containing observations in rows and statistics in columns.
+#' @param column.nums indexes the columns of the data frame that will be used to
+#' calculate CSS (all other columns are ignored). Only columns containing raw statistics should be used in the CSS calculation, and not those containing p-values generated from raw statistics.
+#' @param two.tailed whether p-value calculations should be two tailed.
+#' @param right.tailed if using one-tailed test, whether that tail should be in the positive direction.
+#'
+#' @author Robert Verity \email{r.verity@imperial.ac.uk}
+#' @export
+
+########################################################################
+
+CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=TRUE){
+	
+	# perform simple checks on data
+	dfv_check <- data_checks(dfv, column.nums, subset=subset, S, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
+	
+	# extract variables from dfv
+	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
+	n <- nrow(df.vars)
+	d <- ncol(df.vars)
+	
+	# convert variables to rank fraction
+	df.rank <- stat_to_pvalue(dfv, column.nums, subset, two.tailed=FALSE)
+	
+	# calculate z-score from rank fraction
+	par(mfrow=c(2,2))
+	z <- 0
+	for (i in 1:d) {
+		z <- z + qnorm(df.rank[,i])
+	}
+	z <- z/d
+	
+	# calculate p-value and CSS
+	if (two.tailed) {
+		p <- 2*(1-pnorm(abs(z), sd=1/sqrt(d)))
+	} else {
+		if (right.tailed) {
+			p <- 1-pnorm(z, sd=1/sqrt(d))
+		} else {
+			p <- pnorm(z, sd=1/sqrt(d))
+		}
+	}
+	CSS <- -log(p)/log(10)
+
+	return(CSS)	
+}
