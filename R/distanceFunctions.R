@@ -14,6 +14,9 @@
 # kernelDist
 # kernelLogLike
 # neighborDist
+# DCMS
+# stat_to_pvalue
+# CSS
 
 ############# data_checks (not exported) #######################################
 
@@ -34,7 +37,7 @@ data_checks <- function(dfv, column.nums, subset, S, M, check.na=TRUE, check.S=T
   df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
 
   # check that all selected columns are numeric
-  if (any(!apply(df.vars,2,is.numeric)))
+  if (any(!(apply(df.vars,2,is.numeric))))
     stop("all selected columns of dfv must be numeric")
 
   # check that no NA values
@@ -437,7 +440,7 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 
 ########################################################################
 
-stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=TRUE){
+stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=FALSE){
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
