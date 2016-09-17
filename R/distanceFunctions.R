@@ -448,7 +448,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 	d <- ncol(df.vars)
 	df.p <- as.data.frame(matrix(0,n,d))
 	
-	noSubset <- all(sort(subset)==(1:nrow(df)))
+	noSubset <- all(sort(subset)==(1:nrow(dfv)))
 	
 	# if using all values
 	if (noSubset) {
