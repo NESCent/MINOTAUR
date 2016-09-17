@@ -526,7 +526,7 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
-	dfp_check <- data_checks(dfv, column.nums.p, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
+	dfp_check <- data_checks(dfp, column.nums.p, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
 	
 	# extract variables from dfv
 	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
