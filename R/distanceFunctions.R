@@ -525,7 +525,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, column.nums.p=1:ncol(dfp)){
 	
 	# perform simple checks on data
-	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
+	dfv_check <- data_checks(dfv, column.nms, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
 	dfp_check <- data_checks(dfp, column.nums.p, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
 	
 	# extract variables from dfv
