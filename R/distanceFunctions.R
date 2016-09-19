@@ -581,7 +581,6 @@ CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRU
 	df.rank <- stat_to_pvalue(dfv, column.nums, subset, two.tailed=FALSE)
 	
 	# calculate z-score from rank fraction
-	par(mfrow=c(2,2))
 	z <- 0
 	for (i in 1:d) {
 		z <- z + qnorm(df.rank[,i])
