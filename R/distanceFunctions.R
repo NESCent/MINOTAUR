@@ -118,7 +118,7 @@ Mahalanobis <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL
   for (i in 1:ncol(df.vars)) {
     diff[,i] <- diff[,i] - M[i]
   }
-  distance <- sqrt( rowSums((diff %*% solve(S))*diff) )
+  distance <- Mod(sqrt(as.complex(rowSums((diff %*% solve(S)) * diff, na.rm = TRUE))))
 
   return(distance)
 } # end Mahalanobis
