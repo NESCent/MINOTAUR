@@ -440,17 +440,22 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 
 ########################################################################
 
-stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=FALSE){
+stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=rep(FALSE,ncol(dfv))){
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
 	
-	# extract variables from dfv
+	# extract variables from dfv and create df.p
 	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
 	n <- nrow(df.vars)
 	d <- ncol(df.vars)
 	df.p <- as.data.frame(matrix(0,n,d))
 	
+	# check that right.tailed vector is correct length
+	if (length(right.tailed)!=d)
+		stop('right.tailed must be a vector of same length as column.nums')
+	
+	# check whether using all values or a subset
 	noSubset <- all(sort(subset)==(1:nrow(dfv)))
 	
 	# if using all values
@@ -464,7 +469,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 				df.p[,i] <- 1-2*abs(df.p[,i]-0.5)
 			} else {
 				# get correct tail of distribution
-				if (right.tailed)
+				if (right.tailed[i])
 					df.p[,i] <- 1-df.p[,i]
 			}
 			# ensure that final value is between 0 and 1 (exclusive)
