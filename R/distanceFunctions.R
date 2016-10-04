@@ -440,7 +440,7 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 
 ########################################################################
 
-stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=rep(FALSE,ncol(dfv))){
+stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=rep(TRUE,length(column.nums)), right.tailed=rep(FALSE,length(column.nums))){
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
@@ -451,7 +451,9 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 	d <- ncol(df.vars)
 	df.p <- as.data.frame(matrix(0,n,d))
 	
-	# check that right.tailed vector is correct length
+	# check that two.tailed and right.tailed vectors are correct length
+	if (length(two.tailed)!=d)
+		stop('two.tailed must be a vector of same length as column.nums')
 	if (length(right.tailed)!=d)
 		stop('right.tailed must be a vector of same length as column.nums')
 	
@@ -465,7 +467,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 			# convert ranking to value between 0 and 1 (inclusive)
 			df.p[,i] <- (rank(df.vars[,i])-1)/(n-1)
 			# convert to two-tailed if needed
-			if (two.tailed) {
+			if (two.tailed[i]) {
 				df.p[,i] <- 1-2*abs(df.p[,i]-0.5)
 			} else {
 				# get correct tail of distribution
@@ -489,11 +491,11 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 			# calculate p-value from position in ordered list, yielding a value between 0 and 1 (inclusive)
 			df.p[,i] <- findInterval(df.vars[,i], sort(df.vars_subset[,i]))/n2
 			# convert to two-tailed if needed
-			if (two.tailed) {
+			if (two.tailed[i]) {
 				df.p[,i] <- 1-2*abs(df.p[,i]-0.5)
 			} else {
 				# get correct tail of distribution
-				if (right.tailed)
+				if (right.tailed[i])
 					df.p[,i] <- 1-df.p[,i]
 			}
 			# ensure that final value is between 0 and 1 (exclusive)
@@ -508,7 +510,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 
 ############# DCMS #############################################
 
-#' De-correlated Composite Multiple Signals
+#' De-correlated Composite of Multiple Signals (DCMS)
 #'
 #' Calculates the DCMS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 #'
@@ -527,7 +529,11 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 
 ########################################################################
 
-DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, column.nums.p=1:ncol(dfp)){
+DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, column.nums.p=1:ncol(dfp)) {
+	
+	# check that input dimensions work
+	if (length(column.nums)!=length(column.nums.p))
+		stop('column.nums must contain same number of values as column.nums.p')
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
@@ -572,7 +578,7 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 
 ########################################################################
 
-CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRUE, right.tailed=TRUE){
+CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=rep(TRUE,length(column.nums)), right.tailed=rep(FALSE,length(column.nums))){
 	
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset=subset, S, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
@@ -583,7 +589,7 @@ CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRU
 	d <- ncol(df.vars)
 	
 	# convert variables to rank fraction
-	df.rank <- stat_to_pvalue(dfv, column.nums, subset, two.tailed=FALSE)
+	df.rank <- stat_to_pvalue(dfv, column.nums, subset, two.tailed, right.tailed)
 	
 	# calculate z-score from rank fraction
 	z <- 0
@@ -593,15 +599,7 @@ CSS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two.tailed=TRU
 	z <- z/d
 	
 	# calculate p-value and CSS
-	if (two.tailed) {
-		p <- 2*(1-pnorm(abs(z), sd=1/sqrt(d)))
-	} else {
-		if (right.tailed) {
-			p <- 1-pnorm(z, sd=1/sqrt(d))
-		} else {
-			p <- pnorm(z, sd=1/sqrt(d))
-		}
-	}
+	p <- pnorm(z, sd=1/sqrt(d))
 	CSS <- -log(p)/log(10)
 
 	return(CSS)	
