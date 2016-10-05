@@ -8,22 +8,23 @@ DCMS(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv), S = NULL, dfp,
   column.nums.p = 1:ncol(dfp))
 }
 \arguments{
-\item{dfv}{a data frame containing observations in rows and statistics in columns.}
+\item{dfv}{a data frame containing observations in rows and raw statistics in columns.}
 
-\item{column.nums}{indexes the columns of the data frame that will be used to
-calculate DCMS (all other columns are ignored). Only columns containing raw statistics should be used in the DCMS calculation, and not those containing p-values generated from raw statistics.}
+\item{column.nums}{indexes the columns of \code{dfv} that contain raw statistics.}
 
 \item{subset}{index the rows of the data frame that will be used to calculate the covariance matrix S (unless specified manually).}
 
-\item{S}{the covariance matrix used to account for correlation between observations in the DCMS calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").}
+\item{S}{the covariance matrix used to account for correlation between observations in the DCMS calculation. Leave as NULL to use the ordinary covariance matrix calculated using \code{cov(dfv[subset,column.nums],use="pairwise.complete.obs")}.}
 
-\item{pvalue.method}{an integer between 1 and 3 giving the method used to calculate p-values based on the description above.}
+\item{dfp}{a data frame containing observations in rows and p-values in columns.}
+
+\item{column.nums.p}{indexes the columns of \code{dfp} that contain p-values.}
 }
 \description{
 Calculates the DCMS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 }
 \details{
-The selected columns of the input data frame (i.e. the columns specified by column.nums) are assumed to contain the raw test statistics, which are then converted into p-values in one of several ways. The following methods are available: 1) calculate p-values directly from the ranking of the statistics, 2) calculate p-values assuming the test statistic follows a normal distribution, 3) calculate p-values using the distribution of robust points as a null distribution. The covariance matrix used in the DCMS calculation can be specified directly through the argument S, or if S=NULL then this matrix is calculated directly from selected rows and columns of dfv.
+The selected columns of the \code{dfv} data frame (i.e. the columns specified by \code{column.nums}) should contain the raw test statistics, while the selected columns of the \code{dfp} data frame (i.e. the columns specified by \code{column.nums.p}) should contain the corresponding p-values. If the same data frame contains both raw statistics and p-values then this should be passed in as both \code{dfv} and \code{dfp}, with only the selected columns changing. The covariance matrix used in the DCMS calculation can be specified directly through the argument S, or if S=NULL then this matrix is calculated directly from selected rows and columns of \code{dfv}.
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}

@@ -354,8 +354,7 @@ kernelDist <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), bandwid
 #' (maximum likelihood) bandwith to use in the kernelDist() function (see example). Data are subset prior to calculating distances (see details).
 #'
 #' Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
-#' leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i.
-#' This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
+#' leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i. This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
@@ -424,9 +423,11 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 
 #' Convert raw statistics to p-values based on fractional ranks.
 #'
-#' Selected columns in the input data frame are first converted to fractional ranks between 0 and 1 (inclusive). These values are then transformed based on whether a left-tailed, right-tailed or two-tailed p-value is desired. Final values are then transformed again to occupy the range 0-1 exclusive (i.e. between 1/(n+1) and n/(n+1)). If the \code{subset} argument is used then ranks are calculated against the chosen subset only, which will lead to several observations having the same p-value.
+#' Text.
 #'
-#' Note that each chosen column in the input data frame can be designated as left-tailed, right-tailed or two-tailed independently. The argument \code{two.tailed} is a boolean vector where TRUE indicates that the values should be converted to p-values based on a two-tailed test. The argument \code{right.tailed} is a boolean vector of the same length as \code{two.tailed}, where entries only apply if the corresponding entry of \code{two.tailed} is FALSE. For example, the input \code{two.tailed=c(TRUE,FALSE), right.tailed=c(FALSE,FALSE)} would produce a two-tailed p-value in the first variable and a left-tailed p-value in the second variable.
+#' Selected columns in the input data frame are first converted to fractional ranks between 0 and 1 (inclusive). These values are then transformed based on whether a left-tailed, right-tailed or two-tailed p-value is desired (see details). Final values are then transformed again to occupy the range 0-1 exclusive (i.e. between 1/(n+1) and n/(n+1)). If the \code{subset} argument is used then ranks are calculated against the chosen subset only, which will lead to several observations having the same p-value.
+#'
+#' Each chosen column in the input data frame can be designated as left-tailed, right-tailed or two-tailed independently. The argument \code{two.tailed} is a boolean vector where TRUE indicates that the values should be converted to p-values based on a two-tailed test. The argument \code{right.tailed} is a boolean vector of the same length as \code{two.tailed}, where entries only apply if the corresponding entry of \code{two.tailed} is FALSE. For example, the input \code{two.tailed=c(TRUE,FALSE), right.tailed=c(FALSE,FALSE)} would produce a two-tailed p-value in the first variable and a left-tailed p-value in the second variable.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
@@ -514,14 +515,14 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 #'
 #' Calculates the DCMS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 #'
-#' The selected columns of the input data frame (i.e. the columns specified by column.nums) are assumed to contain the raw test statistics, which are then converted into p-values in one of several ways. The following methods are available: 1) calculate p-values directly from the ranking of the statistics, 2) calculate p-values assuming the test statistic follows a normal distribution, 3) calculate p-values using the distribution of robust points as a null distribution. The covariance matrix used in the DCMS calculation can be specified directly through the argument S, or if S=NULL then this matrix is calculated directly from selected rows and columns of dfv.
+#' The selected columns of the \code{dfv} data frame (i.e. the columns specified by \code{column.nums}) should contain the raw test statistics, while the selected columns of the \code{dfp} data frame (i.e. the columns specified by \code{column.nums.p}) should contain the corresponding p-values. If the same data frame contains both raw statistics and p-values then this should be passed in as both \code{dfv} and \code{dfp}, with only the selected columns changing. The covariance matrix used in the DCMS calculation can be specified directly through the argument S, or if S=NULL then this matrix is calculated directly from selected rows and columns of \code{dfv}.
 #'
-#' @param dfv a data frame containing observations in rows and statistics in columns.
-#' @param column.nums indexes the columns of the data frame that will be used to
-#' calculate DCMS (all other columns are ignored). Only columns containing raw statistics should be used in the DCMS calculation, and not those containing p-values generated from raw statistics.
+#' @param dfv a data frame containing observations in rows and raw statistics in columns.
+#' @param column.nums indexes the columns of \code{dfv} that contain raw statistics.
 #' @param subset index the rows of the data frame that will be used to calculate the covariance matrix S (unless specified manually).
-#' @param S the covariance matrix used to account for correlation between observations in the DCMS calculation. Leave as NULL to use the ordinary covariance matrix calculated using cov(dfv[subset,column.nums],use="pairwise.complete.obs").
-#' @param pvalue.method an integer between 1 and 3 giving the method used to calculate p-values based on the description above.
+#' @param S the covariance matrix used to account for correlation between observations in the DCMS calculation. Leave as NULL to use the ordinary covariance matrix calculated using \code{cov(dfv[subset,column.nums],use="pairwise.complete.obs")}.
+#' @param dfp a data frame containing observations in rows and p-values in columns.
+#' @param column.nums.p indexes the columns of \code{dfp} that contain p-values.
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @importFrom stats cov
@@ -538,6 +539,9 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 	# perform simple checks on data
 	dfv_check <- data_checks(dfv, column.nums, subset, S, M=NULL, check.na=TRUE, check.M=FALSE)
 	dfp_check <- data_checks(dfp, column.nums.p, subset, S=NULL, M=NULL, check.na=TRUE, check.S=FALSE, check.M=FALSE)
+	
+	if (nrow(dfv)!=nrow(dfp))
+		stop('dfv and dfp must contain the same number of entries')
 	
 	# extract variables from dfv
 	df.vars <- as.matrix(dfv[,column.nums,drop=FALSE])
@@ -565,7 +569,9 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 #'
 #' Calculates the CSS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 #'
-#' Detailed text
+#' Calculates CSS based on the method described in Randhawa et al (2014). Selected columns of \code{dfv} are first converted to fractional ranks (see \code{stat_to_pvalue}). Fractional ranks are then converted to z-scores using the inverse cumulative normal transformation. The mean z-score is then taken over variables, and converted to a p-value based on the appropriate normal distribution. Finally, CSS is defined as -log(p-value) in base 10.
+#'
+#' Text.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
@@ -574,6 +580,7 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 #' @param right.tailed if using one-tailed test, whether that tail should be in the positive direction.
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
+#' @references Randhawa, Imtiaz Ahmed Sajid, et al. "Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep." BMC genetics 15.1 (2014): 1.
 #' @export
 
 ########################################################################

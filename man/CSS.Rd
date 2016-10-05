@@ -22,9 +22,14 @@ calculate CSS (all other columns are ignored). Only columns containing raw stati
 Calculates the CSS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 }
 \details{
-Detailed text
+Calculates CSS based on the method described in Randhawa et al (2014). Selected columns of \code{dfv} are first converted to fractional ranks (see \code{stat_to_pvalue}). Fractional ranks are then converted to z-scores using the inverse cumulative normal transformation. The mean z-score is then taken over variables, and converted to a p-value based on the appropriate normal distribution. Finally, CSS is defined as -log(p-value) in base 10.
+
+Text.
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}
+}
+\references{
+Randhawa, Imtiaz Ahmed Sajid, et al. "Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep." BMC genetics 15.1 (2014): 1.
 }
 

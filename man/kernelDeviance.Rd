@@ -28,8 +28,7 @@ by kernelDist() for a range of bandwidths. Can be used to estimate the optimal
 }
 \details{
 Uses same input and model structure as kernelDist(). Calculates the log-likelihood using the
-leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i.
-This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
+leave-one-out method, wherein the likelihood of point i is equal to its kernel density from every point j in the chosen subset, where j!=i. This avoids the issue of obtaining infinite likelihood at zero bandwidth, which would be the case under an ordinary kernel density model.
 }
 \examples{
 \dontrun{
