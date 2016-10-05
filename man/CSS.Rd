@@ -5,7 +5,8 @@
 \title{Composite Selection Signal}
 \usage{
 CSS(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
-  two.tailed = TRUE, right.tailed = TRUE)
+  two.tailed = rep(TRUE, length(column.nums)), right.tailed = rep(FALSE,
+  length(column.nums)))
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}

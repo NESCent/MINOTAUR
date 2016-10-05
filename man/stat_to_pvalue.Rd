@@ -2,10 +2,11 @@
 % Please edit documentation in R/distanceFunctions.R
 \name{stat_to_pvalue}
 \alias{stat_to_pvalue}
-\title{Convert raw statistics to p-values using one of a number of possible methods.}
+\title{Convert raw statistics to p-values based on fractional ranks.}
 \usage{
 stat_to_pvalue(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
-  two.tailed = TRUE, right.tailed = TRUE)
+  two.tailed = rep(TRUE, length(column.nums)), right.tailed = rep(FALSE,
+  length(column.nums)))
 }
 \arguments{
 \item{dfv}{a data frame containing observations in rows and statistics in columns.}
@@ -15,15 +16,15 @@ calculate p-values (all other columns are ignored).}
 
 \item{subset}{index the rows of the data frame that are known contain values from the null distribution. Use all rows if no such information is available.}
 
-\item{two.tailed}{whether p-value calculations should be two tailed.}
+\item{two.tailed}{a boolean vector with one entry for each chosen column, where TRUE indicates that the column should be converted to p-values based on a two-tailed test.}
 
-\item{right.tailed}{if using one-tailed test, whether that tail should be in the positive direction.}
+\item{right.tailed}{a boolean vector with one entry for each chosen column, where TRUE indicates that the column should be converted to p-values based on a right-tailed test (see details).}
 }
 \description{
-Text
+Selected columns in the input data frame are first converted to fractional ranks between 0 and 1 (inclusive). These values are then transformed based on whether a left-tailed, right-tailed or two-tailed p-value is desired. Final values are then transformed again to occupy the range 0-1 exclusive (i.e. between 1/(n+1) and n/(n+1)). If the \code{subset} argument is used then ranks are calculated against the chosen subset only, which will lead to several observations having the same p-value.
 }
 \details{
-Detailed text
+Note that each chosen column in the input data frame can be designated as left-tailed, right-tailed or two-tailed independently. The argument \code{two.tailed} is a boolean vector where TRUE indicates that the values should be converted to p-values based on a two-tailed test. The argument \code{right.tailed} is a boolean vector of the same length as \code{two.tailed}, where entries only apply if the corresponding entry of \code{two.tailed} is FALSE. For example, the input \code{two.tailed=c(TRUE,FALSE), right.tailed=c(FALSE,FALSE)} would produce a two-tailed p-value in the first variable and a left-tailed p-value in the second variable.
 }
 \author{
 Robert Verity \email{r.verity@imperial.ac.uk}

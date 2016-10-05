@@ -2,7 +2,7 @@
 % Please edit documentation in R/distanceFunctions.R
 \name{DCMS}
 \alias{DCMS}
-\title{De-correlated Composite Multiple Signals}
+\title{De-correlated Composite of Multiple Signals (DCMS)}
 \usage{
 DCMS(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv), S = NULL, dfp,
   column.nums.p = 1:ncol(dfp))
