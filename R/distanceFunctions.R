@@ -459,7 +459,7 @@ stat_to_pvalue <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), two
 		stop('right.tailed must be a vector of same length as column.nums')
 	
 	# check whether using all values or a subset
-	noSubset <- all(sort(subset)==(1:nrow(dfv)))
+	noSubset <- (length(subset)==nrow(dfv))
 	
 	# if using all values
 	if (noSubset) {
