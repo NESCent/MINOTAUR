@@ -2,7 +2,7 @@
 % Please edit documentation in R/distanceFunctions.R
 \name{stat_to_pvalue}
 \alias{stat_to_pvalue}
-\title{Convert raw statistics to p-values based on fractional ranks.}
+\title{Convert statistics to p-values}
 \usage{
 stat_to_pvalue(dfv, column.nums = 1:ncol(dfv), subset = 1:nrow(dfv),
   two.tailed = rep(TRUE, length(column.nums)), right.tailed = rep(FALSE,
@@ -21,7 +21,7 @@ calculate p-values (all other columns are ignored).}
 \item{right.tailed}{a boolean vector with one entry for each chosen column, where TRUE indicates that the column should be converted to p-values based on a right-tailed test (see details).}
 }
 \description{
-Text.
+Convert raw statistics to p-values based on fractional ranks. Options are available for one- and two-tailed tests (see details).
 }
 \details{
 Selected columns in the input data frame are first converted to fractional ranks between 0 and 1 (inclusive). These values are then transformed based on whether a left-tailed, right-tailed or two-tailed p-value is desired (see details). Final values are then transformed again to occupy the range 0-1 exclusive (i.e. between 1/(n+1) and n/(n+1)). If the \code{subset} argument is used then ranks are calculated against the chosen subset only, which will lead to several observations having the same p-value.

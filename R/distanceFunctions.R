@@ -421,9 +421,9 @@ kernelDeviance <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), ban
 
 ############# stat_to_pvalue #############################################
 
-#' Convert raw statistics to p-values based on fractional ranks.
+#' Convert statistics to p-values
 #'
-#' Text.
+#' Convert raw statistics to p-values based on fractional ranks. Options are available for one- and two-tailed tests (see details).
 #'
 #' Selected columns in the input data frame are first converted to fractional ranks between 0 and 1 (inclusive). These values are then transformed based on whether a left-tailed, right-tailed or two-tailed p-value is desired (see details). Final values are then transformed again to occupy the range 0-1 exclusive (i.e. between 1/(n+1) and n/(n+1)). If the \code{subset} argument is used then ranks are calculated against the chosen subset only, which will lead to several observations having the same p-value.
 #'
@@ -567,17 +567,18 @@ DCMS <- function(dfv, column.nums=1:ncol(dfv), subset=1:nrow(dfv), S=NULL, dfp, 
 
 #' Composite Selection Signal
 #'
-#' Calculates the CSS for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
+#' Calculates the CSS statistic for each row (locus, SNP) in the data frame. Data are subset prior to calculating distances (see details).
 #'
-#' Calculates CSS based on the method described in Randhawa et al (2014). Selected columns of \code{dfv} are first converted to fractional ranks (see \code{stat_to_pvalue}). Fractional ranks are then converted to z-scores using the inverse cumulative normal transformation. The mean z-score is then taken over variables, and converted to a p-value based on the appropriate normal distribution. Finally, CSS is defined as -log(p-value) in base 10.
+#' CSS is calculated based on the method described in Randhawa et al (2014). Selected columns of \code{dfv} are first converted to fractional ranks (see \code{?stat_to_pvalue}). Fractional ranks are then converted to z-scores using the inverse cumulative normal transformation. The mean z-score is then taken over variables, and converted to a p-value based on the appropriate normal distribution. Finally, the CSS statistic is defined as -log(p-value) in base 10.
 #'
-#' Text.
+#' As fractional ranks are obtained using the \code{stat_to_pvalue} function, the various arguments to this function are available. This includes options for calculating fractional ranks based on one- and two-tailed methods for each variable independently.
 #'
 #' @param dfv a data frame containing observations in rows and statistics in columns.
 #' @param column.nums indexes the columns of the data frame that will be used to
-#' calculate CSS (all other columns are ignored). Only columns containing raw statistics should be used in the CSS calculation, and not those containing p-values generated from raw statistics.
-#' @param two.tailed whether p-value calculations should be two tailed.
-#' @param right.tailed if using one-tailed test, whether that tail should be in the positive direction.
+#' calculate CSS (all other columns are ignored).
+#' @param subset index the rows of the data frame that fractional ranks will be relative to.
+#' @param two.tailed a boolean vector with one entry for each chosen column, where TRUE indicates that the column should be converted to fractinal ranks based on a two-tailed test.
+#' @param right.tailed a boolean vector with one entry for each chosen column, where TRUE indicates that the column should be converted to fractional ranks based on a right-tailed test (see \code{?stat_to_pvalue}).
 #'
 #' @author Robert Verity \email{r.verity@imperial.ac.uk}
 #' @references Randhawa, Imtiaz Ahmed Sajid, et al. "Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep." BMC genetics 15.1 (2014): 1.
