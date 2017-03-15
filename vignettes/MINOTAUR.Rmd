@@ -47,15 +47,19 @@ An expanded example with code is included below, but a basic workflow leveraging
 4. Plotting: The plotting functions in the MINOTAUR GUI enables the user to further investigate their data and produce publication-quality figures. Plots can be produced on either the entire data set before outlier calcuation, a subset of the original dataframe, and/or once the dataset has been filtered to only multivariate outliers. 
 
 ## Multivariate Statistics Available in MINOTAUR
-The MINOTAUR package includes four functions for inferring multivariate distances and densities:
+The MINOTAUR package includes six functions for inferring multivariate distances and densities based on univariate statistics or p-values. In cases where only statistics are available (i.e., no associated p-values), the function `stat_to_pvalue()` will convert statistics to p-values based on fractional ranks.
   
-1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution.
+1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-2. `harmonicDist()`: The harmonic mean distance of an observation refers to the harmonic mean of the distance from this observation to all other observations.
+2. `harmonicDist()`: The harmonic mean distance of an observation refers to the harmonic mean of the distance from this observation to all other observations. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-3. `kernelDist()`: The kernel density refers to the density of observations within one bandwidth distance of each observation in a dataset. A second function, `kernelDeviance()`, can be used to determine the optimal bandwidth given the data using maximum likelihood.
+3. `kernelDist()`: The kernel density refers to the density of observations within one bandwidth distance of each observation in a dataset. A second function, `kernelDeviance()`, can be used to determine the optimal bandwidth given the data using maximum likelihood. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-4. `neighborDist()`: The nearest neighbor distance of an observation is the minimum distance between this observation and any other observation.
+4. `neighborDist()`: The nearest neighbor distance of an observation is the minimum distance between this observation and any other observation. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
+
+5. `CSS()`: The composite selection signals approach combines p-values using Stouffer's method, which assumes independence among the statistics being summarized. Statistics are converted to fractional ranks, which are then converted to Z-values, and the mean Z-score for each locus is used to identify a p-value based on a normal distribution. The CSS statistic is the -log10 of the p-value. See Randhawa et al. (2014; 2015) and Lotterhos et al. (2017) for more details.
+
+6. `DCMS()`: The De-correlated composite of multiple signals approach is similar to CSS, but does not assume independence among the univariate statistics. A weighting factor based upon the genome-wide correlation between all pairwise univariate statistics is applied to each locus. Therefore, highly correlated statistics contribute less to the calculation. For example, if two statistics are perfectly correlated and a third statistic is uncorrelated with the first two, the respective weights will be (½, ½, 1). See Ma et al. (2015) and Lotterhos et al. (2017) for more details.
 
 ## Sample Data Available from MINOTAUR
 Four example datasets have been included with the MINOTAUR package:
@@ -250,3 +254,10 @@ We encourage users to report issues or make feature requests using [GitHub Issue
 
 ## Acknowledgements
 This work was conceived during a hackathon on Population Genetics in R, sponsored and hosted by the National Evolutionary Synthesis Center (NESCent) in March of 2015. The MINOTAUR team is grateful to fellow hackathon participants who gave valuable feedback during initial development of this project at NESCent and afterwards. We are also indebted to those at NESCent who made the event possible and especially to Hilmar Lapp, who organized and led the collective effort.
+
+## Bibliography
+- Lotterhos, K. E., Card, D. C., Schaal, S. M., Wang, L., Collins, C., & Verity, B. (2017) Composite measures of selection can improve the signal-to-noise ration in genome scans. *Methods in Ecology and Evolution*. In Press.
+- Ma, Y., Ding, X., Qanbari, S., Weigend, S., Zhang, Q., & Simianer, H. (2015) Properties of different selection signature statistics and a new strategy for combining them. *Heredity*, 115, 426-436.
+- Randhawa, I. A. S., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2014) Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep. *BMC Genetics*, 15(1), 1.
+- Randhawa, I. A., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2015) Composite selection signals for complex traits exemplified through bovine stature using multibreed cohorts of European and African Bos taurus. *G3: Genes| Genomes| Genetics*, 5(7), 1391-1401.
+- Verity, R., Collins, C., Card, D.C., Schaal, S.M., Wang, L, & Lotterhos, K.E. (2017) MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny. *Molecular Ecology Resources*. DOI: 10.1111/1755-0998.12579.
