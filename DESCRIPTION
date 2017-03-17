@@ -17,12 +17,10 @@ Depends:
 Imports:
     adegenet,
     ash,
-    BiocInstaller,
     data.table,
     DT,
     fields,
     ggplot2,
-    OmicCircos,
     RColorBrewer,
     Rcpp,
     shiny,
@@ -32,8 +30,6 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    github::Bioconductor-mirror/BiocInstaller,
-    github::Bioconductor-mirror/OmicCircos,
     github::rstudio/DT
 LinkingTo: Rcpp
 License: GPL (>=2)

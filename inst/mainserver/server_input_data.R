@@ -116,7 +116,7 @@ output$tabBox_loadData <- shiny::renderUI({
   shinydashboard::tabBox(
     id = "tabSet_loadData",
     width=12,
-    status='warning',
+    # status='warning',
 
     ##################
     ## LOAD EXAMPLE ##
@@ -395,7 +395,9 @@ output$valueBox_cols <- shiny::renderUI({
 output$tabBox_rawDataSummary <- shiny::renderUI({
 
   shinydashboard::tabBox(
-    title=NULL, status='warning', width=12,
+    title=NULL,
+    # status='warning',
+    width=12,
     shiny::tabPanel(
       title=HTML('<font size=4>Raw data table</font>'),
       #dataTableOutput("rawDataTable")
