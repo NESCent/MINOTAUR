@@ -23,8 +23,8 @@ Imports:
     ggplot2,
     RColorBrewer,
     Rcpp,
-    shiny,
-    shinydashboard,
+    shiny (>= 0.14.1),
+    shinydashboard (>= 0.5.3),
     shinyjs
 Suggests:
     knitr,
