@@ -185,7 +185,7 @@ using the *Minimum Covariance Determinant (MCD)* implemented in `rrcovNA`
 
 ```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
 # install/load rrcovNA
-install.packages("rrcovNA")
+# install.packages("rrcovNA")
 library("rrcovNA")
 
 # calculate the MCD covariance matrix (ignoring obsID)
