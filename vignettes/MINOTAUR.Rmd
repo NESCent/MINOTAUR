@@ -27,7 +27,7 @@ MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=MINOTAUR) 
 
 ## Citation
 Please use the following citations when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
-- Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. (2017) MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. *Molecular Ecology Resources* 17(1): 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
+- Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. (2017) MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. *Molecular Ecology Resources* 17(1), 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
 - Lotterhos, K. E., Card, D. C., Schaal, S. M., Wang, L., Collins, C., & Verity, B. (2017) Composite measures of selection can improve the signal-to-noise ration in genome scans. *Methods in Ecology and Evolution*. In Press.
 
 ## Workflow Overview
@@ -316,4 +316,4 @@ This work was conceived during a hackathon on Population Genetics in R, sponsore
 - Ma, Y., Ding, X., Qanbari, S., Weigend, S., Zhang, Q., & Simianer, H. (2015) Properties of different selection signature statistics and a new strategy for combining them. *Heredity*, 115, 426-436. [doi:10.1038/hdy.2015.42](https://dx.doi.org/10.1038/hdy.2015.42)
 - Randhawa, I. A. S., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2014) Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep. *BMC Genetics*, 15(1), 1. [doi:10.1186/1471-2156-15-34](https://dx.doi.org/10.1186/1471-2156-15-34)
 - Randhawa, I. A., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2015) Composite selection signals for complex traits exemplified through bovine stature using multibreed cohorts of European and African Bos taurus. *G3: Genes| Genomes| Genetics*, 5(7), 1391-1401. [doi:10.1534/g3.115.017772](https://dx.doi.org/10.1534/g3.115.017772)
-- Verity, R., Collins, C., Card, D.C., Schaal, S.M., Wang, L, & Lotterhos, K.E. (2017) MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny. *Molecular Ecology Resources* 17(1): 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
+- Verity, R., Collins, C., Card, D.C., Schaal, S.M., Wang, L, & Lotterhos, K.E. (2017) MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny. *Molecular Ecology Resources* 17(1), 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
