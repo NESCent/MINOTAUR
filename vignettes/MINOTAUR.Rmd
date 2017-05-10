@@ -25,9 +25,12 @@ install.packages('MINOTAUR')
 #' install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
 ```
 
-Please use the following citation when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
+Please use the following citations when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
   
+```
 Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. (2017) MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. *Molecular Ecology Resources* 17(1): 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
+Lotterhos, K. E., Card, D. C., Schaal, S. M., Wang, L., Collins, C., & Verity, B. (2017) Composite measures of selection can improve the signal-to-noise ration in genome scans. *Methods in Ecology and Evolution*. In Press.
+```
 
 ## Workflow Overview
 The MINOTAUR package is broken into two parts:
