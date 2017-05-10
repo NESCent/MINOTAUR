@@ -175,7 +175,7 @@ hist(Md, breaks=50, xlab="Mahalanobis distance", main="Histogram of Mahalanobis 
 hist(Hd, breaks=50, xlab="Harmonic mean distance", main="Histogram of Harmonic mean distance")
 hist(Nd, breaks=50, xlab="Nearest neighbor distance", main="Histogram of Nearest neighbor distance")
 hist(Kd, breaks=50, xlab="Kernel density", main="Histogram of Kernel density")
-hist(css, breaks=50, xlab=-log10 pvalue, main="Histogram of CSS statistic")
+hist(css, breaks=50, xlab="-log10 pvalue", main="Histogram of CSS statistic")
 hist(dcms, breaks=50, xlab="DCMS", main="Histogram of DCMS statistic")
 ```
 
