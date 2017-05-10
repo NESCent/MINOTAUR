@@ -19,10 +19,10 @@ Studies are generating an increasing number of statistics across one or more bro
 MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=MINOTAUR) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
   
 ```{r eval=FALSE}
-# install.packages('MINOTAUR')
-# to install the development version, run:
-# require(devtools)
-# install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
+#` install.packages('MINOTAUR')
+#` to install the development version, run:
+#` require(devtools)
+#` install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
 ```
 
 ## Citation
