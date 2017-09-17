@@ -25,6 +25,7 @@ URL_Contact <- list("Contact Us" =
 # ---------------------------------------------------------------------------------------------------------------
 
 server <- function(input, output) {
+  library(MINOTAUR)
 
   # welcome page
   source("server_welcome.R", local = TRUE)
