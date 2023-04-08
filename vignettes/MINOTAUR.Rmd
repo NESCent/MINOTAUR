@@ -19,20 +19,21 @@ Studies are generating an increasing number of statistics across one or more bro
 MINOTAUR can be installed from [CRAN](http://cran.rstudio.com/package=MINOTAUR) (pending), or from [GitHub](http://github.com/NESCent/MINOTAUR), if the latest development version is desired:
   
 ```{r eval=FALSE}
-install.packages('MINOTAUR')
-#' to install the development version, run:
-#' require(devtools)
-#' install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
+#` install.packages('MINOTAUR')
+#` to install the development version, run:
+#` require(devtools)
+#` install_github('NESCent/MINOTAUR', build_vignettes=TRUE)
 ```
 
-Please use the following citation when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
-  
-Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. In Review.
+## Citation
+Please use the following citations when reporting work that used MINOTAUR (final citation and link to paper will be included upon publication):
+- Robert Verity, Caitlin Collins, Daren C. Card, Sara M. Schaal, Liuyang Wang, & Katie E. Lotterhos. (2017) MINOTAUR: an R package for visualizing and calculating multivariate outliers in genomic datasets. *Molecular Ecology Resources* 17(1), 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
+- Lotterhos, K. E., Card, D. C., Schaal, S. M., Wang, L., Collins, C., & Verity, B. (2017) Composite measures of selection can improve the signal-to-noise ration in genome scans. *Methods in Ecology and Evolution*. In Press.
 
 ## Workflow Overview
 The MINOTAUR package is broken into two parts:
   
-1. Four functions that calculate multivariate statistics using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, and `neighborDist`. The multivariate functions are meant to supplement existing R functions from other packages that infer outliers in multidimensional space.
+1. Six functions that calculate composite measures using two or more univariate variables: `Mahalanobis`, `harmonicDist`, `kernelDist`, `neighborDist`, `CSS`, and `DCMS`. The composite measures are meant to supplement existing R functions from other packages that infer outliers using multivariate composite statistics or by combining p-values from multiple tests.
 
 2. An R Shiny GUI that can be used to visualize the distributions of individual statistics separately and together, and to help produce publication-quality figures.
 
@@ -47,15 +48,19 @@ An expanded example with code is included below, but a basic workflow leveraging
 4. Plotting: The plotting functions in the MINOTAUR GUI enables the user to further investigate their data and produce publication-quality figures. Plots can be produced on either the entire data set before outlier calcuation, a subset of the original dataframe, and/or once the dataset has been filtered to only multivariate outliers. 
 
 ## Multivariate Statistics Available in MINOTAUR
-The MINOTAUR package includes four functions for inferring multivariate distances and densities:
+The MINOTAUR package includes six functions for inferring multivariate distances and densities based on univariate statistics or p-values. In cases where only statistics are available (i.e., no associated p-values), the function `stat_to_pvalue()` will convert statistics to p-values based on fractional ranks.
   
-1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution.
+1. `Mahalanobis()`: The Mahalanobis distance is a multi-dimensional measure of the number of standard deviations that a point lies from the mean of the distribution. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-2. `harmonicDist()`: The harmonic mean distance of an observation refers to the harmonic mean of the distance from this observation to all other observations.
+2. `harmonicDist()`: The harmonic mean distance of an observation refers to the harmonic mean of the distance from this observation to all other observations. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-3. `kernelDist()`: The kernel density refers to the density of observations within one bandwidth distance of each observation in a dataset. A second function, `kernelDeviance()`, can be used to determine the optimal bandwidth given the data using maximum likelihood.
+3. `kernelDist()`: The kernel density refers to the density of observations within one bandwidth distance of each observation in a dataset. A second function, `kernelDeviance()`, can be used to determine the optimal bandwidth given the data using maximum likelihood. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
 
-4. `neighborDist()`: The nearest neighbor distance of an observation is the minimum distance between this observation and any other observation.
+4. `neighborDist()`: The nearest neighbor distance of an observation is the minimum distance between this observation and any other observation. More information is available in Verity et al. (2017) and Lotterhos et al. (2017).
+
+5. `CSS()`: The composite selection signals approach combines p-values using Stouffer's method, which assumes independence among the statistics being summarized. Statistics are converted to fractional ranks, which are then converted to Z-values, and the mean Z-score for each locus is used to identify a p-value based on a normal distribution. The CSS statistic is the -log10 of the p-value. See Randhawa et al. (2014; 2015) and Lotterhos et al. (2017) for more details.
+
+6. `DCMS()`: The De-correlated composite of multiple signals approach is similar to CSS, but does not assume independence among the univariate statistics. A weighting factor based upon the genome-wide correlation between all pairwise univariate statistics is applied to each locus. Therefore, highly correlated statistics contribute less to the calculation. For example, if two statistics are perfectly correlated and a third statistic is uncorrelated with the first two, the respective weights will be (½, ½, 1). See Ma et al. (2015) and Lotterhos et al. (2017) for more details.
 
 ## Sample Data Available from MINOTAUR
 Four example datasets have been included with the MINOTAUR package:
@@ -110,14 +115,20 @@ var4 <- rnorm(observations)
 var5 <- rnorm(observations)
 # bind variables into a data frame
 allVar <- cbind(obsID, var1, var2, var3, var4, var5)
+```
 
+Once the dataset is created, we can run five of the composite measures, with each having essentially the same
+arguments available.
+
+```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
 # CALCULATE MULTIVARIATE MEASURES
 # set the columns to use for multivariate inference
 columns <- 2:6
 # run each multivariate function
 # note that these functions cannot accommodate any missing data
+# and that arguments are shared between all functions
 # Mahalanobis
-Md <- Mahalanobis(allVar, columns)
+Md <- Mahalanobis(dfv=allVar, column.nums=columns)
 # Harmonic mean distnace
 Hd <- harmonicDist(allVar, columns)
 # Nearest neighbor distance
@@ -131,14 +142,63 @@ Kd.ML <- kernelDeviance(allVar, columns, bandwidth=bw)
 bw.best <- bw[which(Kd.ML==max(Kd.ML))[1]]
 # calculate the kernel density
 Kd <- kernelDist(allVar, columns, bandwidth=bw.best)
+# Composite Selection Signals (CSS)
+# test statistics are autmoatically converted to franctional ranks (stat_to_pvalue)
+# CSS does not take covariance into account (i.e., no S argument)
+css <- CSS(allVar, columns)
+```
 
+The sixth composite measure, DCMS, relies on p-values and some additional work is needed.
+
+```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
+# convert the test statistics to p-values based on fractional ranks
+# alternatively, you can use p-values based on a statistical test of your data
+allVar_pvalue <- stat_to_pvalue(allVar, columns)
+# recombine the data.frame with identifiers and nice column names
+allVar_pvalue <- cbind(allVar[,1], allVar_pvalue)
+names(allVar_pvalue) <- c(names(allVar)[1], paste0(names(allVar)[-1], "_pvalue"))
+# calculate the DCMS values
+# note that a matrix of test statistics and p-values are both necessary (can be in same data.frame)
+# if test statistics are not available, the p-value matrix can be passed
+# to the dfv argument if the p-values are well calibrated
+dcms <- DCMS(dfv=allVar, column.nums=columns, dfp=allVar_pvalue, column.nums.p=columns)
+```
+
+Finally, it is easy to visualize the distribution of each of these composite measures and use appropriate
+methods to isolate outliers in these distributions, which are likely to be enriched for loci under
+selection.
+
+```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
 # VIEW RESULTS
 # plot a histogram of the multivariate statistics
-hist(Md, bins=100, xlab="Mahalanobis distance", main="Histogram of Mahalanobis distance")
-hist(Hd, bins=100, xlab="Harmonic mean distance", main="Histogram of Harmonic mean distance")
-hist(Nd, bins=100, xlab="Nearest neighbor distance", main="Histogram of Nearest neighbor distance")
-hist(Kd, bins=100, xlab="Kernel density", main="Histogram of Kernel density")
-# users can identify outliers using these distributions
+hist(Md, breaks=50, xlab="Mahalanobis distance", main="Histogram of Mahalanobis distance")
+hist(Hd, breaks=50, xlab="Harmonic mean distance", main="Histogram of Harmonic mean distance")
+hist(Nd, breaks=50, xlab="Nearest neighbor distance", main="Histogram of Nearest neighbor distance")
+hist(Kd, breaks=50, xlab="Kernel density", main="Histogram of Kernel density")
+hist(css, breaks=50, xlab="-log10 pvalue", main="Histogram of CSS statistic")
+hist(dcms, breaks=50, xlab="DCMS", main="Histogram of DCMS statistic")
+```
+
+By default, MINOTAUR uses the `cov` function in R to calculate the covariance matrix. One can also 
+alculate their own custom covariance matrix using alternative R functions. Here is a brief example
+using the *Minimum Covariance Determinant (MCD)* implemented in `rrcovNA`
+
+```{r warning=FALSE, message=FALSE, fig.width=7, fig.height=7}
+# install/load rrcovNA
+# install.packages("rrcovNA")
+library("rrcovNA")
+
+# calculate the MCD covariance matrix (ignoring obsID)
+MCD.covmat <- CovNAMcd(allVar[,-1])@cov
+
+# using the MCD covariance matrix by passing it to the S argument
+# in this example, we're using the Mahalanobis function, but this will work
+# with all MINOTAUR composite measure functions except CSS
+Md_MCD <- Mahalanobis(dfv=allVar, column.nums=columns, S=MCD.covmat)
+
+# take a quick look at the results
+# not much of a difference with this randomly-generated data
+hist(Md_MCD, breaks=50, xlab="Mahalanobis distance", main="Histogram of Mahalanobis distance")
 ```
 
 ### Calculating and Visualizing Multivariate Distributions using the MINOTAUR GUI
@@ -250,3 +310,10 @@ We encourage users to report issues or make feature requests using [GitHub Issue
 
 ## Acknowledgements
 This work was conceived during a hackathon on Population Genetics in R, sponsored and hosted by the National Evolutionary Synthesis Center (NESCent) in March of 2015. The MINOTAUR team is grateful to fellow hackathon participants who gave valuable feedback during initial development of this project at NESCent and afterwards. We are also indebted to those at NESCent who made the event possible and especially to Hilmar Lapp, who organized and led the collective effort.
+
+## Bibliography
+- Lotterhos, K. E., Card, D. C., Schaal, S. M., Wang, L., Collins, C., & Verity, B. (2017) Composite measures of selection can improve the signal-to-noise ration in genome scans. *Methods in Ecology and Evolution*. In Press.
+- Ma, Y., Ding, X., Qanbari, S., Weigend, S., Zhang, Q., & Simianer, H. (2015) Properties of different selection signature statistics and a new strategy for combining them. *Heredity*, 115, 426-436. [doi:10.1038/hdy.2015.42](https://dx.doi.org/10.1038/hdy.2015.42)
+- Randhawa, I. A. S., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2014) Composite selection signals can localize the trait specific genomic regions in multi-breed populations of cattle and sheep. *BMC Genetics*, 15(1), 1. [doi:10.1186/1471-2156-15-34](https://dx.doi.org/10.1186/1471-2156-15-34)
+- Randhawa, I. A., Khatkar, M. S., Thomson, P. C., & Raadsma, H. W. (2015) Composite selection signals for complex traits exemplified through bovine stature using multibreed cohorts of European and African Bos taurus. *G3: Genes| Genomes| Genetics*, 5(7), 1391-1401. [doi:10.1534/g3.115.017772](https://dx.doi.org/10.1534/g3.115.017772)
+- Verity, R., Collins, C., Card, D.C., Schaal, S.M., Wang, L, & Lotterhos, K.E. (2017) MINOTAUR: A platform for the analysis and visualization of multivariate results from genome scans with R Shiny. *Molecular Ecology Resources* 17(1), 33-43. [doi:10.1111/1755-0998.12579](https://dx.doi.org/10.1111/1755-0998.12579)
